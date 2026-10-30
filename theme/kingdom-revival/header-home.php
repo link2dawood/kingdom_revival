@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) || exit;
 <a <?php krm_social_href( 'facebook' ); ?> aria-label="Facebook" style="color: #E6EAF5; display: inline-flex"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
 <a <?php krm_social_href( 'youtube' ); ?> aria-label="YouTube" style="color: #E6EAF5; display: inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"></rect><path d="M10 9l5 3-5 3z"></path></svg></a>
 <a <?php krm_social_href( 'instagram' ); ?> aria-label="Instagram" style="color: #E6EAF5; display: inline-flex"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle></svg></a>
-<a class="k-y" href="#donate" style="background: #D4070B; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 6px 14px; border-radius: 4px">Donate Now</a>
+<a class="k-y" href="#donate" style="background: #D4070B; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 6px 14px; border-radius: 4px"><?php krm_t( 'header.donate_label', 'site' ); ?></a>
 </div>
 </div>
 </div>
@@ -44,11 +44,8 @@ defined( 'ABSPATH' ) || exit;
 <header style="background: #FFFFFF; border-bottom: 1px solid #E3E7F0">
 <div class="k-nav" style="position: relative; max-width: 1240px; margin: 0 auto; padding: 14px clamp(16px, 3vw, 32px); display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: center; justify-content: space-between">
 <a href="#top" style="display: flex; gap: 10px; align-items: center">
-<img src="<?php echo esc_url( krm_logo_url() ); ?>" alt="Kingdom Revival Ministries logo" width="64" height="64" style="width: 64px; height: 64px; display: block; object-fit: contain">
-<span style="display: flex; flex-direction: column; line-height: 1.05">
-<span style="font-weight: 800; font-size: 20px; color: #0C1C4F">Kingdom Revival</span>
-<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: #5A6275">MINISTRIES</span>
-</span>
+<img src="<?php echo esc_url( krm_logo_url() ); ?>" alt="<?php echo esc_attr( krm_fill( krm_c( 'header.logo_alt', 'site' ) ) ); ?>" width="64" height="64" style="width: 64px; height: 64px; display: block; object-fit: contain">
+<span style="display: flex; flex-direction: column; line-height: 1.05"><span style="font-weight: 800; font-size: 20px; color: #0C1C4F"><?php krm_t( 'header.brand_name', 'site' ); ?></span><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: #5A6275"><?php krm_t( 'header.brand_sub', 'site' ); ?></span></span>
 </a>
 <nav class="site-nav" aria-label="Main">
 <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-toggle-bars" aria-hidden="true"></span>Menu</button>

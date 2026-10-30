@@ -3,7 +3,8 @@
  * Template Name: Donate
  * Donate page.
  *
- * Markup copied from donate.html; only links, images and contact details are dynamic.
+ * Markup from donate.html. Text, images, buttons and amounts are edited in the page's "Page content" box
+ * (inc/content/donate.php); bank, PayPal and receiver details come from Kingdom Revival → Settings.
  *
  * @package Kingdom_Revival
  */
@@ -13,15 +14,15 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 	<main id="main">
-	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_media( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg' ) ); ?>')">
+	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')">
 		<div class="wrap">
-		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li aria-current="page">Donate</li></ol>
-		<p class="eyebrow">Donate</p>
-		<h1>Your gift brings <em>hope</em> to Pakistan’s forgotten</h1>
-		<p class="lead">Every gift helps us preach the Gospel, care for orphans and widows, educate brick kiln children and put Bibles in waiting hands.</p>
+		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li aria-current="page"><?php echo esc_html( get_the_title() ); ?></li></ol>
+		<p class="eyebrow"><?php krm_t( 'hero.eyebrow' ); ?></p>
+		<h1><?php krm_h( 'hero.title' ); ?></h1>
+		<p class="lead"><?php krm_t( 'hero.lead' ); ?></p>
 		<div class="hero-actions">
-			<a class="button button-primary" href="#give">Give now</a>
-			<a class="button button-light" href="<?php echo esc_url( krm_page_url( 'partner' ) ); ?>">Become a monthly partner</a>
+			<a class="button button-primary" href="<?php krm_u( 'hero.button1_url' ); ?>"><?php krm_t( 'hero.button1_label' ); ?></a>
+			<a class="button button-light" href="<?php krm_u( 'hero.button2_url' ); ?>"><?php krm_t( 'hero.button2_label' ); ?></a>
 		</div>
 		</div>
 	</section>
@@ -29,25 +30,29 @@ get_header();
 	<section class="section section-soft" id="give">
 		<div class="wrap give-layout">
 		<div>
-			<p class="step-label"><span>1</span>Choose your gift</p>
+			<p class="step-label"><span>1</span><?php krm_t( 'gift.step' ); ?></p>
 			<form class="card gift-card" id="gift" onsubmit="return false">
 			<fieldset>
-				<legend>How often?</legend>
+				<legend><?php krm_t( 'gift.frequency' ); ?></legend>
 				<div class="seg">
 				<label><input type="radio" name="frequency" value="One-time" checked><span>One-time</span></label>
 				<label><input type="radio" name="frequency" value="Monthly"><span>Monthly</span></label>
 				</div>
 			</fieldset>
 			<fieldset>
-				<legend>Amount (USD)</legend>
-				<div class="amts"><label><input type="radio" name="amount" value="$25"><span>$25</span></label><label><input type="radio" name="amount" value="$50" checked><span>$50</span></label><label><input type="radio" name="amount" value="$100"><span>$100</span></label><label><input type="radio" name="amount" value="$250"><span>$250</span></label><label><input type="radio" name="amount" value="$500"><span>$500</span></label><label><input type="radio" name="amount" value="Other"><span>Other</span></label></div>
+				<legend><?php krm_t( 'gift.amount_label' ); ?></legend>
+				<div class="amts">
+				<?php
+				foreach ( krm_donate_amounts() as $krm_a => $krm_on ) :
+					?>
+					<label><input type="radio" name="amount" value="<?php echo esc_attr( $krm_a ); ?>"<?php echo $krm_on ? ' checked' : ''; ?>><span><?php echo esc_html( $krm_a ); ?></span></label><?php endforeach; ?></div>
 				<div class="custom" id="custom-wrap" hidden>
 				<label class="visually-hidden" for="custom">Other amount in US dollars</label>
 				<input id="custom" name="custom" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter amount">
 				</div>
 			</fieldset>
 			<fieldset>
-				<label class="label" for="fund">Where should your gift go?</label>
+				<label class="label" for="fund"><?php krm_t( 'gift.fund_label' ); ?></label>
 				<select id="fund" name="fund">
 				<option value="Where it is needed most">Where it is needed most</option>
 				<?php foreach ( krm_ministries() as $krm_m ) : ?>
@@ -60,15 +65,15 @@ get_header();
 				<div><small>Your gift</small><strong id="summary-amount"></strong><small id="summary-fund"></small></div>
 			</div>
 			<ul class="trust">
-				<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>Goes directly to the ministry in Pakistan</li>
-				<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>Give from anywhere in the world</li>
-				<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>Questions? Call <?php echo esc_html( krm_opt( 'phone' ) ); ?></li>
+				<?php foreach ( krm_lines( krm_c( 'gift.trust' ) ) as $krm_line ) : ?>
+				<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><?php echo krm_text( $krm_line ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></li>
+				<?php endforeach; ?>
 			</ul>
 			</form>
 		</div>
 
 		<div>
-			<p class="step-label"><span>2</span>Choose how to give</p>
+			<p class="step-label"><span>2</span><?php krm_t( 'methods.step' ); ?></p>
 			<div class="card">
 			<div class="tabs" role="tablist" aria-label="Payment methods">
 				<button type="button" class="tab" role="tab" id="tab-paypal" aria-controls="panel-paypal" data-method="PayPal"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/paypal-logo-png_seeklogo-249214-300x300.png' ); ?> alt="">PayPal</button>
@@ -78,15 +83,15 @@ get_header();
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-paypal" aria-labelledby="tab-paypal">
-				<h3>Give with PayPal</h3>
-				<p>The fastest way to give from anywhere. Pay with your PayPal balance or a debit or credit card. Your amount of <strong data-gift-label></strong> is filled in for you.</p>
-				<a class="button button-primary" id="paypal-link" href="<?php echo esc_url( krm_opt( 'paypal_me' ) ); ?>" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg><span>Give <span data-gift-label></span> with PayPal</span></a>
-				<p class="note" id="paypal-monthly" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span>PayPal.me sends one-time payments. For a monthly gift, please give through PayPal each month or set up a bank standing order.</span></p>
+				<h3><?php krm_t( 'methods.paypal_heading' ); ?></h3>
+				<p><?php echo krm_gift_text( krm_c( 'methods.paypal_text' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in krm_gift_text(). ?></p>
+				<a class="button button-primary" id="paypal-link" href="<?php echo esc_url( krm_opt( 'paypal_me' ) ); ?>" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg><span><?php echo krm_gift_text( krm_c( 'methods.paypal_button' ), 'span' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></a>
+				<p class="note" id="paypal-monthly" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span><?php krm_t( 'methods.paypal_monthly' ); ?></span></p>
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-bank" aria-labelledby="tab-bank" hidden>
-				<h3>Give by bank transfer</h3>
-				<p>Send <strong data-gift-label></strong> from your bank using the details below. Tap <strong>Copy</strong> to copy a detail.</p>
+				<h3><?php krm_t( 'methods.bank_heading' ); ?></h3>
+				<p><?php echo krm_gift_text( krm_c( 'methods.bank_text' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<dl class="bank">
 				<div class="bank-row">
 					<dt>Account name</dt>
@@ -121,41 +126,41 @@ get_header();
 					<dd><span><?php echo esc_html( krm_opt( 'bank_phone' ) ); ?></span></dd>
 				</div>
 				</dl>
-				<p class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span>International transfers may take a few working days. Please add the ministry name in your payment reference.</span></p>
+				<p class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span><?php krm_t( 'methods.bank_note' ); ?></span></p>
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-wu" aria-labelledby="tab-wu" hidden>
-				<h3>Send with Western Union</h3>
-				<p>Send <strong data-gift-label></strong> from a Western Union agent near you or online.</p>
+				<h3><?php krm_t( 'methods.wu_heading' ); ?></h3>
+				<p><?php echo krm_gift_text( krm_c( 'methods.wu_text' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<ol class="steps-list">
-				<li>Send to the receiver below, payable in Faisalabad, Pakistan.</li>
-				<li>Keep your tracking number (MTCN).</li>
-				<li>Email us the MTCN with “Let us know about your gift” below so we can collect it.</li>
+					<?php foreach ( krm_lines( krm_c( 'methods.wu_steps' ) ) as $krm_line ) : ?>
+					<li><?php echo krm_text( $krm_line ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></li>
+					<?php endforeach; ?>
 				</ol>
-				<div class="receiver"><p>Receiver: <strong><?php echo esc_html( krm_opt( 'bank_account_name' ) ); ?></strong> · CNIC <strong><?php echo esc_html( krm_opt( 'bank_cnic' ) ); ?></strong> · Faisalabad, Punjab, Pakistan · <strong><?php echo esc_html( krm_opt( 'phone' ) ); ?></strong></p></div>
-				<a class="button button-secondary" href="https://www.westernunion.com/" target="_blank" rel="noopener">Go to Western Union</a>
+				<div class="receiver"><p>Receiver: <strong><?php echo esc_html( krm_opt( 'bank_account_name' ) ); ?></strong> · CNIC <strong><?php echo esc_html( krm_opt( 'bank_cnic' ) ); ?></strong> · <?php krm_t( 'methods.receiver_place' ); ?> · <strong><?php echo esc_html( krm_opt( 'phone' ) ); ?></strong></p></div>
+				<a class="button button-secondary" href="<?php krm_u( 'methods.wu_url' ); ?>" target="_blank" rel="noopener"><?php krm_t( 'methods.wu_button' ); ?></a>
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-mg" aria-labelledby="tab-mg" hidden>
-				<h3>Send with MoneyGram</h3>
-				<p>Send <strong data-gift-label></strong> from a MoneyGram location or online.</p>
+				<h3><?php krm_t( 'methods.mg_heading' ); ?></h3>
+				<p><?php echo krm_gift_text( krm_c( 'methods.mg_text' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<ol class="steps-list">
-				<li>Send to the receiver below, payable in Faisalabad, Pakistan.</li>
-				<li>Keep your reference number.</li>
-				<li>Email us the reference number with “Let us know about your gift” below so we can collect it.</li>
+					<?php foreach ( krm_lines( krm_c( 'methods.mg_steps' ) ) as $krm_line ) : ?>
+					<li><?php echo krm_text( $krm_line ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></li>
+					<?php endforeach; ?>
 				</ol>
-				<div class="receiver"><p>Receiver: <strong><?php echo esc_html( krm_opt( 'bank_account_name' ) ); ?></strong> · CNIC <strong><?php echo esc_html( krm_opt( 'bank_cnic' ) ); ?></strong> · Faisalabad, Punjab, Pakistan · <strong><?php echo esc_html( krm_opt( 'phone' ) ); ?></strong></p></div>
-				<a class="button button-secondary" href="https://www.moneygram.com/" target="_blank" rel="noopener">Go to MoneyGram</a>
+				<div class="receiver"><p>Receiver: <strong><?php echo esc_html( krm_opt( 'bank_account_name' ) ); ?></strong> · CNIC <strong><?php echo esc_html( krm_opt( 'bank_cnic' ) ); ?></strong> · <?php krm_t( 'methods.receiver_place' ); ?> · <strong><?php echo esc_html( krm_opt( 'phone' ) ); ?></strong></p></div>
+				<a class="button button-secondary" href="<?php krm_u( 'methods.mg_url' ); ?>" target="_blank" rel="noopener"><?php krm_t( 'methods.mg_button' ); ?></a>
 			</div>
 			</div>
 
 			<div class="notify">
-			<p class="step-label"><span>3</span>Let us know</p>
+			<p class="step-label"><span>3</span><?php krm_t( 'notify.step' ); ?></p>
 			<div class="card">
-				<p style="margin: 0">After you give, send us a quick email so we can thank you, confirm your gift and use it exactly where you asked. Your gift details are filled in for you.</p>
+				<p style="margin: 0"><?php krm_t( 'notify.text' ); ?></p>
 				<div class="hero-actions">
-				<a class="button button-primary" id="notify-link" href="<?php echo esc_url( krm_mailto() ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg>Let us know about your gift</a>
-				<a class="button button-secondary" href="<?php echo esc_url( krm_whatsapp_url() ); ?>" target="_blank" rel="noopener">WhatsApp us</a>
+				<a class="button button-primary" id="notify-link" href="<?php echo esc_url( krm_mailto() ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg><?php krm_t( 'notify.email_button' ); ?></a>
+				<a class="button button-secondary" href="<?php echo esc_url( krm_whatsapp_url() ); ?>" target="_blank" rel="noopener"><?php krm_t( 'notify.whatsapp_button' ); ?></a>
 				</div>
 			</div>
 			</div>
@@ -166,15 +171,14 @@ get_header();
 	<section class="section">
 		<div class="wrap">
 		<div class="section-head center">
-			<p class="eyebrow">Your gift at work</p>
-			<h2>Where your generosity goes</h2>
-			<p>Gifts given “where it is needed most” are used across all twelve ministries.</p>
+			<p class="eyebrow"><?php krm_t( 'impact.eyebrow' ); ?></p>
+			<h2><?php krm_h( 'impact.heading' ); ?></h2>
+			<p><?php krm_t( 'impact.intro' ); ?></p>
 		</div>
 		<div class="impact">
-			<article class="impact-card"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg' ); ?> alt="Bibles in Urdu" loading="lazy" decoding="async"><div><h3>Bibles in Urdu</h3><p>Scripture for new believers, families and house churches.</p></div></article>
-			<article class="impact-card"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg' ); ?> alt="Brick kiln children" loading="lazy" decoding="async"><div><h3>Brick kiln children</h3><p>Education, care and the Gospel for children beside the kilns.</p></div></article>
-			<article class="impact-card"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg' ); ?> alt="Orphan care" loading="lazy" decoding="async"><div><h3>Orphan care</h3><p>Shelter, meals and schooling for orphaned children.</p></div></article>
-			<article class="impact-card"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-5-scaled.jpg' ); ?> alt="Widows &amp; families" loading="lazy" decoding="async"><div><h3>Widows &amp; families</h3><p>Practical help and fellowship for those in need.</p></div></article>
+			<?php foreach ( (array) krm_c( 'impact.cards' ) as $krm_card ) : ?>
+			<article class="impact-card"><img <?php krm_img_src( $krm_card['image'] ); ?> alt="<?php echo krm_alt( $krm_card['image'], $krm_card['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async"><div><h3><?php echo krm_text( $krm_card['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3><p><?php echo krm_text( $krm_card['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p></div></article>
+			<?php endforeach; ?>
 		</div>
 		</div>
 	</section>
@@ -182,15 +186,10 @@ get_header();
 	<section class="section section-soft">
 		<div class="wrap">
 		<div class="section-head center">
-			<p class="eyebrow">Questions</p>
-			<h2>Giving FAQ</h2>
+			<p class="eyebrow"><?php krm_t( 'faq.eyebrow' ); ?></p>
+			<h2><?php krm_h( 'faq.heading' ); ?></h2>
 		</div>
-		<div class="faq">
-			<details><summary>Which payment method should I use?</summary><p>PayPal is the quickest way to give from anywhere in the world. Bank transfer works well for larger or regular gifts. Western Union and MoneyGram are helpful if you prefer to send cash transfers.</p></details>
-			<details><summary>How do I give monthly?</summary><p>Set up a standing order or recurring transfer with your bank using the account details above, or send your gift through PayPal each month. Let us know so we can thank you and keep you updated.</p></details>
-			<details><summary>How do I tell you what my gift is for?</summary><p>Choose the ministry in the gift form, then use “Let us know about your gift” to email us. Adding the ministry name in your bank or PayPal reference also helps.</p></details>
-			<details><summary>Who can I contact with questions?</summary><p>Call or WhatsApp us on <?php echo esc_html( krm_opt( 'phone' ) ); ?>, or email <?php echo esc_html( krm_opt( 'email' ) ); ?>. We are happy to help.</p></details>
-		</div>
+		<?php get_template_part( 'template-parts/faq' ); ?>
 		</div>
 	</section>
 	</main>

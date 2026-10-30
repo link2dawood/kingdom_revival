@@ -1,0 +1,17 @@
+/* Kingdom Revival Ministries — Page content / Site text fields (dashboard only) */
+.krm-content-help { margin: 8px 0 14px; }
+.krm-content { max-width: 960px; }
+.krm-section { margin: 0 0 8px; border: 1px solid #dcdcde; border-radius: 4px; background: #fff; }
+.krm-section > summary { padding: 10px 14px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.krm-section[open] > summary { border-bottom: 1px solid #dcdcde; }
+.krm-section-body { padding: 4px 14px 10px; }
+.krm-field { margin: 12px 0; }
+.krm-label { display: block; margin: 0 0 4px; }
+.krm-image { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.krm-image img { width: 120px; height: 80px; object-fit: cover; border-radius: 4px; background: #f0f0f1; }
+.krm-item { margin: 0 0 10px; padding: 4px 12px 2px; border: 1px solid #e0e0e0; border-radius: 4px; background: #f9f9f9; }
+.krm-item legend { padding: 0 4px; font-weight: 600; }
+.krm-item legend .button-link { margin-left: 6px; font-weight: 400; text-decoration: none; }
+.krm-item-remove { color: #b32d2e; }
+.krm-item .krm-field { margin: 8px 0; }
+.krm-reset { margin: 14px 0 4px; padding-top: 10px; border-top: 1px dashed #dcdcde; color: #646970; }

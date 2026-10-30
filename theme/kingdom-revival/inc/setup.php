@@ -52,7 +52,7 @@ remove_action( 'wp_print_styles', 'print_emoji_styles' );
  * then moves them into <head>), so the styles are dequeued there as well as at wp_enqueue_scripts.
  */
 function krm_dequeue_block_styles() {
-	if ( is_front_page() || is_page_template() || krm_is_design_page() || is_singular( 'ministry' ) || is_post_type_archive( 'ministry' ) || is_home() || is_archive() || is_search() || is_404() || is_singular( 'post' ) ) {
+	if ( is_front_page() || is_page_template() || krm_is_design_page() || is_singular( 'ministry' ) || is_post_type_archive( 'ministry' ) || is_home() || is_archive() || is_search() || is_404() || is_singular( array( 'post', 'sermon', 'event' ) ) ) {
 		wp_dequeue_style( 'wp-block-library' );
 		wp_dequeue_style( 'wp-block-library-theme' );
 		wp_dequeue_style( 'global-styles' );

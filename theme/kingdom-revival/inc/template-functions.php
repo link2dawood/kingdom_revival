@@ -33,6 +33,7 @@ function krm_defaults() {
 		'form_recipient'      => 'Info@kingdomrevivalministries.com',
 		'newsletter_endpoint' => '',
 		'newsletter_delay'    => 3,
+		'redirects'           => krm_default_redirects(),
 		'stat_1_value'        => '80',
 		'stat_1_label'        => 'Communities reached',
 		'stat_2_value'        => '200',
@@ -43,6 +44,12 @@ function krm_defaults() {
 		'stat_4_label'        => 'Bibles distributed',
 		'stat_5_value'        => '400',
 		'stat_5_label'        => 'Baptisms',
+		// The home page design words two labels differently from the about page.
+		'home_stat_1_label'   => 'Communities reached',
+		'home_stat_2_label'   => 'Church planted included house churches',
+		'home_stat_3_label'   => 'Children supported',
+		'home_stat_4_label'   => 'Bible distributed',
+		'home_stat_5_label'   => 'Baptisms',
 	);
 }
 
@@ -83,14 +90,17 @@ function krm_whatsapp_url() {
 }
 
 /**
- * The five impact stats shared by the home and about pages.
+ * The five impact stats. The numbers are shared; the home page has its own labels.
+ *
+ * @param string $context 'home' for the home page labels, '' for the about page labels.
  */
-function krm_stats() {
-	$stats = array();
+function krm_stats( $context = '' ) {
+	$stats  = array();
+	$prefix = 'home' === $context ? 'home_' : '';
 	for ( $i = 1; $i <= 5; $i++ ) {
 		$stats[] = array(
 			'value' => krm_opt( "stat_{$i}_value" ),
-			'label' => krm_opt( "stat_{$i}_label" ),
+			'label' => krm_opt( "{$prefix}stat_{$i}_label" ),
 		);
 	}
 	return $stats;

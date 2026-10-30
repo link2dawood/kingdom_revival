@@ -12,10 +12,10 @@ get_header();
 	<main id="main">
 	<div class="wrap section" id="not-found">
 		<div class="not-found">
-		<p class="eyebrow">Ministry details</p>
-		<h1>Choose a ministry to explore</h1>
-		<p>Pick a ministry from the menu above, or browse them all on the home page.</p>
-		<a class="button button-primary" href="<?php echo esc_url( home_url( '/#all-ministries' ) ); ?>">Browse ministries</a>
+		<p class="eyebrow"><?php krm_t( 'overview.eyebrow', 'site' ); ?></p>
+		<h1><?php krm_t( 'overview.heading', 'site' ); ?></h1>
+		<p><?php krm_t( 'overview.text', 'site' ); ?></p>
+		<a class="button button-primary" href="<?php krm_u( 'overview.button_url', 'site' ); ?>"><?php krm_t( 'overview.button_label', 'site' ); ?></a>
 		</div>
 	</div>
 	</main>

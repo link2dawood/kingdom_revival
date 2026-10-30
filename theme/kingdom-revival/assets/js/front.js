@@ -6,7 +6,8 @@
   var DONATE_URL = (window.KRM_CONFIG && KRM_CONFIG.donateUrl) || "./donate.html";
 
   /* ---------- Amount picker ---------- */
-  var amount = "$50";
+  var pressed = document.querySelector('button[data-amount][aria-pressed="true"]');
+  var amount = pressed ? pressed.getAttribute("data-amount") : "$50";
 
   function paint(button, on, onStyle, offStyle) {
     var s = on ? onStyle : offStyle;

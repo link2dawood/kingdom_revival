@@ -204,8 +204,9 @@ function krm_render_nodes( $nodes, $depth = 0 ) {
 		$classes      = $node['classes'];
 		if ( $has_children ) {
 			$classes[] = 'has-sub';
-			// The design highlights "Ministries" on ministry pages and on the /ministries/ overview.
-			if ( 0 === $depth && ( krm_node_has_current( $node ) || ( is_post_type_archive( 'ministry' ) && krm_node_has_ministry( $node ) ) ) ) {
+			// The design highlights "Ministries" on ministry pages and on the /ministries/ overview. The home page
+			// highlights nothing, although its "All ministries" anchor (#all-ministries) resolves to the current URL.
+			if ( 0 === $depth && ! is_front_page() && ( krm_node_has_current( $node ) || ( is_post_type_archive( 'ministry' ) && krm_node_has_ministry( $node ) ) ) ) {
 				$classes[] = 'is-current';
 			}
 		}

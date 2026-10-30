@@ -21,7 +21,7 @@ function krm_settings_schema() {
 			'whatsapp'  => array( __( 'WhatsApp number', 'kingdom-revival' ), 'text', __( 'Digits with country code, no +, e.g. 923415418733', 'kingdom-revival' ) ),
 		),
 		__( 'Social media (home page top bar)', 'kingdom-revival' ) => array(
-			'facebook'  => array( __( 'Facebook URL', 'kingdom-revival' ), 'url', __( 'Leave empty until the page exists: the icon stays visible but is not a link.', 'kingdom-revival' ) ),
+			'facebook'  => array( __( 'Facebook URL', 'kingdom-revival' ), 'url', __( 'Until a URL is saved, the icon links to the contact details in the footer, as in the design.', 'kingdom-revival' ) ),
 			'youtube'   => array( __( 'YouTube URL', 'kingdom-revival' ), 'url', '' ),
 			'instagram' => array( __( 'Instagram URL', 'kingdom-revival' ), 'url', '' ),
 		),
@@ -44,17 +44,25 @@ function krm_settings_schema() {
 			'newsletter_endpoint' => array( __( 'Newsletter service form URL (optional)', 'kingdom-revival' ), 'url', __( 'Sign-ups are always saved under Submissions. If you add a Mailchimp/Brevo/Formspree form URL, each sign-up is also forwarded there.', 'kingdom-revival' ) ),
 			'newsletter_delay'    => array( __( 'Newsletter popup delay (seconds)', 'kingdom-revival' ), 'number', '' ),
 		),
+		__( 'Redirects', 'kingdom-revival' )          => array(
+			'redirects' => array( __( 'Old address → new address', 'kingdom-revival' ), 'textarea', __( 'One per line: the old address, a space, then where it should go (a /path, a full URL or {donate}, {blog}, {about}…). These are permanent (301) redirects from the previous site’s pages, so search engines and old links reach the new pages. Lines starting with # are ignored.', 'kingdom-revival' ) ),
+		),
 		__( 'Impact numbers (home & about pages)', 'kingdom-revival' ) => array(
-			'stat_1_value' => array( __( 'Stat 1 number', 'kingdom-revival' ), 'text', __( 'Number only; “+” is added automatically.', 'kingdom-revival' ) ),
-			'stat_1_label' => array( __( 'Stat 1 label', 'kingdom-revival' ), 'text', '' ),
-			'stat_2_value' => array( __( 'Stat 2 number', 'kingdom-revival' ), 'text', '' ),
-			'stat_2_label' => array( __( 'Stat 2 label', 'kingdom-revival' ), 'text', '' ),
-			'stat_3_value' => array( __( 'Stat 3 number', 'kingdom-revival' ), 'text', '' ),
-			'stat_3_label' => array( __( 'Stat 3 label', 'kingdom-revival' ), 'text', '' ),
-			'stat_4_value' => array( __( 'Stat 4 number', 'kingdom-revival' ), 'text', '' ),
-			'stat_4_label' => array( __( 'Stat 4 label', 'kingdom-revival' ), 'text', '' ),
-			'stat_5_value' => array( __( 'Stat 5 number', 'kingdom-revival' ), 'text', '' ),
-			'stat_5_label' => array( __( 'Stat 5 label', 'kingdom-revival' ), 'text', '' ),
+			'stat_1_value'      => array( __( 'Stat 1 number', 'kingdom-revival' ), 'text', __( 'Number only; “+” is added automatically.', 'kingdom-revival' ) ),
+			'stat_1_label'      => array( __( 'Stat 1 label', 'kingdom-revival' ), 'text', '' ),
+			'stat_2_value'      => array( __( 'Stat 2 number', 'kingdom-revival' ), 'text', '' ),
+			'stat_2_label'      => array( __( 'Stat 2 label', 'kingdom-revival' ), 'text', '' ),
+			'stat_3_value'      => array( __( 'Stat 3 number', 'kingdom-revival' ), 'text', '' ),
+			'stat_3_label'      => array( __( 'Stat 3 label', 'kingdom-revival' ), 'text', '' ),
+			'stat_4_value'      => array( __( 'Stat 4 number', 'kingdom-revival' ), 'text', '' ),
+			'stat_4_label'      => array( __( 'Stat 4 label', 'kingdom-revival' ), 'text', '' ),
+			'stat_5_value'      => array( __( 'Stat 5 number', 'kingdom-revival' ), 'text', '' ),
+			'stat_5_label'      => array( __( 'Stat 5 label', 'kingdom-revival' ), 'text', '' ),
+			'home_stat_1_label' => array( __( 'Stat 1 label (home page)', 'kingdom-revival' ), 'text', __( 'The home page uses its own wording of each label.', 'kingdom-revival' ) ),
+			'home_stat_2_label' => array( __( 'Stat 2 label (home page)', 'kingdom-revival' ), 'text', '' ),
+			'home_stat_3_label' => array( __( 'Stat 3 label (home page)', 'kingdom-revival' ), 'text', '' ),
+			'home_stat_4_label' => array( __( 'Stat 4 label (home page)', 'kingdom-revival' ), 'text', '' ),
+			'home_stat_5_label' => array( __( 'Stat 5 label (home page)', 'kingdom-revival' ), 'text', '' ),
 		),
 	);
 }
@@ -176,7 +184,7 @@ function krm_settings_page() {
 							<th scope="row"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $field[0] ); ?></label></th>
 							<td>
 								<?php if ( 'textarea' === $field[1] ) : ?>
-									<textarea class="large-text" rows="2" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
+									<textarea class="large-text" rows="<?php echo 'redirects' === $key ? 14 : 2; ?>" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
 								<?php else : ?>
 									<input class="<?php echo 'number' === $field[1] ? 'small-text' : 'regular-text'; ?>" type="<?php echo esc_attr( 'email' === $field[1] ? 'email' : ( 'number' === $field[1] ? 'number' : ( 'url' === $field[1] ? 'url' : 'text' ) ) ); ?>" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $value ); ?>">
 								<?php endif; ?>

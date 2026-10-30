@@ -24,12 +24,12 @@ foreach ( $krm_posts as $krm_p ) {
 }
 ?>
 	<main id="main">
-	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_media( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg' ) ); ?>')">
+	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')">
 		<div class="wrap">
-		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li aria-current="page">News &amp; Blogs</li></ol>
-		<p class="eyebrow">News &amp; Blogs</p>
-		<h1>Stories of hope <em>from the field</em></h1>
-		<p class="lead">Real moments from the villages, kilns and churches we serve — and the people whose lives are being changed by the love of Jesus.</p>
+		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li aria-current="page"><?php echo esc_html( get_the_title( get_option( 'page_for_posts' ) ) ); ?></li></ol>
+		<p class="eyebrow"><?php krm_t( 'hero.eyebrow' ); ?></p>
+		<h1><?php krm_h( 'hero.title' ); ?></h1>
+		<p class="lead"><?php krm_t( 'hero.lead' ); ?></p>
 		</div>
 	</section>
 
@@ -44,13 +44,13 @@ foreach ( $krm_posts as $krm_p ) {
 
 		<div class="toolbar">
 			<div>
-			<p class="eyebrow">Latest stories</p>
-			<h2>Read, pray and give</h2>
+			<p class="eyebrow"><?php krm_t( 'list.eyebrow' ); ?></p>
+			<h2><?php krm_h( 'list.heading' ); ?></h2>
 			</div>
 			<label class="search">
 			<span class="visually-hidden">Search stories</span>
 			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
-			<input type="search" id="search" placeholder="Search stories…">
+			<input type="search" id="search" placeholder="<?php echo esc_attr( krm_fill( krm_c( 'list.search' ) ) ); ?>">
 			</label>
 		</div>
 		<div class="controls">
@@ -68,12 +68,12 @@ foreach ( $krm_posts as $krm_p ) {
 		?>
 		</div>
 		<?php krm_pagination(); ?>
-		<div class="empty" id="empty"<?php echo $krm_posts ? ' hidden' : ''; ?>><strong>No stories found</strong>Try a different word or category.</div>
+		<div class="empty" id="empty"<?php echo $krm_posts ? ' hidden' : ''; ?>><strong><?php krm_t( 'list.empty_title' ); ?></strong><?php krm_t( 'list.empty_text' ); ?></div>
 		
 		<div class="impact-strip">
-			<div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"></path></svg></span><div><strong><?php echo esc_html( $krm_stats[0]['value'] ); ?>+</strong><span>communities reached</span></div></div>
-			<div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span><div><strong><?php echo esc_html( $krm_stats[2]['value'] ); ?>+</strong><span>children supported</span></div></div>
-			<div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM20 17v5H6.5A2.5 2.5 0 0 1 4 19.5"></path></svg></span><div><strong><?php echo esc_html( $krm_stats[3]['value'] ); ?>+</strong><span>Bibles distributed</span></div></div>
+			<div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"></path></svg></span><div><strong><?php echo esc_html( $krm_stats[0]['value'] ); ?>+</strong><span><?php krm_t( 'impact.label1' ); ?></span></div></div>
+			<div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span><div><strong><?php echo esc_html( $krm_stats[2]['value'] ); ?>+</strong><span><?php krm_t( 'impact.label2' ); ?></span></div></div>
+			<div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM20 17v5H6.5A2.5 2.5 0 0 1 4 19.5"></path></svg></span><div><strong><?php echo esc_html( $krm_stats[3]['value'] ); ?>+</strong><span><?php krm_t( 'impact.label3' ); ?></span></div></div>
 		</div>
 		</div>
 	</section>
@@ -81,21 +81,7 @@ foreach ( $krm_posts as $krm_p ) {
 	<section class="section" style="padding-top: 0">
 		<div class="wrap">
 		<?php
-		get_template_part(
-			'template-parts/give-band',
-			null,
-			array(
-				'image'   => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-19.jpg',
-				'eyebrow' => 'Be part of the next story',
-				'heading' => 'Every story here began with someone who gave',
-				'text'    => 'Your generosity puts Bibles in hands, children in classrooms and hope in homes across Pakistan.',
-				'points'  => array( 'Bibles for families and new believers', 'Education and care for children', 'Practical help for widows and the vulnerable' ),
-				'form'    => array(
-					'short'   => true,
-					'heading' => 'Give to the mission',
-				),
-			)
-		);
+		get_template_part( 'template-parts/give-band', null, krm_give_band_args( 'give', 'blog', array( 'form' => array( 'short' => true ) ) ) );
 		?>
 		</div>
 	</section>

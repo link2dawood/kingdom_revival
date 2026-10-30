@@ -8,7 +8,8 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Social icon link attributes. Without a saved URL the icon stays visible but is not a link.
+ * Social icon link attributes. Without a saved URL the icon links to the footer contact details (#contact),
+ * as in the design.
  *
  * @param string $network facebook|youtube|instagram.
  */
@@ -17,7 +18,7 @@ function krm_social_href( $network ) {
 	if ( $url ) {
 		echo 'href="' . esc_url( $url ) . '" rel="noopener"';
 	} else {
-		echo 'role="img"';
+		echo 'href="#contact"';
 	}
 }
 
@@ -29,6 +30,31 @@ function krm_social_href( $network ) {
 function krm_home_donate_href( $amount ) {
 	$value = 'Other' === $amount ? '' : str_replace( '$', '', $amount );
 	return krm_donate_url() . '?amount=' . rawurlencode( $value ) . '&frequency=One-time#give';
+}
+
+/**
+ * Home page amounts (hero card and floating panel): "$25" => selected?, then "Other" (what front.js reads).
+ *
+ * @return array<string,bool>
+ */
+function krm_home_amounts() {
+	$default = (float) preg_replace( '/[^0-9.]/', '', krm_c( 'hero.default_amount', 'home' ) );
+	$out     = array();
+	foreach ( explode( ',', krm_c( 'hero.amounts', 'home' ) ) as $amount ) {
+		$amount = (float) preg_replace( '/[^0-9.]/', '', $amount );
+		if ( $amount > 0 ) {
+			$out[ '$' . ( floor( $amount ) === $amount ? (int) $amount : $amount ) ] = $amount === $default;
+		}
+	}
+	$out['Other'] = ! in_array( true, $out, true );
+	return $out;
+}
+
+/**
+ * The amount selected at first on the home page ("$50" or "Other").
+ */
+function krm_home_selected_amount() {
+	return (string) array_search( true, krm_home_amounts(), true );
 }
 
 /**
@@ -62,8 +88,7 @@ function krm_home_causes() {
 		array( 'ORPHAN CARE', 'Orphanage & Children Care', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Orphanages-care-16-scaled-e1787819076312-rsij8jj20ojpz9btf5v77vd2yjnnuanqoo6mn3kqjc.jpg', 'Shelter, food and daily care for orphaned and underprivileged children.' ),
 		array( 'WIDOWS', 'Widows Ministry', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Widows-ministry-1-scaled-rsinedytivoatdo3ffn47k3g4v35x8jaac67u3ecm0.jpg', 'Support and fellowship for widows in the church and the village.' ),
 		array( 'HEALING', 'Deliverance & Healing', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Deliverance-and-Healing-ministry-5-scaled-e1787225773575-rs6kxdo5ygbat93txitcpifrbjmk10tf6j9kjqh6qg.jpg', 'Prayer for the sick and oppressed in the power of Jesus Christ.' ),
-		// The design reused the Deliverance & Healing photo here; this is a photo from the Freedom from Slavery gallery.
-		array( 'FREEDOM', 'Freedom from Slavery', 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg', 'Helping families held in debt bondage at brick kilns walk free.' ),
+		array( 'FREEDOM', 'Freedom from Slavery', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Deliverance-and-Healing-ministry-5-scaled-e1787225773575-rs6kxdo5ygbat93txitcpifrbjmk10tf6j9kjqh6qg.jpg', 'Helping families held in debt bondage at brick kilns walk free.' ),
 	);
 }
 

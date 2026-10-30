@@ -24,7 +24,7 @@ function krm_view() {
 	if ( is_singular( 'ministry' ) || is_post_type_archive( 'ministry' ) || is_tax( 'ministry_group' ) ) {
 		return 'ministry';
 	}
-	if ( is_singular( 'post' ) ) {
+	if ( is_singular( array( 'post', 'sermon', 'event' ) ) ) {
 		return 'post';
 	}
 	if ( is_home() || is_archive() || is_search() ) {
@@ -60,6 +60,12 @@ add_action(
 				// Story cards for fallback listings.
 				wp_enqueue_style( 'krm-blog', krm_asset( 'css/pages/blog.css' ), array( 'krm-site' ), $ver );
 			}
+		}
+
+		// Sermons, events and testimonials (also used by the [krm_testimonials] shortcode).
+		wp_register_style( 'krm-extras', krm_asset( 'css/pages/extras.css' ), array( 'krm-site' ), $ver );
+		if ( is_singular( array( 'sermon', 'event' ) ) || is_post_type_archive( array( 'sermon', 'event', 'testimonial' ) ) || is_tax( 'sermon_series' ) ) {
+			wp_enqueue_style( 'krm-extras' );
 		}
 
 		wp_enqueue_script( 'krm-site', krm_asset( 'js/site.js' ), array(), $ver, array( 'in_footer' => true ) );

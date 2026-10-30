@@ -25,7 +25,7 @@ function krm_customizer_sections() {
 		),
 		'krm_stats'   => array(
 			'title' => __( 'Impact numbers', 'kingdom-revival' ),
-			'keys'  => array( 'stat_1_value', 'stat_1_label', 'stat_2_value', 'stat_2_label', 'stat_3_value', 'stat_3_label', 'stat_4_value', 'stat_4_label', 'stat_5_value', 'stat_5_label' ),
+			'keys'  => array( 'stat_1_value', 'stat_1_label', 'stat_2_value', 'stat_2_label', 'stat_3_value', 'stat_3_label', 'stat_4_value', 'stat_4_label', 'stat_5_value', 'stat_5_label', 'home_stat_1_label', 'home_stat_2_label', 'home_stat_3_label', 'home_stat_4_label', 'home_stat_5_label' ),
 		),
 	);
 }

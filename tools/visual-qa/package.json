@@ -1,0 +1,15 @@
+{
+  "name": "krm-visual-qa",
+  "private": true,
+  "description": "Screenshot comparison of the original HTML design against the WordPress theme.",
+  "scripts": {
+    "pages": "node compare.js out/pages",
+    "interactions": "node interactions.js out/interactions",
+    "audit": "mkdir -p out && node audit.js out/audit.json"
+  },
+  "dependencies": {
+    "pixelmatch": "5.3.0",
+    "playwright-core": "1.49.1",
+    "pngjs": "7.0.0"
+  }
+}
