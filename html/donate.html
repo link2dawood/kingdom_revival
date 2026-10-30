@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C1C4F">
+  <title>Donate | Kingdom Revival Ministries</title>
+  <meta name="description" content="Give to Kingdom Revival Ministries by PayPal, bank transfer, Western Union or MoneyGram and bring the hope of Jesus to Pakistan’s forgotten.">
+  <link rel="icon" type="image/png" href="assets/krm-logo.png">
+  <link rel="apple-touch-icon" href="assets/krm-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="assets/site.css">
+  <style>
+.page-hero .wrap { padding-bottom: clamp(56px, 7vw, 88px); }
+    .give-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 4vw, 48px); align-items: start; }
+    .step-label { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; color: var(--navy); font-size: 20px; font-weight: 800; }
+    .step-label span { display: grid; flex: none; width: 36px; height: 36px; place-items: center; border-radius: 50%; background: var(--red); color: var(--white); font-size: 16px; }
+    .card { padding: clamp(22px, 3vw, 32px); border-radius: 16px; background: var(--white); box-shadow: var(--shadow); }
+    .gift-card { position: sticky; top: 108px; border-top: 5px solid var(--red); }
+    .gift-card fieldset { min-width: 0; margin: 0 0 20px; padding: 0; border: 0; }
+    .gift-card legend, .gift-card .label { display: block; margin-bottom: 10px; color: var(--navy); font-size: 14px; font-weight: 800; }
+    .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 8px; background: var(--soft); }
+    .seg input, .amts input { position: absolute; opacity: 0; pointer-events: none; }
+    .seg span { display: block; padding: 10px; border-radius: 6px; color: var(--muted); font-weight: 700; text-align: center; cursor: pointer; }
+    .seg input:checked + span { background: var(--navy); color: var(--white); }
+    .amts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .amts span { display: grid; min-height: 52px; place-items: center; border: 2px solid #DDE3F0; border-radius: 6px; color: var(--navy); font-size: 17px; font-weight: 800; cursor: pointer; transition: border-color .15s ease; }
+    .amts span:hover { border-color: var(--navy); }
+    .amts input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
+    .seg input:focus-visible + span, .amts input:focus-visible + span { outline: 3px solid var(--orange); outline-offset: 2px; }
+    .custom { position: relative; margin-top: 10px; }
+    .custom::before { position: absolute; top: 50%; left: 14px; color: var(--muted); content: "$"; font-weight: 700; transform: translateY(-50%); }
+    .gift-card input[type="number"], .gift-card select { width: 100%; min-height: 50px; padding: 12px 14px; border: 2px solid #DDE3F0; border-radius: 6px; background: var(--white); color: var(--ink); font: inherit; }
+    .gift-card input[type="number"] { padding-left: 28px; }
+    .gift-card input:focus, .gift-card select:focus { border-color: var(--navy); outline: none; }
+    .summary { display: flex; gap: 14px; align-items: center; margin-top: 4px; padding: 18px; border-radius: 10px; background: linear-gradient(120deg, var(--navy), #1A2F78); color: #D6DDF0; }
+    .summary .icon { display: grid; flex: none; width: 48px; height: 48px; place-items: center; border-radius: 50%; background: var(--red); color: var(--white); }
+    .summary strong { display: block; color: var(--white); font-size: 22px; line-height: 1.2; }
+    .summary small { font-size: 14px; }
+    .trust { display: grid; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; color: var(--muted); font-size: 14px; }
+    .trust li { display: flex; gap: 8px; align-items: center; }
+    .trust svg { flex: none; color: #1E5B3A; }
+    .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 18px; }
+    .tab { display: grid; justify-items: center; gap: 6px; padding: 14px 8px; border: 2px solid #DDE3F0; border-radius: 10px; background: var(--white); color: var(--navy); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
+    .tab img { height: 30px; width: auto; max-width: 90px; object-fit: contain; }
+    .tab .tab-icon { display: grid; height: 30px; place-items: center; color: var(--navy); }
+    .tab:hover { border-color: var(--navy); }
+    .tab[aria-selected="true"] { border-color: var(--red); box-shadow: inset 0 0 0 1px var(--red); background: #FFF5F5; }
+    .panel h3 { margin: 0; font-size: 24px; }
+    .panel > p { margin: 10px 0 0; color: var(--muted); line-height: 1.7; }
+    .panel .button { margin-top: 22px; }
+    .bank { display: grid; gap: 0; margin: 20px 0 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .bank-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .bank-row:last-child { border-bottom: 0; }
+    .bank-row:nth-child(odd) { background: #FAFBFD; }
+    .bank-row dt { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .bank-row dd { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0; color: var(--navy); font-weight: 700; overflow-wrap: anywhere; }
+    .copy { display: inline-flex; flex: none; align-items: center; gap: 6px; min-height: 34px; padding: 4px 12px; border: 1px solid #DDE3F0; border-radius: 999px; background: var(--white); color: var(--navy); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .copy:hover { border-color: var(--navy); }
+    .copy.done { border-color: #1E5B3A; background: #E7F5EC; color: #1E5B3A; }
+    .note { display: flex; gap: 12px; margin-top: 18px; padding: 14px 16px; border-radius: 10px; background: #FFF7EC; color: #6B4A16; font-size: 14px; line-height: 1.6; }
+    .note svg { flex: none; margin-top: 2px; color: #E18426; }
+    .steps-list { display: grid; gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; counter-reset: s; }
+    .steps-list li { position: relative; padding-left: 40px; color: #3D465D; line-height: 1.6; }
+    .steps-list li::before { position: absolute; left: 0; top: 0; display: grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; background: var(--soft); color: var(--navy); counter-increment: s; content: counter(s); font-size: 13px; font-weight: 800; }
+    .receiver { margin-top: 18px; padding: 16px; border: 1px dashed #B7C0D4; border-radius: 10px; }
+    .receiver p { margin: 0; color: var(--muted); font-size: 14px; }
+    .receiver strong { color: var(--navy); }
+    .notify { margin-top: 28px; }
+    .notify p { margin: 10px 0 0; color: var(--muted); line-height: 1.7; }
+    .notify .hero-actions { margin-top: 18px; }
+    .impact { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+    .impact-card { overflow: hidden; border-radius: var(--radius); background: var(--white); box-shadow: 0 10px 30px rgba(12,28,79,.08); }
+    .impact-card img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+    .impact-card div { padding: 18px 18px 20px; }
+    .impact-card h3 { margin: 0; font-size: 18px; }
+    .impact-card p { margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .faq { display: grid; gap: 12px; max-width: 820px; margin: 0 auto; }
+    .faq details { border: 1px solid var(--line); border-radius: 10px; background: var(--white); }
+    .faq summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 22px; color: var(--navy); font-size: 17px; font-weight: 700; cursor: pointer; list-style: none; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { flex: none; color: var(--red); content: "+"; font-size: 26px; font-weight: 500; line-height: 1; transition: transform .2s ease; }
+    .faq details[open] summary::after { transform: rotate(45deg); }
+    .faq details p { margin: 0; padding: 0 22px 20px; color: var(--muted); line-height: 1.75; }
+    @media (max-width: 1000px) {
+      .give-layout { grid-template-columns: 1fr; }
+      .gift-card { position: static; }
+      .impact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .bank-row { grid-template-columns: 1fr; gap: 4px; }
+      .impact { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="topbar-contacts">
+        <a href="tel:+923415418733"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg>+92-341-5418733</a>
+        <a class="topbar-email" href="mailto:Info@kingdomrevivalministries.com"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg>Info@kingdomrevivalministries.com</a>
+      </div>
+      <a class="donate-link" href="./donate.html">Donate Now</a>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./index.html">
+        <img src="assets/krm-logo.png" alt="Kingdom Revival Ministries logo" width="64" height="64">
+        <span class="brand-text"><strong>Kingdom Revival</strong><small>MINISTRIES</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-toggle-bars" aria-hidden="true"></span>Menu</button>
+        <ul class="menu" id="site-menu">
+          <li><a href="./index.html">Home</a></li>
+          <li class="has-sub" id="nav-ministries">
+            <button class="sub-toggle" type="button" aria-expanded="false">Ministries<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+            <ul class="submenu">
+              <li class="menu-all"><a href="./index.html#all-ministries">All ministries</a></li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Children &amp; Families<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=children-ministry" data-ministry="children-ministry">Children Ministry</a></li>
+                <li><a href="./all-ministries.html?ministry=orphan-and-children-care" data-ministry="orphan-and-children-care">Orphan &amp; Children Care</a></li>
+                <li><a href="./all-ministries.html?ministry=brick-kiln-children" data-ministry="brick-kiln-children">Brick Kiln Children</a></li>
+                <li><a href="./all-ministries.html?ministry=widows-ministry" data-ministry="widows-ministry">Widows Ministry</a></li>
+              </ul>
+            </li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Freedom &amp; Care<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=freedom-from-slavery" data-ministry="freedom-from-slavery">Freedom from Slavery</a></li>
+                <li><a href="./all-ministries.html?ministry=free-medical-camps" data-ministry="free-medical-camps">Free Medical Camps</a></li>
+                <li><a href="./all-ministries.html?ministry=clean-water-project" data-ministry="clean-water-project">Clean Water Project</a></li>
+              </ul>
+            </li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Gospel &amp; Church<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=outreach-ministry" data-ministry="outreach-ministry">Outreach Ministry</a></li>
+                <li><a href="./all-ministries.html?ministry=urdu-bibles" data-ministry="urdu-bibles">Urdu Bibles</a></li>
+                <li><a href="./all-ministries.html?ministry=baptisms" data-ministry="baptisms">Baptisms</a></li>
+                <li><a href="./all-ministries.html?ministry=deliverance-and-healing" data-ministry="deliverance-and-healing">Deliverance &amp; Healing</a></li>
+                <li><a href="./all-ministries.html?ministry=leadership-and-discipleship" data-ministry="leadership-and-discipleship">Leadership &amp; Discipleship</a></li>
+              </ul>
+            </li>
+            </ul>
+          </li>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./blog.html">News &amp; Blogs</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="page-hero" style="background-image: url('https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg')">
+      <div class="wrap">
+        <ol class="breadcrumb"><li><a href="./index.html">Home</a></li><li aria-current="page">Donate</li></ol>
+        <p class="eyebrow">Donate</p>
+        <h1>Your gift brings <em>hope</em> to Pakistan’s forgotten</h1>
+        <p class="lead">Every gift helps us preach the Gospel, care for orphans and widows, educate brick kiln children and put Bibles in waiting hands.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#give">Give now</a>
+          <a class="button button-light" href="./partner.html">Become a monthly partner</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="give">
+      <div class="wrap give-layout">
+        <div>
+          <p class="step-label"><span>1</span>Choose your gift</p>
+          <form class="card gift-card" id="gift" onsubmit="return false">
+            <fieldset>
+              <legend>How often?</legend>
+              <div class="seg">
+                <label><input type="radio" name="frequency" value="One-time" checked><span>One-time</span></label>
+                <label><input type="radio" name="frequency" value="Monthly"><span>Monthly</span></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Amount (USD)</legend>
+              <div class="amts"><label><input type="radio" name="amount" value="$25"><span>$25</span></label><label><input type="radio" name="amount" value="$50" checked><span>$50</span></label><label><input type="radio" name="amount" value="$100"><span>$100</span></label><label><input type="radio" name="amount" value="$250"><span>$250</span></label><label><input type="radio" name="amount" value="$500"><span>$500</span></label><label><input type="radio" name="amount" value="Other"><span>Other</span></label></div>
+              <div class="custom" id="custom-wrap" hidden>
+                <label class="visually-hidden" for="custom">Other amount in US dollars</label>
+                <input id="custom" name="custom" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter amount">
+              </div>
+            </fieldset>
+            <fieldset>
+              <label class="label" for="fund">Where should your gift go?</label>
+              <select id="fund" name="fund">
+                <option value="Where it is needed most">Where it is needed most</option>
+                <option value="Children Ministry">Children Ministry</option>
+                <option value="Orphan &amp; Children Care">Orphan &amp; Children Care</option>
+                <option value="Brick Kiln Children">Brick Kiln Children</option>
+                <option value="Widows Ministry">Widows Ministry</option>
+                <option value="Freedom from Slavery">Freedom from Slavery</option>
+                <option value="Free Medical Camps">Free Medical Camps</option>
+                <option value="Clean Water Project">Clean Water Project</option>
+                <option value="Outreach Ministry">Outreach Ministry</option>
+                <option value="Urdu Bibles">Urdu Bibles</option>
+                <option value="Baptisms">Baptisms</option>
+                <option value="Deliverance &amp; Healing">Deliverance &amp; Healing</option>
+                <option value="Leadership &amp; Discipleship">Leadership &amp; Discipleship</option>
+              </select>
+            </fieldset>
+            <div class="summary" aria-live="polite">
+              <span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span>
+              <div><small>Your gift</small><strong id="summary-amount"></strong><small id="summary-fund"></small></div>
+            </div>
+            <ul class="trust">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>Goes directly to the ministry in Pakistan</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>Give from anywhere in the world</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>Questions? Call +92-341-5418733</li>
+            </ul>
+          </form>
+        </div>
+
+        <div>
+          <p class="step-label"><span>2</span>Choose how to give</p>
+          <div class="card">
+            <div class="tabs" role="tablist" aria-label="Payment methods">
+              <button type="button" class="tab" role="tab" id="tab-paypal" aria-controls="panel-paypal" data-method="PayPal"><img src="https://kingdomrevivalministries.com/wp-content/uploads/2026/07/paypal-logo-png_seeklogo-249214-300x300.png" alt="">PayPal</button>
+              <button type="button" class="tab" role="tab" id="tab-bank" aria-controls="panel-bank" data-method="Bank transfer"><span class="tab-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"></path></svg></span>Bank transfer</button>
+              <button type="button" class="tab" role="tab" id="tab-wu" aria-controls="panel-wu" data-method="Western Union"><img src="https://kingdomrevivalministries.com/wp-content/uploads/2026/07/western-union-new-20232644.logowik.com_.webp" alt="">Western Union</button>
+              <button type="button" class="tab" role="tab" id="tab-mg" aria-controls="panel-mg" data-method="MoneyGram"><img src="https://kingdomrevivalministries.com/wp-content/uploads/2026/07/money-gram-1024x642.png" alt="">MoneyGram</button>
+            </div>
+
+            <div class="panel" role="tabpanel" id="panel-paypal" aria-labelledby="tab-paypal">
+              <h3>Give with PayPal</h3>
+              <p>The fastest way to give from anywhere. Pay with your PayPal balance or a debit or credit card. Your amount of <strong data-gift-label></strong> is filled in for you.</p>
+              <a class="button button-primary" id="paypal-link" href="https://www.paypal.me/Givetotheneedy7" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg><span>Give <span data-gift-label></span> with PayPal</span></a>
+              <p class="note" id="paypal-monthly" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span>PayPal.me sends one-time payments. For a monthly gift, please give through PayPal each month or set up a bank standing order.</span></p>
+            </div>
+
+            <div class="panel" role="tabpanel" id="panel-bank" aria-labelledby="tab-bank" hidden>
+              <h3>Give by bank transfer</h3>
+              <p>Send <strong data-gift-label></strong> from your bank using the details below. Tap <strong>Copy</strong> to copy a detail.</p>
+              <dl class="bank">
+                <div class="bank-row">
+                  <dt>Account name</dt>
+                  <dd><span>Adil Arif</span><button type="button" class="copy" data-copy="Adil Arif" aria-label="Copy Account name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span></button></dd>
+                </div>
+                <div class="bank-row">
+                  <dt>CNIC number</dt>
+                  <dd><span>33100-9770620-7</span><button type="button" class="copy" data-copy="33100-9770620-7" aria-label="Copy CNIC number"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span></button></dd>
+                </div>
+                <div class="bank-row">
+                  <dt>Bank</dt>
+                  <dd><span>Allied Bank Limited</span></dd>
+                </div>
+                <div class="bank-row">
+                  <dt>IBAN</dt>
+                  <dd><span>PK61ABPA0010057879410018</span><button type="button" class="copy" data-copy="PK61ABPA0010057879410018" aria-label="Copy IBAN"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span></button></dd>
+                </div>
+                <div class="bank-row">
+                  <dt>SWIFT code</dt>
+                  <dd><span>ABPAPKKA</span><button type="button" class="copy" data-copy="ABPAPKKA" aria-label="Copy SWIFT code"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span></button></dd>
+                </div>
+                <div class="bank-row">
+                  <dt>Branch code</dt>
+                  <dd><span>0066</span><button type="button" class="copy" data-copy="0066" aria-label="Copy Branch code"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span></button></dd>
+                </div>
+                <div class="bank-row">
+                  <dt>Branch address</dt>
+                  <dd><span>Street No. 03, Nasrat Colony, near Shadab Puli, Jhang Road, Faisalabad 38000, Punjab, Pakistan</span></dd>
+                </div>
+                <div class="bank-row">
+                  <dt>Phone</dt>
+                  <dd><span>+92 341 5418733</span></dd>
+                </div>
+              </dl>
+              <p class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span>International transfers may take a few working days. Please add the ministry name in your payment reference.</span></p>
+            </div>
+
+            <div class="panel" role="tabpanel" id="panel-wu" aria-labelledby="tab-wu" hidden>
+              <h3>Send with Western Union</h3>
+              <p>Send <strong data-gift-label></strong> from a Western Union agent near you or online.</p>
+              <ol class="steps-list">
+                <li>Send to the receiver below, payable in Faisalabad, Pakistan.</li>
+                <li>Keep your tracking number (MTCN).</li>
+                <li>Email us the MTCN with “Let us know about your gift” below so we can collect it.</li>
+              </ol>
+              <div class="receiver"><p>Receiver: <strong>Adil Arif</strong> · CNIC <strong>33100-9770620-7</strong> · Faisalabad, Punjab, Pakistan · <strong>+92-341-5418733</strong></p></div>
+              <a class="button button-secondary" href="https://www.westernunion.com/" target="_blank" rel="noopener">Go to Western Union</a>
+            </div>
+
+            <div class="panel" role="tabpanel" id="panel-mg" aria-labelledby="tab-mg" hidden>
+              <h3>Send with MoneyGram</h3>
+              <p>Send <strong data-gift-label></strong> from a MoneyGram location or online.</p>
+              <ol class="steps-list">
+                <li>Send to the receiver below, payable in Faisalabad, Pakistan.</li>
+                <li>Keep your reference number.</li>
+                <li>Email us the reference number with “Let us know about your gift” below so we can collect it.</li>
+              </ol>
+              <div class="receiver"><p>Receiver: <strong>Adil Arif</strong> · CNIC <strong>33100-9770620-7</strong> · Faisalabad, Punjab, Pakistan · <strong>+92-341-5418733</strong></p></div>
+              <a class="button button-secondary" href="https://www.moneygram.com/" target="_blank" rel="noopener">Go to MoneyGram</a>
+            </div>
+          </div>
+
+          <div class="notify">
+            <p class="step-label"><span>3</span>Let us know</p>
+            <div class="card">
+              <p style="margin: 0">After you give, send us a quick email so we can thank you, confirm your gift and use it exactly where you asked. Your gift details are filled in for you.</p>
+              <div class="hero-actions">
+                <a class="button button-primary" id="notify-link" href="mailto:Info@kingdomrevivalministries.com"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg>Let us know about your gift</a>
+                <a class="button button-secondary" href="https://wa.me/923415418733" target="_blank" rel="noopener">WhatsApp us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow">Your gift at work</p>
+          <h2>Where your generosity goes</h2>
+          <p>Gifts given “where it is needed most” are used across all twelve ministries.</p>
+        </div>
+        <div class="impact">
+          <article class="impact-card"><img src="https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg" alt="Bibles in Urdu" loading="lazy" decoding="async"><div><h3>Bibles in Urdu</h3><p>Scripture for new believers, families and house churches.</p></div></article>
+          <article class="impact-card"><img src="https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg" alt="Brick kiln children" loading="lazy" decoding="async"><div><h3>Brick kiln children</h3><p>Education, care and the Gospel for children beside the kilns.</p></div></article>
+          <article class="impact-card"><img src="https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg" alt="Orphan care" loading="lazy" decoding="async"><div><h3>Orphan care</h3><p>Shelter, meals and schooling for orphaned children.</p></div></article>
+          <article class="impact-card"><img src="https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-5-scaled.jpg" alt="Widows &amp; families" loading="lazy" decoding="async"><div><h3>Widows &amp; families</h3><p>Practical help and fellowship for those in need.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow">Questions</p>
+          <h2>Giving FAQ</h2>
+        </div>
+        <div class="faq">
+          <details><summary>Which payment method should I use?</summary><p>PayPal is the quickest way to give from anywhere in the world. Bank transfer works well for larger or regular gifts. Western Union and MoneyGram are helpful if you prefer to send cash transfers.</p></details>
+          <details><summary>How do I give monthly?</summary><p>Set up a standing order or recurring transfer with your bank using the account details above, or send your gift through PayPal each month. Let us know so we can thank you and keep you updated.</p></details>
+          <details><summary>How do I tell you what my gift is for?</summary><p>Choose the ministry in the gift form, then use “Let us know about your gift” to email us. Adding the ministry name in your bank or PayPal reference also helps.</p></details>
+          <details><summary>Who can I contact with questions?</summary><p>Call or WhatsApp us on +92-341-5418733, or email Info@kingdomrevivalministries.com. We are happy to help.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="footer-brand"><img src="assets/krm-logo.png" alt="" width="64" height="64">Kingdom Revival Ministries</div>
+        <p>Bringing the hope of Jesus Christ to the forgotten, the unreached, and the vulnerable across Pakistan.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./blog.html">News &amp; Blogs</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+          <li><a href="./partner.html">Become a Partner</a></li>
+          <li><a href="./donate.html">Donate</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ministries</h3>
+        <ul class="footer-links">
+            <li><a href="./all-ministries.html?ministry=children-ministry">Children Ministry</a></li>
+            <li><a href="./all-ministries.html?ministry=orphan-and-children-care">Orphan &amp; Children Care</a></li>
+            <li><a href="./all-ministries.html?ministry=freedom-from-slavery">Freedom from Slavery</a></li>
+            <li><a href="./all-ministries.html?ministry=urdu-bibles">Urdu Bibles</a></li>
+            <li><a href="./all-ministries.html?ministry=leadership-and-discipleship">Leadership &amp; Discipleship</a></li>
+          <li><a href="./index.html#all-ministries">All ministries →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <address>
+          <span>Chak No 220, RB Nasrat Colony, Street No. 3, Shadab Puli, Jhang Road, Faisalabad</span>
+          <a href="tel:+923415418733">+92-341-5418733</a>
+          <a href="mailto:Info@kingdomrevivalministries.com">Info@kingdomrevivalministries.com</a>
+        </address>
+      </div>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© 2026 Kingdom Revival Ministries</span>
+      <span>Faisalabad, Pakistan</span>
+    </div>
+  </footer>
+  <script src="assets/site.js"></script>
+  <script>
+    (function () {
+      var PAYPAL = 'https://www.paypal.me/Givetotheneedy7';
+      var EMAIL = 'Info@kingdomrevivalministries.com';
+      var form = document.getElementById("gift");
+      var params = new URLSearchParams(location.search);
+
+      function pick(name, value) {
+        var input = form.querySelector('input[name="' + name + '"][value="' + value + '"]');
+        if (input) { input.checked = true; return true; }
+        return false;
+      }
+      var amount = (params.get("amount") || "").replace(/[^0-9.]/g, "");
+      if (amount && !pick("amount", "$" + amount)) { pick("amount", "Other"); form.elements.custom.value = amount; }
+      if (params.get("frequency")) pick("frequency", params.get("frequency"));
+      if (params.get("for")) {
+        var option = Array.prototype.find.call(form.elements.fund.options, function (o) { return o.value === params.get("for"); });
+        if (option) option.selected = true;
+      }
+
+      function gift() {
+        var a = form.elements.amount.value;
+        var value = a === "Other" ? form.elements.custom.value : a.replace("$", "");
+        return {
+          amount: Number(value) > 0 ? Number(value) : 0,
+          monthly: form.elements.frequency.value === "Monthly",
+          fund: form.elements.fund.value
+        };
+      }
+
+      function update() {
+        var g = gift();
+        document.getElementById("custom-wrap").hidden = form.elements.amount.value !== "Other";
+        var label = g.amount ? "$" + g.amount + (g.monthly ? " / month" : "") : "Choose an amount";
+        document.getElementById("summary-amount").textContent = label;
+        document.getElementById("summary-fund").textContent = "for " + (g.fund === "Where it is needed most" ? "the mission, where it is needed most" : g.fund);
+        document.querySelectorAll("[data-gift-label]").forEach(function (el) { el.textContent = g.amount ? "$" + g.amount : "your gift"; });
+        document.getElementById("paypal-link").href = PAYPAL + (g.amount ? "/" + g.amount + "USD" : "");
+        document.getElementById("paypal-monthly").hidden = !g.monthly;
+        var body = "Hello Kingdom Revival Ministries,\n\nI have just sent a gift.\n\nAmount: " + (g.amount ? "$" + g.amount : "-") +
+          "\nFrequency: " + (g.monthly ? "Monthly" : "One-time") + "\nFor: " + g.fund +
+          "\nPayment method: " + document.querySelector('.tab[aria-selected="true"]').dataset.method +
+          "\nReference / tracking number: \n\nName: \nCountry: \n\nGod bless,";
+        document.getElementById("notify-link").href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("My gift to Kingdom Revival Ministries") + "&body=" + encodeURIComponent(body);
+        var url = new URL(location.href);
+        url.searchParams.set("amount", g.amount || "");
+        url.searchParams.set("frequency", g.monthly ? "Monthly" : "One-time");
+        url.searchParams.set("for", g.fund);
+        history.replaceState(null, "", url);
+      }
+      form.addEventListener("change", update);
+      form.elements.custom.addEventListener("input", update);
+
+      var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+      function select(tab, focus) {
+        tabs.forEach(function (t) {
+          var on = t === tab;
+          t.setAttribute("aria-selected", on ? "true" : "false");
+          t.tabIndex = on ? 0 : -1;
+          document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+        });
+        if (focus) tab.focus();
+        update();
+      }
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener("click", function () { select(tab); });
+        tab.addEventListener("keydown", function (event) {
+          var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[event.key];
+          if (next === undefined) return;
+          event.preventDefault();
+          select(tabs[(next + tabs.length) % tabs.length], true);
+        });
+      });
+      var method = params.get("method");
+      select(tabs.find(function (t) { return t.dataset.method.toLowerCase().indexOf((method || "").toLowerCase()) === 0 && method; }) || tabs[0]);
+
+      document.addEventListener("click", function (event) {
+        var button = event.target.closest(".copy");
+        if (!button) return;
+        var label = button.querySelector("span");
+        var finish = function () {
+          button.classList.add("done");
+          label.textContent = "Copied";
+          setTimeout(function () { button.classList.remove("done"); label.textContent = "Copy"; }, 1800);
+        };
+        if (navigator.clipboard) navigator.clipboard.writeText(button.dataset.copy).then(finish, function () {});
+      });
+      update();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C1C4F">
+  <title>News &amp; Blogs | Kingdom Revival Ministries</title>
+  <meta name="description" content="Stories of hope from the field — read how the Gospel and practical care are changing lives across Pakistan.">
+  <link rel="icon" type="image/png" href="assets/krm-logo.png">
+  <link rel="apple-touch-icon" href="assets/krm-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="assets/site.css">
+  <style>
+.post-card { display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius); background: var(--white); box-shadow: 0 10px 30px rgba(12,28,79,.08); text-decoration: none; transition: transform .25s ease, box-shadow .25s ease; }
+    .post-card:hover { transform: translateY(-6px); box-shadow: 0 22px 44px rgba(12,28,79,.16); }
+    .post-card-media { position: relative; overflow: hidden; aspect-ratio: 16 / 10; background: #E8ECF6; }
+    .post-card-media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .post-card:hover .post-card-media img { transform: scale(1.06); }
+    .tag { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 999px; background: var(--red); color: var(--white); font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .post-card-media .tag { position: absolute; top: 14px; left: 14px; }
+    .post-card-body { display: flex; flex: 1; flex-direction: column; padding: 22px 22px 24px; }
+    .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; color: var(--muted); font-size: 13px; font-weight: 600; }
+    .post-meta span { display: inline-flex; align-items: center; gap: 6px; }
+    .post-card h3 { margin: 12px 0 0; font-size: 20px; line-height: 1.3; letter-spacing: -.01em; }
+    .post-card p { margin: 10px 0 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+    .read-more { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 18px; color: var(--red); font-size: 14px; font-weight: 800; }
+    .post-card:hover .read-more svg { transform: translateX(4px); }
+    .read-more svg { transition: transform .2s ease; }
+    .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+    @media (max-width: 960px) { .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 620px) { .post-grid { grid-template-columns: 1fr; } }
+
+    .page-hero .wrap { padding-bottom: clamp(56px, 7vw, 88px); }
+    .featured { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); overflow: hidden; border-radius: 16px; background: var(--white); box-shadow: var(--shadow); text-decoration: none; transition: box-shadow .25s ease; }
+    .featured:hover { box-shadow: 0 26px 56px rgba(12,28,79,.2); }
+    .featured-media { position: relative; min-height: 380px; overflow: hidden; }
+    .featured-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .featured:hover .featured-media img { transform: scale(1.04); }
+    .featured-badge { position: absolute; top: 18px; left: 18px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; background: var(--orange); color: var(--navy-deep); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .featured-body { display: flex; flex-direction: column; justify-content: center; padding: clamp(28px, 4vw, 48px); }
+    .featured-body .tag { align-self: flex-start; }
+    .featured-body h2 { margin: 16px 0 0; font-size: clamp(26px, 3vw, 36px); font-weight: 800; line-height: 1.2; }
+    .featured-body p { margin: 14px 0 0; color: var(--muted); font-size: 16px; line-height: 1.75; }
+    .featured-body .post-meta { margin-top: 18px; }
+    .featured-body .button { align-self: flex-start; margin-top: 26px; }
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin: clamp(56px, 7vw, 80px) 0 32px; }
+    .toolbar h2 { margin: 0; font-size: clamp(26px, 3vw, 34px); font-weight: 800; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { min-height: 40px; padding: 8px 16px; border: 2px solid #DDE3F0; border-radius: 999px; background: var(--white); color: var(--navy); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .15s ease; }
+    .chip:hover { border-color: var(--navy); }
+    .chip[aria-pressed="true"] { border-color: var(--navy); background: var(--navy); color: var(--white); }
+    .search { position: relative; flex: 0 1 280px; }
+    .search svg { position: absolute; top: 50%; left: 14px; color: var(--muted); transform: translateY(-50%); }
+    .search input { width: 100%; min-height: 44px; padding: 10px 14px 10px 40px; border: 2px solid #DDE3F0; border-radius: 999px; font: inherit; font-size: 14px; }
+    .search input:focus { border-color: var(--navy); outline: none; }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 30px; }
+    .empty { padding: 48px 24px; border: 2px dashed #DDE3F0; border-radius: var(--radius); color: var(--muted); text-align: center; }
+    .empty strong { display: block; margin-bottom: 6px; color: var(--navy); font-size: 18px; }
+    .impact-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: clamp(56px, 7vw, 80px); }
+    .impact-item { display: flex; gap: 16px; align-items: center; padding: 22px; border-radius: var(--radius); background: var(--soft); }
+    .impact-item strong { display: block; color: var(--navy); font-size: 28px; font-weight: 800; line-height: 1.1; }
+    .impact-item span { color: var(--muted); font-size: 14px; }
+    .impact-icon { display: grid; flex: none; width: 52px; height: 52px; place-items: center; border-radius: 50%; background: var(--white); color: var(--red); box-shadow: 0 6px 16px rgba(12,28,79,.08); }
+    @media (max-width: 860px) {
+      .featured { grid-template-columns: 1fr; }
+      .featured-media { min-height: 0; aspect-ratio: 16 / 10; }
+      .impact-strip { grid-template-columns: 1fr; }
+      .search { flex-basis: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="topbar-contacts">
+        <a href="tel:+923415418733"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg>+92-341-5418733</a>
+        <a class="topbar-email" href="mailto:Info@kingdomrevivalministries.com"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg>Info@kingdomrevivalministries.com</a>
+      </div>
+      <a class="donate-link" href="./donate.html">Donate Now</a>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./index.html">
+        <img src="assets/krm-logo.png" alt="Kingdom Revival Ministries logo" width="64" height="64">
+        <span class="brand-text"><strong>Kingdom Revival</strong><small>MINISTRIES</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-toggle-bars" aria-hidden="true"></span>Menu</button>
+        <ul class="menu" id="site-menu">
+          <li><a href="./index.html">Home</a></li>
+          <li class="has-sub" id="nav-ministries">
+            <button class="sub-toggle" type="button" aria-expanded="false">Ministries<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+            <ul class="submenu">
+              <li class="menu-all"><a href="./index.html#all-ministries">All ministries</a></li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Children &amp; Families<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=children-ministry" data-ministry="children-ministry">Children Ministry</a></li>
+                <li><a href="./all-ministries.html?ministry=orphan-and-children-care" data-ministry="orphan-and-children-care">Orphan &amp; Children Care</a></li>
+                <li><a href="./all-ministries.html?ministry=brick-kiln-children" data-ministry="brick-kiln-children">Brick Kiln Children</a></li>
+                <li><a href="./all-ministries.html?ministry=widows-ministry" data-ministry="widows-ministry">Widows Ministry</a></li>
+              </ul>
+            </li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Freedom &amp; Care<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=freedom-from-slavery" data-ministry="freedom-from-slavery">Freedom from Slavery</a></li>
+                <li><a href="./all-ministries.html?ministry=free-medical-camps" data-ministry="free-medical-camps">Free Medical Camps</a></li>
+                <li><a href="./all-ministries.html?ministry=clean-water-project" data-ministry="clean-water-project">Clean Water Project</a></li>
+              </ul>
+            </li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Gospel &amp; Church<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=outreach-ministry" data-ministry="outreach-ministry">Outreach Ministry</a></li>
+                <li><a href="./all-ministries.html?ministry=urdu-bibles" data-ministry="urdu-bibles">Urdu Bibles</a></li>
+                <li><a href="./all-ministries.html?ministry=baptisms" data-ministry="baptisms">Baptisms</a></li>
+                <li><a href="./all-ministries.html?ministry=deliverance-and-healing" data-ministry="deliverance-and-healing">Deliverance &amp; Healing</a></li>
+                <li><a href="./all-ministries.html?ministry=leadership-and-discipleship" data-ministry="leadership-and-discipleship">Leadership &amp; Discipleship</a></li>
+              </ul>
+            </li>
+            </ul>
+          </li>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./blog.html" aria-current="page">News &amp; Blogs</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="page-hero" style="background-image: url('https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg')">
+      <div class="wrap">
+        <ol class="breadcrumb"><li><a href="./index.html">Home</a></li><li aria-current="page">News &amp; Blogs</li></ol>
+        <p class="eyebrow">News &amp; Blogs</p>
+        <h1>Stories of hope <em>from the field</em></h1>
+        <p class="lead">Real moments from the villages, kilns and churches we serve — and the people whose lives are being changed by the love of Jesus.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: clamp(48px, 6vw, 72px)">
+      <div class="wrap">
+        <div id="featured"></div>
+
+        <div class="toolbar">
+          <div>
+            <p class="eyebrow">Latest stories</p>
+            <h2>Read, pray and give</h2>
+          </div>
+          <label class="search">
+            <span class="visually-hidden">Search stories</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+            <input type="search" id="search" placeholder="Search stories…">
+          </label>
+        </div>
+        <div class="controls">
+          <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+          <span class="post-meta" id="result-count" aria-live="polite"></span>
+        </div>
+        <div class="post-grid" id="post-grid"></div>
+        <div class="empty" id="empty" hidden><strong>No stories found</strong>Try a different word or category.</div>
+        <noscript><p class="empty">Please turn on JavaScript to read our stories.</p></noscript>
+
+        <div class="impact-strip">
+          <div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"></path></svg></span><div><strong>80+</strong><span>communities reached</span></div></div>
+          <div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span><div><strong>500+</strong><span>children supported</span></div></div>
+          <div class="impact-item"><span class="impact-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM20 17v5H6.5A2.5 2.5 0 0 1 4 19.5"></path></svg></span><div><strong>650+</strong><span>Bibles distributed</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0">
+      <div class="wrap">
+      <section class="give-band" id="give" style="background-image: url('https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-19.jpg')" aria-labelledby="give-heading">
+        <div>
+          <p class="eyebrow">Be part of the next story</p>
+          <h2 id="give-heading">Every story here began with someone who gave</h2>
+          <p>Your generosity puts Bibles in hands, children in classrooms and hope in homes across Pakistan.</p>
+          <ul>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>Bibles for families and new believers</span></li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>Education and care for children</span></li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>Practical help for widows and the vulnerable</span></li>
+          </ul>
+        </div>
+        <form class="give-card" data-give="Kingdom Revival Ministries" data-short="true" data-heading="Give to the mission"></form>
+      </section>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="footer-brand"><img src="assets/krm-logo.png" alt="" width="64" height="64">Kingdom Revival Ministries</div>
+        <p>Bringing the hope of Jesus Christ to the forgotten, the unreached, and the vulnerable across Pakistan.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./blog.html">News &amp; Blogs</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+          <li><a href="./partner.html">Become a Partner</a></li>
+          <li><a href="./donate.html">Donate</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ministries</h3>
+        <ul class="footer-links">
+            <li><a href="./all-ministries.html?ministry=children-ministry">Children Ministry</a></li>
+            <li><a href="./all-ministries.html?ministry=orphan-and-children-care">Orphan &amp; Children Care</a></li>
+            <li><a href="./all-ministries.html?ministry=freedom-from-slavery">Freedom from Slavery</a></li>
+            <li><a href="./all-ministries.html?ministry=urdu-bibles">Urdu Bibles</a></li>
+            <li><a href="./all-ministries.html?ministry=leadership-and-discipleship">Leadership &amp; Discipleship</a></li>
+          <li><a href="./index.html#all-ministries">All ministries →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <address>
+          <span>Chak No 220, RB Nasrat Colony, Street No. 3, Shadab Puli, Jhang Road, Faisalabad</span>
+          <a href="tel:+923415418733">+92-341-5418733</a>
+          <a href="mailto:Info@kingdomrevivalministries.com">Info@kingdomrevivalministries.com</a>
+        </address>
+      </div>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© 2026 Kingdom Revival Ministries</span>
+      <span>Faisalabad, Pakistan</span>
+    </div>
+  </footer>
+  <script src="assets/site.js"></script>
+  <script src="assets/blog-data.js"></script>
+  <script>
+    (function () {
+    var CLOCK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>';
+    var CAL = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>';
+    var ARROW = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>';
+    function formatDate(iso) {
+      return new Date(iso + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    }
+    function esc(text) {
+      return String(text).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; });
+    }
+    function postUrl(post) { return "./blog-post.html?post=" + encodeURIComponent(post.slug); }
+    function card(post) {
+      return '<a class="post-card" href="' + postUrl(post) + '">' +
+        '<div class="post-card-media"><img src="' + post.cover + '" alt="' + esc(post.coverAlt) + '" loading="lazy" decoding="async"><span class="tag">' + esc(post.category) + '</span></div>' +
+        '<div class="post-card-body"><div class="post-meta"><span>' + CAL + formatDate(post.date) + '</span><span>' + CLOCK + post.readTime + ' min read</span></div>' +
+        '<h3>' + esc(post.title) + '</h3><p>' + esc(post.excerpt) + '</p><span class="read-more">Read the story ' + ARROW + '</span></div></a>';
+    }
+      var posts = window.KRM_POSTS.slice().sort(function (a, b) { return b.date.localeCompare(a.date); });
+      var featured = posts[0];
+      var rest = posts.slice(1);
+      var filter = "All", query = "";
+
+      document.getElementById("featured").innerHTML =
+        '<a class="featured" href="' + postUrl(featured) + '">' +
+        '<div class="featured-media"><img src="' + featured.cover + '" alt="' + esc(featured.coverAlt) + '" decoding="async"><span class="featured-badge">★ Featured story</span></div>' +
+        '<div class="featured-body"><span class="tag">' + esc(featured.category) + '</span><h2>' + esc(featured.title) + '</h2><p>' + esc(featured.excerpt) + '</p>' +
+        '<div class="post-meta"><span>' + CAL + formatDate(featured.date) + '</span><span>' + CLOCK + featured.readTime + ' min read</span></div>' +
+        '<span class="button button-primary">Read the full story ' + ARROW + '</span></div></a>';
+
+      var categories = ["All"].concat(posts.map(function (p) { return p.category; }).filter(function (c, i, all) { return all.indexOf(c) === i; }));
+      var filters = document.getElementById("filters");
+      filters.innerHTML = categories.map(function (c) {
+        return '<button type="button" class="chip" data-filter="' + esc(c) + '" aria-pressed="' + (c === "All") + '">' + esc(c) + '</button>';
+      }).join("");
+
+      var grid = document.getElementById("post-grid");
+      var empty = document.getElementById("empty");
+      function render() {
+        var q = query.trim().toLowerCase();
+        var list = (filter === "All" && !q ? rest : posts).filter(function (p) {
+          return (filter === "All" || p.category === filter) && (!q || (p.title + " " + p.excerpt + " " + p.category).toLowerCase().indexOf(q) !== -1);
+        });
+        grid.innerHTML = list.map(card).join("");
+        empty.hidden = list.length > 0;
+        document.getElementById("result-count").textContent = list.length + (list.length === 1 ? " story" : " stories");
+      }
+      filters.addEventListener("click", function (event) {
+        var chip = event.target.closest(".chip");
+        if (!chip) return;
+        filter = chip.dataset.filter;
+        filters.querySelectorAll(".chip").forEach(function (c) { c.setAttribute("aria-pressed", c === chip ? "true" : "false"); });
+        render();
+      });
+      document.getElementById("search").addEventListener("input", function (event) { query = event.target.value; render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>
