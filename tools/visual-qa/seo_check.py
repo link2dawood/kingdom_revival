@@ -49,9 +49,10 @@ def tags(doc):
             add(key.group(1), val.group(1))
     for m in re.finditer(r'<link\s+[^>]*rel=["\']canonical["\'][^>]*>', head):
         add('canonical', re.search(r'href=["\']([^"\']+)', m.group(0)).group(1))
-    ld = re.findall(r'<script[^>]+application/ld\+json[^>]*>(.*?)</script>', doc, re.S)
+    ld = re.findall(r'<script([^>]+application/ld\+json[^>]*)>(.*?)</script>', doc, re.S)
     found['_jsonld'] = len(ld)
-    found['_theme_jsonld'] = sum(1 for x in ld if '"@type":"NGO"' in x)
+    # The theme's full graph (with WebSite); next to a plugin it only adds an Event/VideoObject block.
+    found['_theme_jsonld'] = sum(1 for attrs, x in ld if 'krm-schema' in attrs and '"WebSite"' in x)
     return found
 
 

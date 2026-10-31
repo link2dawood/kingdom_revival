@@ -439,7 +439,7 @@ function krm_text( $value ) {
  * @param string $value Value.
  */
 function krm_inline( $value ) {
-	return wp_kses( krm_fill( $value ), krm_inline_tags() );
+	return krm_link_rel( wp_kses( krm_fill( $value ), krm_inline_tags() ) );
 }
 
 /**

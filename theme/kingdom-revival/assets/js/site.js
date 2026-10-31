@@ -543,6 +543,7 @@
       data.append("action", "krm_form");
       data.append("form", "newsletter");
       data.append("nonce", CONFIG.nonce || "");
+      data.append("token", CONFIG.formToken || "");
       data.append("website", form.elements.website.value);
       data.append("elapsed", String(Date.now() - openedAt));
       data.append("email", value);
@@ -560,7 +561,7 @@
   };
 
   function scheduleNewsletter() {
-    if (!nlShouldShow()) return;
+    if (!nlShouldShow() || CONFIG.noNewsletter) return;
     setTimeout(function tryOpen() {
       // wait while the visitor is busy with the photo viewer or a donation panel
       var busy = document.querySelector(".lb") || document.querySelector('.float-give-toggle[aria-expanded="true"]') ||
@@ -577,6 +578,7 @@
     data.append("action", "krm_form");
     data.append("form", name);
     data.append("nonce", CONFIG.nonce || "");
+    data.append("token", CONFIG.formToken || "");
     data.append("website", form.elements.website ? form.elements.website.value : "");
     data.append("elapsed", String(Date.now() - KRM.formStarted));
     Object.keys(fields).forEach(function (key) { data.append(key, fields[key]); });

@@ -18,8 +18,12 @@
     var input = form.elements[key];
     var field = input.closest(".field");
     field.classList.toggle("invalid", !valid);
-    field.querySelector(".error").hidden = valid;
+    var error = field.querySelector(".error");
+    error.hidden = valid;
     input.setAttribute("aria-invalid", valid ? "false" : "true");
+    /* Screen readers read the message with the field while it is shown. */
+    error.id = error.id || key + "-error";
+    if (valid) input.removeAttribute("aria-describedby"); else input.setAttribute("aria-describedby", error.id);
   }
 
   form.addEventListener("submit", function (event) {

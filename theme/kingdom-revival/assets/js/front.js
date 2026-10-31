@@ -84,4 +84,17 @@
       toggle.querySelector("span").textContent = open ? "Close" : "Donate";
     });
   }
+
+  /* ---------- Hero video ---------- */
+  // Started once the page has loaded, so its download doesn't hold up the first view.
+  var heroVideo = document.querySelector("video[data-krm-autoplay]");
+  if (heroVideo) {
+    var startVideo = function () {
+      heroVideo.autoplay = true;
+      var playing = heroVideo.play();
+      if (playing && playing.catch) playing.catch(function () {});
+    };
+    if (document.readyState === "complete") startVideo();
+    else window.addEventListener("load", startVideo);
+  }
 })();

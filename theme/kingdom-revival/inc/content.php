@@ -50,7 +50,7 @@ add_filter(
 				if ( preg_match( '#<figcaption[^>]*>(.*?)</figcaption>#s', $html, $c ) ) {
 					$caption = '<figcaption>' . krm_icon( 'zoom' ) . $c[1] . '</figcaption>';
 				}
-				return '<figure>' . krm_clean_img( $img[0], '(max-width: 900px) 100vw, 740px' ) . $caption . '</figure>';
+				return '<figure>' . krm_clean_img( $img[0], '(max-width: 1040px) 100vw, 740px' ) . $caption . '</figure>';
 
 			case 'core/list':
 				$classes = isset( $block['attrs']['className'] ) ? $block['attrs']['className'] : '';
@@ -69,7 +69,7 @@ add_filter(
 					'',
 					array_map(
 						function ( $img ) {
-							return krm_clean_img( $img, '(max-width: 900px) 50vw, 370px' );
+							return krm_clean_img( $img, '(max-width: 1040px) 50vw, 370px' );
 						},
 						$imgs[0]
 					)
@@ -127,13 +127,13 @@ add_shortcode(
 	'krm_give',
 	function () {
 		$ministry = krm_post_ministry( get_the_ID() );
-		return '<aside class="inline-give"><span class="icon">' . krm_icon( 'heart' ) . '</span><div><h3>' . esc_html__( 'Help write the next chapter', 'kingdom-revival' ) . '</h3>' .
+		return '<div class="inline-give" role="note"><span class="icon">' . krm_icon( 'heart' ) . '</span><div><h3>' . esc_html__( 'Help write the next chapter', 'kingdom-revival' ) . '</h3>' .
 			'<p>' . sprintf(
 				/* translators: %s: ministry name */
 				esc_html__( 'Stories like this happen because people like you give. Your gift to %s goes straight to the work you are reading about.', 'kingdom-revival' ),
 				esc_html( $ministry['title'] )
 			) . '</p>' .
-			'<a class="button button-primary" href="#give">' . esc_html( sprintf( /* translators: %s: ministry name */ __( 'Give to %s', 'kingdom-revival' ), $ministry['title'] ) ) . ' ' . krm_icon( 'arrow' ) . '</a></div></aside>';
+			'<a class="button button-primary" href="#give">' . esc_html( sprintf( /* translators: %s: ministry name */ __( 'Give to %s', 'kingdom-revival' ), $ministry['title'] ) ) . ' ' . krm_icon( 'arrow' ) . '</a></div></div>';
 	}
 );
 
@@ -141,7 +141,7 @@ add_shortcode(
 add_filter(
 	'the_content',
 	function ( $content ) {
-		return preg_replace( '#<p>\s*(<aside class="inline-give">.*?</aside>)\s*</p>#s', '$1', $content );
+		return preg_replace( '#<p>\s*(<div class="inline-give" role="note">.*?</div></div>)\s*</p>#s', '$1', $content );
 	},
 	20
 );

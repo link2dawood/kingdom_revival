@@ -72,6 +72,22 @@ return array(
 			'whatsapp_button' => krm_f( 'text', __( 'WhatsApp button text', 'kingdom-revival' ), 'WhatsApp us' ),
 		),
 	),
+	'thanks'  => array(
+		'label'  => __( 'Thank-you view (after a PayPal gift)', 'kingdom-revival' ),
+		'help'   => __( 'Shown instead of the hero and the giving steps when a donor returns from PayPal’s checkout. The gift summary (amount, monthly, ministry) is filled in automatically.', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Thank you' ),
+			'title'         => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Thank you for your <em>gift</em>' ),
+			'lead'          => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'Your generosity brings the hope of Jesus to Pakistan’s forgotten.' ),
+			'text'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), "PayPal has emailed you a receipt for your payment. As soon as PayPal confirms your gift to us, we will email you our own thank-you and receipt.
+We pray for everyone who gives, and your gift will be used exactly where you asked.", __( 'One paragraph per line.', 'kingdom-revival' ) ),
+			'monthly_text'  => krm_f( 'textarea', __( 'Extra text for monthly gifts', 'kingdom-revival' ), 'Your monthly gift will be taken automatically each month. You can change or cancel it at any time in your PayPal account, under automatic payments.' ),
+			'button1_label' => krm_f( 'text', __( 'First button text', 'kingdom-revival' ), 'Read stories from the field' ),
+			'button1_url'   => krm_f( 'url', __( 'First button link', 'kingdom-revival' ), '{blog}' ),
+			'button2_label' => krm_f( 'text', __( 'Second button text', 'kingdom-revival' ), 'Back to the home page' ),
+			'button2_url'   => krm_f( 'url', __( 'Second button link', 'kingdom-revival' ), '{home}' ),
+		),
+	),
 	'impact'  => array(
 		'label'  => __( 'Where your generosity goes', 'kingdom-revival' ),
 		'fields' => array(

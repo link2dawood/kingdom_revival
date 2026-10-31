@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 <div style="position: fixed; right: 18px; bottom: 18px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; font-family: 'Plus Jakarta Sans', sans-serif">
-<div id="floating-donation-panel" aria-label="Choose a donation amount" style="display: none; width: min(360px, calc(100vw - 56px)); box-sizing: border-box; padding: 22px; background: #FFFFFF; color: #141B33; border: 1px solid #DDE3F0; border-radius: 12px; box-shadow: 0 12px 36px rgba(12,28,79,0.24)">
+<div id="floating-donation-panel" role="region" aria-label="Choose a donation amount" style="display: none; width: min(360px, calc(100vw - 56px)); box-sizing: border-box; padding: 22px; background: #FFFFFF; color: #141B33; border: 1px solid #DDE3F0; border-radius: 12px; box-shadow: 0 12px 36px rgba(12,28,79,0.24)">
 <p style="margin: 0 0 4px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: #D4070B"><?php krm_t( 'float.eyebrow' ); ?></p>
 <h2 style="margin: 0; font-size: 21px; font-weight: 800"><?php krm_t( 'float.heading' ); ?></h2>
 <p style="margin: 6px 0 0; font-size: 14px; color: #5A6275"><?php krm_t( 'float.text' ); ?></p>

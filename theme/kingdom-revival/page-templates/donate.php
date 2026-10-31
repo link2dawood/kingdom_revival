@@ -5,6 +5,8 @@
  *
  * Markup from donate.html. Text, images, buttons and amounts are edited in the page's "Page content" box
  * (inc/content/donate.php); bank, PayPal and receiver details come from Kingdom Revival → Settings.
+ * A donor returning from PayPal (?thanks=1) sees the thank-you view in place of the hero and giving steps
+ * (template-parts/donate-thanks.php, inc/donations.php).
  *
  * @package Kingdom_Revival
  */
@@ -12,11 +14,16 @@
 defined( 'ABSPATH' ) || exit;
 
 get_header();
+$krm_gift = krm_gift_return();
 ?>
 	<main id="main">
-	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')">
+	<?php if ( $krm_gift ) : ?>
+		<?php get_template_part( 'template-parts/donate-thanks', null, $krm_gift ); ?>
+	<?php else : ?>
+	<?php krm_hero_preload( krm_c( 'hero.image' ) ); ?>
+	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')<?php krm_bg_small( krm_c( 'hero.image' ) ); ?>">
 		<div class="wrap">
-		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li aria-current="page"><?php echo esc_html( get_the_title() ); ?></li></ol>
+		<?php krm_breadcrumb_html(); ?>
 		<p class="eyebrow"><?php krm_t( 'hero.eyebrow' ); ?></p>
 		<h1><?php krm_h( 'hero.title' ); ?></h1>
 		<p class="lead"><?php krm_t( 'hero.lead' ); ?></p>
@@ -76,21 +83,21 @@ get_header();
 			<p class="step-label"><span>2</span><?php krm_t( 'methods.step' ); ?></p>
 			<div class="card">
 			<div class="tabs" role="tablist" aria-label="Payment methods">
-				<button type="button" class="tab" role="tab" id="tab-paypal" aria-controls="panel-paypal" data-method="PayPal"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/paypal-logo-png_seeklogo-249214-300x300.png' ); ?> alt="">PayPal</button>
+				<button type="button" class="tab" role="tab" id="tab-paypal" aria-controls="panel-paypal" data-method="PayPal"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/paypal-logo-png_seeklogo-249214-300x300.png', '48px' ); ?> alt="">PayPal</button>
 				<button type="button" class="tab" role="tab" id="tab-bank" aria-controls="panel-bank" data-method="Bank transfer"><span class="tab-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"></path></svg></span>Bank transfer</button>
-				<button type="button" class="tab" role="tab" id="tab-wu" aria-controls="panel-wu" data-method="Western Union"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/western-union-new-20232644.logowik.com_.webp' ); ?> alt="">Western Union</button>
-				<button type="button" class="tab" role="tab" id="tab-mg" aria-controls="panel-mg" data-method="MoneyGram"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/money-gram-1024x642.png' ); ?> alt="">MoneyGram</button>
+				<button type="button" class="tab" role="tab" id="tab-wu" aria-controls="panel-wu" data-method="Western Union"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/western-union-new-20232644.logowik.com_.webp', '48px' ); ?> alt="">Western Union</button>
+				<button type="button" class="tab" role="tab" id="tab-mg" aria-controls="panel-mg" data-method="MoneyGram"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/money-gram-1024x642.png', '48px' ); ?> alt="">MoneyGram</button>
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-paypal" aria-labelledby="tab-paypal">
-				<h3><?php krm_t( 'methods.paypal_heading' ); ?></h3>
+				<h2><?php krm_t( 'methods.paypal_heading' ); ?></h2>
 				<p><?php echo krm_gift_text( krm_c( 'methods.paypal_text' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in krm_gift_text(). ?></p>
 				<a class="button button-primary" id="paypal-link" href="<?php echo esc_url( krm_opt( 'paypal_me' ) ); ?>" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg><span><?php echo krm_gift_text( krm_c( 'methods.paypal_button' ), 'span' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></a>
 				<p class="note" id="paypal-monthly" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span><?php krm_t( 'methods.paypal_monthly' ); ?></span></p>
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-bank" aria-labelledby="tab-bank" hidden>
-				<h3><?php krm_t( 'methods.bank_heading' ); ?></h3>
+				<h2><?php krm_t( 'methods.bank_heading' ); ?></h2>
 				<p><?php echo krm_gift_text( krm_c( 'methods.bank_text' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<dl class="bank">
 				<div class="bank-row">
@@ -130,7 +137,7 @@ get_header();
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-wu" aria-labelledby="tab-wu" hidden>
-				<h3><?php krm_t( 'methods.wu_heading' ); ?></h3>
+				<h2><?php krm_t( 'methods.wu_heading' ); ?></h2>
 				<p><?php echo krm_gift_text( krm_c( 'methods.wu_text' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<ol class="steps-list">
 					<?php foreach ( krm_lines( krm_c( 'methods.wu_steps' ) ) as $krm_line ) : ?>
@@ -142,7 +149,7 @@ get_header();
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-mg" aria-labelledby="tab-mg" hidden>
-				<h3><?php krm_t( 'methods.mg_heading' ); ?></h3>
+				<h2><?php krm_t( 'methods.mg_heading' ); ?></h2>
 				<p><?php echo krm_gift_text( krm_c( 'methods.mg_text' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<ol class="steps-list">
 					<?php foreach ( krm_lines( krm_c( 'methods.mg_steps' ) ) as $krm_line ) : ?>
@@ -167,6 +174,7 @@ get_header();
 		</div>
 		</div>
 	</section>
+	<?php endif; ?>
 
 	<section class="section">
 		<div class="wrap">
@@ -177,7 +185,7 @@ get_header();
 		</div>
 		<div class="impact">
 			<?php foreach ( (array) krm_c( 'impact.cards' ) as $krm_card ) : ?>
-			<article class="impact-card"><img <?php krm_img_src( $krm_card['image'] ); ?> alt="<?php echo krm_alt( $krm_card['image'], $krm_card['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async"><div><h3><?php echo krm_text( $krm_card['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3><p><?php echo krm_text( $krm_card['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p></div></article>
+			<article class="impact-card"><img <?php krm_img_src( $krm_card['image'], '(max-width: 560px) 100vw, (max-width: 1000px) 50vw, 290px' ); ?> alt="<?php echo krm_alt( $krm_card['image'], $krm_card['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async"><div><h3><?php echo krm_text( $krm_card['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3><p><?php echo krm_text( $krm_card['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p></div></article>
 			<?php endforeach; ?>
 		</div>
 		</div>

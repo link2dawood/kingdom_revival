@@ -253,7 +253,7 @@ function krm_import_content( $opts ) {
 			}
 		}
 		foreach ( $data['items'] as $slug => $m ) {
-			$existing = get_page_by_path( $slug, OBJECT, 'ministry' );
+			$existing = krm_get_by_path( $slug, 'ministry' );
 			if ( $existing ) {
 				$ministry_ids[ $slug ] = $existing->ID;
 				$log[]                 = sprintf( 'Ministry exists, left unchanged: %s', $m['title'] );
@@ -302,7 +302,7 @@ function krm_import_content( $opts ) {
 	}
 	foreach ( array_keys( $data['items'] ) as $slug ) {
 		if ( ! isset( $ministry_ids[ $slug ] ) ) {
-			$found = get_page_by_path( $slug, OBJECT, 'ministry' );
+			$found = krm_get_by_path( $slug, 'ministry' );
 			if ( $found ) {
 				$ministry_ids[ $slug ] = $found->ID;
 			}
@@ -312,7 +312,7 @@ function krm_import_content( $opts ) {
 	// Stories.
 	if ( $opts['posts'] ) {
 		foreach ( include KRM_DIR . '/inc/data/posts.php' as $p ) {
-			if ( get_page_by_path( $p['slug'], OBJECT, 'post' ) ) {
+			if ( krm_get_by_path( $p['slug'], 'post' ) ) {
 				$log[] = sprintf( 'Story exists, left unchanged: %s', $p['title'] );
 				continue;
 			}
@@ -364,7 +364,7 @@ function krm_import_content( $opts ) {
 	);
 	$page_ids = array();
 	foreach ( $pages as $slug => $title ) {
-		$page = get_page_by_path( $slug );
+		$page = krm_get_by_path( $slug );
 		if ( $page ) {
 			$page_ids[ $slug ] = $page->ID;
 			if ( $opts['pages'] ) {
@@ -393,7 +393,7 @@ function krm_import_content( $opts ) {
 	// Reading settings.
 	if ( $opts['reading'] ) {
 		if ( 'page' !== get_option( 'show_on_front' ) || ! get_option( 'page_on_front' ) ) {
-			$home = get_page_by_path( 'home' );
+			$home = krm_get_by_path( 'home' );
 			$home = $home ? $home->ID : wp_insert_post(
 				array(
 					'post_type'   => 'page',

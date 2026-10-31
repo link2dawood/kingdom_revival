@@ -34,7 +34,7 @@
 .tab .tab-icon { display: grid; height: 30px; place-items: center; color: var(--navy); }
 .tab:hover { border-color: var(--navy); }
 .tab[aria-selected="true"] { border-color: var(--red); box-shadow: inset 0 0 0 1px var(--red); background: #FFF5F5; }
-.panel h3 { margin: 0; font-size: 24px; }
+.panel h2 { margin: 0; font-size: 24px; }
 .panel > p { margin: 10px 0 0; color: var(--muted); line-height: 1.7; }
 .panel .button { margin-top: 22px; }
 .bank { display: grid; gap: 0; margin: 20px 0 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
@@ -80,3 +80,8 @@
   .bank-row { grid-template-columns: 1fr; gap: 4px; }
   .impact { grid-template-columns: 1fr; }
 }
+/* WordPress addition: thank-you view after a PayPal gift (template-parts/donate-thanks.php), built from the rules above */
+.thanks-card { max-width: 760px; margin: 0 auto; border-top: 5px solid var(--red); }
+.thanks-card > p:not(.note) { margin: 18px 0 0; color: var(--muted); line-height: 1.7; }
+.thanks-card .summary + p { margin-top: 22px; }
+.thanks-card .hero-actions { margin-top: 24px; }

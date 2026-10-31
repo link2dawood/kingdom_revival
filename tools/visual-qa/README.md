@@ -22,4 +22,39 @@ Results print as JSON lines (`diffPct` = % of pixels that differ); screenshots a
 `python3 seo_check.py [site URL]` checks every page for exactly one title, description, canonical, Open Graph
 and Twitter card tag set (run it with no SEO plugin, then with each plugin active).
 
+`python3 schema_check.py [site URL] [--validate]` checks structured data (JSON-LD) on every page: it parses, each
+thing is described once across all blocks, every `@id` reference resolves, Google's required properties for
+Organization, BreadcrumbList, Article, Event, VideoObject and FAQPage are there, and the values match the page (the
+BreadcrumbList is the visible breadcrumb, a headline is the h1, dates, venue, author and embedded video appear on the
+page). `--validate` also sends one page of each kind to the Schema.org Validator (only the JSON-LD is sent). Run it
+with no SEO plugin, then with each plugin active.
+
+`python3 index_check.py [site URL]` checks indexing: robots.txt, robots meta and `X-Robots-Tag` on every page,
+canonical URLs, every URL in the sitemaps robots.txt announces (each must answer 200 and be indexable), and which
+pages crawlers reach by plain links from the home page. Keep the WordPress site's WP-Cron off
+(`DISABLE_WP_CRON`) when serving it with `php -S`, or its loopback request can stall the single-threaded server.
+
+`node a11y_check.js [outfile] [page ...]` runs axe-core (WCAG 2.1 A/AA and best practices) on each original HTML
+page and its WordPress page, so design-inherited issues can be told from ones the theme adds, and checks that the
+first Tab stop is the skip link, its target exists and the first Tab stops show a focus outline. One JSON line per
+page (rule → number of elements); details in the outfile (default `out/a11y.json`). `WIDTH=390` audits at phone width.
+
+`MASK_PHOTOS=1 node compare.js <outdir>` blanks photo pixels (images and background images) on both sides, keeping
+their boxes. Media Library copies are resized/WebP, so photos never match the design's original files byte for byte;
+with them masked, any remaining difference is layout or text.
+
+`node site_check.js [outfile]` loads every WordPress page (design pages, 12 ministries, 7 stories, archives, search,
+404, the donation thank-you view) at all three widths, plus the matching HTML page, and reports JavaScript/console
+errors, failed or 4xx/5xx requests, images that did not load, horizontal overflow, noindex (meta or `X-Robots-Tag`;
+only search, 404 and the thank-you view should have it) and PHP warnings printed into the page.
+
+`ADMIN_PASS=... node admin_check.js [outfile]` logs in as an administrator, opens every dashboard screen the theme adds
+or uses (status, JS errors, PHP messages), then edits real content and checks the public page: a design page's Page
+content box, Site text, Settings, a story and a ministry (title and meta box) in the block editor. Every edit is undone.
+
+`PAYPAL_EMAIL=... node forms_check.js [outfile]` sends the contact, partner and newsletter forms in a browser at 1440
+and 390, reads the PayPal checkout links the Donate page builds, and posts PayPal payment notifications (a gift, the
+same one again, one for another account). Check Submissions/Donations and the emails on the server afterwards. On a
+local site PayPal can't be reached, so its verification answer has to be stubbed there (never on a real site).
+
 Environment: `HTML_URL`, `WP_URL`, `CHROME_PATH` (defaults: the ports above and `/usr/bin/google-chrome`).

@@ -29,7 +29,7 @@ defined( 'ABSPATH' ) || exit;
 	<div class="krm-field-stories__gallery" aria-label="Ministry photos" data-gallery>
 		<?php foreach ( (array) krm_c( 'field.photos' ) as $krm_photo ) : ?>
 		<figure>
-			<img <?php krm_img_src( $krm_photo['image'] ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async">
+			<img <?php krm_img_src( $krm_photo['image'], '(max-width: 640px) 100vw, (max-width: 900px) 34vw, 400px' ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async">
 			<figcaption><?php echo krm_text( $krm_photo['caption'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></figcaption>
 		</figure>
 		<?php endforeach; ?>

@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'KRM_VERSION', '1.3.0' );
+define( 'KRM_VERSION', '1.7.1' );
 define( 'KRM_DIR', get_template_directory() );
 
 require KRM_DIR . '/inc/template-functions.php';
@@ -23,8 +23,12 @@ require KRM_DIR . '/inc/post-meta.php';
 require KRM_DIR . '/inc/nav.php';
 require KRM_DIR . '/inc/content.php';
 require KRM_DIR . '/inc/forms.php';
+require KRM_DIR . '/inc/donations.php';
 require KRM_DIR . '/inc/seo.php';
+require KRM_DIR . '/inc/schema.php';
 require KRM_DIR . '/inc/redirects.php';
+require KRM_DIR . '/inc/performance.php';
+require KRM_DIR . '/inc/security.php';
 
 if ( is_admin() ) {
 	require KRM_DIR . '/inc/importer.php';

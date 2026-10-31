@@ -10,7 +10,6 @@
 defined( 'ABSPATH' ) || exit;
 
 return array(
-	'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/${file}`,' => '${file}`,',
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-21-e1784293966685.jpg' => 'Baptism in a local community',
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-22.jpg' => 'Baptism in a local community',
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-23.jpg' => 'Baptism in a local community',
@@ -37,7 +36,6 @@ return array(
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/money-gram-1024x642.png' => 'MoneyGram',
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/paypal-logo-png_seeklogo-249214-300x300.png' => 'PayPal',
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/western-union-new-20232644.logowik.com_.webp' => 'Western Union',
-	'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/${file}`,' => '${file}`,',
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-29-scaled-e1787822836311.jpg' => 'Children and families in a brick kiln community',
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-30-scaled-e1787822825532.jpg' => 'Children and families in a brick kiln community',
 	'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg' => 'Children and families in a brick kiln community',

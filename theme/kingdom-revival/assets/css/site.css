@@ -168,7 +168,7 @@ h1, h2, h3, h4 { color: var(--navy); line-height: 1.15; letter-spacing: -.02em; 
 .footer-brand { display: flex; align-items: center; gap: 12px; color: var(--white); font-size: 18px; font-weight: 800; }
 .footer-brand img { width: 64px; height: 64px; object-fit: contain; padding: 4px; border-radius: 50%; background: var(--white); }
 .site-footer p { margin: 18px 0 0; line-height: 1.75; }
-.site-footer h3 { margin: 0 0 18px; color: var(--white); font-size: 16px; letter-spacing: 0; }
+.site-footer h2 { margin: 0 0 18px; color: var(--white); font-size: 16px; letter-spacing: 0; }
 .footer-links { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .site-footer a { color: #C8D0E6; text-decoration: none; }
 .site-footer a:hover { color: var(--white); text-decoration: underline; }

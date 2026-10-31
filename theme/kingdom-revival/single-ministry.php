@@ -16,13 +16,14 @@ while ( have_posts() ) :
 	$krm_points  = array_filter( array_map( 'trim', explode( "\n", (string) get_post_meta( get_the_ID(), '_krm_points', true ) ) ) );
 	$krm_gallery = array_values( array_filter( (array) get_post_meta( get_the_ID(), '_krm_gallery', true ) ) );
 	$krm_alts    = (array) get_post_meta( get_the_ID(), '_krm_photo_alts', true );
-	$krm_hero    = $krm_gallery ? krm_ref_url( $krm_gallery[0] ) : krm_ref_url( krm_c( 'ministry.hero_image', 'site' ) );
+	$krm_hero    = $krm_gallery ? $krm_gallery[0] : krm_c( 'ministry.hero_image', 'site' );
 	?>
 	<main id="main">
 	<div id="ministry-content">
-		<section class="page-hero" id="ministry-hero" style="background-image: url('<?php echo esc_url( $krm_hero ); ?>')">
+		<?php krm_hero_preload( $krm_hero ); ?>
+		<section class="page-hero" id="ministry-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_hero ) ); ?>')<?php krm_bg_small( $krm_hero ); ?>">
 		<div class="wrap">
-			<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li><a href="<?php echo esc_url( home_url( '/#all-ministries' ) ); ?>">Ministries</a></li><li aria-current="page" id="crumb-title"><?php echo esc_html( $krm_title ); ?></li></ol>
+			<?php krm_breadcrumb_html( 'crumb-title' ); ?>
 			<p class="eyebrow"><?php krm_t( 'ministry.eyebrow', 'site' ); ?></p>
 			<h1 id="ministry-title"><?php echo esc_html( $krm_title ); ?></h1>
 			<p class="lead" id="ministry-description"><?php echo esc_html( get_the_excerpt() ); ?></p>

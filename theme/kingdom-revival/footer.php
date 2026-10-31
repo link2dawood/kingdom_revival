@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 		<p><?php krm_t( 'footer.tagline', 'site' ); ?></p>
 		</div>
 		<div>
-		<h3><?php krm_t( 'footer.quick_heading', 'site' ); ?></h3>
+		<h2><?php krm_t( 'footer.quick_heading', 'site' ); ?></h2>
 		<ul class="footer-links">
 			<?php foreach ( krm_footer_links( 'footer_quick' ) as $krm_link ) : ?>
 			<li><a href="<?php echo esc_url( $krm_link['url'] ); ?>"><?php echo esc_html( $krm_link['title'] ); ?></a></li>
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 		</ul>
 		</div>
 		<div>
-		<h3><?php krm_t( 'footer.ministries_heading', 'site' ); ?></h3>
+		<h2><?php krm_t( 'footer.ministries_heading', 'site' ); ?></h2>
 		<ul class="footer-links">
 			<?php foreach ( krm_footer_links( 'footer_ministries' ) as $krm_link ) : ?>
 			<li><a href="<?php echo esc_url( $krm_link['url'] ); ?>"><?php echo esc_html( $krm_link['title'] ); ?></a></li>
@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 		</ul>
 		</div>
 		<div>
-		<h3><?php krm_t( 'footer.contact_heading', 'site' ); ?></h3>
+		<h2><?php krm_t( 'footer.contact_heading', 'site' ); ?></h2>
 		<address>
 			<span><?php echo esc_html( krm_opt( 'address' ) ); ?></span>
 			<a href="<?php echo esc_url( krm_tel() ); ?>"><?php echo esc_html( krm_opt( 'phone' ) ); ?></a>

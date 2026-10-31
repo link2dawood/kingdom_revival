@@ -19,9 +19,14 @@ $krm_args = wp_parse_args(
 	)
 );
 ?>
-	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_args['image'] ) ); ?>')">
+	<?php krm_hero_preload( $krm_args['image'] ); ?>
+	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_args['image'] ) ); ?>')<?php krm_bg_small( $krm_args['image'] ); ?>">
 		<div class="wrap">
+		<?php if ( krm_breadcrumbs() ) : ?>
+		<?php krm_breadcrumb_html(); ?>
+		<?php else : ?>
 		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li aria-current="page"><?php echo esc_html( $krm_args['crumb'] ? $krm_args['crumb'] : $krm_args['title'] ); ?></li></ol>
+		<?php endif; ?>
 		<?php if ( $krm_args['eyebrow'] ) : ?>
 		<p class="eyebrow"><?php echo esc_html( $krm_args['eyebrow'] ); ?></p>
 		<?php endif; ?>

@@ -38,7 +38,7 @@ foreach ( $krm_list as $krm_i => $krm_m ) :
 </div>
 <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap; border-radius: 20px; overflow: hidden; background: #0C1C4F">
 <div style="position: relative; flex: 1 1 320px; min-height: 340px; background: #1A2550; overflow: hidden">
-<img data-krm-explorer="img" <?php krm_img_src( $krm_active['image'] ); ?> alt="<?php echo esc_attr( $krm_active['title'] ); ?>" data-zoom="explorer" loading="lazy" decoding="async" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+<img data-krm-explorer="img" <?php krm_img_src( $krm_active['image'], '(max-width: 760px) 100vw, (max-width: 1240px) 66vw, 430px' ); ?> alt="<?php echo esc_attr( $krm_active['title'] ); ?>" data-zoom="explorer" loading="lazy" decoding="async" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
 </div>
 <div style="flex: 1 1 320px; min-width: 0; padding: clamp(32px, 4vw, 48px) clamp(28px, 3.4vw, 40px); display: flex; flex-direction: column; justify-content: center; color: #FFFFFF">
 <p style="margin: 0; font-size: clamp(56px, 6vw, 72px); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: #F5A04A" data-krm-explorer="num">01</p>

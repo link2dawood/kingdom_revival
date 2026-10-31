@@ -61,6 +61,7 @@ add_action(
 				wp_enqueue_style( 'krm-blog', krm_asset( 'css/pages/blog.css' ), array( 'krm-site' ), $ver );
 			}
 		}
+		wp_add_inline_style( 'front' === $view ? 'krm-front' : 'krm-site', krm_bg_small_css() );
 
 		// Sermons, events and testimonials (also used by the [krm_testimonials] shortcode).
 		wp_register_style( 'krm-extras', krm_asset( 'css/pages/extras.css' ), array( 'krm-site' ), $ver );
@@ -77,9 +78,12 @@ add_action(
 				'isDonatePage'    => 'donate' === $view,
 				'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
 				'nonce'           => is_user_logged_in() ? wp_create_nonce( 'krm_form' ) : '',
+				'formToken'       => krm_form_token(),
 				'email'           => krm_opt( 'email' ),
 				'newsletterDelay' => (int) krm_opt( 'newsletter_delay' ) * 1000,
-				'newsletterImage' => krm_media( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg' ),
+				// No newsletter popup over the thank-you view right after a gift.
+				'noNewsletter'    => (bool) krm_gift_return(),
+				'newsletterImage' => krm_media( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg', '1536x1536' ),
 			)
 		);
 
@@ -95,7 +99,10 @@ add_action(
 					'paypalMe'    => krm_opt( 'paypal_me' ),
 					'paypalEmail' => krm_opt( 'paypal_email' ),
 					'email'       => krm_opt( 'email' ),
+					'paypalHost'  => krm_paypal_host(),
 					'returnUrl'   => add_query_arg( 'thanks', '1', krm_donate_url() ),
+					'cancelUrl'   => krm_donate_url(),
+					'notifyUrl'   => krm_paypal_notify_url(),
 				)
 			);
 		}

@@ -8,9 +8,11 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 <!-- Hero -->
-<section id="top" style="position: relative; background: #1A2550 url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>') center/cover no-repeat">
+<?php krm_hero_preload( krm_c( 'hero.image' ) ); ?>
+<section id="top" style="position: relative; background: #1A2550 url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>') center/cover no-repeat<?php krm_bg_small( krm_c( 'hero.image' ) ); ?>">
 <?php if ( krm_c( 'hero.video' ) ) : ?>
-<video aria-hidden="true" autoplay muted loop playsinline preload="none" poster="<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"><source src="<?php echo esc_url( krm_media( krm_c( 'hero.video' ) ) ); ?>" type="video/mp4"></video>
+<?php // Started by front.js once the page has loaded; until then the section's background (the same image) shows through. ?>
+<video aria-hidden="true" data-krm-autoplay muted loop playsinline preload="none" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"><source src="<?php echo esc_url( krm_media( krm_c( 'hero.video' ) ) ); ?>" type="video/mp4"></video>
 <?php endif; ?>
 <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(8,16,48,0.62)"></div>
 

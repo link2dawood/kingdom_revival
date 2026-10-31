@@ -12,8 +12,8 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Default redirects: every public address in the previous site's sitemap whose address changed.
- * Addresses that stay the same (/, /about/, /contact/) are not listed.
+ * Default redirects: every public address in the previous site's sitemap whose address changed, including the
+ * Robo Gallery photo pages (/gallery/…). Addresses that stay the same (/, /about/, /contact/) are not listed.
  */
 function krm_default_redirects() {
 	return implode(
@@ -35,6 +35,12 @@ function krm_default_redirects() {
 			'/urdu-bibles-distribution/ /ministries/urdu-bibles/',
 			'/widows-ministry/ /ministries/widows-ministry/',
 			'/sunday-school/ /ministries/children-ministry/',
+			'/gallery/bricks-kiln-slaves-children/ /ministries/brick-kiln-children/',
+			'/gallery/deliverance-and-healing-ministry/ /ministries/deliverance-and-healing/',
+			'/gallery/leadership-and-discipleship/ /ministries/leadership-and-discipleship/',
+			'/gallery/orphanages-care/ /ministries/orphan-and-children-care/',
+			'/gallery/outreach-ministry/ /ministries/outreach-ministry/',
+			'/gallery/widows-ministry/ /ministries/widows-ministry/',
 			'/executive-message/ {about}#founder',
 			'/services/ {home}#all-ministries',
 			'/form/ {home}',
@@ -91,27 +97,40 @@ function krm_redirect_target( $target ) {
 	return krm_resolve_url( $target );
 }
 
+/**
+ * Where an address on this site is redirected to, or '' when it is not in the Redirects list.
+ *
+ * @param string $url Path or URL on this site.
+ */
+function krm_redirect_for( $url ) {
+	$map = krm_redirects();
+	if ( ! $map ) {
+		return '';
+	}
+	// Path relative to the site (handles WordPress installed in a sub-folder).
+	$request = krm_redirect_path( $url );
+	$base    = krm_redirect_path( home_url( '/' ) );
+	if ( '/' !== $base && 0 === strpos( $request, $base ) ) {
+		$request = krm_redirect_path( substr( $request, strlen( $base ) ) );
+	}
+	if ( ! isset( $map[ $request ] ) ) {
+		return '';
+	}
+	$to = krm_redirect_target( $map[ $request ] );
+	if ( ! $to || krm_redirect_path( $to ) === krm_redirect_path( home_url( $request ) ) ) {
+		return '';
+	}
+	return $to;
+}
+
 add_action(
 	'template_redirect',
 	function () {
 		if ( is_admin() || wp_doing_ajax() || ! isset( $_SERVER['REQUEST_URI'] ) ) {
 			return;
 		}
-		$map = krm_redirects();
-		if ( ! $map ) {
-			return;
-		}
-		// Path relative to the site (handles WordPress installed in a sub-folder).
-		$request = krm_redirect_path( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
-		$base    = krm_redirect_path( home_url( '/' ) );
-		if ( '/' !== $base && 0 === strpos( $request, $base ) ) {
-			$request = krm_redirect_path( substr( $request, strlen( $base ) ) );
-		}
-		if ( ! isset( $map[ $request ] ) ) {
-			return;
-		}
-		$to = krm_redirect_target( $map[ $request ] );
-		if ( ! $to || krm_redirect_path( $to ) === krm_redirect_path( home_url( $request ) ) ) {
+		$to = krm_redirect_for( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+		if ( ! $to ) {
 			return;
 		}
 		// Targets are entered by administrators and may point to another site, so wp_safe_redirect() is not used.
