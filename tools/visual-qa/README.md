@@ -57,4 +57,10 @@ and 390, reads the PayPal checkout links the Donate page builds, and posts PayPa
 same one again, one for another account). Check Submissions/Donations and the emails on the server afterwards. On a
 local site PayPal can't be reached, so its verification answer has to be stubbed there (never on a real site).
 
+`node perf_check.js [outfile]` measures page loads (median of `RUNS`, default 3) on a throttled phone profile (390 px,
+4× CPU slowdown, "Slow 4G": 150 ms RTT, 1.6 Mbps) and an unthrottled desktop: TTFB, FCP, LCP, CLS, Total Blocking
+Time, requests, KB transferred and requests to other hosts, up to the load event. No request interception.
+`COMPARE=1` also measures the original HTML page. `node inp_check.js` measures interaction latency (INP) on the
+phone profile.
+
 Environment: `HTML_URL`, `WP_URL`, `CHROME_PATH` (defaults: the ports above and `/usr/bin/google-chrome`).

@@ -15,8 +15,9 @@ sentence on the Contact page.
 - `kingdom-revival.zip` — the installable theme package, committed. Rebuild it after theme changes
   (zip root must be the `kingdom-revival/` folder).
 - `tools/visual-qa/` — screenshot-diff, interaction, content-audit and SEO checks.
-- `PHASE-*.md` — per-phase reports (analysis, visual QA, page conversion, editable content, technical SEO).
-  These are the project's history and decision log; read the relevant one before changing an area.
+- `PHASE-REPORTS.md` — all phase reports in one file, one section per phase (analysis, visual QA, page
+  conversion, editable content, SEO, structured data, keywords, donations, security/a11y, final delivery).
+  This is the project's history and decision log; read the relevant section before changing an area.
 - `theme/kingdom-revival/readme.txt` — end-user install/editing guide and the theme file map. Keep it in
   sync when adding editable fields, settings, shortcodes or templates.
 
@@ -108,14 +109,15 @@ feeds the design's title/description/image as plugin defaults; with no plugin it
 
 Keep state across sessions in two places:
 
-1. **Phase reports in the repo** (`PHASE-<n>-<TOPIC>.md`) are the durable, shareable record. When a phase or
-   significant piece of work finishes, write/update its report in the same style: a bold **Result** line
+1. **Phase reports in the repo** (`PHASE-REPORTS.md`, one `## … Phase <n> …` section per phase, listed in its
+   Contents) are the durable, shareable record. When a phase or significant piece of work finishes,
+   add/update its section at the end of that file in the same style: a bold **Result** line
    first, then what changed, how it was verified (with numbers from the QA tools), what was fixed, what is
-   "Not covered", and any "Decisions for you". Never rewrite earlier phase reports except to correct facts.
+   "Not covered", and any "Decisions for you". Never rewrite earlier phase sections except to correct facts.
 2. **Claude's auto memory** (`~/.claude/projects/<this project>/memory/`, indexed by `MEMORY.md`) holds
    things not derivable from the repo: current phase and next steps, the user's decisions and preferences,
    environment details (local WordPress URL, credentials location — never the secrets themselves).
    Update the "current status" memory when a phase starts or ends; don't duplicate what the phase reports
    already say.
 
-Before starting work: read `MEMORY.md`, the latest `PHASE-*.md`, and `git log --oneline -5`.
+Before starting work: read `MEMORY.md`, the latest section of `PHASE-REPORTS.md`, and `git log --oneline -5`.
