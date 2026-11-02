@@ -56,7 +56,7 @@ function krm_setup_page() {
 	$checks     = array(
 		'media'      => array( true, sprintf( /* translators: 1: done, 2: total */ __( 'Import the design’s images and video into the Media Library (%1$d of %2$d done). Files already in the library are reused, and descriptive alt text is added where missing.', 'kingdom-revival' ), $done, $total ) ),
 		'ministries' => array( true, sprintf( /* translators: %d: count */ __( 'Create the 12 ministries and their groups (currently %d published). Existing ministries with the same slug are left as they are.', 'kingdom-revival' ), (int) $ministries->publish ) ),
-		'posts'      => array( true, __( 'Create the 7 News & Blogs stories and their categories. Stories whose slug already exists are skipped.', 'kingdom-revival' ) ),
+		'posts'      => array( true, __( 'Create the 7 News & Blogs stories and their categories. Stories whose slug already exists are skipped. WordPress’s sample post “Hello world!” is moved to the trash if it was never edited.', 'kingdom-revival' ) ),
 		'pages'      => array( true, __( 'Create the About, Contact, Donate, Become a Partner and News & Blogs pages if they do not exist.', 'kingdom-revival' ) ),
 		'menus'      => array( true, __( 'Create the main and footer menus and assign them to this theme’s empty menu locations.', 'kingdom-revival' ) ),
 		'reading'    => array( ! $reading_ok, $reading_ok ? __( 'Reading settings: a static front page and a posts page are already set. Tick to point the posts page at “News & Blogs” anyway.', 'kingdom-revival' ) : __( 'Reading settings: show a static front page and use “News & Blogs” as the posts page (required for the design).', 'kingdom-revival' ) ),
@@ -351,6 +351,13 @@ function krm_import_content( $opts ) {
 				set_post_thumbnail( $id, $cover );
 			}
 			$log[] = sprintf( 'Created story: %s', $p['title'] );
+		}
+
+		// WordPress's sample post would show in News & Blogs. Trashed only while it is still untouched.
+		$sample = krm_get_by_path( 'hello-world', 'post' );
+		if ( $sample && 'publish' === $sample->post_status && $sample->post_modified_gmt === $sample->post_date_gmt ) {
+			wp_trash_post( $sample->ID );
+			$log[] = 'Moved WordPress’s sample post “Hello world!” to the trash';
 		}
 	}
 

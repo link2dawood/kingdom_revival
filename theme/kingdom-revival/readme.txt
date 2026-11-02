@@ -13,6 +13,7 @@ Custom theme for kingdomrevivalministries.com, converted from the approved HTML 
 3. Open Kingdom Revival → Setup and click "Run setup". It:
    - imports the design's images and video into the Media Library (files already in the library are reused, not duplicated) and adds alt text where it is missing,
    - creates the 12 ministries, the 7 stories, and the About, Contact, Donate, Become a Partner and News & Blogs pages,
+   - moves WordPress's sample post "Hello world!" to the trash, if it was never edited (it would otherwise show in News & Blogs),
    - creates the menus and assigns them to this theme's empty menu locations,
    - optionally sets the Reading settings (static front page + News & Blogs as posts page) and /post-name/ permalinks — only if you tick those boxes.
    Anything that already exists with the same slug or name is skipped and left unchanged. You can run Setup again at any time.

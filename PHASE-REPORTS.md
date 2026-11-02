@@ -1683,5 +1683,7 @@ fixes it led to (Task 2 viewer bugs above) are in that commit. Pixel parity with
 
 **Not covered.** Real phones and Safari/Firefox (Chrome emulation only); a PayPal sandbox payment end to end.
 
-**Decisions for you.** Before go-live: trash "Hello world!". Open: Task 4 decisions 1–8 (sideways Urdu photo, Outreach
+**Added after the audit: "Hello world!".** Setup now moves WordPress's sample post to the trash when it was never edited ([inc/importer.php](theme/kingdom-revival/inc/importer.php), stories step; `readme.txt` updated), so it no longer shows in News & Blogs on the live site after running Setup. On the test site: post trashed, `/hello-world/` 301 → `/blog/`, and the blog/story pixel diffs dropped from 35–46 % / 2–12 % to 0.17–0.37 % / 0.01–0.15 % (photos only, equal page heights). `kingdom-revival.zip` rebuilt (119 files).
+
+**Decisions for you.** Open: Task 4 decisions 1–8 (sideways Urdu photo, Outreach
 gallery, Freedom card photo, large logo, alt texts, more photos/videos), About's 01/02/03 contrast, PayPal email.
