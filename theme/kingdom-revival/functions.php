@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'KRM_VERSION', '1.7.2' );
+define( 'KRM_VERSION', '1.7.3' );
 define( 'KRM_DIR', get_template_directory() );
 
 require KRM_DIR . '/inc/template-functions.php';

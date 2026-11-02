@@ -606,10 +606,7 @@ function krm_import_menus( $ministry_ids, $page_ids, $data ) {
 				),
 				$page_item( 'about', 'About' ),
 				$page_item( 'blog', 'Latest News & Blogs' ),
-				array(
-					'title' => 'Donate',
-					'url'   => home_url( '/#donate' ),
-				),
+				$page_item( 'donate', 'Donate' ),
 				$page_item( 'contact', 'Contact' ),
 				$page_item( 'partner', 'Become a Partner' ),
 			),

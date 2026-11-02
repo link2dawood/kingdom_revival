@@ -808,8 +808,8 @@ function krm_render_field( $name, $f, $value ) {
  */
 function krm_render_list_item( $name, $f, $i, $item ) {
 	echo '<fieldset class="krm-item"><legend><span class="krm-item-title">' . esc_html( isset( $f['item'] ) ? $f['item'] : __( 'Item', 'kingdom-revival' ) ) . '</span>';
-	echo ' <button type="button" class="button-link krm-item-up" aria-label="' . esc_attr__( 'Move up', 'kingdom-revival' ) . '">↑</button>';
-	echo ' <button type="button" class="button-link krm-item-down" aria-label="' . esc_attr__( 'Move down', 'kingdom-revival' ) . '">↓</button>';
+	echo ' <button type="button" class="button-link krm-item-up" aria-label="' . esc_attr__( 'Move up', 'kingdom-revival' ) . '"><span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span></button>';
+	echo ' <button type="button" class="button-link krm-item-down" aria-label="' . esc_attr__( 'Move down', 'kingdom-revival' ) . '"><span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span></button>';
 	echo ' <button type="button" class="button-link krm-item-remove">' . esc_html__( 'Remove', 'kingdom-revival' ) . '</button></legend>';
 	foreach ( $f['fields'] as $key => $sub ) {
 		krm_render_field( $name . '[' . $i . '][' . $key . ']', $sub + array( 'default' => '' ), isset( $item[ $key ] ) ? $item[ $key ] : '' );

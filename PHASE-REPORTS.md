@@ -14,6 +14,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Phase 9 donation system](#kingdom-revival-ministries-phase-9-donation-system)
 - [Kingdom Revival Ministries: Phase 11 security and accessibility](#kingdom-revival-ministries-phase-11-security-and-accessibility)
 - [Kingdom Revival Ministries: Phase 13 final delivery](#kingdom-revival-ministries-phase-13-final-delivery)
+- [Kingdom Revival Ministries: Phase 14 UI refinement, task 1: emojis to icons](#kingdom-revival-ministries-phase-14-ui-refinement-task-1-emojis-to-icons)
 
 ---
 
@@ -1486,3 +1487,149 @@ volumes (no keyword tool was available).
 ### Decisions for you (all open items in one place)
 
 ⟪DECISIONS⟫
+
+## Kingdom Revival Ministries: Phase 14 UI refinement, task 1: emojis to icons
+
+**Result: the site has no emojis. The design already used SVG icons for every control and pictogram (share buttons,
+lightbox, contact/donate/partner icons, social links, newsletter popup). The only symbol characters left in it, the
+★ on the "Featured story" badge and the ← / → arrows in link labels, stay as they are by your decision, so every page
+is still pixel-identical to the design. The only theme change is in the admin screens.**
+
+Theme version 1.7.3 (118 files; `kingdom-revival.zip` rebuilt).
+
+### What the scan found
+
+Every PHP template, JavaScript file, stylesheet, content schema, the story/ministry data in `inc/data/`, and the
+rendered HTML of 11 pages (Home, About, Contact, Donate, Partner, Blog, /ministries/, a ministry, three stories) were
+scanned for emoji and pictographic/arrow code points and their HTML entities. Front end: no emojis; symbol
+characters only in `★ Featured story`, the ← / → in story, footer and pagination labels, and the lightbox hint
+"← → for next photo". Admin: `↑`, `↓`, `×` on the list and gallery buttons.
+
+### What changed
+
+- Admin "Page content" list items (move up / move down) and the ministry gallery's remove-photo button now use
+  Dashicons (WordPress's own admin icons) instead of `↑ ↓ ×`; their accessible names were already set. The
+  chevrons are sized to the 13px legend text (`assets/css/admin-content.css`) and the × is centred in the red
+  circle (inline style in `inc/ministry.php`).
+- An icon-replacement version (SVG star and arrows with a `krm_arrow_label()` helper) was built, checked
+  in screenshots and then **reverted**: you chose to keep the design's ★ and arrows.
+- `readme.txt` file map now lists `assets/icons/*.svg` and `krm_icon()`.
+
+### Verified
+
+- `npm run pages`, 33 comparisons after the revert: the pages that show only the shared layout are back to 0 %
+  (empty ministry, no ministries; 0.001–0.003 % while the footer arrow was an icon). Home 0.004–0.09 %, About
+  0.27–0.35 %, Contact 0.04–0.08 %, Donate 0.15–0.26 %, Partner 0–0.06 %, Ministry 0.6–3.4 % are the known photo
+  noise; Blog and story pages differ as before on this local database (live-like posts including "Hello world!").
+- `php -l` on every changed file.
+- Admin, logged in as a temporary administrator (deleted afterwards), at 2x: About → Page content list item and a
+  ministry's photo gallery screenshotted; "move down" reorders the items, "remove" removes the photo (not saved),
+  no JavaScript errors.
+
+### Fixed along the way
+
+- The uncommitted `kingdom-revival.zip` in the working tree had Windows backslash paths (`kingdom-revivalssets\…`),
+  which can unpack as flat file names on Linux hosts. Rebuilt with `/` paths.
+
+### Not covered
+
+- Emojis inside posts or other content written by people on the live site are not touched.
+
+### Task 3: header navigation and URL routing
+
+**Result: menu links that name a page by an anchor or an old file name (`#contact`, `/#contact`, `contact.html`,
+`index.html`, `blog-post.html?post=…`, `all-ministries.html?ministry=…`) now open the real WordPress page on any
+installation, with the right active state. Contact opens `/contact/`, with no `#contact` fragment.**
+
+**Cause.** The theme itself never linked Contact to `#contact`: with the menus Setup creates, Contact is a Page item
+and renders as its permalink, and `krm_page_url()` falls back to `/contact/`, never to a fragment. A `/#contact` link
+comes from the menu data: a Custom Link typed by hand or kept from the previous site, which the theme printed as
+stored. WordPress also saves a custom link typed as `contact.html` as `http://contact.html`.
+
+**What changed** ([inc/nav.php](theme/kingdom-revival/inc/nav.php), [inc/importer.php](theme/kingdom-revival/inc/importer.php)):
+- `krm_menu_url()` rewrites such links when the header, mobile and footer menus are built: `#about`, `#contact`,
+  `#donate`, `#partner`, `#blog` (bare, `/`-prefixed or with the site address) go to the page found by its template
+  (`krm_page_url()`, `get_permalink()`); old `.html` files go to the page, story or ministry, keeping their query and
+  anchor (`donate.html?amount=50#give` → `/donate/?amount=50#give`). Nothing site-specific is hardcoded; subdirectory
+  installs are handled.
+- `krm_url_is_current()`: a rewritten link is marked current (`aria-current`, `is-current`) on its page.
+- The home footer's "Donate" (default menu and Setup) is now the Donate page instead of `/#donate`. Existing
+  `/#donate` items are rewritten by the first change.
+- Kept on purpose, as in-page section links: the home header's "Donate Now" (`#donate`, the hero donation card), the
+  home social icons without a saved URL (`#contact`, the home footer), Contact's "Send a prayer request"
+  (`#contact-form`), and "All ministries" (`/#all-ministries`, the home page ministry explorer; see Decisions).
+
+**Verified** (local test site):
+- Nine temporary Custom Links with the bad forms above, on Home, About, Contact and Partner: all render the page
+  permalink and the matching one is current. Removed afterwards.
+- Browser test, 10 pages (Home, About, Contact, Donate, Partner, Blog, two stories, /ministries/, a ministry):
+  396 internal links, 30 targets, all HTTP 200, no `.html` link, every `#fragment` exists on its target page. Clicks at
+  1440 and 390 px (hamburger menu): Contact, About, News & Blogs, Home from five pages, a ministry from the
+  dropdown, logo, header Donate, story previous/next: all land on the expected permalink. Result: all pass.
+- `php -l`. No pixel run: only `href` values changed, and the run's 900 MB of screenshots would refill the disk.
+
+**Also done.** The C: drive was full (0 MB), which cut command output and blocked file writes. Deleted, with your
+approval: `tools/visual-qa/out/` (919 MB, regenerated by `npm run pages`) and old session temp folders (548 MB),
+keeping the local test site. 1.5 GB free afterwards.
+
+**Not covered.** Your own local WordPress was not inspected; the fix was proven with the same kinds of links on the
+test site. Pages that WordPress cannot find (e.g. no Contact page at all) still fall back to `/contact/`.
+
+**Follow-up: no "#" in the address bar.** Your decision: "All ministries" keeps going to the home page ministry
+explorer, but without `#all-ministries` in the address. [assets/js/front.js](theme/kingdom-revival/assets/js/front.js)
+(home page only): arriving with an anchor (`/#all-ministries` from any inner page) removes it from the address at once
+(`history.replaceState`) and scrolls to the section after the content is ready and again after load; on the home page,
+links to a section on the page (All ministries, Home `#top`, Donate Now `#donate`) scroll without adding an anchor,
+and a section link used from the menu closes the menu (before, the mobile menu stayed open over the section).
+The links keep their `#…` href, so they work without script. Verified at 1440 and 390 px: from /about/ and on the
+home page the address is `http://127.0.0.1:8899/` and the explorer is at the top of the window; mobile menu closed;
+the route test above still passes (396 links). `kingdom-revival.zip` rebuilt from the theme folder, except
+`site.css`, `front.css` and `site.js`, which are taken from the last commit: a parallel session's photo-viewer rewrite
+in those files is unfinished (known bug: photo hidden behind the spinner at 320 px), so it is left out until verified.
+None of its changes touch the menu or anchor code this task relies on.
+
+### Task 5: one global theme stylesheet
+
+**Result: `assets/css/theme-global.css` is the single source of the design system (tokens + every shared component),
+loaded once and first on every page. Rendering is unchanged: on the same site, old and new files give the same
+computed style and box for every element on 11 pages × 3 widths, with menus and the image viewer open.**
+
+**What changed**
+- [theme-global.css](theme/kingdom-revival/assets/css/theme-global.css): CSS custom properties taken from the existing
+  design (no new palette): brand/text/background/border colours, font family and weights, font sizes and heading
+  sizes, line heights, spacing scale and section spacing, container width and gutter, radii (button 4px, card 12px,
+  popup 16px, pill), card shadow, focus ring, button/field/icon sizes, breakpoints (documented; CSS can't use variables
+  in `@media`). The old short names (`--navy`, `--red`, `--radius`, …) are aliases, so page stylesheets work unchanged.
+  Then the components, written once: skip link, navigation and submenus, zoomable images, image viewer, newsletter
+  popup, buttons, top bar, header, footer, floating donate button, form fields, story cards, FAQ, and all animations.
+- Removed from where they were duplicated: 124 rules that were identical in `site.css` and `front.css` (the home page
+  had its own hardcoded copy of the menu, viewer and popup), plus rules repeated word for word in contact/partner
+  (forms), blog/post (story cards) and donate/partner (FAQ). `site.css` 25.1 → 8.3 KB, `front.css` 16.5 → 4.9 KB.
+  Remaining colours in `front.css` and in the home templates' inline styles use the tokens (101 values).
+- [inc/enqueue.php](theme/kingdom-revival/inc/enqueue.php): `krm-global` is a dependency of `krm-front` and `krm-site`,
+  so WordPress prints it once, before them.
+- Load order was kept: a rule that used to override a rule staying behind (3 phone/tablet `.submenu` rules) stays in
+  its file. Fewer `!important` (8 → 6: the duplicated menu-button rule is now one). No rule exists in both the global
+  file and a page file.
+- Kept on purpose: the home page's own font lists (`'Plus Jakarta Sans', system-ui, sans-serif` and
+  `'Plus Jakarta Sans', sans-serif`) — they differ from `--font-body` only in fallbacks, but the brief was "unchanged".
+- No `inc/theme-config.php`: default settings already live in one place (`krm_defaults()`, read through the options
+  API by `krm_opt()`), so a second config file would duplicate them. `theme.json` uses the same colours as the tokens.
+
+**Verified**
+- Before/after check on the test site (old vs new files swapped on the same content): every element's computed style
+  (custom properties excluded) and box, 11 pages × 1440/768/390, default + main menu/submenu open + image viewer open.
+  The first run found the submenu regression above (fixed). Final run: only the intended viewer change (the other
+  session's `.lb { grid-template-columns: minmax(0, 1fr) }`, viewer 883 → 390 px wide at 390 px) and timing noise that
+  flips both ways between runs (pulse/spinner animation frames, one story's height, home `auto` margins with equal boxes).
+- The HTML-vs-WordPress pixel run (`compare.js`) was run but is not a usable baseline here: the test site's content
+  already differs from the design (extra posts on the blog etc.), so its numbers don't measure this change.
+- `php -l` on changed PHP.
+
+**Also done.** Newsletter popup: all 34 of its rules from both old files are in the new CSS with the same values
+(checked rule by rule; its open state was not rendered). `CLAUDE.md` Assets note updated for theme-global.css.
+`kingdom-revival.zip` rebuilt from the full theme folder (119 files, root `kingdom-revival/`), checked identical to it;
+it now includes the other session's verified photo-viewer work.
+
+**Not covered.** Your local WordPress was not used. The parallel session's Task 6 audit was still running when the zip
+was built; if it changes theme files, rebuild the zip.

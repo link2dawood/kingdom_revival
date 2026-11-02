@@ -2,8 +2,9 @@
 /**
  * Styles, scripts and the self-hosted font.
  *
- * The home page loads only its own stylesheet (front.css), exactly as the design did; every other page loads the
- * shared site.css plus a small page stylesheet that holds that page's original inline styles.
+ * Every page loads theme-global.css first (design tokens and shared components). The home page then loads its own
+ * front.css, as the design did; every other page loads site.css plus a small page stylesheet that holds that
+ * page's original inline styles.
  *
  * @package Kingdom_Revival
  */
@@ -51,10 +52,12 @@ add_action(
 		$view = krm_view();
 		$ver  = KRM_VERSION;
 
+		// Design tokens and shared components, loaded once and first on every page.
+		wp_register_style( 'krm-global', krm_asset( 'css/theme-global.css' ), array(), $ver );
 		if ( 'front' === $view ) {
-			wp_enqueue_style( 'krm-front', krm_asset( 'css/front.css' ), array(), $ver );
+			wp_enqueue_style( 'krm-front', krm_asset( 'css/front.css' ), array( 'krm-global' ), $ver );
 		} else {
-			wp_enqueue_style( 'krm-site', krm_asset( 'css/site.css' ), array(), $ver );
+			wp_enqueue_style( 'krm-site', krm_asset( 'css/site.css' ), array( 'krm-global' ), $ver );
 			wp_enqueue_style( 'krm-' . $view, krm_asset( 'css/pages/' . $view . '.css' ), array( 'krm-site' ), $ver );
 			if ( 'page' === $view ) {
 				// Story cards for fallback listings.

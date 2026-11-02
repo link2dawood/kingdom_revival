@@ -17,7 +17,7 @@
             var a = att.toJSON(), thumb = (a.sizes && a.sizes.thumbnail ? a.sizes.thumbnail : a).url;
             $("<li>").attr("data-ref", a.id)
               .append($("<img alt=''>").attr("src", thumb))
-              .append($("<button type='button' class='krm-remove' aria-label='Remove photo'>×</button>"))
+              .append($("<button type='button' class='krm-remove' aria-label='Remove photo'><span class='dashicons dashicons-no-alt' aria-hidden='true'></span></button>"))
               .appendTo(list);
           });
           sync();

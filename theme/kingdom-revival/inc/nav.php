@@ -38,13 +38,16 @@ function krm_menu_tree( $location ) {
 				return '' !== $c && ! preg_match( '/^(menu-item|current|page[_-]item)/', $c );
 			}
 		);
+		$url                = krm_menu_url( $item->url );
 		$nodes[ $item->ID ] = array(
 			'title'    => $item->title,
-			'url'      => $item->url,
+			'url'      => $url,
 			'classes'  => array_values( array_unique( $classes ) ),
 			'ministry' => $ministry,
-			// The posts page counts as current on single stories, as in the design.
-			'current'  => ! empty( $item->current ) || ( is_singular( 'post' ) && in_array( 'current_page_parent', (array) $item->classes, true ) ),
+			// The posts page counts as current on single stories, as in the design. WordPress doesn't know a
+			// rewritten link ("#contact" → /contact/) is the current page, so that is checked here.
+			'current'  => ! empty( $item->current ) || ( is_singular( 'post' ) && in_array( 'current_page_parent', (array) $item->classes, true ) )
+				|| ( $url !== $item->url && krm_url_is_current( $url ) ),
 			'ancestor' => ! empty( $item->current_item_ancestor ),
 			'parent'   => (int) $item->menu_item_parent,
 			'children' => array(),
@@ -193,6 +196,76 @@ function krm_local_url( $url ) {
 }
 
 /**
+ * A menu link that names a design page by an anchor or by its old static file ("#contact", "/#contact",
+ * "contact.html", "index.html", "blog-post.html?post=…") points at that page's WordPress permalink instead, so menus
+ * built by hand or kept from the previous site reach the real pages on any installation. Anchors of home page
+ * sections that are not pages (#all-ministries, #top…) and every other link are returned unchanged.
+ *
+ * @param string $url Menu item URL.
+ * @return string
+ */
+function krm_menu_url( $url ) {
+	$url  = trim( (string) $url );
+	$home = untrailingslashit( home_url() );
+	$path = (string) wp_parse_url( $home, PHP_URL_PATH );
+	$rel  = $url;
+	if ( 0 === stripos( $rel, $home ) ) {
+		$rel = substr( $rel, strlen( $home ) );
+	} elseif ( '' !== $path && 0 === strpos( $rel, $path . '/' ) ) {
+		$rel = substr( $rel, strlen( $path ) );
+	}
+	// WordPress saves a custom link typed as "contact.html" as "http://contact.html".
+	$rel = preg_replace( '#^(?:https?://)?\.?/?(?=[a-z-]+\.html(?:[?\#]|$)|\#)#', '', $rel );
+
+	$pages = array(
+		'about'   => 'about',
+		'contact' => 'contact',
+		'donate'  => 'donate',
+		'partner' => 'partner',
+		'blog'    => 'blog',
+	);
+	if ( preg_match( '/^#([a-z-]+)$/', $rel, $m ) && isset( $pages[ $m[1] ] ) ) {
+		return 'blog' === $m[1] ? krm_blog_url() : krm_page_url( $m[1] );
+	}
+	if ( ! preg_match( '/^([a-z-]+)\.html(\?[^#]*)?(#.*)?$/', $rel, $m ) ) {
+		return $url;
+	}
+	$query = isset( $m[2] ) ? $m[2] : '';
+	$hash  = isset( $m[3] ) ? $m[3] : '';
+	parse_str( ltrim( $query, '?' ), $args );
+	switch ( $m[1] ) {
+		case 'index':
+			return home_url( '/' ) . $hash;
+		case 'blog':
+			return krm_blog_url() . $hash;
+		case 'all-ministries':
+			return empty( $args['ministry'] ) ? home_url( '/#all-ministries' ) : krm_ministry_url( sanitize_title( $args['ministry'] ) ) . $hash;
+		case 'blog-post':
+			$post = empty( $args['post'] ) ? null : krm_get_by_path( sanitize_title( $args['post'] ), 'post' );
+			return ( $post ? get_permalink( $post ) : krm_blog_url() ) . $hash;
+	}
+	return isset( $pages[ $m[1] ] ) ? krm_page_url( $pages[ $m[1] ] ) . $query . $hash : $url;
+}
+
+/**
+ * Does a link (query and anchor ignored) point at the page being viewed?
+ *
+ * @param string $url Link URL.
+ */
+function krm_url_is_current( $url ) {
+	if ( is_front_page() ) {
+		$here = home_url( '/' );
+	} elseif ( is_home() ) {
+		$here = krm_blog_url();
+	} elseif ( is_singular() ) {
+		$here = get_permalink();
+	} else {
+		return false;
+	}
+	return untrailingslashit( strtok( $url, '?#' ) ) === untrailingslashit( $here );
+}
+
+/**
  * Print nodes as the design's menu list items.
  *
  * @param array $nodes Nodes.
@@ -325,7 +398,7 @@ function krm_footer_links( $location ) {
 				),
 				array(
 					'title' => __( 'Donate', 'kingdom-revival' ),
-					'url'   => home_url( '/#donate' ),
+					'url'   => krm_donate_url(),
 				),
 				array(
 					'title' => __( 'Contact', 'kingdom-revival' ),

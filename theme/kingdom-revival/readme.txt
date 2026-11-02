@@ -44,6 +44,7 @@ Everything below is edited in the dashboard; no plugin is needed.
 * Testimonials (/testimonials/): the title is the person's name, the editor holds their words, the featured image is their photo. Show them inside any story or page with [krm_testimonials count="3"] or [krm_testimonials ministry="widows-ministry"].
   The sermons, events and testimonials pages are not linked anywhere until you add them to a menu (Appearance → Menus → Custom Links or the "Sermons/Events/Testimonials" boxes).
 * Menus (Appearance → Menus): Main navigation, Footer Quick Links, Footer Ministries, Home Page Footer Quick Links. A custom link "#" with sub-items becomes a dropdown. Give the "All ministries" item the CSS class "menu-all".
+  Prefer adding pages with the "Pages" box. A custom link to a page by anchor or old file name ("#contact", "/#contact", "contact.html", "index.html", "blog-post.html?post=…", "all-ministries.html?ministry=…") still opens the real WordPress page; anchors of home page sections such as "#all-ministries" are kept (the page scrolls to the section and the "#…" is not shown in the address bar).
 * Impact numbers, contact details, social links, bank and PayPal details: Kingdom Revival → Settings (or Appearance → Customize for the first three). Logo: Appearance → Customize → Site Identity.
 * Design pages: About, Contact, Donate and Become a Partner use the templates in page-templates/ (Page Attributes → Template). Setup assigns them; a page with one of those slugs and no template chosen gets its design template automatically. Links across the site find these pages by template, so a page can be renamed safely.
 
@@ -114,9 +115,11 @@ inc/donations.php .......... PayPal checkout settings, payment notifications (IP
 inc/performance.php ........ hero image preload and small-screen copies, WebP image sizes
 inc/security.php ........... security headers, form token, no user-name lookup, rel="noopener" on new-tab links
 inc/ ....................... also settings, ministries, menus, forms, story meta, setup importer
-assets/css/site.css ........ shared design styles     assets/css/pages/*.css ... per-page design styles
+assets/css/theme-global.css  design tokens (colours, fonts, sizes, spacing, radii, shadows) and the components every page shares; change a token here to restyle the whole site
+assets/css/site.css ........ inner-page base and layout  assets/css/pages/*.css ... per-page design styles
 assets/css/front.css ....... home page design styles  assets/js/*.js ........... design behaviour
-assets/images/, assets/icons/, assets/fonts/
+assets/icons/*.svg ......... theme icons (Lucide-style line icons), printed inline with krm_icon( 'name' )
+assets/images/, assets/fonts/
 
 == Privacy ==
 

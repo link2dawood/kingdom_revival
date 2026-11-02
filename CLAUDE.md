@@ -85,8 +85,14 @@ template to a page with the matching slug. Links find these pages **by template,
 (`krm_page_url()`), so pages can be renamed. The home page uses its own `header-home.php` / `footer-home.php`
 and `template-parts/home/*`.
 
-**Assets.** `assets/css/site.css` and `assets/js/site.js` are the design's original shared files — keep them
-as close to the originals as possible (differences are only WordPress wiring: URLs, form posting).
+**Assets.** `assets/css/theme-global.css` (Task 5) is the single source of the design system: design tokens as
+CSS custom properties (old short names like `--navy`/`--red` are aliases) plus every component shared by the home
+and inner pages (menu, image viewer, popups, buttons, header/footer, forms, story cards, FAQ, animations). It is
+enqueued once as `krm-global`, a dependency of `krm-front` and `krm-site`. Put shared rules there, not in two files;
+a rule that must override a rule left in `site.css`/`front.css` has to stay after it (load order).
+`assets/css/site.css` holds the inner pages' base and layout, `front.css` the home page's own rules.
+`assets/js/site.js` is the design's original shared script — keep it as close to the original as possible
+(differences are only WordPress wiring: URLs, form posting).
 Per-page CSS/JS in `assets/css/pages/` and `assets/js/`, enqueued per view in `inc/enqueue.php`. The font is
 self-hosted (no Google Fonts request). `theme.json` mirrors the palette/font for the editor.
 
