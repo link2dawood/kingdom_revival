@@ -165,6 +165,7 @@ function krm_media_id( $url ) {
 
 /**
  * URL for a design image: the imported Media Library copy when available, otherwise the original URL.
+ * "krm-theme:images/content/x.jpg" names a photo shipped in the theme's assets/ folder (not on the old site).
  *
  * @param string $url  Remote URL from the design.
  * @param string $size Image size.
@@ -177,7 +178,7 @@ function krm_media( $url, $size = 'full' ) {
 			return $src;
 		}
 	}
-	return $url;
+	return 0 === strpos( $url, 'krm-theme:' ) ? krm_asset( substr( $url, 10 ) ) : $url;
 }
 
 /**

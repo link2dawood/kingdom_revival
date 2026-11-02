@@ -1,11 +1,12 @@
 # Kingdom Revival Ministries: data folder asset inventory
 
-**Result:** every one of the 243 files in `Kingdom Revival ministries-Data_/` was opened and checked. All 81 photos and the one video on the website came from this folder (renamed and re-saved by the old Elementor site), from 76 of its files, and all are already in the Media Library through Kingdom Revival → Setup, with no duplicates. 151 photos and 15 videos are not used yet. Four ministry folders are empty and no written content was supplied. **Nothing was imported or changed**: every change below alters the approved design or its content and needs your approval first.
+**Result:** every one of the 243 files in `Kingdom Revival ministries-Data_/` was opened and checked. All 81 photos and the one video on the website came from this folder (renamed and re-saved by the old Elementor site), from 76 of its files, and all are already in the Media Library through Kingdom Revival → Setup, with no duplicates. 151 photos and 15 videos are not used yet. Four ministry folders are empty and no written content was supplied. **Theme 1.7.4 (Phase 14 Task 7) imported what you approved** (decisions 1, 2, 3, 5 and 6, see [Imported in theme 1.7.4](#imported-in-theme-174)): the upright Urdu Bible photo, a 12-photo Outreach gallery, a brick kiln photo on the home "Freedom from Slavery" card, a 512×512 search-engine logo and descriptive Media Library alt text. Decisions 7 and 8 are not acted on.
 
-Generated 2026-11-02. Method at the end. Local test site: 85 design files imported (`krm_media_map`, attachment IDs below).
+Generated 2026-11-02, updated for theme 1.7.4 the same day. Method at the end. Local test site: 85 design files imported (`krm_media_map`, attachment IDs below), plus the 13 new photos (IDs 185–197). The tables below describe the folder and the site **before** 1.7.4.
 
 ## Contents
 
+- [Imported in theme 1.7.4](#imported-in-theme-174)
 - [Summary](#summary)
 - [Decisions for you](#decisions-for-you)
 - [Missing assets and unresolved mappings](#missing-assets-and-unresolved-mappings)
@@ -14,6 +15,28 @@ Generated 2026-11-02. Method at the end. Local test site: 85 design files import
 - [Written content](#written-content)
 - [Full inventory of the data folder](#full-inventory-of-the-data-folder)
 - [Method](#method)
+
+## Imported in theme 1.7.4
+
+New photos are shipped in the theme (`assets/images/content/`, 13 JPEGs, 3.2 MB: converted from HEIC where needed,
+EXIF orientation applied and metadata stripped, 1600 px long side, quality 74). The theme refers to them as
+`krm-theme:images/content/<file>`; Kingdom Revival → Setup copies them into the Media Library like the design's other
+images, and until then pages use the theme's copy. Each matches its source with image-hash distance 0.
+
+| Decision | Theme file / change | Source in data folder | Where it shows |
+|---|---|---|---|
+| 1. Sideways photo | `urdu-bible-distribution-12.jpg` (740×1600) replaces `Urdu-Bible-Distribution-12.jpg` | `Urdu Bibles Distribution ministry/20250301_180839.jpg` (upright once its EXIF orientation is applied; the old site's copy had lost the tag) | Urdu Bibles gallery, photo 12 (caption unchanged) |
+| 2. Outreach gallery | `outreach-ministry-1.jpg` … `-12.jpg` | `Outreach Ministry/IMG_2463, IMG_2556, IMG_2606, IMG_2640, IMG_2598, IMG_2612, IMG_2617, IMG_2621, IMG_2626, IMG_2666, IMG_2669, IMG_2692.HEIC` (in that order) | Outreach Ministry gallery (was the General placeholder only), its card on the home explorer and /ministries/, featured image |
+| 3. Freedom card | Home "Freedom from Slavery" cause card uses `Bricks-kiln-slaves-children-31-scaled.jpg` | `Bricks kiln slaves children_/20260225_154404.jpg` (already in the Media Library; children at a meal in a kiln courtyard) instead of the proposed `20251221_155850.jpg`, which would have been a new upload | Home page, causes section |
+| 5. Logo | `assets/images/krm-logo-large.png` (512×512) | `Church logo/file_000000004fb48211ba27b99f0eed6cab.png` (1254×1254, scaled) | Structured-data `logo` only (Google's 112 px minimum). The header and footer keep the 99×99 `krm-logo.png`, so pages stay pixel-identical |
+| 6. Alt text | `inc/data/media.php`: the proposed alt for every photo (table below) | — | Media Library alt (`alt` attributes of story covers, About and Home images, and the viewer caption there). Ministry galleries print their saved captions as visible text, so they keep the design's wording: putting the long alt there made ministry pages 25–44 % different and taller |
+
+Existing sites: re-running Setup updates only what nobody edited: a ministry gallery that still shows only the old
+placeholder gets the Outreach photos, the old sideways Urdu photo is swapped (caption kept), and Media Library alt
+texts still set to the old one-phrase-per-ministry wording get the new text. Edited galleries and alts are left alone.
+
+Not acted on: decision 4 (no photos exist), 7 (keep the old site's copies, as recommended), 8 (more photos and videos:
+you have not chosen which). The 8 Outreach HEIC photos not used and its 2 videos remain candidates for decision 8.
 
 ## Summary
 
@@ -45,7 +68,8 @@ Generated 2026-11-02. Method at the end. Local test site: 85 design files import
 
 ## Decisions for you
 
-Each of these changes what an approved page shows, so none was made. Say which to do.
+Each of these changes what an approved page shows. Status after theme 1.7.4: 1, 2, 3, 5, 6 done (see above);
+4 waits for photos; 7 not done (as recommended); 8 still open.
 
 1. **Fix the sideways photo.** `Urdu-Bible-Distribution-12.jpg` (Urdu Bibles gallery) shows people lying on their side, on the live site and in the source file `20250301_180839.jpg`. Proposal: import it rotated 90° so it stands upright.
 2. **Outreach Ministry gallery.** It shows only the General placeholder photo. The `Outreach Ministry` folder has 20 photos (HEIC) of food and supplies (blue and green bags) handed out to families at brick kilns, and 2 videos. Proposal: convert to JPEG, import, and use them as the Outreach gallery and card image.
@@ -59,7 +83,7 @@ Each of these changes what an approved page shows, so none was made. Say which t
 ## Missing assets and unresolved mappings
 
 - **Empty folders:** `Clean Water Project`, `Free medical camp for bricks kiln slaves and village people_s_`, `Freedom from slavery missions`, `Orphanage and underprivileged children care_` (the orphan photos are in `Children ministry/Orphanages care`).
-- **No photos at all for:** Free Medical Camps, Clean Water Project, Outreach (until decision 2), Freedom from Slavery (shares Brick Kiln photos).
+- **No photos at all for:** Free Medical Camps, Clean Water Project, Freedom from Slavery (shares Brick Kiln photos). Outreach has its own gallery since theme 1.7.4.
 - **Not in the folder:** the PayPal, Western Union and MoneyGram logos (Donate page tabs), `assets/images/krm-logo.png` at its current size (only the large version), any written content, fonts, or poster images for videos.
 - **HEIC photos (63):** cannot be shown by most browsers; WordPress converts them on upload only if the server's image library supports HEIC. They must be converted to JPEG first (I can do this, keeping the filenames).
 - **Videos:** 7 of 16 are stored with their index at the end of the file ("faststart" off), so a browser must download most of the file before playing. They should be re-saved with faststart (and smaller) before use. `Leadership and Discipleship/.mp4` has no filename and is HEVC (H.265), which some browsers cannot play.

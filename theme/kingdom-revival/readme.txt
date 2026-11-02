@@ -11,13 +11,13 @@ Custom theme for kingdomrevivalministries.com, converted from the approved HTML 
 1. Back up the site (database + wp-content). Nothing in this theme deletes content, but a backup is the safe first step on a live site.
 2. Appearance → Themes → Add New → Upload Theme → choose kingdom-revival.zip → Install → Activate.
 3. Open Kingdom Revival → Setup and click "Run setup". It:
-   - imports the design's images and video into the Media Library (files already in the library are reused, not duplicated) and adds alt text where it is missing,
+   - imports the design's images and video into the Media Library (files already in the library are reused, not duplicated) and adds alt text where it is missing; photos that were not on the old site (the Outreach gallery, the upright Urdu Bible photo) are copied from assets/images/content/,
    - creates the 12 ministries, the 7 stories, and the About, Contact, Donate, Become a Partner and News & Blogs pages,
    - moves WordPress's sample post "Hello world!" to the trash, if it was never edited (it would otherwise show in News & Blogs),
    - creates the menus and assigns them to this theme's empty menu locations,
    - optionally sets the Reading settings (static front page + News & Blogs as posts page) and /post-name/ permalinks — only if you tick those boxes.
-   Anything that already exists with the same slug or name is skipped and left unchanged. You can run Setup again at any time.
-4. Appearance → Customize → Site Identity: upload a logo (optional; the bundled logo is used otherwise). For search results use one at least 112×112 pixels: Google ignores smaller logos, and the bundled one is 99×99. Contact details, social links and impact numbers can be edited with live preview under Customize → Kingdom Revival.
+   Anything that already exists with the same slug or name is skipped and left unchanged, with one exception: on an existing ministry, Setup replaces only photo settings nobody has edited (a gallery that still shows just the placeholder photo, the old sideways Urdu Bible photo, and alt texts still set to the old one-phrase-per-ministry wording). You can run Setup again at any time.
+4. Appearance → Customize → Site Identity: upload a logo (optional; the bundled logo is used otherwise). Search engines get the bundled 512×512 logo (assets/images/krm-logo-large.png) unless you upload one; the header shows the 64-pixel krm-logo.png. Contact details, social links and impact numbers can be edited with live preview under Customize → Kingdom Revival.
 5. Kingdom Revival → Settings: check the contact details, add social media links, the PayPal account email (enables secure one-time and monthly PayPal checkout, saved Donations and receipts — see "Online giving"), bank details and the email address that receives form notifications.
 6. Install an SEO plugin: Rank Math or Yoast SEO (both free; SureRank, which the previous site used, also works). The plugin manages every page's SEO title, meta description, canonical URL, Open Graph and Twitter tags, schema and sitemap; the theme then prints none of these tags itself, so nothing is duplicated (for schema, see below). Where a page's field in the plugin is empty, the theme offers the design's title, description and hero image as the default; anything typed in the plugin wins. Rank Math only takes over once its setup wizard is completed or skipped. Tip: set the plugin's title separator to "|" so story and ministry titles match the design ("Baptisms | Kingdom Revival Ministries").
    Without an SEO plugin the theme prints basic tags itself.
@@ -120,7 +120,7 @@ assets/css/theme-global.css  design tokens (colours, fonts, sizes, spacing, radi
 assets/css/site.css ........ inner-page base and layout  assets/css/pages/*.css ... per-page design styles
 assets/css/front.css ....... home page design styles  assets/js/*.js ........... design behaviour
 assets/icons/*.svg ......... theme icons (Lucide-style line icons), printed inline with krm_icon( 'name' )
-assets/images/, assets/fonts/
+assets/images/, assets/fonts/  (assets/images/content/: ministry photos shipped with the theme, imported by Setup)
 
 == Privacy ==
 

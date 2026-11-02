@@ -346,7 +346,7 @@ return array(
 					'Urdu Bible distribution',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-12.jpg',
+					'krm-theme:images/content/urdu-bible-distribution-12.jpg',
 					'Urdu Bible distribution',
 				),
 				array(
@@ -538,14 +538,58 @@ return array(
 			),
 			'photos' => array(
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg',
-					'Community outreach gathering',
+					'krm-theme:images/content/outreach-ministry-1.jpg',
+					'A pastor speaking to families at a brick kiln, with bags of food and supplies laid out in front',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-2.jpg',
+					'Rows of food and supply bags laid out for families at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-3.jpg',
+					'A pastor with families at a brick kiln holding their food and supply bags',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-4.jpg',
+					'Families at a brick kiln sitting with the food and supplies they received',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-5.jpg',
+					'A woman sitting with bags of food and supplies at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-6.jpg',
+					'A pastor handing food bags to a family with a young girl',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-7.jpg',
+					'A pastor with a family holding their food and supply bags',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-8.jpg',
+					'A pastor with children holding bags of food and supplies',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-9.jpg',
+					'A pastor with an elderly man and a woman receiving food bags',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-10.jpg',
+					'A pastor with a family and their children holding food bags',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-11.jpg',
+					'Women sitting with the food and supply bags they received',
+				),
+				array(
+					'krm-theme:images/content/outreach-ministry-12.jpg',
+					'A woman at a brick kiln with her bags of food and supplies',
 				),
 			),
 			'group' => 'gospel-and-church',
 			'menu_order' => 8,
 			'home_order' => 11,
-			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg',
+			'explorer_image' => 'krm-theme:images/content/outreach-ministry-1.jpg',
 		),
 		'leadership-and-discipleship' => array(
 			'title' => 'Leadership & Discipleship',

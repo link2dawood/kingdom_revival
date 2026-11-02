@@ -28,6 +28,13 @@ function krm_media_manifest() {
 }
 
 /**
+ * Alt texts that theme versions before 1.7.4 gave to every photo of a ministry; Setup replaces them.
+ */
+function krm_old_generic_alts() {
+	return array( 'Baptism in a local community', 'Urdu Bible distribution', 'Children and families in a brick kiln community', 'Deliverance and healing ministry', 'Leadership and discipleship gathering', 'Children receiving care at an orphanage', 'Widows ministry' );
+}
+
+/**
  * How many design files are already linked to Media Library items.
  */
 function krm_media_done_count() {
@@ -165,13 +172,29 @@ function krm_import_media_batch( $offset ) {
 		$alt  = $manifest[ $url ];
 		$name = wp_basename( wp_parse_url( $url, PHP_URL_PATH ) );
 		if ( ! empty( $map[ $url ] ) && get_post( $map[ $url ] ) ) {
+			// Earlier versions gave every photo of a ministry the same alt text; give the Media Library copy this photo's own
+			// (galleries show their own captions, so pages do not change).
+			$id = (int) $map[ $url ];
+			if ( wp_attachment_is_image( $id ) && in_array( get_post_meta( $id, '_wp_attachment_image_alt', true ), krm_old_generic_alts(), true ) ) {
+				update_post_meta( $id, '_wp_attachment_image_alt', sanitize_text_field( $alt ) );
+			}
 			continue;
 		}
-		$id = attachment_url_to_postid( $url );
+		$theme_file = 0 === strpos( $url, 'krm-theme:' ) ? get_theme_file_path( 'assets/' . substr( $url, 10 ) ) : '';
+		$id         = $theme_file ? 0 : attachment_url_to_postid( $url );
 		if ( $id ) {
 			$log[] = sprintf( 'Reused from Media Library: %s', $name );
 		} else {
-			$tmp = download_url( $url, 300 );
+			if ( $theme_file ) {
+				// Shipped with the theme: copy it, because media_handle_sideload() moves the file it is given.
+				$tmp = wp_tempnam( $name );
+				if ( ! $tmp || ! copy( $theme_file, $tmp ) ) {
+					$log[] = sprintf( 'Could not copy %s — the page keeps using the theme’s copy.', $name );
+					continue;
+				}
+			} else {
+				$tmp = download_url( $url, 300 );
+			}
 			if ( is_wp_error( $tmp ) ) {
 				$log[] = sprintf( 'Could not download %s (%s) — the page keeps using the original link.', $name, $tmp->get_error_message() );
 				continue;
@@ -226,6 +249,61 @@ function krm_media_id_fresh( $url ) {
 	return ( is_array( $map ) && ! empty( $map[ $url ] ) && get_post( $map[ $url ] ) ) ? (int) $map[ $url ] : 0;
 }
 
+/**
+ * Bring an existing ministry's photos up to date with theme 1.7.4, touching only what was never edited:
+ * a gallery that still shows only the old placeholder photo gets the ministry's own photos; the old sideways
+ * Urdu Bible photo is swapped for the upright one, keeping its caption. Gallery captions are otherwise left alone.
+ *
+ * @param int   $id Ministry ID.
+ * @param array $m  The ministry's data from inc/data/ministries.php.
+ * @return bool Whether anything changed.
+ */
+function krm_upgrade_ministry_photos( $id, $m ) {
+	$up          = 'https://kingdomrevivalministries.com/wp-content/uploads/';
+	$placeholder = $up . 'elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg';
+	$swaps       = array( $up . '2026/07/Urdu-Bible-Distribution-12.jpg' => 'krm-theme:images/content/urdu-bible-distribution-12.jpg' );
+	$gallery     = (array) get_post_meta( $id, '_krm_gallery', true );
+	$alts        = (array) get_post_meta( $id, '_krm_photo_alts', true );
+	$changed     = false;
+
+	$is_placeholder = static function ( $ref ) use ( $placeholder ) {
+		return (string) $ref === $placeholder || (string) $ref === (string) krm_media_id_fresh( $placeholder );
+	};
+	if ( 1 === count( $gallery ) && $is_placeholder( $gallery[0] ) && ! $is_placeholder( $m['photos'][0][0] ) ) {
+		$gallery = array_map( 'krm_import_ref', wp_list_pluck( $m['photos'], 0 ) );
+		$alts    = array();
+		foreach ( $gallery as $ref ) {
+			$alts[ (string) $ref ] = $m['photos'][ count( $alts ) ][1];
+		}
+		if ( $is_placeholder( get_post_meta( $id, '_krm_explorer_image', true ) ) ) {
+			update_post_meta( $id, '_krm_explorer_image', krm_import_ref( $m['explorer_image'] ) );
+		}
+		if ( is_int( $gallery[0] ) ) {
+			set_post_thumbnail( $id, $gallery[0] );
+		}
+		$changed = true;
+	}
+	foreach ( $swaps as $old => $new ) {
+		$old_refs = array_filter( array( $old, (string) krm_media_id_fresh( $old ) ) );
+		foreach ( $gallery as $i => $ref ) {
+			if ( in_array( (string) $ref, $old_refs, true ) ) {
+				$gallery[ $i ] = krm_import_ref( $new );
+				if ( isset( $alts[ (string) $ref ] ) ) {
+					// The caption stays the same; only the photo changes.
+					$alts[ (string) $gallery[ $i ] ] = $alts[ (string) $ref ];
+					unset( $alts[ (string) $ref ] );
+				}
+				$changed = true;
+			}
+		}
+	}
+	if ( $changed ) {
+		update_post_meta( $id, '_krm_gallery', array_values( $gallery ) );
+		update_post_meta( $id, '_krm_photo_alts', $alts );
+	}
+	return $changed;
+}
+
 /* ---------------------------------------------------------------- Content */
 
 /**
@@ -256,7 +334,9 @@ function krm_import_content( $opts ) {
 			$existing = krm_get_by_path( $slug, 'ministry' );
 			if ( $existing ) {
 				$ministry_ids[ $slug ] = $existing->ID;
-				$log[]                 = sprintf( 'Ministry exists, left unchanged: %s', $m['title'] );
+				$log[]                 = krm_upgrade_ministry_photos( $existing->ID, $m )
+					? sprintf( 'Ministry exists, photos updated to the theme’s new defaults: %s', $m['title'] )
+					: sprintf( 'Ministry exists, left unchanged: %s', $m['title'] );
 				continue;
 			}
 			$gallery = array();

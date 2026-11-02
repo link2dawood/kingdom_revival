@@ -1687,3 +1687,128 @@ fixes it led to (Task 2 viewer bugs above) are in that commit. Pixel parity with
 
 **Decisions for you.** Open: Task 4 decisions 1–8 (sideways Urdu photo, Outreach
 gallery, Freedom card photo, large logo, alt texts, more photos/videos), About's 01/02/03 contrast, PayPal email.
+
+### Task 7: deliverables (theme 1.7.4, approved data-folder assets)
+
+**Result: theme 1.7.4 is finished, tested and packaged (`kingdom-revival.zip`, 133 files, identical to the theme folder).
+It adds the data-folder assets you approved: the upright Urdu Bible photo, a 12-photo Outreach gallery, a brick kiln
+photo on the home "Freedom from Slavery" card, a 512×512 logo for search engines and descriptive Media Library alt
+text. Every other page is still pixel-identical to the approved design (only the known photo noise); the pages that
+changed differ only where the new photos are.**
+
+The asset work was started by a parallel session and handed over unfinished (its last ministry-page check was cut off).
+It was reviewed, completed and verified here. Details per photo: [DATA-ASSET-INVENTORY.md](DATA-ASSET-INVENTORY.md#imported-in-theme-174).
+
+#### Deliverables
+
+| Deliverable | Where |
+|---|---|
+| Theme source | [theme/kingdom-revival/](theme/kingdom-revival/) (1.7.4) |
+| Installable ZIP | `kingdom-revival.zip` (root folder `kingdom-revival/`, `/` paths, 3.8 MB) |
+| Global design system | [assets/css/theme-global.css](theme/kingdom-revival/assets/css/theme-global.css) (Task 5) |
+| Central PHP configuration | Not a new file: defaults live once in `krm_defaults()` ([inc/template-functions.php](theme/kingdom-revival/inc/template-functions.php)), read with `krm_opt()`, edited in Kingdom Revival → Settings and the Customizer (Task 5) |
+| Icon system | [assets/icons/*.svg](theme/kingdom-revival/assets/icons/), printed inline with `krm_icon()`; admin ↑↓× are Dashicons; the design's ★ and ←/→ text arrows kept by your decision (Task 1) |
+| Mobile image viewer | [assets/js/site.js](theme/kingdom-revival/assets/js/site.js) + `theme-global.css` (Task 2) |
+| Navigation links | [inc/nav.php](theme/kingdom-revival/inc/nav.php) `krm_menu_url()` (Task 3) |
+| Imported assets | [assets/images/content/](theme/kingdom-revival/assets/images/content/) (13 photos), [assets/images/krm-logo-large.png](theme/kingdom-revival/assets/images/krm-logo-large.png); imported by Setup ([inc/importer.php](theme/kingdom-revival/inc/importer.php)) |
+| Asset inventory | [DATA-ASSET-INVENTORY.md](DATA-ASSET-INVENTORY.md) |
+
+#### What changed in 1.7.4
+
+- `inc/data/ministries.php`: Outreach gallery = 12 photos from `Outreach Ministry/` (HEIC → JPEG), also its explorer card
+  and featured image; Urdu Bibles photo 12 = the upright version. Captions on the other galleries stay the design's.
+- `inc/home.php`: Freedom from Slavery card photo = `Bricks-kiln-slaves-children-31` (already in the Media Library).
+- `inc/schema.php`: structured-data logo = `krm-logo-large.png`, 512×512 (header/footer keep the 99 px logo).
+- `inc/data/media.php`: a descriptive alt text for every design photo, plus the 13 new files.
+- `inc/template-functions.php`: `krm-theme:images/…` references resolve to the theme's copy until Setup imports them.
+- `inc/importer.php`: Setup copies shipped photos into the Media Library; on an existing site it upgrades only what
+  nobody edited (placeholder-only gallery, the old sideways photo, old one-phrase alt texts).
+- **Fixed here:** `inc/ministry.php` `krm_clean_refs()` dropped `krm-theme:` references when a ministry was saved in the
+  editor, so on a site where Setup had not imported the photos yet, saving Outreach or Urdu Bibles would have deleted
+  them. It now keeps them (path checked, no `..`).
+- `functions.php`, `style.css`: version 1.7.4. `readme.txt`: Setup and file-map notes.
+- QA tools: `compare.js` now also compares the Urdu Bibles and Outreach pages; `viewer_check.js` also tests the
+  Outreach gallery (portrait photos).
+
+#### Verified (local test site, theme copied from the folder)
+
+- **Setup upgrade path:** Outreach and Urdu Bibles put back to their pre-1.7.4 state, Setup's content step run: both
+  return exactly to the 1.7.4 values (gallery, captions, explorer image, featured image); an edited gallery (Widows)
+  untouched; a second run changes nothing. Media step: an old generic alt gets the new text, a hand-edited alt is kept;
+  all 97 manifest files imported, none left with the old wording. New attachments 185–197.
+- **Pixel parity** (`compare.js`, 13 pages × 3 widths): page heights equal to the design everywhere except Outreach.
+  Contact 0.04–0.08 % (known sentence), Partner 0–0.06 %, About 0.27–0.35 %, Donate 0.15–0.26 %, Blog 0.17–0.37 %,
+  stories 0.01–0.15 %, Brick Kiln ministry 0.6–3.6 %, empty ministry and /ministries/ 0 %: same as the Task 6 baseline.
+  Home 0.62–1.24 % (was 0.004–0.09 %): side-by-side, the only visible change is the Freedom card photo. Urdu Bibles
+  0.4–1.4 %: photo 12 upright, captions identical. Outreach 44–58 %, page taller: the design shows one placeholder
+  photo, the page now shows 12 (intended; screenshot checked at 1440 and 390).
+- **Interactions** (30 states): 19 at 0 %; menus 0.36 %, floating panel, donate tabs, blog filter/search, Partner
+  church, scrolled post 0.006–0.4 % (photos behind them, as in Task 6); viewer 8.2 % (redesigned in Task 2);
+  home card hover 4.3 %: only the Freedom card photo (new).
+- **Photo viewer** (`viewer_check.js`): 63/63 (7 galleries incl. Outreach × 9 widths, 320–1440 px): photo fits,
+  zoom, rotate + refit, pan, reset, next/previous, keyboard.
+- `php -l` on every changed PHP file; `krm_clean_refs()` tested with IDs, URLs, theme paths, `../` and `javascript:`.
+
+#### Mobile responsiveness test report
+
+`responsive_check.js`, every page at 320, 360, 375, 390, 414, 480, 768, 1024 and 1440 px, WordPress and the HTML design
+side by side, for horizontal page scroll, elements sticking out past the screen, images drawn out of shape and images
+covering text or buttons.
+
+**Result: 29 pages × 9 widths = 261 checks, no problems.** No horizontal scroll, no distorted or stretched images, no
+image covering text or buttons, on any page at any width, including the new Outreach gallery (portrait photos) and the
+upright Urdu photo. The only flagged element is the hidden anti-spam field on Contact and Partner (`p.krm-hp`, 18
+checks), which is off-screen on purpose. The HTML design passes the same checks.
+
+| Pages | Checks | Result |
+|---|---|---|
+| Home, About, Contact, Donate, Partner, News & Blogs | 54 | pass (anti-spam field only) |
+| /ministries/ + all 12 ministry pages | 117 | pass |
+| 7 stories | 63 | pass |
+| Donate thank-you, Sermons, Events | 27 | pass |
+
+The photo viewer was checked separately at the same 9 widths: 63/63 (see Verified). The first run crashed on the story
+pages (Node out of memory) and hung on the last group; both were re-run in small batches, which is how the totals above
+were produced.
+
+#### Navigation and routing test report
+
+**Result: all routes work; Contact is `/contact/` with no `#contact`.**
+
+- `audit.js` (29 pages, WordPress vs the design): every page answers 200; 29 internal link targets, all 200; no
+  `.html` links left; header, footer, nav, H1 and main present on every page. Text differences are the known ones
+  (Contact sentence, skip link, footer heading) plus the Outreach captions (new gallery).
+- `seo_check.py`: 30 pages, 0 problems (one title, description, canonical, Open Graph and Twitter set each).
+- `schema_check.py`: 32 pages, 0 errors. The structured-data logo is now `krm-logo-large.png` 512×512, so the Task 6
+  warning (99 px logo under Google's 112 px) is gone. Remaining warning: sample Event without `eventStatus` (test content).
+- Menu routing itself is unchanged since Task 3 (396 links on 10 pages, clicks at 1440 and 390 px, old `.html` and
+  `#section` custom links rewritten to permalinks; "All ministries" scrolls to the home explorer without `#` in the
+  address bar). No navigation code changed in 1.7.4.
+
+#### Files modified in Phase 14 (tasks 1–7)
+
+Theme (`theme/kingdom-revival/`):
+- New: `assets/css/theme-global.css`, `assets/images/content/` (13 JPEG), `assets/images/krm-logo-large.png`.
+- PHP: `functions.php`, `footer-home.php`, `header-home.php`, `inc/content-fields.php`, `inc/data/media.php`,
+  `inc/data/ministries.php`, `inc/enqueue.php`, `inc/home.php`, `inc/importer.php`, `inc/ministry.php`, `inc/nav.php`,
+  `inc/schema.php`, `inc/template-functions.php`, `template-parts/home/` (`about`, `causes`, `cta`, `explorer`,
+  `floating-donate`, `founder`, `get-involved`, `hero`, `stats`).
+- CSS/JS: `assets/css/site.css`, `assets/css/front.css`, `assets/css/admin-content.css`,
+  `assets/css/pages/` (`blog`, `contact`, `donate`, `partner`, `post`), `assets/js/site.js`, `assets/js/front.js`,
+  `assets/js/admin.js`.
+- `style.css`, `readme.txt`.
+
+Project: `kingdom-revival.zip`, `PHASE-REPORTS.md`, `DATA-ASSET-INVENTORY.md`, `CLAUDE.md`, `.gitignore`,
+`tools/visual-qa/` (`compare.js`, new `responsive_check.js`, new `viewer_check.js`).
+
+#### Not covered
+
+- Real phones and Safari/Firefox (Chrome emulation only); a PayPal sandbox payment end to end.
+- Your own WordPress: install the new zip and run Kingdom Revival → Setup once to get the new photos and alt texts.
+
+#### Remaining issues and decisions for you
+
+- **Data folder:** decision 8 (which of the 151 unused photos and 15 videos to add) is open; Free Medical Camps and
+  Clean Water Project have no photos (folders empty), so they keep the placeholder.
+- Open from earlier phases: PayPal Business email (donations not connected), About's pale 01/02/03 numbers
+  (accessibility contrast), SEO plugin choice and go-live items (Phase 6/7).

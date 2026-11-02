@@ -197,6 +197,8 @@ function krm_clean_refs( $refs ) {
 			$out[] = (int) $ref;
 		} elseif ( preg_match( '#^https?://#', $ref ) ) {
 			$out[] = esc_url_raw( $ref );
+		} elseif ( preg_match( '#^krm-theme:images/[a-z0-9/_.-]+$#i', $ref ) && false === strpos( $ref, '..' ) ) {
+			$out[] = $ref; // A photo shipped with the theme that Setup has not copied to the Media Library yet.
 		}
 	}
 	return $out;

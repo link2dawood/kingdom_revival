@@ -194,7 +194,7 @@ function krm_sermon_video( $post_id ) {
 }
 
 /**
- * Logo ImageObject: the Custom Logo when set, else the bundled logo (99×99).
+ * Logo ImageObject: the Custom Logo when set, else the bundled 512×512 logo (Google asks for at least 112×112).
  */
 function krm_logo_schema() {
 	$id    = (int) get_theme_mod( 'custom_logo' );
@@ -209,9 +209,9 @@ function krm_logo_schema() {
 	}
 	return array(
 		'@type'  => 'ImageObject',
-		'url'    => krm_asset( 'images/krm-logo.png' ),
-		'width'  => 99,
-		'height' => 99,
+		'url'    => krm_asset( 'images/krm-logo-large.png' ),
+		'width'  => 512,
+		'height' => 512,
 	);
 }
 
