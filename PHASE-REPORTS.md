@@ -1633,3 +1633,55 @@ it now includes the other session's verified photo-viewer work.
 
 **Not covered.** Your local WordPress was not used. The parallel session's Task 6 audit was still running when the zip
 was built; if it changes theme files, rebuild the zip.
+
+### Task 2: mobile photo viewer
+
+**Result: the shared image viewer (`assets/js/site.js`, styles in `theme-global.css`) fits the photo to any screen
+from 320 to 1440 px and supports zoom (buttons, wheel, pinch, double-tap), pan, rotate left/right (the photo is
+refitted after each turn), reset, full screen, open original, next/previous with thumbnails, and keyboard (Esc, ←/→,
++/−, R/L). Verified by `tools/visual-qa/viewer_check.js`: 6 galleries (home, About collage/photos/founder, ministry,
+story) × 9 widths = 54/54 pass.**
+
+Fixed while verifying: the photo stayed behind the spinner (the viewer's `ready()` was overwritten by the design's
+`ready()` in the same file; renamed `imageReady()`); all controls were off-screen on phones (`.lb` grid column grew to
+the thumbnail strip's width; `grid-template-columns: minmax(0, 1fr)`); keys stopped working after a tap on the photo
+(listener moved to the document while the viewer is open). The viewer screenshot differs from the design (8.2 % in
+`npm run interactions`) because the viewer itself was redesigned on request.
+
+### Task 4: supplied data folder
+
+**Result: see [DATA-ASSET-INVENTORY.md](DATA-ASSET-INVENTORY.md). All 243 files were checked. All 81 photos and the
+video on the site already come from this folder (renamed by the old site) and are in the Media Library; 151 photos
+and 15 videos are unused; 4 ministry folders are empty; no written content was supplied. Nothing was imported:
+decisions 1–8 in that file are open.**
+
+### Task 6: project-wide UI and functionality audit
+
+**Result: no defects left in the theme. Every page and shared component was checked on the local test site with the
+final theme (commit 8842216, identical to `kingdom-revival.zip`, 119 files). The audit found no new problems; the
+fixes it led to (Task 2 viewer bugs above) are in that commit. Pixel parity with the approved design is unchanged.**
+
+| Check | Tool | Result |
+|---|---|---|
+| Emojis → SVG icons | scan of all theme PHP/JS/CSS | Only the design's ★ badge and ←/→ text arrows remain on pages (kept by your Task 1 decision); the rest are admin help texts and comments |
+| Pixel parity vs `html/` | `compare.js`, 11 pages × 3 widths | Same as the Task 1 baseline: ministry-empty, ministries-none, Partner tablet/mobile 0 %; Home 0.004–0.09 %, About 0.27–0.35 %, Contact 0.04–0.08 % (known sentence), Donate 0.15–0.26 %, Partner desktop 0.063 %, Ministry 0.6–3.6 % — all inside photos (checked side by side). Blog/story: the test database's extra "Hello world!" post |
+| Interactions | `interactions.js`, 30 states | 21 at 0 %. Menus 0.29–0.36 % and floating panel (phone) 2.7 %: photos / the "Hello world!" card behind them, the menus themselves identical. Viewer 8.2 %: redesigned (Task 2). Blog filter/search: test content |
+| Photo viewer: zoom, rotation, responsiveness | `viewer_check.js` | 54/54 |
+| Mobile layout, image fit | `responsive_check.js`, 26 pages × 9 widths (320–1440) | 234 checks: no horizontal scroll, no distorted or overlapping images. Only "off-screen" item: the hidden anti-spam field on Contact/Partner (intended) |
+| Routes, menus, Contact URL | wp-cli menu dump, crawl of 42 URLs | All 4 menus resolve to WordPress pages; Contact is `/contact/`; 38 × 200, old `contact.html`/`index.html` and Uncategorized 301 to their pages, unknown URL 404 |
+| Internal and footer links, content | `audit.js` | 30 internal links, all 200 except `/hello-world/` (301 → `/blog/`, test content). Text/heading differences are the known ones (skip link, footer H2, Contact sentence, Media Library URLs) |
+| Blog, ministry content and images | wp-cli | 12 ministries, 7 stories with covers and photos; 85 media files, none missing on disk |
+| Video | Chrome at 1440/768/390/320 | Hero video autoplays muted and fills the hero; field-stories video has poster and controls, plays, fits the screen |
+| Donations, forms | `forms_check.js` | Contact, partner, newsletter submit at 1440 and 390; give links and thank-you page correct. IPN answers 400 because no PayPal email is set on the test site (Phase 9, open) |
+| Console errors, PHP warnings | `site_check.js` 99 page × width loads; PHP debug log over all public URLs and 35 admin screens | No JS or console errors (the 404 page's own status only); no PHP warnings, notices or errors |
+| Accessibility | `a11y_check.js` (axe) | WordPress side clean except About's pale 01/02/03 numbers (Phase 11 open decision); skip link and focus checks pass |
+| SEO, server-rendered content | `seo_check.py`, `schema_check.py` | 30 pages, 0 problems; 32 pages of structured data, 0 errors (warning: 99 px logo under Google's 112 px — the data folder's 1254 px logo fixes it, Task 4 decision 5) |
+| Shared global styling | Task 5 before/after check | No differences besides the viewer fix |
+
+**Fixed along the way (test site only).** WordPress core files lost to the temp-folder cleanup were restored
+(`unzip -n`); debug logging was enabled for the audit and turned off again.
+
+**Not covered.** Real phones and Safari/Firefox (Chrome emulation only); a PayPal sandbox payment end to end.
+
+**Decisions for you.** Before go-live: trash "Hello world!". Open: Task 4 decisions 1–8 (sideways Urdu photo, Outreach
+gallery, Freedom card photo, large logo, alt texts, more photos/videos), About's 01/02/03 contrast, PayPal email.
