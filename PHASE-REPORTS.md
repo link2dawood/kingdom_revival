@@ -19,6 +19,9 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Phase 15 step 2: one global header](#kingdom-revival-ministries-phase-15-step-2-one-global-header)
 - [Kingdom Revival Ministries: Phase 15 step 3: one global footer](#kingdom-revival-ministries-phase-15-step-3-one-global-footer)
 - [Kingdom Revival Ministries: Phase 15 step 4: All Ministries page, performance, SEO and release 1.8.0](#kingdom-revival-ministries-phase-15-step-4-all-ministries-page-performance-seo-and-release-180)
+- [Kingdom Revival Ministries: Phase 15 step 5: logo and image sizes (theme 1.8.1)](#kingdom-revival-ministries-phase-15-step-5-logo-and-image-sizes-theme-181)
+- [Kingdom Revival Ministries: Phase 15 step 6: mobile PageSpeed (theme 1.8.2)](#kingdom-revival-ministries-phase-15-step-6-mobile-pagespeed-theme-182)
+- [Kingdom Revival Ministries: Phase 16: new home page sections and Ministries mega menu (theme 1.9.0)](#kingdom-revival-ministries-phase-16-new-home-page-sections-and-ministries-mega-menu-theme-190)
 
 ---
 
@@ -2028,3 +2031,323 @@ files and is byte-identical to the theme folder.
    any public page.
 3. Keep SureRank (the theme supports it), or switch to Rank Math or Yoast. Keep only one.
 4. Optional: lower WebP quality or add a cropped card size, for the last points on About, Blog and ministry pages.
+
+## Kingdom Revival Ministries: Phase 15 step 5: logo and image sizes (theme 1.8.1)
+
+**Result: theme 1.8.1 serves smaller files where the old ones were bigger than the screen needed, and nothing
+depends on the old site's Elementor thumbnail folder any more. Every image should look the same. This was checked
+only on the design pages and with unit tests: it has not been run on a WordPress site (none on this machine).** (The
+brief called this step "Phase 5". Uncommitted.)
+
+### What was already done (1.8.0, unchanged)
+
+Header and footer logo `srcset` (64/128/192 px), WebP resized copies, phone and tablet copies of hero
+backgrounds, lazy loading of every below-the-fold photo, one high-priority hero preload per page (the home LCP
+image is the hero background, preloaded, never lazy). No other image has `fetchpriority="high"`.
+
+### Audit (design pages, 1440/768/390 and a 320–1920 px sweep)
+
+- **Logos.** The one trustworthy logo original is the raster church logo (1254 px PNG); there is no vector original,
+  so no SVG was made. Header/footer files were already right-sized. The 512 px schema logo was a 296 KB
+  true-colour PNG. The story and sermon/event sidebars printed the 192 px logo for a 52 px image. An uploaded
+  Customizer logo fell back to the square-cropped `thumbnail` as `src`. CSS already prevents stretching
+  (`object-fit: contain`).
+- **Cards.** Portrait photos in landscape card boxes: the browser picks a file by width, so a 358 px card on a 3×
+  phone fetched the 1152×2048 copy to show a 4:3 band. Box shapes measured: cause / All Ministries cards ≥ 1.37:1,
+  story cards 1.6:1, Donate impact cards, ministry and story galleries, field-story tiles 4:3; all centred.
+  Not cards: the blog's featured image (down to 1.05:1), About grid and collage, home About photos (taller than 4:3).
+- **Space reserved before load (CLS).** Only three images take their box size from the file: the photo in a
+  story's text and the Western Union and MoneyGram tab logos. Every other image's box is set by CSS. Giving all images
+  `width`/`height` attributes was tested and **breaks the design** (Donate +6,000 px, ministry pages +23,000 px,
+  About +800 px), because the attributes override the CSS heights. So they were added only to those three.
+- **Elementor thumbnails.** 10 design images are `uploads/elementor/thumbs/…` crops (700×700 / 800×600), Setup
+  downloaded them from there. One was an 800×600 PNG photo of 710 KB.
+- **Desktop heroes.** Standard-density desktops got the full 2560 px original for a ≤ 1526 px box.
+
+### What changed
+
+- **4:3 card crops** (`inc/performance.php`): sizes `krm-card-480/800/1200` (hard crop, centred), made only for
+  photos taller than 5:4 and at least as wide as the size. `krm_img_src( $ref, $sizes, true )` and
+  `krm_clean_img( …, 'tile' )` print the crops' `srcset` (`src` stays the full image, which the viewer opens). Used by
+  home causes and field stories, story cards (blog and sermon/event lists), Donate impact cards, ministry gallery,
+  story gallery, All Ministries. A photo with fewer than two crops keeps its normal `srcset`. The viewer's
+  thumbnails are 64×48 (4:3), so they show the same region.
+- **Older uploads** get the crops in the background: `krm_card_backfill` on WP-Cron, 20 attachments looked at and at
+  most 3 cropped per run, only the card sizes (other missing sizes stay missing), progress in option
+  `krm_card_backfill` (-1 = done). A failing image is skipped, not retried forever.
+- **Desktop hero tier**: `--krm-bg-l` = the 1536 px copy on `(min-width: 821px) and (max-width: 1536px) and
+  (max-resolution: 1.49dppx)` when that copy is 1536 px wide and at least 960 px tall (tallest hero/band from
+  821–1536 px: 921 px). The preload hints use the same media queries, so exactly one file matches. 16:9 and portrait
+  photos keep the full image.
+- **Reserved space**: story text photo gets the attachment's `width`/`height` plus `height: auto` in `post.css`;
+  PayPal, Western Union and MoneyGram tab logos get their file's `width`/`height`.
+- **Elementor thumbnails shipped** (`inc/data/media-local.php`, `assets/images/content/*-crop.jpg`, 1.0 MB): the 9
+  JPEGs byte-identical, the PNG as a quality-92 JPEG (133 KB, 44 dB PSNR). The old URL stays the key everywhere
+  (content defaults, `krm_media_map`), so nothing else changed. `krm_media()` shows the theme copy until Setup
+  runs; Setup imports the theme copy instead of downloading. Sites that already imported them are unchanged.
+- **Logos**: `krm-logo-large.png` 296 → 87 KB (256 colours with transparency, as the header logos; 1.3 % of visible
+  pixels differ by more than 16 levels, none by more than 44). Sidebar logo cards use `krm_logo_img()` (64/128/192
+  `srcset`). The Customizer logo's `src` is `medium` (keeps its shape).
+- Version 1.8.1; readme.md updated (Setup, Speed, file map).
+
+### Verified
+
+| Check | Result |
+|---|---|
+| Unit tests with stubbed WordPress (27): size filter, crop `srcset`, fallbacks, story image attributes, hero tiers and preload media, theme copies of Elementor images | 27/27 pass |
+| `width`/`height` on the 3 images (design pages, 7 widths 320–1920) | 14/14: same box when loaded, same box reserved before the file arrives, page height unchanged |
+| Card crops vs originals: 25 portrait photos from the card/gallery slots × 10 measured box shapes (4:3 to 2.86:1, object-fit: cover, 2×) = 250 renders, against an uncropped control at the same width and WebP quality | Same framing in all 250: best-matching offset 0 px in 215, 1 device px (½ CSS px, Imagick resampling of the crop; a crop without resizing lines up exactly) in 35, never more. Aligned, the crop is at most 2.6 levels (of 255) further from the original than the control: WebP blocks falling on a different grid |
+| Crop bytes (25 photos, WordPress's crop arithmetic, Imagick, WebP 82) | 2.0 MB vs 3.6 MB for the same photos uncropped at the same width (45 % less); originals 13.0 MB |
+| Desktop tier, About hero (2560×1920, 861 KB) vs its 1536 copy (199 KB), boxes 821–1526 px at 1× | ≤ 0.07 % of pixels differ by more than 48 levels (WebP noise) |
+| `php -l` on every changed PHP file | No errors |
+
+### Not covered
+
+- **No WordPress run.** This machine has no WordPress site and downloading WordPress core was blocked, so
+  `npm run pages`, `interactions`, `audit`, `sizes_check.js`, `perf_check.js` and Lighthouse were not run against
+  1.8.1, and the cron backfill was never executed for real. Run them on the staging site before release.
+- **Data-folder originals.** The folder is not on this machine. The Elementor crops were kept as they are
+  rather than rebuilt from originals: rebuilding changes framing (and one is mirrored), which DATA-ASSET-INVENTORY.md
+  decision 7 already advised against.
+- **AVIF**: not added. WebP is already used; AVIF encoding is slow and often missing on shared hosts.
+- **Unused derivatives**: none deleted. WordPress's standard sizes are all candidates in some `srcset`, and deleting
+  files on a live Media Library is not reversible.
+- The blog featured image, About photos and home About photos keep full-height files (their boxes get taller than
+  4:3, where a crop would change the picture).
+
+### Decisions for you
+
+1. Allow downloading WordPress here (local SQLite site), or run the QA tools on the Windows staging site, to
+   finish verification before 1.8.1 goes live.
+2. After go-live, Kingdom Revival → Setup does not need to be re-run; the crops are made in the background.
+
+## Kingdom Revival Ministries: Phase 15 step 6: mobile PageSpeed (theme 1.8.2)
+
+**Result: with this theme, every one of the seven pages scores 96–100 on mobile and 99–100 on desktop (Lighthouse
+12.2.1, median of 3) when served the way a cached host serves it, and 93–99 on mobile from a plain PHP server with no
+cache at all. The live site's ~75 (measured 68–86) is not the theme: the live site loads Elementor, Elementor Pro and
+six other plugins (69 requests on the home page instead of 20) and answers each page in 0.9–1.3 s because it has no
+page cache. Those are fixed by GO-LIVE-CHECKLIST.md, not by theme code.** The theme changes below are real but
+small, because the theme was already near the ceiling: queries per page roughly halved, less JavaScript on five page
+types, and the 9 MB home video no longer downloads for visitors who ask for reduced motion or data saver.
+(The brief called this step "Phase 6". Uncommitted.)
+
+### How it was measured
+
+- **Local test site** (new, see the tools README): WordPress 7.1.4 on SQLite, theme 1.8.1 → 1.8.2, Kingdom Revival →
+  Setup run (97 media items, 12 ministries, 7 stories), no plugins. PHP 8.4 built-in server with OPcache.
+- **Two delivery columns:** "plain PHP server" (no page cache, no compression; ~70–100 ms per page) and
+  "production-like" through `tools/visual-qa/prod_proxy.js` (page cache, Brotli, year-long static cache headers: what
+  the live host's LiteSpeed cache does for visitors).
+- **Lighthouse 12.2.1** (`tools/visual-qa/lh_run.js`), Lighthouse's own mobile profile (simulated slow 4G, 4× CPU)
+  and desktop preset, 3 runs per page and device, medians. Raw reports in `tools/visual-qa/out/lh/{live,before,
+  before-raw,after,after-raw}/` (git-ignored; `summary.json` in each).
+- **Live site:** the same Lighthouse from this machine on kingdomrevivalministries.com. Nothing on the live site was
+  changed. The PageSpeed Insights API (which also returns real-visitor field data, including INP) refused requests
+  without an API key, so **no field data is included**; lab TBT and `inp_check.js` stand in for INP.
+
+### Before and after
+
+| Mobile score (median of 3) | Live site today | Local, plain PHP server: before → after | Local, production-like: before → after |
+|---|---|---|---|
+| Home | 77 | 95 → 95 | 99 → **98** |
+| All Ministries | 86 | 97 → 97 | 99 → **99** |
+| Ministry (Brick Kiln Children) | 77 | 94 → 94 | 96 → **96** |
+| Blog | 79 | 96 → 96 | 97 → **97** |
+| Story (Learning beside the kilns) | 81 | 93 → 93 | 97 → **96** |
+| Contact | 76 | 99 → 99 | 100 → **100** |
+| Donate | 68 | 95 → 95 | 98 → **98** |
+
+| Mobile, production-like, after (before) | FCP | LCP | TBT | CLS | Speed Index | Transferred | JS execution | Requests |
+|---|---|---|---|---|---|---|---|---|
+| Home | 0.92 s (0.90) | 2.18 s (2.18) | 2 ms (0) | 0.000 (0.000) | 2.42 s (2.33) | 3434 KB (4716) | 29 ms (28) | 20 (19) |
+| All Ministries | 0.91 s (1.10) | 2.18 s (2.10) | 0 ms (0) | 0.000 (0.000) | 0.91 s (1.10) | 472 KB (476) | 30 ms (30) | 16 (16) |
+| Ministry (Brick Kiln Children) | 0.91 s (0.90) | 2.78 s (2.71) | 0 ms (0) | 0.000 (0.000) | 0.91 s (0.90) | 662 KB (661) | 25 ms (25) | 18 (17) |
+| Blog | 0.90 s (0.91) | 2.55 s (2.56) | 0 ms (0) | 0.000 (0.000) | 0.90 s (0.91) | 499 KB (504) | 19 ms (29) | 17 (17) |
+| Story (Learning beside the kilns) | 0.91 s (0.90) | 2.70 s (2.63) | 0 ms (0) | 0.000 (0.000) | 0.91 s (0.90) | 409 KB (408) | 25 ms (28) | 18 (17) |
+| Contact | 0.90 s (0.90) | 1.65 s (1.65) | 0 ms (0) | 0.000 (0.000) | 1.79 s (1.79) | 496 KB (675) | 54 ms (70) | 29 (29) |
+| Donate | 0.91 s (0.91) | 2.48 s (2.41) | 0 ms (0) | 0.000 (0.000) | 0.91 s (0.91) | 332 KB (337) | 29 ms (46) | 17 (17) |
+
+| Desktop score, production-like | Before | After | LCP after |
+|---|---|---|---|
+| Home | 100 | 100 | 0.54 s |
+| All Ministries | 100 | 100 | 0.52 s |
+| Ministry (Brick Kiln Children) | 100 | 100 | 0.76 s |
+| Blog | 99 | 99 | 0.90 s |
+| Story (Learning beside the kilns) | 100 | 100 | 0.67 s |
+| Contact | 99 | 99 | 0.44 s |
+| Donate | 100 | 100 | 0.58 s |
+
+| Live site, mobile (median of 3) | FCP | LCP | TBT | Speed Index | Transferred | JS execution | Requests |
+|---|---|---|---|---|---|---|---|
+| Home | 3.14 s | 3.82 s | 22 ms | 6.25 s | 4113 KB | 197 ms | 69 |
+| All Ministries | 2.73 s | 3.29 s | 12 ms | 3.90 s | 1107 KB | 161 ms | 44 |
+| Ministry (Brick Kiln Children) | 2.94 s | 4.03 s | 8 ms | 5.99 s | 1730 KB | 189 ms | 44 |
+| Blog | 2.95 s | 3.57 s | 28 ms | 6.74 s | 1434 KB | 274 ms | 46 |
+| Story (Learning beside the kilns) | 2.71 s | 3.69 s | 37 ms | 4.11 s | 1129 KB | 155 ms | 47 |
+| Contact | 3.13 s | 4.00 s | 58 ms | 6.18 s | 1107 KB | 329 ms | 69 |
+| Donate | 3.45 s | 4.46 s | 18 ms | 9.57 s | 1036 KB | 276 ms | 46 |
+
+Home "Transferred" counts as much of the 8.8 MB hero video as Lighthouse catches before it stops (it starts after
+the load event, so it does not change the score); the difference between runs is that, not a change.
+
+Interaction latency after (`inp_check.js`, phone, 4× CPU; good ≤ 200 ms): home 32 ms, About 48, Donate 48, Contact
+32, Blog 32, story 72, ministry 120 (opening the photo viewer). All "good".
+
+### Where the live site's time goes (home page, mobile, first run)
+
+| Source | Requests | KB |
+|---|---|---|
+| Elementor | 26 | 115 |
+| Elementor Pro | 4 | 49 |
+| Header Footer Elementor, CookieAdmin, FormLayer, SureForms, Astra Sites | 8 | 22 |
+| Google Fonts (Roboto, for Elementor) | 3 | 40 |
+| Theme | 5 | 46 |
+| Server response (no page cache) | | 892 ms (0.9–1.3 s on every page) |
+
+FCP on live is 2.7–3.5 s against 0.9 s for the same theme without those plugins, cached.
+
+### Audit by brief step, and what changed
+
+1. **Render-blocking CSS.** Each page loads `theme-global.css` (28 KB) plus at most two small page stylesheets;
+   page CSS is already per view, not global. Lighthouse reports no render-blocking savings and FCP is 0.9 s, so
+   critical-CSS inlining would add complexity for nothing measurable. Not changed.
+2. **JavaScript.** No React or conversion scripts remain (`front.js` replaced the design's React state in an earlier phase).
+   Scripts load at the end of the page. **Changed:** the photo viewer (19 KB of the 37 KB `site.js`) is now
+   `assets/js/viewer.js`, loaded only where photos open full screen (home, About, ministry pages, stories, sermons,
+   events), not on All Ministries, Blog, Contact, Donate or Partner. `site.js` calls it only if present. The other
+   listeners are single delegated handlers, one per job; none are duplicated.
+3. **Images.** Done in step 5 (card crops, hero copies, preload of the LCP hero, lazy loading, reserved space).
+   Remaining Lighthouse "properly size images" estimates are 18–131 KB per page, all below the fold, mostly the
+   800 px crop on a 1.75× phone that would need ~665 px. The home explorer box gets taller than 1:2 on desktop, so it
+   cannot use 4:3 crops. Not changed.
+4. **Fonts.** Already one self-hosted variable WOFF2 (27 KB, weights 400–800, Latin), preloaded once,
+   `font-display: swap`, no duplicates; CLS 0.000–0.007. Not changed.
+5. **WordPress queries** (logged per page with a local-only mu-plugin). Every design image cost two queries when its
+   URL was resolved to the Media Library item (45 on the home page; 18 from the explorer alone). **Changed:**
+   `krm_media_map()` loads all mapped attachments and their meta in two queries the first time it runs
+   (`_prime_post_caches`), and `krm_content_post_id()` takes a design page's ID from the template lookup it already
+   has instead of `url_to_postid()`. Queries per page: home 77 → 33, About 54 → 32, ministry 58 → 34, All Ministries
+   61 → 37, Donate 51 → 35, Blog 54 → 36, story 69 → 49, Contact 36 → 32, Partner 43 → 35 (+0.5 MB memory).
+6. **Layout shift.** CLS 0.000 on every mobile page, ≤ 0.007 on desktop (step 5 reserved the only image boxes that
+   depended on the file). Not changed.
+7. **Mobile interactions.** DOM about 460 elements on home; touch targets unchanged; interactions above. **Changed:**
+   the home hero video (8.8 MB, looping) is not started for visitors whose device asks for reduced motion (also an
+   accessibility fix) or has data saver on; they see the same picture, still. It pauses while scrolled out of view
+   and resumes at the top.
+
+**Bug fixed on the way:** on a site whose Reading setting shows "latest posts" (a fresh install before Setup),
+`front-page.php` still renders the home design, but its content was read from the blog screen, so every field was
+empty and the cause cards crashed PHP 8 ("Cannot access offset of type string on string"): a fatal error on the
+home page. `krm_current_screen()` now treats the front page as "home" in both Reading modes (design defaults when
+there is no front page to edit).
+
+### Verified
+
+| Check | Result |
+|---|---|
+| Behaviour after (9 pages, 390 px touch + 1440 px) | 43/43: viewer loaded only on the 4 page types with zoomable photos, opens and closes there; mobile menu on all 9; no JS errors; hero video plays, pauses off-screen, resumes; never starts with reduced motion (nothing downloaded) |
+| `compare.js` vs the approved design | Every inner page keeps the design's exact height; About, Contact, Donate, Partner, Blog, stories 0.01–0.39 % (as in 1.8.0). Brick Kiln ministry 0.57–1.14 %: its 12 gallery photos are now step 5's 4:3 crops (resampling/WebP, checked side by side: same picture). Home, Outreach and /ministries/ differ from the design as approved in 1.7.4/1.8.0 |
+| Step 5 on real WordPress | Setup made the 4:3 crops for 62 photos on import; card slots use them (e.g. `…-800x600.webp` on phones); the background job ran to completion (option -1) |
+| `php -l`, `node --check` | No errors |
+
+### Not covered
+
+- **Field data (CrUX, real INP)**: needs a PageSpeed Insights API key or Search Console; not available here.
+- **The live site after go-live**: the numbers above are local. The live score depends on GO-LIVE-CHECKLIST.md
+  being done (removing the Elementor family and unused plugins, turning on LiteSpeed Cache). Until then the live
+  site will stay around 70–85 whatever the theme does.
+- **The hero video file itself**: no video encoder on this machine. A shorter or lower-bitrate MP4 (e.g. 720p,
+  ~1.5 Mbit/s, ~2–3 MB) uploaded in its place is the largest saving left for phone visitors.
+- Minifying `site.js` (Lighthouse estimates 2 KB): the project has no build step, and Brotli already compresses it.
+
+### Decisions for you
+
+1. **Go-live checklist** (from step 4): remove Elementor, Elementor Pro, Header Footer Elementor and the unused form
+   / starter plugins, and turn on the host's page cache. This, not theme code, is what moves the live score from ~75
+   to 90+.
+2. **Hero video**: approve a re-encoded, lighter copy (it looks the same at the hero's darkened, background size).
+3. A PageSpeed Insights API key, if you want real-visitor (field) numbers in the next report.
+
+## Kingdom Revival Ministries: Phase 16: new home page sections and Ministries mega menu (theme 1.9.0)
+
+**Result: the home page now has every section of the updated home page design (`Homepage-html (1)/Main.dc.html`)
+that the theme did not have, plus the edited founder section, a floating WhatsApp button and the design's
+full-width Ministries menu. Header, footer, hero and all other sections are unchanged, and every other page is
+pixel-identical to theme 1.8.2.**
+
+The brief: add the design's new sections (Your gift at work; Flagship ministry · Freedom from Slavery; Where we
+work; Lives changed / Stories from the field; Prayer request; What we believe; From the field), apply the edits
+to Founder & Pastor, add WhatsApp, keep the header, footer, hero and other sections as they are, and optionally
+adopt the design's dropdown.
+
+### What changed
+
+| Section (home page order) | Template | Notes |
+|---|---|---|
+| Your gift at work | `home/gift.php` | 4 amount cards, each with its own link (default `{donate}`) |
+| Flagship: Freedom from Slavery | `home/freedom.php` | 5 numbered steps; before/after photo slider (range input, `front.js`); orange "Help free a family" button |
+| Flagship cards (Urdu Bibles, Church Planting) | `home/flagship.php` | The design's two cards that follow the Freedom section |
+| Where we work | `home/where.php` | Places list; map area with an optional map image and pins placed by % (first pin = red HQ pin) |
+| Stories from the field | `home/stories.php` | 3 quote cards; optional photo per person |
+| Prayer request | `home/prayer.php` | Real form: new `prayer` form in `inc/forms.php` (name, "Email or WhatsApp", request), same token/honeypot/time/rate-limit protection as the contact form, saved as a Submission "Prayer request" and emailed; Reply-To is set when the contact is an email |
+| Founder & Pastor (edited) | `home/founder.php` | Added the quote, the WhatsApp button and "Read his story →" (`{about}#founder`); "Contact Pastor Adil" now goes to `#prayer` as in the design. The real photo is kept |
+| What we believe + Our team | `home/beliefs.php` | Beliefs one per line; team members with photos (Pastor Adil's photo by default) |
+| From the field: Latest news & blogs | `home/news.php` | The 3 newest real posts (featured image, first category, date); hidden when there are no posts |
+| Floating WhatsApp button | `home/whatsapp.php` | Home page only; sits above the floating Donate button, which keeps the corner |
+
+Every text, link and image is editable in Pages → Home → Page content (new sections in `inc/content/home.php`, design
+text as defaults) and documented in `readme.md`. The "Ministry in action" video section, which is not in the new
+design, is kept (the hero's "Watch Our Story" links to it), between "Where we work" and "Stories from the field".
+
+**Mega menu.** A top-level menu item whose sub-items have sub-items (Ministries → groups → ministries) gets the class
+`is-mega` (`inc/nav.php`). On desktop (≥ 901 px) `theme-global.css` shows its submenu as the design's full-width
+panel under the header: one column per group with a red uppercase heading and every ministry listed, "All
+ministries →" below. It opens on hover or click as before (same markup and JS, Escape and outside-click still
+close it). It is built from the menu, so it follows Appearance → Menus; the site's groups are the existing three
+(Children & Families, Freedom & Care, Gospel & Church), not the design's four. Mobile keeps its accordion.
+
+**Photos.** Where the design names a photo, the real one is used: Urdu Bible distribution (6) on the Bibles card.
+For placeholders the theme had no matching photo, so stand-ins from the media library are used: the church-planting
+card shows a congregation (Leadership and Discipleship 10), the slider's "Before" a kiln yard (Bricks kiln
+slaves children 38) and "After" a kiln outreach (Bricks kiln slaves children 39). The "[Photo]" tags were removed
+from the slider labels.
+
+**Small departures from the mockup:** the prayer form stacks its two short fields under 560 px (two ~120 px columns
+were too narrow); grids use `min(…px, 100%)` so cards never overflow a phone.
+
+### Verified
+
+| Check | Result |
+|---|---|
+| New sections vs the design (1440 px, element screenshots side by side) | Same size within 1 px for all 9 (news +25 px: real two-line post titles); layout, type, colours and spacing match; only the grey image boxes became photos |
+| 390 / 768 / 1024 px | Same stacking as the design; no horizontal overflow (`scrollWidth` = viewport) |
+| Before/after slider | Range at 20 → before layer `inset(0 80% 0 0)`, divider and handle at 20 % |
+| Prayer form | Empty submit marks all 3 fields and sends nothing; filled submit saved "Prayer request — QA Tester" (private Submission), success message shown, no JS errors; test entry deleted |
+| Mega menu | 1440 and 1000 px: panel aligned with the header container on home and inner pages; 390 px: accordion unchanged |
+| Other pages, WordPress 1.8.2 vs 1.9.0 (`compare.js` + `wpdiff.js`, 39 shots) | All pages except home 0 % at all 3 widths, except one shot (All Ministries, tablet, 1.9 %): one card photo had not loaded yet in the 1.8.2 shot, checked side by side |
+| axe-core (WCAG 2.1 A/AA) on the new home page | 0 violations |
+| `php -l`, `node --check` | No errors |
+
+### Not covered
+
+- The Lighthouse/PageSpeed run of step 6 was not repeated; the home page is longer (9 sections, ~10 more images,
+  all lazy-loaded below the first screen).
+- Prayer request email delivery (no mail server here); saving the Submission was verified.
+- The design's top bar extras (Reg. No., social/WhatsApp icons) and footer "WhatsApp us" link: header and footer
+  were to stay as they are.
+
+### Decisions for you
+
+1. **Placeholders to replace before launch** (Pages → Home → Page content): the two "[$ ]" gift amounts and
+   "[Amount]" on the Freedom button; the "[00] villages · [00] kilns" counts and two "[District]" rows; the three
+   stories ("[Story…]", "[Name]", "[Village]"); Pastor Adil's quote; three team members "[Name]/[Role]" and their
+   photos. They show exactly as in the design until edited.
+2. **Before/after photos**: the two stand-in kiln photos are not of the same freed family. Labelling one "After ·
+   Free" implies it is, so please supply a real before/after pair (or change the labels).
+3. **Map**: upload a map of Punjab (Map image) and adjust the pin positions; until then the design's grey area and
+   its "locations to be pinned" note show.
+4. **Menu groups**: keep the current three groups, or regroup in Appearance → Menus to the design's four
+   (Evangelism & Church, Compassion, Children & Education, Freedom). The design also lists "Church Planting",
+   which is not one of the 12 ministries.
+

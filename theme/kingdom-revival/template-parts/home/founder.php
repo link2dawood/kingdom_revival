@@ -17,7 +17,18 @@ defined( 'ABSPATH' ) || exit;
 <p style="margin: 0 0 8px; font-weight: 700; color: var(--color-secondary)"><?php krm_t( 'founder.eyebrow' ); ?></p>
 <h2 style="margin: 0; font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; line-height: 1.2"><?php krm_h( 'founder.heading' ); ?></h2>
 <p style="margin: 16px 0 0; font-size: 17px; color: #3E465C; max-width: 680px"><?php krm_t( 'founder.text' ); ?></p>
-<a class="k-g" href="<?php krm_u( 'founder.button_url' ); ?>" style="margin-top: 22px; text-decoration: none; display: inline-flex; align-items: center; background: var(--color-primary); color: var(--color-white); font-weight: 700; padding: 13px 24px; border-radius: 4px; min-height: 44px; box-sizing: border-box"><?php krm_t( 'founder.button_label' ); ?></a>
+<?php if ( '' !== trim( (string) krm_c( 'founder.quote' ) ) ) : ?>
+<blockquote style="margin: 22px 0 0; padding-left: 20px; border-left: 4px solid #E18426; font-size: 20px; font-weight: 600; line-height: 1.5; color: var(--color-primary); max-width: 680px"><?php krm_t( 'founder.quote' ); ?></blockquote>
+<?php endif; ?>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px">
+<a class="k-g" href="<?php krm_u( 'founder.button_url' ); ?>" style="text-decoration: none; display: inline-flex; align-items: center; background: var(--color-primary); color: var(--color-white); font-weight: 700; padding: 13px 24px; border-radius: 4px; min-height: 44px; box-sizing: border-box"><?php krm_t( 'founder.button_label' ); ?></a>
+<?php if ( '' !== trim( (string) krm_c( 'founder.whatsapp_label' ) ) ) : ?>
+<a href="<?php echo esc_url( krm_whatsapp_url() ); ?>" target="_blank" rel="noopener" style="text-decoration: none; display: inline-flex; align-items: center; border: 1.5px solid var(--color-primary); color: var(--color-primary); font-weight: 700; padding: 13px 24px; border-radius: 4px; min-height: 44px; box-sizing: border-box"><?php krm_t( 'founder.whatsapp_label' ); ?></a>
+<?php endif; ?>
+<?php if ( '' !== trim( (string) krm_c( 'founder.story_label' ) ) ) : ?>
+<a href="<?php krm_u( 'founder.story_url' ); ?>" style="display: inline-flex; align-items: center; font-weight: 700; min-height: 44px; padding: 0 8px"><?php krm_t( 'founder.story_label' ); ?></a>
+<?php endif; ?>
+</div>
 </div>
 </div>
 </section>

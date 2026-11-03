@@ -57,13 +57,18 @@ function krm_content_post_id( $screen ) {
 		return 0;
 	}
 	if ( 'home' === $screen ) {
-		return (int) get_option( 'page_on_front' );
+		return 'page' === get_option( 'show_on_front' ) ? (int) get_option( 'page_on_front' ) : 0;
 	}
 	if ( 'blog' === $screen ) {
 		return (int) get_option( 'page_for_posts' );
 	}
 	if ( is_page() && krm_design_template() === $screen ) {
 		return get_queried_object_id();
+	}
+	// A design page (About, Contact…) is the one krm_page_url() links to; that lookup is already loaded.
+	$pages = krm_design_template_pages();
+	if ( isset( $pages[ $screen ] ) && 'publish' === $pages[ $screen ]->post_status ) {
+		return (int) $pages[ $screen ]->ID;
 	}
 	$url  = krm_page_url( $screen );
 	$page = url_to_postid( $url );
@@ -100,7 +105,9 @@ function krm_screen_for_post( $post ) {
  * Screen of the current front-end view ('' when the view has no page content).
  */
 function krm_current_screen() {
-	if ( is_front_page() && 'page' === get_option( 'show_on_front' ) ) {
+	// front-page.php renders the home design whatever Reading shows; with "latest posts" there is no page to edit,
+	// so the design defaults apply (page_on_front is 0).
+	if ( is_front_page() ) {
 		return 'home';
 	}
 	if ( is_home() ) {

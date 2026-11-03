@@ -34,3 +34,8 @@ a{color:var(--color-text)}a:hover{color:var(--color-primary)}
 .k-card{transition:box-shadow .3s ease,transform .3s ease}
 .k-card:hover{box-shadow:0 18px 40px rgba(12,28,79,0.14);transform:translateY(-4px)}
 /* The header, menu and footer are the global ones (theme-global.css). */
+/* Prayer request form: one column on phones (the design's two columns are too narrow there). */
+@media (max-width: 560px) {
+  form[data-krm-prayer] { grid-template-columns: minmax(0, 1fr) !important; }
+  form[data-krm-prayer] > * { grid-column: 1 / -1 !important; }
+}

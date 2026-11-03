@@ -50,7 +50,7 @@ add_filter(
 				if ( preg_match( '#<figcaption[^>]*>(.*?)</figcaption>#s', $html, $c ) ) {
 					$caption = '<figcaption>' . krm_icon( 'zoom' ) . $c[1] . '</figcaption>';
 				}
-				return '<figure>' . krm_clean_img( $img[0], '(max-width: 1040px) 100vw, 740px' ) . $caption . '</figure>';
+				return '<figure>' . krm_clean_img( $img[0], '(max-width: 1040px) 100vw, 740px', 'figure' ) . $caption . '</figure>';
 
 			case 'core/list':
 				$classes = isset( $block['attrs']['className'] ) ? $block['attrs']['className'] : '';
@@ -69,7 +69,7 @@ add_filter(
 					'',
 					array_map(
 						function ( $img ) {
-							return krm_clean_img( $img, '(max-width: 1040px) 50vw, 370px' );
+							return krm_clean_img( $img, '(max-width: 1040px) 50vw, 370px', 'tile' );
 						},
 						$imgs[0]
 					)
@@ -98,20 +98,36 @@ add_filter(
  * Print an <img> the way the design did (no block classes, sizes or inline styles), adding responsive
  * srcset/sizes for Media Library images and lazy loading.
  *
+ * $kind 'tile' (gallery photo, a 4:3 box) uses the 4:3 card crops when the photo has them. 'figure' (photo in the
+ * text, full width with its own height) keeps the photo's width and height attributes, so its space is reserved
+ * before it loads (post.css gives it height: auto, so the attributes set only the shape).
+ *
  * @param string $img   Image tag.
  * @param string $sizes Sizes attribute for the srcset.
+ * @param string $kind  'tile', 'figure' or ''.
  */
-function krm_clean_img( $img, $sizes = '100vw' ) {
+function krm_clean_img( $img, $sizes = '100vw', $kind = '' ) {
 	$srcset = '';
-	if ( preg_match( '#wp-image-(\d+)#', $img, $m ) && false === strpos( $img, 'srcset=' ) ) {
-		$set = wp_get_attachment_image_srcset( (int) $m[1], 'full' );
-		if ( $set ) {
-			$srcset = ' srcset="' . esc_attr( $set ) . '" sizes="' . esc_attr( $sizes ) . '"';
+	$dims   = '';
+	if ( preg_match( '#wp-image-(\d+)#', $img, $m ) ) {
+		$id = (int) $m[1];
+		if ( false === strpos( $img, 'srcset=' ) ) {
+			$set = 'tile' === $kind ? krm_card_srcset( $id ) : '';
+			if ( ! $set ) {
+				$set = wp_get_attachment_image_srcset( $id, 'full' );
+			}
+			if ( $set ) {
+				$srcset = ' srcset="' . esc_attr( $set ) . '" sizes="' . esc_attr( $sizes ) . '"';
+			}
+		}
+		$full = 'figure' === $kind ? wp_get_attachment_image_src( $id, 'full' ) : false;
+		if ( $full && $full[1] && $full[2] ) {
+			$dims = ' width="' . (int) $full[1] . '" height="' . (int) $full[2] . '"';
 		}
 	}
 	$img = preg_replace( '#\s(class|style|width|height)="[^"]*"#', '', $img );
-	if ( $srcset ) {
-		$img = preg_replace( '#^<img #', '<img' . $srcset . ' ', $img );
+	if ( $srcset || $dims ) {
+		$img = preg_replace( '#^<img #', '<img' . $srcset . $dims . ' ', $img );
 	}
 	if ( false === strpos( $img, 'loading=' ) ) {
 		$img = str_replace( '<img ', '<img loading="lazy" ', $img );
@@ -169,7 +185,7 @@ function krm_post_card( $post, $attrs = array() ) {
 		$extra .= ' ' . $k . ( true === $v ? '' : '="' . esc_attr( $v ) . '"' );
 	}
 	?>
-	<a class="post-card" href="<?php the_permalink( $post ); ?>"<?php echo $extra; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><div class="post-card-media"><img <?php krm_img_src( $cover, '(max-width: 760px) 100vw, 400px' ); ?> alt="<?php echo esc_attr( krm_cover_alt( $post->ID ) ); ?>" loading="lazy" decoding="async"><span class="tag"><?php echo esc_html( krm_post_category( $post->ID ) ); ?></span></div><div class="post-card-body"><div class="post-meta"><span><?php echo krm_icon( 'cal' ) . esc_html( get_the_date( 'F j, Y', $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><span><?php echo krm_icon( 'clock' ) . esc_html( krm_read_time( $post->ID ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> min read</span></div><h3><?php echo esc_html( get_the_title( $post ) ); ?></h3><p><?php echo esc_html( get_the_excerpt( $post ) ); ?></p><span class="read-more">Read the story <?php echo krm_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></div></a>
+	<a class="post-card" href="<?php the_permalink( $post ); ?>"<?php echo $extra; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><div class="post-card-media"><img <?php krm_img_src( $cover, '(max-width: 760px) 100vw, 400px', true ); ?> alt="<?php echo esc_attr( krm_cover_alt( $post->ID ) ); ?>" loading="lazy" decoding="async"><span class="tag"><?php echo esc_html( krm_post_category( $post->ID ) ); ?></span></div><div class="post-card-body"><div class="post-meta"><span><?php echo krm_icon( 'cal' ) . esc_html( get_the_date( 'F j, Y', $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><span><?php echo krm_icon( 'clock' ) . esc_html( krm_read_time( $post->ID ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> min read</span></div><h3><?php echo esc_html( get_the_title( $post ) ); ?></h3><p><?php echo esc_html( get_the_excerpt( $post ) ); ?></p><span class="read-more">Read the story <?php echo krm_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></div></a>
 	<?php
 }
 

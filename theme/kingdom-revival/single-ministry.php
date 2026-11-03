@@ -60,7 +60,7 @@ while ( have_posts() ) :
 				foreach ( $krm_gallery as $krm_ref ) :
 					$krm_alt = ! empty( $krm_alts[ (string) $krm_ref ] ) ? $krm_alts[ (string) $krm_ref ] : krm_ref_alt( $krm_ref, $krm_title );
 					?>
-			<figure class="photo"><img <?php krm_img_src( $krm_ref, '(max-width: 520px) calc(100vw - 32px), (max-width: 760px) calc(50vw - 25px), (max-width: 1240px) calc(33vw - 24px), 400px' ); ?> alt="<?php echo esc_attr( $krm_alt ); ?>" loading="lazy" decoding="async"><figcaption><?php echo esc_html( $krm_alt ); ?></figcaption></figure>
+			<figure class="photo"><img <?php krm_img_src( $krm_ref, '(max-width: 520px) calc(100vw - 32px), (max-width: 760px) calc(50vw - 25px), (max-width: 1240px) calc(33vw - 24px), 400px', true ); ?> alt="<?php echo esc_attr( $krm_alt ); ?>" loading="lazy" decoding="async"><figcaption><?php echo esc_html( $krm_alt ); ?></figcaption></figure>
 				<?php endforeach; ?>
 			</div>
 			<?php else : ?>

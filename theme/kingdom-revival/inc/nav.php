@@ -196,8 +196,9 @@ function krm_local_url( $url ) {
 /**
  * A menu link that names a design page by an anchor or by its old static file ("#contact", "/#contact",
  * "contact.html", "index.html", "blog-post.html?post=…") points at that page's WordPress permalink instead, so menus
- * built by hand or kept from the previous site reach the real pages on any installation. Anchors of home page
- * sections that are not pages (#all-ministries, #top…) and every other link are returned unchanged.
+ * built by hand or kept from the previous site reach the real pages on any installation. "#all-ministries" goes to
+ * the All Ministries page (/ministries/). Anchors of other home page sections (#top…) and every other link are
+ * returned unchanged.
  *
  * @param string $url Menu item URL.
  * @return string
@@ -222,6 +223,10 @@ function krm_menu_url( $url ) {
 		'partner' => 'partner',
 		'blog'    => 'blog',
 	);
+	// Menus made by Setup before 1.8.0 link "All ministries" to the home page's ministry explorer.
+	if ( '#all-ministries' === $rel ) {
+		return krm_ministries_url();
+	}
 	if ( preg_match( '/^#([a-z-]+)$/', $rel, $m ) && isset( $pages[ $m[1] ] ) ) {
 		return 'blog' === $m[1] ? krm_blog_url() : krm_page_url( $m[1] );
 	}
@@ -279,6 +284,11 @@ function krm_render_nodes( $nodes, $depth = 0 ) {
 			// home page highlights nothing, as in the design.
 			if ( 0 === $depth && ! is_front_page() && ( krm_node_has_current( $node ) || ( is_post_type_archive( 'ministry' ) && krm_node_has_ministry( $node ) ) ) ) {
 				$classes[] = 'is-current';
+			}
+			// A top-level item whose children are groups (Ministries → groups → ministries) opens as the design's
+			// full-width panel on desktop, one column per group (theme-global.css, "Mega menu").
+			if ( 0 === $depth && array_filter( array_column( $node['children'], 'children' ) ) ) {
+				$classes[] = 'is-mega';
 			}
 		}
 		$attrs = $classes ? ' class="' . esc_attr( implode( ' ', array_unique( $classes ) ) ) . '"' : '';

@@ -34,7 +34,7 @@ $krm_more = krm_fill( krm_c( 'ministries.card_button', 'site' ) );
 			<li class="ministries-card">
 				<a class="ministries-card-media" href="<?php echo esc_url( $krm_m['url'] ); ?>" tabindex="-1" aria-hidden="true">
 					<?php if ( $krm_m['image'] ) : ?>
-					<img <?php krm_img_src( $krm_m['image'], '(max-width: 639px) calc(100vw - 32px), (max-width: 999px) 50vw, 400px' ); ?> alt="" width="400" height="210" loading="lazy" decoding="async">
+					<img <?php krm_img_src( $krm_m['image'], '(max-width: 639px) calc(100vw - 32px), (max-width: 999px) 50vw, 400px', true ); ?> alt="" width="400" height="210" loading="lazy" decoding="async">
 					<?php endif; ?>
 					<?php if ( $krm_m['group'] ) : ?>
 					<span class="ministries-card-tag"><?php echo esc_html( $krm_m['group'] ); ?></span>

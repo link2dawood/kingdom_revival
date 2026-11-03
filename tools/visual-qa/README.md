@@ -63,4 +63,15 @@ Time, requests, KB transferred and requests to other hosts, up to the load event
 `COMPARE=1` also measures the original HTML page. `node inp_check.js` measures interaction latency (INP) on the
 phone profile.
 
+`node prod_proxy.js [port] [origin]` (defaults 8900, http://127.0.0.1:8899) puts a production-like front on the local site,
+as the live host's LiteSpeed cache does for visitors: a page cache, Brotli for text files and year-long cache headers for
+static files. Measure through it to keep PHP's development server out of the numbers; restart it after a theme change
+(it holds the old pages).
+
+`LIGHTHOUSE=<path to lighthouse CLI> node lh_run.js <label> [base URL]` runs Lighthouse 12.2.1 (the version earlier phases
+used; install it with `npm install lighthouse@12.2.1` anywhere) on home, All Ministries, a ministry, Blog, a story,
+Contact and Donate: `RUNS` runs (default 3) per page on mobile and desktop (`DEVICES`), medians of score, FCP, LCP,
+TBT, CLS, Speed Index, bytes, JS execution time and requests. Raw reports and `summary.json` go to `out/lh/<label>/`.
+`PAGES=/,/about/` limits the pages.
+
 Environment: `HTML_URL`, `WP_URL`, `CHROME_PATH` (defaults: the ports above and `/usr/bin/google-chrome`).

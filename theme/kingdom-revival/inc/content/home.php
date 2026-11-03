@@ -34,6 +34,49 @@ return array(
 			'default_amount' => krm_f( 'text', __( 'Amount selected at first', 'kingdom-revival' ), '50' ),
 		),
 	),
+	'gift'     => array(
+		'label'  => __( 'Your gift at work', 'kingdom-revival' ),
+		'fields' => array(
+			'heading' => krm_f( 'text', __( 'Heading', 'kingdom-revival' ), 'Your gift at work' ),
+			'text'    => krm_f( 'text', __( 'Text beside the heading', 'kingdom-revival' ), 'Every amount has a name and a face.' ),
+			'cards'   => krm_list_f(
+				__( 'Cards', 'kingdom-revival' ),
+				__( 'Card', 'kingdom-revival' ),
+				array(
+					'amount' => krm_f( 'text', __( 'Amount', 'kingdom-revival' ) ),
+					'title'  => krm_f( 'text', __( 'What it gives', 'kingdom-revival' ) ),
+					'text'   => krm_f( 'text', __( 'Text', 'kingdom-revival' ) ),
+					'url'    => krm_f( 'url', __( 'Link', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'amount' => '$10',
+						'title'  => 'One Urdu Bible',
+						'text'   => 'Scripture for a family or new believer.',
+						'url'    => '{donate}',
+					),
+					array(
+						'amount' => '$45',
+						'title'  => 'Medical camp for a family',
+						'text'   => 'Check-up and medicine at a kiln or village camp.',
+						'url'    => '{donate}',
+					),
+					array(
+						'amount' => '[$ ]',
+						'title'  => 'A child’s schooling',
+						'text'   => 'Fees, books and uniform for a kiln child.',
+						'url'    => '{donate}',
+					),
+					array(
+						'amount' => '[$ ]',
+						'title'  => 'Frees a family',
+						'text'   => 'Clears a bonded family’s debt and helps them start again.',
+						'url'    => '{donate}',
+					),
+				)
+			),
+		),
+	),
 	'about'    => array(
 		'label'  => __( 'About', 'kingdom-revival' ),
 		'fields' => array(
@@ -94,6 +137,151 @@ return array(
 			),
 		),
 	),
+	'freedom'  => array(
+		'label'  => __( 'Flagship: Freedom from Slavery', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Flagship ministry · Freedom from Slavery' ),
+			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Behind every brick, a family waiting to be free.' ),
+			'text'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Whole families labour at brick kilns under debts passed down for generations. Here is exactly how your gift brings a family out.' ),
+			'steps'         => krm_list_f(
+				__( 'Steps', 'kingdom-revival' ),
+				__( 'Step', 'kingdom-revival' ),
+				array(
+					'title' => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
+					'text'  => krm_f( 'text', __( 'Text', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'title' => 'Pay the debt',
+						'text'  => 'We settle the family’s debt with the kiln owner.',
+					),
+					array(
+						'title' => 'Relocate',
+						'text'  => 'The family moves to a safe home away from the kiln.',
+					),
+					array(
+						'title' => 'Feed',
+						'text'  => 'Food support while they settle into new life.',
+					),
+					array(
+						'title' => 'Trade & skill',
+						'text'  => 'Tools or training for an honest income.',
+					),
+					array(
+						'title' => 'School',
+						'text'  => 'Children enrolled in school, many for the first time.',
+					),
+				),
+				__( 'The steps are numbered 01, 02… in this order.', 'kingdom-revival' )
+			),
+			'before'        => krm_f( 'image', __( 'Before photo', 'kingdom-revival' ), $krm_up . '2026/08/Bricks-kiln-slaves-children-38-scaled.jpg' ),
+			'before_alt'    => krm_f( 'text', __( 'Before photo description (alt text)', 'kingdom-revival' ), 'Children of brick kiln workers at the kiln' ),
+			'before_label'  => krm_f( 'text', __( 'Before photo label', 'kingdom-revival' ), 'Before · Bonded at the kiln' ),
+			'after'         => krm_f( 'image', __( 'After photo', 'kingdom-revival' ), $krm_up . '2026/08/Bricks-kiln-slaves-children-39-scaled.jpg' ),
+			'after_alt'     => krm_f( 'text', __( 'After photo description (alt text)', 'kingdom-revival' ), 'Brick kiln families receiving warm clothes from the ministry' ),
+			'after_label'   => krm_f( 'text', __( 'After photo label', 'kingdom-revival' ), 'After · Free' ),
+			'compare_label' => krm_f( 'text', __( 'Slider label', 'kingdom-revival' ), 'Drag to compare' ),
+			'button_label'  => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Help free a family · [Amount]' ),
+			'button_url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{donate}' ),
+		),
+	),
+	'flagship' => array(
+		'label'  => __( 'Flagship cards (Urdu Bibles, Church Planting)', 'kingdom-revival' ),
+		'fields' => array(
+			'cards' => krm_list_f(
+				__( 'Cards', 'kingdom-revival' ),
+				__( 'Card', 'kingdom-revival' ),
+				array(
+					'image'        => krm_f( 'image', __( 'Photo', 'kingdom-revival' ) ),
+					'image_alt'    => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ) ),
+					'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ) ),
+					'title'        => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
+					'text'         => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ) ),
+					'button_label' => krm_f( 'text', __( 'Button text', 'kingdom-revival' ) ),
+					'button_url'   => krm_f( 'url', __( 'Button link', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'image'        => $krm_up . 'elementor/thumbs/Urdu-Bible-Distribution-6-e1787296463599-rs8073jb4tpz51knz3wuum8c11mkotg8ytctdb8ink.jpg',
+						'image_alt'    => 'Urdu Bible distribution',
+						'eyebrow'      => 'Flagship · Urdu Bibles',
+						'title'        => 'Hands that never held a book are holding this one.',
+						'text'         => 'We place Urdu Bibles with families and new believers, then follow up so they can read and understand.',
+						'button_label' => '$10 places one Urdu Bible',
+						'button_url'   => '{donate}',
+					),
+					array(
+						'image'        => $krm_up . '2026/08/Leadership-and-Discipleship-10-scaled.jpg',
+						'image_alt'    => 'A church gathering in Pakistan',
+						'eyebrow'      => 'Flagship · Church Planting',
+						'title'        => 'A church in every village we reach.',
+						'text'         => 'Local congregations and house churches, led by pastors we train and walk alongside.',
+						'button_label' => 'See the churches',
+						'button_url'   => '{ministries}',
+					),
+				),
+				__( 'The first card has the red button, the second the dark blue one.', 'kingdom-revival' )
+			),
+		),
+	),
+	'where'    => array(
+		'label'  => __( 'Where we work', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow'   => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Where we work' ),
+			'heading'   => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Villages, kilns and house churches across Punjab.' ),
+			'places'    => krm_list_f(
+				__( 'Places', 'kingdom-revival' ),
+				__( 'Place', 'kingdom-revival' ),
+				array(
+					'name'  => krm_f( 'text', __( 'Place', 'kingdom-revival' ) ),
+					'count' => krm_f( 'text', __( 'Villages / kilns', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'name'  => 'Faisalabad',
+						'count' => '[00] villages · [00] kilns',
+					),
+					array(
+						'name'  => 'Jhang',
+						'count' => '[00] villages · [00] kilns',
+					),
+					array(
+						'name'  => '[District]',
+						'count' => '[00] villages',
+					),
+					array(
+						'name'  => '[District]',
+						'count' => '[00] villages',
+					),
+				)
+			),
+			'map'       => krm_f( 'image', __( 'Map image', 'kingdom-revival' ), '', __( 'A map of Punjab. The pins below are placed on top of it.', 'kingdom-revival' ) ),
+			'map_alt'   => krm_f( 'text', __( 'Map description (alt text)', 'kingdom-revival' ), 'Map of Punjab showing where Kingdom Revival Ministries works' ),
+			'map_note'  => krm_f( 'text', __( 'Note shown on the map area while there is no map image', 'kingdom-revival' ), 'Map of Punjab · locations to be pinned' ),
+			'pins'      => krm_list_f(
+				__( 'Map pins', 'kingdom-revival' ),
+				__( 'Pin', 'kingdom-revival' ),
+				array(
+					'label' => krm_f( 'text', __( 'Label', 'kingdom-revival' ) ),
+					'left'  => krm_f( 'text', __( 'From the left (%)', 'kingdom-revival' ) ),
+					'top'   => krm_f( 'text', __( 'From the top (%)', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'label' => 'Faisalabad (HQ)',
+						'left'  => '48',
+						'top'   => '46',
+					),
+					array(
+						'label' => 'Jhang',
+						'left'  => '34',
+						'top'   => '56',
+					),
+				),
+				__( 'The first pin is the large red one (headquarters); the others are orange.', 'kingdom-revival' )
+			),
+		),
+	),
 	'field'    => array(
 		'label'  => __( 'Ministry in action (video and photos)', 'kingdom-revival' ),
 		'fields' => array(
@@ -135,6 +323,43 @@ return array(
 			),
 		),
 	),
+	'stories'  => array(
+		'label'  => __( 'Stories from the field', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow' => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Lives changed' ),
+			'heading' => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Stories from the field' ),
+			'items'   => krm_list_f(
+				__( 'Stories', 'kingdom-revival' ),
+				__( 'Story', 'kingdom-revival' ),
+				array(
+					'quote' => krm_f( 'textarea', __( 'Story (in their own words)', 'kingdom-revival' ) ),
+					'name'  => krm_f( 'text', __( 'Name', 'kingdom-revival' ) ),
+					'place' => krm_f( 'text', __( 'Who / where', 'kingdom-revival' ) ),
+					'photo' => krm_f( 'image', __( 'Photo (optional)', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'quote' => '[Story of a freed brick kiln family, in their own words.]',
+						'name'  => '[Name]',
+						'place' => 'Freed family · [Village]',
+						'photo' => '',
+					),
+					array(
+						'quote' => '[Story of healing or answered prayer.]',
+						'name'  => '[Name]',
+						'place' => 'Healed · [Village]',
+						'photo' => '',
+					),
+					array(
+						'quote' => '[A pastor on how the church in his village began.]',
+						'name'  => 'Pastor [Name]',
+						'place' => 'House church · [Village]',
+						'photo' => '',
+					),
+				)
+			),
+		),
+	),
 	'involved' => array(
 		'label'  => __( 'Get involved', 'kingdom-revival' ),
 		'fields' => array(
@@ -165,16 +390,93 @@ return array(
 			),
 		),
 	),
+	'prayer'   => array(
+		'label'  => __( 'Prayer request', 'kingdom-revival' ),
+		'help'   => __( 'Requests are saved under Kingdom Revival → Submissions and emailed like the contact form. The form fields are fixed.', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Prayer request' ),
+			'heading'        => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Let us pray with you.' ),
+			'text'           => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Our pastors and prayer team pray over every request we receive. You can also message us on WhatsApp.' ),
+			'whatsapp_label' => krm_f( 'text', __( 'WhatsApp link text', 'kingdom-revival' ), 'Pray with us on WhatsApp →', __( 'Links to the WhatsApp number in Settings.', 'kingdom-revival' ) ),
+			'button'         => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Send prayer request' ),
+			'success'        => krm_f( 'text', __( 'Message after sending', 'kingdom-revival' ), 'Thank you. Your prayer request has been sent and our team will pray with you.' ),
+			'error'          => krm_f( 'text', __( 'Message if sending fails', 'kingdom-revival' ), 'Sorry, your request could not be sent. Please try again or message us on WhatsApp.' ),
+		),
+	),
 	'founder'  => array(
 		'label'  => __( 'Founder', 'kingdom-revival' ),
 		'fields' => array(
-			'image'        => krm_f( 'image', __( 'Photo', 'kingdom-revival' ), $krm_up . '2026/08/file_00000000b46471f484befac1dc0ee291.png' ),
-			'image_alt'    => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ), 'Pastor Adil Arif, founder of Kingdom Revival Ministries' ),
-			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Founder & Pastor' ),
-			'heading'      => krm_f( 'html', __( 'Name', 'kingdom-revival' ), 'Pastor Adil Arif' ),
-			'text'         => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Pastor Adil leads Kingdom Revival Ministries in evangelism, discipleship and church ministry, with a heart for children and youth — and for practical care among villages, marginalised communities and brick kiln families.' ),
-			'button_label' => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Contact Pastor Adil' ),
-			'button_url'   => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{email}' ),
+			'image'          => krm_f( 'image', __( 'Photo', 'kingdom-revival' ), $krm_up . '2026/08/file_00000000b46471f484befac1dc0ee291.png' ),
+			'image_alt'      => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ), 'Pastor Adil Arif, founder of Kingdom Revival Ministries' ),
+			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Founder & Pastor' ),
+			'heading'        => krm_f( 'html', __( 'Name', 'kingdom-revival' ), 'Pastor Adil Arif' ),
+			'text'           => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Pastor Adil leads Kingdom Revival Ministries in evangelism, discipleship and church ministry, with a heart for children and youth — and for practical care among villages, marginalised communities and brick kiln families.' ),
+			'quote'          => krm_f( 'textarea', __( 'Quote', 'kingdom-revival' ), '“[A short quote from Pastor Adil on why this work matters.]”', __( 'Leave empty to hide the quote.', 'kingdom-revival' ) ),
+			'button_label'   => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Contact Pastor Adil' ),
+			'button_url'     => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '#prayer' ),
+			'whatsapp_label' => krm_f( 'text', __( 'WhatsApp button text', 'kingdom-revival' ), 'WhatsApp', __( 'Links to the WhatsApp number in Settings. Leave empty to hide the button.', 'kingdom-revival' ) ),
+			'story_label'    => krm_f( 'text', __( 'Story link text', 'kingdom-revival' ), 'Read his story →', __( 'Leave empty to hide the link.', 'kingdom-revival' ) ),
+			'story_url'      => krm_f( 'url', __( 'Story link', 'kingdom-revival' ), '{about}#founder' ),
+		),
+	),
+	'beliefs'  => array(
+		'label'  => __( 'What we believe and our team', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'What we believe' ),
+			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Our statement of faith' ),
+			'points'       => krm_f( 'textarea', __( 'Beliefs', 'kingdom-revival' ), "The Bible is the inspired Word of God and our final authority.\nOne God, eternally existing as Father, Son and Holy Spirit.\nJesus Christ is fully God and fully man; He died for our sins and rose again.\nSalvation is by grace alone, through faith in Jesus Christ alone.\nThe Holy Spirit lives in every believer and empowers the Church.\nJesus Christ will return; we are called to make disciples of all nations.", __( 'One point per line.', 'kingdom-revival' ) ),
+			'link_label'   => krm_f( 'text', __( 'Link text', 'kingdom-revival' ), 'Read the full statement →', __( 'Leave empty to hide the link.', 'kingdom-revival' ) ),
+			'link_url'     => krm_f( 'url', __( 'Link', 'kingdom-revival' ), '{about}' ),
+			'team_eyebrow' => krm_f( 'text', __( 'Team: small heading', 'kingdom-revival' ), 'Our team' ),
+			'team_heading' => krm_f( 'html', __( 'Team: heading', 'kingdom-revival' ), 'The people on the ground' ),
+			'team'         => krm_list_f(
+				__( 'Team members', 'kingdom-revival' ),
+				__( 'Person', 'kingdom-revival' ),
+				array(
+					'photo' => krm_f( 'image', __( 'Photo', 'kingdom-revival' ) ),
+					'name'  => krm_f( 'text', __( 'Name', 'kingdom-revival' ) ),
+					'role'  => krm_f( 'text', __( 'Role', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'photo' => $krm_up . '2026/08/file_00000000b46471f484befac1dc0ee291.png',
+						'name'  => 'Pastor Adil Arif',
+						'role'  => 'Founder & Pastor',
+					),
+					array(
+						'photo' => '',
+						'name'  => '[Name]',
+						'role'  => '[Role]',
+					),
+					array(
+						'photo' => '',
+						'name'  => '[Name]',
+						'role'  => '[Role]',
+					),
+					array(
+						'photo' => '',
+						'name'  => '[Name]',
+						'role'  => '[Role]',
+					),
+				)
+			),
+		),
+	),
+	'news'     => array(
+		'label'  => __( 'Latest news & blogs', 'kingdom-revival' ),
+		'help'   => __( 'Shows your three newest posts (their featured image, first category and date). The section is hidden while there are no posts.', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow'    => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'From the field' ),
+			'heading'    => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Latest news & blogs' ),
+			'all_label'  => krm_f( 'text', __( 'All posts link text', 'kingdom-revival' ), 'View all posts →' ),
+			'all_url'    => krm_f( 'url', __( 'All posts link', 'kingdom-revival' ), '{blog}' ),
+			'more_label' => krm_f( 'text', __( 'Card link text', 'kingdom-revival' ), 'Read more →' ),
+		),
+	),
+	'whatsapp' => array(
+		'label'  => __( 'Floating WhatsApp button', 'kingdom-revival' ),
+		'fields' => array(
+			'label' => krm_f( 'text', __( 'Button description (for screen readers)', 'kingdom-revival' ), 'Chat with us on WhatsApp', __( 'Opens a chat with the WhatsApp number in Settings. Leave empty to hide the button.', 'kingdom-revival' ) ),
 		),
 	),
 	'cta'      => array(

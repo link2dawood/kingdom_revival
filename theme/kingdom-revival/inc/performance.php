@@ -1,8 +1,10 @@
 <?php
 /**
  * Loading performance (Phase 10). Nothing here changes how a page looks:
- *  - hero backgrounds get a high-priority preload hint, and a smaller Media Library size on small screens;
+ *  - hero backgrounds get a high-priority preload hint, and a smaller Media Library size on small screens and on
+ *    standard-density desktops;
  *  - resized images WordPress creates (uploads and Setup's import) are saved as WebP;
+ *  - portrait photos get 4:3 crops for cards and gallery tiles (Phase 15 step 5), made in the background for older uploads;
  *  - editor styles and Dashicons that plugins put on public pages are left out for visitors (Phase 15).
  *
  * @package Kingdom_Revival
@@ -29,31 +31,60 @@ function krm_bg_small_url( $ref, $size = '1536x1536' ) {
 }
 
 /**
- * Inside a background's style attribute: the tablet copy as --krm-bg-m and the phone copy as --krm-bg-s (used by
- * the rules added in krm_bg_small_css()). Prints nothing when there is no smaller copy, so the markup stays the
- * design's.
+ * The 1536px copy when it can also serve standard-density desktops up to 1536px wide: it must be the full 1536px
+ * wide and at least 960px tall, because a hero or band there is up to 1526px wide and 921px tall (cover never
+ * enlarges it then). Landscape photos of 4:3 or 3:2 qualify; 16:9 and portrait photos keep the full image.
+ *
+ * @param int|string $ref Attachment ID or design URL.
+ */
+function krm_bg_desktop_url( $ref ) {
+	$url = krm_bg_small_url( $ref );
+	if ( ! $url ) {
+		return '';
+	}
+	$id   = is_numeric( $ref ) ? (int) $ref : krm_media_id( (string) $ref );
+	$copy = wp_get_attachment_image_src( $id, '1536x1536' );
+	return ( $copy && $copy[1] >= 1536 && $copy[2] >= 960 ) ? $url : '';
+}
+
+/**
+ * Media query of the standard-density desktop tier (--krm-bg-l). Screens of 1.5× or more keep the full image.
+ */
+function krm_bg_desktop_media() {
+	return '(min-width: 821px) and (max-width: 1536px) and (max-resolution: 1.49dppx)';
+}
+
+/**
+ * Inside a background's style attribute: the tablet copy as --krm-bg-m, the phone copy as --krm-bg-s and, when it is
+ * big enough, the same 1536px copy for standard-density desktops as --krm-bg-l (used by the rules added in
+ * krm_bg_small_css()). Prints nothing when there is no smaller copy, so the markup stays the design's.
  *
  * @param int|string $ref Attachment ID or design URL.
  */
 function krm_bg_small( $ref ) {
-	$tablet = krm_bg_small_url( $ref );
-	$phone  = krm_bg_small_url( $ref, 'medium_large' );
+	$tablet  = krm_bg_small_url( $ref );
+	$phone   = krm_bg_small_url( $ref, 'medium_large' );
+	$desktop = krm_bg_desktop_url( $ref );
 	if ( $tablet ) {
 		echo "; --krm-bg-m: url('" . esc_url( $tablet ) . "')";
 	}
 	if ( $phone && $phone !== $tablet ) {
 		echo "; --krm-bg-s: url('" . esc_url( $phone ) . "')";
 	}
+	if ( $desktop ) {
+		echo "; --krm-bg-l: url('" . esc_url( $desktop ) . "')";
+	}
 }
 
 /**
- * The rules that swap in --krm-bg-m and --krm-bg-s. They beat the inline background-image because they are
- * !important. Phones get the 768px copy: a hero is at most about 820px wide there, and phones of 2× density or more
- * see no difference at that size, while the file is about a third of the 1536px one.
+ * The rules that swap in --krm-bg-m, --krm-bg-s and --krm-bg-l. They beat the inline background-image because they
+ * are !important. Phones get the 768px copy: a hero is at most about 820px wide there, and phones of 2× density or
+ * more see no difference at that size, while the file is about a third of the 1536px one.
  */
 function krm_bg_small_css() {
 	return '@media (max-width: 820px){[style*="--krm-bg-m"]{background-image:var(--krm-bg-m)!important}}'
-		. '@media (max-width: 600px){[style*="--krm-bg-s"]{background-image:var(--krm-bg-s)!important}}';
+		. '@media (max-width: 600px){[style*="--krm-bg-s"]{background-image:var(--krm-bg-s)!important}}'
+		. '@media ' . krm_bg_desktop_media() . '{[style*="--krm-bg-l"]{background-image:var(--krm-bg-l)!important}}';
 }
 
 /**
@@ -68,19 +99,26 @@ function krm_hero_preload( $ref ) {
 	if ( $done || ! $ref ) {
 		return;
 	}
-	$done   = true;
-	$full   = krm_ref_url( $ref );
-	$tablet = krm_bg_small_url( $ref );
-	$phone  = krm_bg_small_url( $ref, 'medium_large' );
-	$tiers  = array();
+	$done    = true;
+	$full    = krm_ref_url( $ref );
+	$tablet  = krm_bg_small_url( $ref );
+	$phone   = krm_bg_small_url( $ref, 'medium_large' );
+	$desktop = krm_bg_desktop_url( $ref );
+	$tiers   = array();
 	if ( $phone && $phone !== $tablet ) {
 		$tiers[] = array( $phone, '(max-width: 600px)' );
 		$tiers[] = array( $tablet ? $tablet : $full, '(min-width: 601px) and (max-width: 820px)' );
 	} elseif ( $tablet ) {
 		$tiers[] = array( $tablet, '(max-width: 820px)' );
 	}
-	if ( $tiers ) {
+	if ( $desktop ) {
+		// The same conditions as krm_bg_small_css(), so exactly one file matches each screen.
+		$tiers[] = array( $desktop, krm_bg_desktop_media() );
+		$tiers[] = array( $full, '(min-width: 1537px), (min-width: 821px) and (min-resolution: 1.5dppx)' );
+	} elseif ( $tiers ) {
 		$tiers[] = array( $full, '(min-width: 821px)' );
+	}
+	if ( $tiers ) {
 		foreach ( $tiers as $tier ) {
 			printf( '<link rel="preload" as="image" href="%s" media="%s" fetchpriority="high">' . "
 ", esc_url( $tier[0] ), esc_attr( $tier[1] ) );
@@ -117,6 +155,128 @@ add_filter(
 			}
 		}
 		return $formats;
+	}
+);
+
+/* ---------- 4:3 card crops ---------- */
+
+/*
+ * Cards and gallery tiles (home causes and field stories, story cards, Donate's impact cards, ministry and story
+ * galleries, All Ministries) show a photo with object-fit: cover in a box never taller than 4:3. For a portrait photo
+ * that is only a middle band, yet the browser picks a file by width and downloads the whole height: a 358px-wide
+ * card on a 3× phone took the 1055×1536 copy. A centred 4:3 crop holds exactly that band, at about half the bytes.
+ * The crops are made only for photos taller than 5:4; wider photos are already close to the box's shape.
+ */
+
+/**
+ * Card crop sizes: name => width (height is 3/4 of it).
+ */
+function krm_card_sizes() {
+	return array(
+		'krm-card-480'  => 480,
+		'krm-card-800'  => 800,
+		'krm-card-1200' => 1200,
+	);
+}
+
+add_action(
+	'after_setup_theme',
+	function () {
+		foreach ( krm_card_sizes() as $name => $width ) {
+			add_image_size( $name, $width, (int) ( $width * 3 / 4 ), true );
+		}
+	}
+);
+
+/**
+ * Does an image get card crops? Only photos taller than 5:4 (portrait or square).
+ *
+ * @param array $meta Attachment metadata (width, height).
+ */
+function krm_card_wanted( $meta ) {
+	return ! empty( $meta['width'] ) && ! empty( $meta['height'] ) && $meta['width'] * 4 < $meta['height'] * 5;
+}
+
+/**
+ * Leave out the card sizes an image should not get: all of them for wider photos, and the ones wider than the
+ * photo (WordPress would make an off-shape crop instead). Runs on upload and when missing sizes are made.
+ *
+ * @param array $sizes Sizes to make.
+ * @param array $meta  Attachment metadata.
+ */
+function krm_card_filter_sizes( $sizes, $meta ) {
+	foreach ( krm_card_sizes() as $name => $width ) {
+		if ( isset( $sizes[ $name ] ) && ( ! krm_card_wanted( $meta ) || $meta['width'] < $width ) ) {
+			unset( $sizes[ $name ] );
+		}
+	}
+	return $sizes;
+}
+add_filter( 'intermediate_image_sizes_advanced', 'krm_card_filter_sizes', 10, 2 );
+add_filter( 'wp_get_missing_image_subsizes', 'krm_card_filter_sizes', 10, 2 );
+
+/**
+ * The srcset of an image's card crops, or '' when it has none (the caller then uses the normal one).
+ *
+ * @param int $id Attachment ID.
+ */
+function krm_card_srcset( $id ) {
+	$meta = wp_get_attachment_metadata( $id );
+	if ( empty( $meta['sizes'] ) || ! is_array( $meta['sizes'] ) ) {
+		return '';
+	}
+	foreach ( array_reverse( array_keys( krm_card_sizes() ) ) as $name ) {
+		if ( ! empty( $meta['sizes'][ $name ] ) ) {
+			return (string) wp_get_attachment_image_srcset( $id, $name, $meta );
+		}
+	}
+	return '';
+}
+
+/**
+ * Make the card crops for images uploaded before theme 1.8.1, a few per WP-Cron run so no request runs long. The
+ * option holds the last attachment ID looked at (saved before each image, so one that fails is not retried
+ * forever), or -1 when every image is done.
+ */
+function krm_card_backfill() {
+	global $wpdb;
+	$cursor = (int) get_option( 'krm_card_backfill', 0 );
+	if ( $cursor < 0 ) {
+		return;
+	}
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	$ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'attachment' AND post_mime_type IN ('image/jpeg', 'image/png', 'image/webp') AND ID > %d ORDER BY ID ASC LIMIT 20", $cursor ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	// Only the card crops: other sizes a site left out on purpose stay missing.
+	$only_cards = function ( $sizes ) {
+		return array_intersect_key( $sizes, krm_card_sizes() );
+	};
+	add_filter( 'wp_get_missing_image_subsizes', $only_cards, 20 );
+	$made = 0;
+	foreach ( $ids as $id ) {
+		update_option( 'krm_card_backfill', (int) $id );
+		$meta = wp_get_attachment_metadata( (int) $id );
+		if ( ! is_array( $meta ) || ! krm_card_wanted( $meta ) || ! wp_get_missing_image_subsizes( (int) $id ) ) {
+			continue;
+		}
+		wp_update_image_subsizes( (int) $id );
+		if ( ++$made >= 3 ) {
+			break;
+		}
+	}
+	remove_filter( 'wp_get_missing_image_subsizes', $only_cards, 20 );
+	if ( $made < 3 && count( $ids ) < 20 ) {
+		update_option( 'krm_card_backfill', -1 );
+	}
+}
+add_action( 'krm_card_backfill', 'krm_card_backfill' );
+
+/* Keep the backfill going (one event at a time) until it is done. */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_card_backfill', 0 ) >= 0 && ! wp_next_scheduled( 'krm_card_backfill' ) ) {
+			wp_schedule_single_event( time() + 60, 'krm_card_backfill' );
+		}
 	}
 );
 

@@ -144,12 +144,18 @@ function krm_asset( $path ) {
 
 /**
  * Remote design URL => attachment ID, filled by the setup importer.
+ *
+ * The first call also loads those attachments and their meta into the object cache in two queries; every design
+ * image would otherwise cost two queries of its own when its URL is resolved (about 45 on the home page).
  */
 function krm_media_map() {
 	static $map = null;
 	if ( null === $map ) {
 		$map = get_option( 'krm_media_map', array() );
 		$map = is_array( $map ) ? $map : array();
+		if ( $map ) {
+			_prime_post_caches( array_unique( array_map( 'intval', array_values( $map ) ) ), false, true );
+		}
 	}
 	return $map;
 }
@@ -165,8 +171,25 @@ function krm_media_id( $url ) {
 }
 
 /**
- * URL for a design image: the imported Media Library copy when available, otherwise the original URL.
- * "krm-theme:images/content/x.jpg" names a photo shipped in the theme's assets/ folder (not on the old site).
+ * Path inside assets/ of the theme's copy of a design image, or '' when the theme has none: "krm-theme:…" photos
+ * (not on the old site) and the old site's Elementor thumbnails (inc/data/media-local.php).
+ *
+ * @param string $url Remote URL from the design.
+ */
+function krm_media_local( $url ) {
+	static $local = null;
+	if ( 0 === strpos( $url, 'krm-theme:' ) ) {
+		return substr( $url, 10 );
+	}
+	if ( null === $local ) {
+		$local = include KRM_DIR . '/inc/data/media-local.php';
+	}
+	return isset( $local[ $url ] ) ? $local[ $url ] : '';
+}
+
+/**
+ * URL for a design image: the imported Media Library copy when available, otherwise the theme's copy, otherwise the
+ * original URL.
  *
  * @param string $url  Remote URL from the design.
  * @param string $size Image size.
@@ -179,21 +202,29 @@ function krm_media( $url, $size = 'full' ) {
 			return $src;
 		}
 	}
-	return 0 === strpos( $url, 'krm-theme:' ) ? krm_asset( substr( $url, 10 ) ) : $url;
+	$local = krm_media_local( $url );
+	return '' !== $local ? krm_asset( $local ) : $url;
 }
 
 /**
  * Print src (full size, so zooming stays sharp) plus srcset/sizes for an image.
  *
+ * With $card, the srcset lists the image's 4:3 card crops when it has them (krm_card_srcset()). Only for boxes that
+ * are never taller than 4:3 and show the middle of the photo (object-fit: cover), where the crop looks the same.
+ *
  * @param int|string $ref   Attachment ID or design URL.
  * @param string     $sizes Sizes attribute.
+ * @param bool       $card  Use the 4:3 card crops.
  */
-function krm_img_src( $ref, $sizes = '(max-width: 820px) 100vw, 50vw' ) {
+function krm_img_src( $ref, $sizes = '(max-width: 820px) 100vw, 50vw', $card = false ) {
 	$id  = is_numeric( $ref ) ? (int) $ref : krm_media_id( $ref );
 	$src = is_numeric( $ref ) ? wp_get_attachment_image_url( $id, 'full' ) : krm_media( $ref );
 	echo 'src="' . esc_url( (string) $src ) . '"';
 	if ( $id ) {
-		$srcset = wp_get_attachment_image_srcset( $id, 'full' );
+		$srcset = $card ? krm_card_srcset( $id ) : '';
+		if ( ! $srcset ) {
+			$srcset = wp_get_attachment_image_srcset( $id, 'full' );
+		}
 		if ( $srcset ) {
 			echo ' srcset="' . esc_attr( $srcset ) . '" sizes="' . esc_attr( $sizes ) . '"';
 		}
@@ -527,7 +558,8 @@ function krm_logo_url( $size = 'medium' ) {
 function krm_logo_img( $px = 64, $sizes = '64px', $alt = '', $extra = '' ) {
 	$id = (int) get_theme_mod( 'custom_logo' );
 	if ( $id && wp_attachment_is_image( $id ) ) {
-		$src    = wp_get_attachment_image_url( $id, 'thumbnail' );
+		// 'medium' keeps the logo's shape ('thumbnail' is a square crop); the srcset holds its uncropped sizes.
+		$src    = wp_get_attachment_image_url( $id, 'medium' );
 		$srcset = wp_get_attachment_image_srcset( $id, 'full' );
 	} else {
 		$src    = '';

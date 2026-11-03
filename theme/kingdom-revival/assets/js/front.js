@@ -86,6 +86,58 @@
     });
   }
 
+  /* ---------- Freedom from Slavery: before/after slider ---------- */
+  var compare = document.querySelector("[data-krm-compare]");
+  var range = document.querySelector("[data-krm-compare-range]");
+  if (compare && range) {
+    var before = compare.querySelector("[data-krm-compare-before]");
+    var lines = compare.querySelectorAll("[data-krm-compare-line]");
+    range.addEventListener("input", function () {
+      var split = Number(range.value);
+      before.style.clipPath = "inset(0 " + (100 - split) + "% 0 0)";
+      lines.forEach(function (line) { line.style.left = split + "%"; });
+    });
+  }
+
+  /* ---------- Prayer request form (posts to WordPress, as the contact form does) ---------- */
+  var prayer = document.querySelector("form[data-krm-prayer]");
+  if (prayer && window.KRM && KRM.sendForm) {
+    var prayerSent = prayer.querySelector("[data-krm-prayer-status]");
+    var prayerFailed = prayer.querySelector("[data-krm-prayer-error]");
+    var prayerButton = prayer.querySelector('button[type="submit"]');
+    var prayerLabel = prayerButton.textContent;
+    prayer.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var fields = { name: prayer.elements.name.value.trim(), contact: prayer.elements.contact.value.trim(), request: prayer.elements.request.value.trim() };
+      var missing = null;
+      ["name", "contact", "request"].forEach(function (key) {
+        var empty = !fields[key];
+        prayer.elements[key].setAttribute("aria-invalid", empty ? "true" : "false");
+        prayer.elements[key].style.borderColor = empty ? "#D4070B" : "#D3D9E6";
+        if (empty && !missing) missing = prayer.elements[key];
+      });
+      if (missing) { missing.focus(); return; }
+      prayerSent.hidden = true;
+      prayerFailed.hidden = true;
+      prayerButton.disabled = true;
+      prayerButton.textContent = "Sending…";
+      KRM.sendForm(prayer, "prayer", fields).then(function () {
+        prayer.reset();
+        prayerSent.hidden = false;
+      }).catch(function (error) {
+        if (error.fields) {
+          Object.keys(error.fields).forEach(function (key) {
+            if (prayer.elements[key]) { prayer.elements[key].setAttribute("aria-invalid", "true"); prayer.elements[key].style.borderColor = "#D4070B"; }
+          });
+        }
+        prayerFailed.hidden = false;
+      }).then(function () {
+        prayerButton.disabled = false;
+        prayerButton.textContent = prayerLabel;
+      });
+    });
+  }
+
   /* ---------- Section links without "#" in the address bar ---------- */
   // The links keep their "#section" href, so they still work without script. Arriving from another page
   // (/#all-ministries), the anchor is taken out of the address at once and the section is scrolled to here, after the
@@ -137,13 +189,27 @@
   }
 
   /* ---------- Hero video ---------- */
-  // Started once the page has loaded, so its download doesn't hold up the first view.
+  // Started once the page has loaded, so its download doesn't hold up the first view. Not started at all for
+  // visitors who ask for reduced motion or have data saver on (the file is about 9 MB): the section's background,
+  // the same picture, shows instead. Paused while scrolled out of view, so it doesn't decode frames nobody sees.
   var heroVideo = document.querySelector("video[data-krm-autoplay]");
-  if (heroVideo) {
-    var startVideo = function () {
-      heroVideo.autoplay = true;
+  var saveData = navigator.connection && navigator.connection.saveData;
+  var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (heroVideo && !saveData && !still) {
+    var heroVisible = true;
+    var play = function () {
       var playing = heroVideo.play();
       if (playing && playing.catch) playing.catch(function () {});
+    };
+    var startVideo = function () {
+      heroVideo.autoplay = true;
+      if (heroVisible) play();
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          heroVisible = entries[0].isIntersecting;
+          if (heroVisible) play(); else heroVideo.pause();
+        }).observe(heroVideo);
+      }
     };
     if (document.readyState === "complete") startVideo();
     else window.addEventListener("load", startVideo);

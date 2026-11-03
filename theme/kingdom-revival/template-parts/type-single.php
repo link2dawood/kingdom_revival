@@ -91,7 +91,7 @@ if ( $krm_is_evt ) {
 		<aside class="sidebar" aria-label="<?php esc_attr_e( 'Support the ministry', 'kingdom-revival' ); ?>">
 		<form class="give-card" data-short="true" data-give="Kingdom Revival Ministries" data-heading="Give to the mission"></form>
 		<a class="ministry-card" href="<?php krm_u( 'story.side_pray_url', 'site' ); ?>">
-			<img src="<?php echo esc_url( krm_logo_url() ); ?>" alt="" style="object-fit: contain; background: var(--soft); padding: 6px" loading="lazy">
+			<?php krm_logo_img( 64, '52px', '', ' style="object-fit: contain; background: var(--soft); padding: 6px" loading="lazy"' ); ?>
 			<span><small><?php krm_t( 'story.side_pray_label', 'site' ); ?></small><strong><?php krm_t( 'story.side_pray_title', 'site' ); ?></strong><em><?php krm_t( 'story.side_pray_link', 'site' ); ?></em></span>
 		</a>
 		</aside>

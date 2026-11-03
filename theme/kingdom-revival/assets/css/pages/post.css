@@ -19,7 +19,7 @@
 .article blockquote::before { position: absolute; top: 10px; left: 22px; color: var(--red); content: "“"; font-family: Georgia, serif; font-size: 72px; line-height: 1; }
 .article blockquote cite { display: block; margin-top: 10px; color: var(--red); font-size: 14px; font-style: normal; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .article figure { margin: 36px 0; }
-.article figure img { display: block; width: 100%; max-height: 520px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
+.article figure img { display: block; width: 100%; height: auto; max-height: 520px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
 .article figcaption { display: flex; gap: 8px; align-items: center; margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.5; }
 .article ul.checks { display: grid; gap: 12px; margin: 0 0 28px; padding: 0; list-style: none; }
 .article ul.checks li { display: flex; gap: 12px; align-items: flex-start; }

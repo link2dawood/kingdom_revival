@@ -75,7 +75,7 @@ else :
 			<span><small><?php krm_t( 'story.side_ministry', 'site' ); ?></small><strong id="ministry-card-name"><?php echo esc_html( $krm_ministry['title'] ); ?></strong><em><?php krm_t( 'story.side_more', 'site' ); ?></em></span>
 			</a>
 			<a class="ministry-card" href="<?php krm_u( 'story.side_pray_url', 'site' ); ?>">
-			<img src="<?php echo esc_url( krm_logo_url() ); ?>" alt="" style="object-fit: contain; background: var(--soft); padding: 6px" loading="lazy">
+			<?php krm_logo_img( 64, '52px', '', ' style="object-fit: contain; background: var(--soft); padding: 6px" loading="lazy"' ); ?>
 			<span><small><?php krm_t( 'story.side_pray_label', 'site' ); ?></small><strong><?php krm_t( 'story.side_pray_title', 'site' ); ?></strong><em><?php krm_t( 'story.side_pray_link', 'site' ); ?></em></span>
 			</a>
 		</aside>

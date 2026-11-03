@@ -1,6 +1,6 @@
 <?php
 /**
- * Contact, partner and newsletter forms: validation, spam protection, saved submissions and email notifications.
+ * Contact, partner, newsletter and prayer request forms: validation, spam protection, saved submissions and email notifications.
  *
  * Spam protection (no third-party service, works with page caching):
  *  - hidden honeypot field,
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Field definitions per form: key => [ label, required, type ].
  *
- * @param string $form contact|partner|newsletter.
+ * @param string $form contact|partner|newsletter|prayer.
  */
 function krm_form_fields( $form ) {
 	$fields = array(
@@ -44,6 +44,11 @@ function krm_form_fields( $form ) {
 			'name'  => array( 'First name', false, 'text' ),
 			'email' => array( 'Email', true, 'email' ),
 		),
+		'prayer'     => array(
+			'name'    => array( 'Name', true, 'text' ),
+			'contact' => array( 'Email or WhatsApp', true, 'text' ),
+			'request' => array( 'Prayer request', true, 'textarea' ),
+		),
 	);
 	return isset( $fields[ $form ] ) ? $fields[ $form ] : array();
 }
@@ -56,6 +61,7 @@ function krm_form_labels() {
 		'contact'    => __( 'Contact message', 'kingdom-revival' ),
 		'partner'    => __( 'Partner sign-up', 'kingdom-revival' ),
 		'newsletter' => __( 'Newsletter sign-up', 'kingdom-revival' ),
+		'prayer'     => __( 'Prayer request', 'kingdom-revival' ),
 	);
 }
 
@@ -223,9 +229,11 @@ function krm_notify( $form, $data, $title, $post_id ) {
 	$body .= "\n\n" . sprintf( /* translators: %s: admin URL */ __( 'View all submissions: %s', 'kingdom-revival' ), admin_url( 'edit.php?post_type=krm_submission' ) );
 
 	$headers = array();
-	if ( is_email( $data['email'] ) ) {
+	// The prayer form has one "Email or WhatsApp" field; reply to it when it is an email address.
+	$reply = isset( $data['email'] ) ? $data['email'] : ( isset( $data['contact'] ) ? $data['contact'] : '' );
+	if ( is_email( $reply ) ) {
 		$name      = isset( $data['name'] ) && '' !== $data['name'] ? str_replace( array( "\r", "\n", '"' ), '', $data['name'] ) : '';
-		$headers[] = 'Reply-To: ' . ( $name ? '"' . $name . '" ' : '' ) . '<' . $data['email'] . '>';
+		$headers[] = 'Reply-To: ' . ( $name ? '"' . $name . '" ' : '' ) . '<' . $reply . '>';
 	}
 	/* translators: %s: submission title */
 	$subject = sprintf( __( '[Website] %s', 'kingdom-revival' ), $title );

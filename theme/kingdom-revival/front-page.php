@@ -21,13 +21,22 @@ get_header();
 <?php
 get_template_part( 'template-parts/home/hero' );
 get_template_part( 'template-parts/home/stats' );
+get_template_part( 'template-parts/home/gift' );
 get_template_part( 'template-parts/home/about' );
 get_template_part( 'template-parts/home/explorer', null, array( 'ministries' => krm_ministries( 'home' ) ) );
 get_template_part( 'template-parts/home/causes' );
+get_template_part( 'template-parts/home/freedom' );
+get_template_part( 'template-parts/home/flagship' );
+get_template_part( 'template-parts/home/where' );
 get_template_part( 'template-parts/home/field-stories' );
+get_template_part( 'template-parts/home/stories' );
 get_template_part( 'template-parts/home/get-involved' );
+get_template_part( 'template-parts/home/prayer' );
 get_template_part( 'template-parts/home/founder' );
+get_template_part( 'template-parts/home/beliefs' );
+get_template_part( 'template-parts/home/news' );
 get_template_part( 'template-parts/home/cta' );
+get_template_part( 'template-parts/home/whatsapp' );
 get_template_part( 'template-parts/home/floating-donate' );
 ?>
 </main>

@@ -1,0 +1,25 @@
+<?php
+/**
+ * Home: "Your gift at work" amount cards.
+ *
+ * @package Kingdom_Revival
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
+<!-- Your gift at work -->
+<section aria-labelledby="gift-h" style="max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px) 0">
+<div style="display: flex; flex-wrap: wrap; gap: 12px 48px; justify-content: space-between; align-items: flex-end; margin-bottom: 28px">
+<h2 id="gift-h" style="margin: 0; font-size: clamp(26px, 2.8vw, 34px); font-weight: 800; color: var(--color-primary)"><?php krm_t( 'gift.heading' ); ?></h2>
+<p style="margin: 0; color: var(--color-text-muted)"><?php krm_t( 'gift.text' ); ?></p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px">
+<?php foreach ( (array) krm_c( 'gift.cards' ) as $krm_card ) : ?>
+<a href="<?php echo krm_url( $krm_card['url'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" style="text-decoration: none; border: 1px solid #E3E7F0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 34px; font-weight: 800; color: var(--color-secondary); letter-spacing: -0.02em"><?php echo krm_text( $krm_card['amount'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+<span style="font-weight: 700; color: var(--color-text)"><?php echo krm_text( $krm_card['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+<span style="font-size: 14px; color: var(--color-text-muted)"><?php echo krm_text( $krm_card['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+</a>
+<?php endforeach; ?>
+</div>
+</section>

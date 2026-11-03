@@ -403,7 +403,7 @@ function krm_type_card( $post ) {
 		$meta[] = esc_html( $venue );
 	}
 	?>
-	<a class="post-card" href="<?php the_permalink( $post ); ?>"><div class="post-card-media"><img <?php krm_img_src( $image, '(max-width: 760px) 100vw, 400px' ); ?> alt="" loading="lazy" decoding="async">
+	<a class="post-card" href="<?php the_permalink( $post ); ?>"><div class="post-card-media"><img <?php krm_img_src( $image, '(max-width: 760px) 100vw, 400px', true ); ?> alt="" loading="lazy" decoding="async">
 	<?php
 	if ( $tag ) :
 		?>

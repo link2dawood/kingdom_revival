@@ -83,10 +83,10 @@ $krm_gift = krm_gift_return();
 			<p class="step-label"><span>2</span><?php krm_t( 'methods.step' ); ?></p>
 			<div class="card">
 			<div class="tabs" role="tablist" aria-label="Payment methods">
-				<button type="button" class="tab" role="tab" id="tab-paypal" aria-controls="panel-paypal" data-method="PayPal"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/paypal-logo-png_seeklogo-249214-300x300.png', '48px' ); ?> alt="">PayPal</button>
+				<button type="button" class="tab" role="tab" id="tab-paypal" aria-controls="panel-paypal" data-method="PayPal"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/paypal-logo-png_seeklogo-249214-300x300.png', '48px' ); ?> alt="" width="300" height="300">PayPal</button>
 				<button type="button" class="tab" role="tab" id="tab-bank" aria-controls="panel-bank" data-method="Bank transfer"><span class="tab-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"></path></svg></span>Bank transfer</button>
-				<button type="button" class="tab" role="tab" id="tab-wu" aria-controls="panel-wu" data-method="Western Union"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/western-union-new-20232644.logowik.com_.webp', '48px' ); ?> alt="">Western Union</button>
-				<button type="button" class="tab" role="tab" id="tab-mg" aria-controls="panel-mg" data-method="MoneyGram"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/money-gram-1024x642.png', '48px' ); ?> alt="">MoneyGram</button>
+				<button type="button" class="tab" role="tab" id="tab-wu" aria-controls="panel-wu" data-method="Western Union"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/western-union-new-20232644.logowik.com_.webp', '48px' ); ?> alt="" width="866" height="650">Western Union</button>
+				<button type="button" class="tab" role="tab" id="tab-mg" aria-controls="panel-mg" data-method="MoneyGram"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/money-gram-1024x642.png', '48px' ); ?> alt="" width="1024" height="642">MoneyGram</button>
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-paypal" aria-labelledby="tab-paypal">
@@ -185,7 +185,7 @@ $krm_gift = krm_gift_return();
 		</div>
 		<div class="impact">
 			<?php foreach ( (array) krm_c( 'impact.cards' ) as $krm_card ) : ?>
-			<article class="impact-card"><img <?php krm_img_src( $krm_card['image'], '(max-width: 560px) 100vw, (max-width: 1000px) 50vw, 290px' ); ?> alt="<?php echo krm_alt( $krm_card['image'], $krm_card['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async"><div><h3><?php echo krm_text( $krm_card['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3><p><?php echo krm_text( $krm_card['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p></div></article>
+			<article class="impact-card"><img <?php krm_img_src( $krm_card['image'], '(max-width: 560px) 100vw, (max-width: 1000px) 50vw, 290px', true ); ?> alt="<?php echo krm_alt( $krm_card['image'], $krm_card['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async"><div><h3><?php echo krm_text( $krm_card['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3><p><?php echo krm_text( $krm_card['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p></div></article>
 			<?php endforeach; ?>
 		</div>
 		</div>

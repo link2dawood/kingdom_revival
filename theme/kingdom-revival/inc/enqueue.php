@@ -90,6 +90,12 @@ add_action(
 			)
 		);
 
+		// The photo viewer, only where gallery photos or [data-zoom] images are printed: home, About, ministry pages,
+		// stories, sermons and events.
+		if ( in_array( $view, array( 'front', 'about', 'post' ), true ) || is_singular( 'ministry' ) ) {
+			wp_enqueue_script( 'krm-viewer', krm_asset( 'js/viewer.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
+		}
+
 		$scripts = array( 'front', 'blog', 'post', 'contact', 'donate', 'partner' );
 		if ( in_array( $view, $scripts, true ) ) {
 			wp_enqueue_script( 'krm-' . $view, krm_asset( 'js/' . $view . '.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );

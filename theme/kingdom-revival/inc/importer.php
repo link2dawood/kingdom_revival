@@ -180,8 +180,14 @@ function krm_import_media_batch( $offset ) {
 			}
 			continue;
 		}
-		$theme_file = 0 === strpos( $url, 'krm-theme:' ) ? get_theme_file_path( 'assets/' . substr( $url, 10 ) ) : '';
-		$id         = $theme_file ? 0 : attachment_url_to_postid( $url );
+		// Shipped with the theme ("krm-theme:" photos and the old site's Elementor thumbnails): imported from the theme's
+		// copy under its own file name, so nothing is downloaded from the old site's elementor/thumbs folder.
+		$local      = krm_media_local( $url );
+		$theme_file = '' !== $local ? get_theme_file_path( 'assets/' . $local ) : '';
+		if ( $theme_file ) {
+			$name = wp_basename( $theme_file );
+		}
+		$id = 0 === strpos( $url, 'krm-theme:' ) ? 0 : attachment_url_to_postid( $url );
 		if ( $id ) {
 			$log[] = sprintf( 'Reused from Media Library: %s', $name );
 		} else {

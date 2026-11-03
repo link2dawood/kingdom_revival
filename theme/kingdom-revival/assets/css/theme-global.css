@@ -271,6 +271,29 @@
 .menu > li > a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--red); }
 .submenu { position: absolute; top: 100%; left: -14px; z-index: 60; display: none; width: 250px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); box-shadow: var(--shadow); }
 .submenu .sub-toggle > .chev, .submenu .sub-toggle[aria-expanded="true"] > .chev { transform: rotate(-90deg); }
+/* Mega menu (desktop): "Ministries" opens a panel the width of the header with one column per group, every
+   ministry listed under its group heading, as in the home page design. The groups are the menu's second level. */
+@media (min-width: 901px) {
+  .menu > li.is-mega { position: static; }
+  .menu > li.is-mega > .submenu { top: 100%; left: 0; right: 0; width: auto; flex-wrap: wrap; gap: 20px 28px; padding: 28px calc((100% - min(var(--wrap), 100% - var(--container-gutter))) / 2) 24px; border: 0; border-top: 1px solid var(--color-border); border-radius: 0; box-shadow: 0 24px 40px rgba(12,28,79,0.10); }
+  .menu > li.is-mega > .sub-toggle[aria-expanded="true"] + .submenu { display: flex; }
+  .is-mega > .submenu > li { flex: 1 1 220px; min-width: 0; }
+  /* Keeps the panel open while the pointer crosses the space between the menu item and the panel. */
+  .menu > li.is-mega > .submenu::before { position: absolute; left: 0; right: 0; bottom: 100%; height: 22px; content: ""; }
+  .is-mega > .submenu > li > .submenu, .is-mega > .submenu > li > .submenu.open-left { position: static; display: flex; flex-direction: column; width: auto; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+  .is-mega > .submenu > li > .submenu::before { display: none; }
+  .is-mega > .submenu > li > .sub-toggle { margin: 0 0 10px; padding: 0; min-height: 0; border-radius: 0; background: none !important; color: var(--color-secondary) !important; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; cursor: default; }
+  .is-mega > .submenu > li > .sub-toggle > .chev { display: none; }
+  .is-mega > .submenu > li > .submenu a { padding: 8px 0; border-radius: 0; border-bottom: 1px solid var(--color-border); font-size: 15px; font-weight: 600; }
+  .is-mega > .submenu > li > .submenu a:hover { background: none; }
+  .is-mega > .submenu > .menu-all { flex-basis: 100%; order: 1; margin: 0; padding: 0; border: 0; }
+  .is-mega > .submenu > .menu-all a { display: inline-flex; width: auto; padding: 0; min-height: 44px; font-size: 15px; }
+  .is-mega > .submenu > .menu-all a::after { content: " →"; white-space: pre; }
+  .is-mega > .submenu > .menu-all a:hover { background: none; color: var(--color-secondary); }
+}
+@media (hover: hover) and (min-width: 901px) {
+  .menu > li.is-mega:hover > .submenu { display: flex; }
+}
 @media (max-width: 900px) {
   .site-nav .menu { position: absolute; top: 100%; left: 0; right: 0; z-index: 60; display: none; flex-direction: column; align-items: stretch; gap: 0; max-height: calc(100vh - 90px); overflow-y: auto; padding: 8px 20px 16px; border-bottom: 1px solid var(--line); background: var(--white); box-shadow: 0 18px 30px rgba(12,28,79,.1); }
   .menu > li > a[aria-current="page"] { box-shadow: none; }
