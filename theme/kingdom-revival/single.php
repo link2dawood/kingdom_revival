@@ -22,9 +22,10 @@ while ( have_posts() ) :
 	?>
 	<main id="main">
 	<div id="post-page">
-		<section class="post-hero" id="post-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_cover ) ); ?>')">
+		<?php krm_hero_preload( $krm_cover ); ?>
+		<section class="post-hero" id="post-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_cover ) ); ?>')<?php krm_bg_small( $krm_cover ); ?>">
 		<div class="wrap">
-			<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li><a href="<?php echo esc_url( krm_blog_url() ); ?>">News &amp; Blogs</a></li><li aria-current="page" id="crumb-title"><?php echo esc_html( $krm_title ); ?></li></ol>
+			<?php krm_breadcrumb_html( 'crumb-title' ); ?>
 			<span class="tag" id="post-tag"><?php echo esc_html( $krm_category ); ?></span>
 			<h1 id="post-title"><?php echo esc_html( $krm_title ); ?></h1>
 			<div class="post-meta" id="post-meta"><span><?php echo krm_icon( 'cal' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date( 'F j, Y' ) ); ?></time></span><span><?php echo krm_icon( 'clock' ) . esc_html( krm_read_time( $krm_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> min read</span><span>Ministry: <a href="<?php echo esc_url( $krm_ministry['url'] ); ?>"><?php echo esc_html( $krm_ministry['title'] ); ?></a></span></div>
@@ -46,7 +47,7 @@ while ( have_posts() ) :
 			<a class="button button-secondary" href="<?php echo esc_url( krm_blog_url() ); ?>"><?php krm_t( 'story.back', 'site' ); ?></a>
 			</div>
 			<div class="author">
-			<img src="<?php echo esc_url( krm_logo_url() ); ?>" alt="" width="60" height="60" loading="lazy">
+			<?php krm_logo_img( 60, '60px', '', ' loading="lazy"' ); ?>
 			<div><strong><?php krm_t( 'story.author_name', 'site' ); ?></strong><span><?php krm_t( 'story.author_text', 'site' ); ?></span></div>
 			</div>
 			<nav class="post-nav" id="post-nav" aria-label="More stories">

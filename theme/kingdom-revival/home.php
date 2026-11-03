@@ -24,9 +24,10 @@ foreach ( $krm_posts as $krm_p ) {
 }
 ?>
 	<main id="main">
-	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')">
+	<?php krm_hero_preload( krm_c( 'hero.image' ) ); ?>
+	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')<?php krm_bg_small( krm_c( 'hero.image' ) ); ?>">
 		<div class="wrap">
-		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li aria-current="page"><?php echo esc_html( get_the_title( get_option( 'page_for_posts' ) ) ); ?></li></ol>
+		<?php krm_breadcrumb_html(); ?>
 		<p class="eyebrow"><?php krm_t( 'hero.eyebrow' ); ?></p>
 		<h1><?php krm_h( 'hero.title' ); ?></h1>
 		<p class="lead"><?php krm_t( 'hero.lead' ); ?></p>

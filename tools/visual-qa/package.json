@@ -8,6 +8,7 @@
     "audit": "mkdir -p out && node audit.js out/audit.json"
   },
   "dependencies": {
+    "axe-core": "4.10.2",
     "pixelmatch": "5.3.0",
     "playwright-core": "1.49.1",
     "pngjs": "7.0.0"

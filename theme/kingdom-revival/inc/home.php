@@ -8,18 +8,22 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Social icon link attributes. Without a saved URL the icon links to the footer contact details (#contact),
- * as in the design.
- *
- * @param string $network facebook|youtube|instagram.
+ * Social profiles saved in Kingdom Revival → Settings, as network => [ label, URL ]. The top bar shows an icon for
+ * each one; with none saved it shows none (the inner-page design's top bar).
  */
-function krm_social_href( $network ) {
-	$url = krm_opt( $network );
-	if ( $url ) {
-		echo 'href="' . esc_url( $url ) . '" rel="noopener"';
-	} else {
-		echo 'href="#contact"';
+function krm_social_links() {
+	$links = array();
+	foreach ( array(
+		'facebook'  => 'Facebook',
+		'youtube'   => 'YouTube',
+		'instagram' => 'Instagram',
+	) as $network => $label ) {
+		$url = trim( (string) krm_opt( $network ) );
+		if ( '' !== $url ) {
+			$links[ $network ] = array( $label, $url );
+		}
 	}
+	return $links;
 }
 
 /**
@@ -88,7 +92,7 @@ function krm_home_causes() {
 		array( 'ORPHAN CARE', 'Orphanage & Children Care', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Orphanages-care-16-scaled-e1787819076312-rsij8jj20ojpz9btf5v77vd2yjnnuanqoo6mn3kqjc.jpg', 'Shelter, food and daily care for orphaned and underprivileged children.' ),
 		array( 'WIDOWS', 'Widows Ministry', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Widows-ministry-1-scaled-rsinedytivoatdo3ffn47k3g4v35x8jaac67u3ecm0.jpg', 'Support and fellowship for widows in the church and the village.' ),
 		array( 'HEALING', 'Deliverance & Healing', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Deliverance-and-Healing-ministry-5-scaled-e1787225773575-rs6kxdo5ygbat93txitcpifrbjmk10tf6j9kjqh6qg.jpg', 'Prayer for the sick and oppressed in the power of Jesus Christ.' ),
-		array( 'FREEDOM', 'Freedom from Slavery', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Deliverance-and-Healing-ministry-5-scaled-e1787225773575-rs6kxdo5ygbat93txitcpifrbjmk10tf6j9kjqh6qg.jpg', 'Helping families held in debt bondage at brick kilns walk free.' ),
+		array( 'FREEDOM', 'Freedom from Slavery', 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg', 'Helping families held in debt bondage at brick kilns walk free.' ),
 	);
 }
 

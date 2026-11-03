@@ -45,8 +45,12 @@
 
   function check(input, valid) {
     var field = input.closest(".field");
+    var error = field.querySelector(".error");
     input.setAttribute("aria-invalid", valid ? "false" : "true");
-    field.querySelector(".error").hidden = valid;
+    error.hidden = valid;
+    /* Screen readers read the message with the field while it is shown. */
+    error.id = error.id || input.id + "-error";
+    if (valid) input.removeAttribute("aria-describedby"); else input.setAttribute("aria-describedby", error.id);
     return valid;
   }
 

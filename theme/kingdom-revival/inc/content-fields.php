@@ -366,9 +366,9 @@ function krm_fill( $text ) {
 }
 
 /**
- * Resolve a link value. Page placeholders: {home}, {about}, {contact}, {donate}, {partner}, {blog}; contact
- * placeholders: {email} (mailto), {phone} (tel), {whatsapp} (WhatsApp chat), {paypal} (PayPal.me link).
- * Anything after a placeholder is kept, e.g. {home}#all-ministries.
+ * Resolve a link value. Page placeholders: {home}, {about}, {contact}, {donate}, {partner}, {blog}, {ministries}
+ * (the All Ministries page); contact placeholders: {email} (mailto), {phone} (tel), {whatsapp} (WhatsApp chat),
+ * {paypal} (PayPal.me link). Anything after a placeholder is kept, e.g. {home}#all-ministries.
  *
  * @param string $url Stored link.
  */
@@ -383,6 +383,9 @@ function krm_resolve_url( $url ) {
 			break;
 		case 'blog':
 			$base = krm_blog_url();
+			break;
+		case 'ministries':
+			$base = krm_ministries_url();
 			break;
 		case 'email':
 			$base = krm_mailto();
@@ -439,7 +442,7 @@ function krm_text( $value ) {
  * @param string $value Value.
  */
 function krm_inline( $value ) {
-	return wp_kses( krm_fill( $value ), krm_inline_tags() );
+	return krm_link_rel( wp_kses( krm_fill( $value ), krm_inline_tags() ) );
 }
 
 /**
@@ -808,8 +811,8 @@ function krm_render_field( $name, $f, $value ) {
  */
 function krm_render_list_item( $name, $f, $i, $item ) {
 	echo '<fieldset class="krm-item"><legend><span class="krm-item-title">' . esc_html( isset( $f['item'] ) ? $f['item'] : __( 'Item', 'kingdom-revival' ) ) . '</span>';
-	echo ' <button type="button" class="button-link krm-item-up" aria-label="' . esc_attr__( 'Move up', 'kingdom-revival' ) . '">↑</button>';
-	echo ' <button type="button" class="button-link krm-item-down" aria-label="' . esc_attr__( 'Move down', 'kingdom-revival' ) . '">↓</button>';
+	echo ' <button type="button" class="button-link krm-item-up" aria-label="' . esc_attr__( 'Move up', 'kingdom-revival' ) . '"><span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span></button>';
+	echo ' <button type="button" class="button-link krm-item-down" aria-label="' . esc_attr__( 'Move down', 'kingdom-revival' ) . '"><span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span></button>';
 	echo ' <button type="button" class="button-link krm-item-remove">' . esc_html__( 'Remove', 'kingdom-revival' ) . '</button></legend>';
 	foreach ( $f['fields'] as $key => $sub ) {
 		krm_render_field( $name . '[' . $i . '][' . $key . ']', $sub + array( 'default' => '' ), isset( $item[ $key ] ) ? $item[ $key ] : '' );

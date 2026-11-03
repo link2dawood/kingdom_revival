@@ -141,7 +141,7 @@ function krm_ministry_box( $post ) {
 					continue;
 				}
 				?>
-				<li data-ref="<?php echo esc_attr( $ref ); ?>"><img src="<?php echo esc_url( krm_ref_url( $ref, 'thumbnail' ) ); ?>" alt=""><button type="button" class="krm-remove" aria-label="<?php esc_attr_e( 'Remove photo', 'kingdom-revival' ); ?>">×</button></li>
+				<li data-ref="<?php echo esc_attr( $ref ); ?>"><img src="<?php echo esc_url( krm_ref_url( $ref, 'thumbnail' ) ); ?>" alt=""><button type="button" class="krm-remove" aria-label="<?php esc_attr_e( 'Remove photo', 'kingdom-revival' ); ?>"><span class="dashicons dashicons-no-alt" aria-hidden="true"></span></button></li>
 			<?php endforeach; ?>
 		</ul>
 		<input type="hidden" name="krm_gallery" value="<?php echo esc_attr( implode( "\n", array_filter( $gallery ) ) ); ?>">
@@ -197,6 +197,8 @@ function krm_clean_refs( $refs ) {
 			$out[] = (int) $ref;
 		} elseif ( preg_match( '#^https?://#', $ref ) ) {
 			$out[] = esc_url_raw( $ref );
+		} elseif ( preg_match( '#^krm-theme:images/[a-z0-9/_.-]+$#i', $ref ) && false === strpos( $ref, '..' ) ) {
+			$out[] = $ref; // A photo shipped with the theme that Setup has not copied to the Media Library yet.
 		}
 	}
 	return $out;
@@ -211,7 +213,7 @@ add_action(
 		}
 		wp_enqueue_media();
 		wp_enqueue_script( 'krm-admin', krm_asset( 'js/admin.js' ), array( 'jquery', 'jquery-ui-sortable' ), KRM_VERSION, true );
-		wp_add_inline_style( 'wp-admin', '.krm-gallery-list{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.krm-gallery-list li{position:relative;margin:0;cursor:move}.krm-gallery-list img{display:block;width:96px;height:96px;object-fit:cover;border-radius:4px}.krm-remove{position:absolute;top:2px;right:2px;width:22px;height:22px;border:0;border-radius:50%;background:#b32d2e;color:#fff;cursor:pointer;line-height:1}' );
+		wp_add_inline_style( 'wp-admin', '.krm-gallery-list{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.krm-gallery-list li{position:relative;margin:0;cursor:move}.krm-gallery-list img{display:block;width:96px;height:96px;object-fit:cover;border-radius:4px}.krm-remove{position:absolute;top:2px;right:2px;width:22px;height:22px;border:0;border-radius:50%;background:#b32d2e;color:#fff;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}.krm-remove .dashicons{width:16px;height:16px;font-size:16px}' );
 	}
 );
 

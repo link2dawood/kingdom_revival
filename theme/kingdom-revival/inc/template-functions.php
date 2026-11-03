@@ -17,11 +17,34 @@ function krm_defaults() {
 		'email'               => 'Info@kingdomrevivalministries.com',
 		'address'             => 'Chak No 220, RB Nasrat Colony, Street No. 3, Shadab Puli, Jhang Road, Faisalabad',
 		'whatsapp'            => '923415418733',
+		'schema_org_type'     => 'Organization',
+		'address_locality'    => 'Faisalabad',
+		'address_region'      => 'Punjab',
+		'address_country'     => 'PK',
 		'facebook'            => '',
 		'youtube'             => '',
 		'instagram'           => '',
 		'paypal_me'           => 'https://www.paypal.me/Givetotheneedy7',
 		'paypal_email'        => '',
+		'paypal_mode'         => 'live',
+		'donation_receipts'   => 'on',
+		'receipt_subject'     => 'Thank you for your gift to Kingdom Revival Ministries',
+		'receipt_message'     => "Dear {name},
+
+Thank you for your {frequency} gift of {amount} to Kingdom Revival Ministries. It has been received and will be used for {fund}.
+
+Gift: {amount} ({frequency})
+Date: {date}
+PayPal transaction: {transaction}
+
+PayPal also emails you its own payment receipt. Please keep this email for your records.
+
+Through your generosity the Gospel and practical care reach Pakistan’s forgotten: brick kiln families, orphans and widows. We are praying for you.
+
+If you have any questions, email {email} or call {phone}.
+
+God bless you,
+Kingdom Revival Ministries",
 		'bank_account_name'   => 'Adil Arif',
 		'bank_cnic'           => '33100-9770620-7',
 		'bank_name'           => 'Allied Bank Limited',
@@ -34,6 +57,8 @@ function krm_defaults() {
 		'newsletter_endpoint' => '',
 		'newsletter_delay'    => 3,
 		'redirects'           => krm_default_redirects(),
+		'image_format'        => 'webp',
+		'trim_assets'         => 'on',
 		'stat_1_value'        => '80',
 		'stat_1_label'        => 'Communities reached',
 		'stat_2_value'        => '200',
@@ -141,6 +166,7 @@ function krm_media_id( $url ) {
 
 /**
  * URL for a design image: the imported Media Library copy when available, otherwise the original URL.
+ * "krm-theme:images/content/x.jpg" names a photo shipped in the theme's assets/ folder (not on the old site).
  *
  * @param string $url  Remote URL from the design.
  * @param string $size Image size.
@@ -153,7 +179,7 @@ function krm_media( $url, $size = 'full' ) {
 			return $src;
 		}
 	}
-	return $url;
+	return 0 === strpos( $url, 'krm-theme:' ) ? krm_asset( substr( $url, 10 ) ) : $url;
 }
 
 /**
@@ -226,6 +252,19 @@ function krm_cover_alt( $post_id ) {
 /* ---------- Internal links ---------- */
 
 /**
+ * A post of the given type by its path. get_page_by_path() falls back to attachments, and imported photos share slugs
+ * with content (Widows-ministry-1.jpg is the attachment "widows-ministry"), so anything of another type is ignored.
+ *
+ * @param string $path      Post path (slug).
+ * @param string $post_type Post type.
+ * @return WP_Post|null
+ */
+function krm_get_by_path( $path, $post_type = 'page' ) {
+	$post = get_page_by_path( $path, OBJECT, $post_type );
+	return ( $post && $post_type === $post->post_type ) ? $post : null;
+}
+
+/**
  * Permalink of a page by its path (about, contact, donate, partner…).
  *
  * @param string $path Page path.
@@ -236,26 +275,51 @@ function krm_page_url( $path ) {
 		$page = null;
 		// A design page is found by its template first, so renaming the page or its slug keeps links working.
 		if ( in_array( $path, krm_design_pages(), true ) ) {
-			$found = get_posts(
-				array(
-					'post_type'      => 'page',
-					'post_status'    => 'publish',
-					'posts_per_page' => 1,
-					'meta_key'       => '_wp_page_template', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-					'meta_value'     => 'page-templates/' . $path . '.php', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-					'orderby'        => 'ID',
-					'order'          => 'ASC',
-					'no_found_rows'  => true,
-				)
-			);
-			$page  = $found ? $found[0] : null;
+			$pages = krm_design_template_pages();
+			$page  = isset( $pages[ $path ] ) ? $pages[ $path ] : null;
 		}
 		if ( ! $page ) {
-			$page = get_page_by_path( $path );
+			$page = krm_get_by_path( $path );
 		}
 		$cache[ $path ] = ( $page && 'publish' === $page->post_status ) ? get_permalink( $page ) : home_url( user_trailingslashit( $path ) );
 	}
 	return $cache[ $path ];
+}
+
+/**
+ * The published page using each design template ('about' => WP_Post, …; the oldest one when several do),
+ * found with one query for all of them.
+ */
+function krm_design_template_pages() {
+	static $pages = null;
+	if ( null === $pages ) {
+		$pages = array();
+		$found = get_posts(
+			array(
+				'post_type'      => 'page',
+				'post_status'    => 'publish',
+				'posts_per_page' => 50,
+				'meta_key'       => '_wp_page_template', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value'     => array_map( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+					function ( $slug ) {
+						return 'page-templates/' . $slug . '.php';
+					},
+					krm_design_pages()
+				),
+				'meta_compare'   => 'IN',
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+				'no_found_rows'  => true,
+			)
+		);
+		foreach ( $found as $page ) {
+			$slug = basename( (string) get_page_template_slug( $page ), '.php' );
+			if ( ! isset( $pages[ $slug ] ) ) {
+				$pages[ $slug ] = $page;
+			}
+		}
+	}
+	return $pages;
 }
 
 /**
@@ -274,10 +338,18 @@ function krm_blog_url() {
 function krm_ministry_url( $slug ) {
 	static $cache = array();
 	if ( ! isset( $cache[ $slug ] ) ) {
-		$post           = get_page_by_path( $slug, OBJECT, 'ministry' );
+		$post           = krm_get_by_path( $slug, 'ministry' );
 		$cache[ $slug ] = $post ? get_permalink( $post ) : home_url( user_trailingslashit( 'ministries/' . $slug ) );
 	}
 	return $cache[ $slug ];
+}
+
+/**
+ * URL of the All Ministries page (the ministry archive, /ministries/).
+ */
+function krm_ministries_url() {
+	$url = get_post_type_archive_link( 'ministry' );
+	return $url ? $url : home_url( user_trailingslashit( 'ministries' ) );
 }
 
 /**
@@ -317,8 +389,10 @@ function krm_ministries( $order = 'menu' ) {
 			if ( ! $image ) {
 				$image = get_post_thumbnail_id( $post );
 			}
+			$groups  = get_the_terms( $post, 'ministry_group' );
 			$items[] = array(
 				'slug'       => $post->post_name,
+				'group'      => $groups && ! is_wp_error( $groups ) ? $groups[0]->name : '',
 				'title'      => get_the_title( $post ),
 				'desc'       => $post->post_excerpt,
 				'url'        => get_permalink( $post ),
@@ -332,6 +406,7 @@ function krm_ministries( $order = 'menu' ) {
 		foreach ( $data['items'] as $slug => $m ) {
 			$items[] = array(
 				'slug'       => $slug,
+				'group'      => isset( $data['groups'][ $m['group'] ]['name'] ) ? $data['groups'][ $m['group'] ]['name'] : '',
 				'title'      => $m['title'],
 				'desc'       => $m['excerpt'],
 				'url'        => krm_ministry_url( $slug ),
@@ -369,7 +444,7 @@ function krm_post_ministry( $post_id ) {
 	}
 	return array(
 		'title' => 'Kingdom Revival Ministries',
-		'url'   => home_url( '/#all-ministries' ),
+		'url'   => krm_ministries_url(),
 	);
 }
 
@@ -429,14 +504,48 @@ function krm_icon( $name ) {
 /* ---------- Logo ---------- */
 
 /**
- * URL of the site logo: the Custom Logo set in the Customizer, else the logo bundled with the theme.
+ * URL of the site logo: the Custom Logo set in the Customizer, else the logo bundled with the theme (192×192).
+ * For the header, footer and other small places use krm_logo_img(), which lets the browser pick the right size.
  *
  * @param string $size Image size for an uploaded logo.
  */
-function krm_logo_url( $size = 'full' ) {
+function krm_logo_url( $size = 'medium' ) {
 	$id  = (int) get_theme_mod( 'custom_logo' );
 	$url = $id ? wp_get_attachment_image_url( $id, $size ) : '';
 	return $url ? $url : krm_asset( 'images/krm-logo.png' );
+}
+
+/**
+ * The logo as an <img> with a srcset, so each screen downloads only the size it shows: 64, 128 or 192 px of the
+ * bundled logo, or the Customizer logo's own WordPress sizes (never the full upload).
+ *
+ * @param int    $px    Width and height attributes (the design's size).
+ * @param string $sizes The sizes attribute: how wide the logo is shown.
+ * @param string $alt   Alt text ('' for a decorative copy).
+ * @param string $extra Further attributes, already escaped (e.g. ' loading="lazy"').
+ */
+function krm_logo_img( $px = 64, $sizes = '64px', $alt = '', $extra = '' ) {
+	$id = (int) get_theme_mod( 'custom_logo' );
+	if ( $id && wp_attachment_is_image( $id ) ) {
+		$src    = wp_get_attachment_image_url( $id, 'thumbnail' );
+		$srcset = wp_get_attachment_image_srcset( $id, 'full' );
+	} else {
+		$src    = '';
+		$srcset = '';
+	}
+	if ( ! $src ) {
+		$src    = krm_asset( 'images/krm-logo-64.png' );
+		$srcset = krm_asset( 'images/krm-logo-64.png' ) . ' 64w, ' . krm_asset( 'images/krm-logo-128.png' ) . ' 128w, ' . krm_asset( 'images/krm-logo.png' ) . ' 192w';
+	}
+	printf(
+		'<img src="%s"%s alt="%s" width="%d" height="%d"%s>',
+		esc_url( $src ),
+		$srcset ? ' srcset="' . esc_attr( $srcset ) . '" sizes="' . esc_attr( $sizes ) . '"' : '',
+		esc_attr( $alt ),
+		(int) $px,
+		(int) $px,
+		$extra // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed attribute strings from templates.
+	);
 }
 
 /* ---------- Design page templates (page-templates/*.php) ---------- */

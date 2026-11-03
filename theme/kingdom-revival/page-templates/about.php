@@ -14,9 +14,10 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 	<main id="main">
-	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')">
+	<?php krm_hero_preload( krm_c( 'hero.image' ) ); ?>
+	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')<?php krm_bg_small( krm_c( 'hero.image' ) ); ?>">
 		<div class="wrap">
-		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li aria-current="page"><?php echo esc_html( get_the_title() ); ?></li></ol>
+		<?php krm_breadcrumb_html(); ?>
 		<p class="eyebrow"><?php krm_t( 'hero.eyebrow' ); ?></p>
 		<h1><?php krm_h( 'hero.title' ); ?></h1>
 		<p class="lead"><?php krm_t( 'hero.lead' ); ?></p>
@@ -32,7 +33,7 @@ get_header();
 		<div class="story">
 			<div class="collage" data-gallery>
 			<?php foreach ( array( 1, 2, 3 ) as $krm_n ) : ?>
-			<img <?php krm_img_src( krm_c( "story.image{$krm_n}" ) ); ?> alt="<?php echo krm_alt( krm_c( "story.image{$krm_n}" ), krm_c( "story.image{$krm_n}_alt" ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in krm_alt(). ?>" loading="lazy" decoding="async">
+			<img <?php krm_img_src( krm_c( "story.image{$krm_n}" ), '(max-width: 820px) 52vw, 300px' ); ?> alt="<?php echo krm_alt( krm_c( "story.image{$krm_n}" ), krm_c( "story.image{$krm_n}_alt" ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in krm_alt(). ?>" loading="lazy" decoding="async">
 			<?php endforeach; ?>
 			<div class="collage-badge"><strong><?php krm_t( 'story.badge_number' ); ?></strong><span><?php krm_t( 'story.badge_text' ); ?></span></div>
 			</div>
@@ -95,7 +96,7 @@ get_header();
 	<section class="section" id="founder">
 		<div class="wrap founder">
 		<div class="founder-photo">
-			<img <?php krm_img_src( krm_c( 'founder.image' ) ); ?> alt="<?php echo krm_alt( krm_c( 'founder.image' ), krm_c( 'founder.image_alt' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" data-zoom="founder" loading="lazy" decoding="async">
+			<img <?php krm_img_src( krm_c( 'founder.image' ), '(max-width: 820px) 100vw, 510px' ); ?> alt="<?php echo krm_alt( krm_c( 'founder.image' ), krm_c( 'founder.image_alt' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" data-zoom="founder" loading="lazy" decoding="async">
 		</div>
 		<div>
 			<p class="eyebrow"><?php krm_t( 'founder.eyebrow' ); ?></p>
@@ -120,7 +121,7 @@ get_header();
 			$krm_icons = array( 'pray24', 'heart24', 'globe24' );
 			foreach ( (array) krm_c( 'ways.items' ) as $krm_i => $krm_way ) :
 				?>
-			<article class="way"><span class="way-num"><?php echo esc_html( sprintf( '%02d', $krm_i + 1 ) ); ?></span><span class="work-icon"><?php echo krm_icon( $krm_icons[ $krm_i % 3 ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><h3><?php echo krm_text( $krm_way['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3><p><?php echo krm_text( $krm_way['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+			<article class="way"><span class="way-num" aria-hidden="true"><?php echo esc_html( sprintf( '%02d', $krm_i + 1 ) ); ?></span><span class="work-icon"><?php echo krm_icon( $krm_icons[ $krm_i % 3 ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><h3><?php echo krm_text( $krm_way['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3><p><?php echo krm_text( $krm_way['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<?php
 				if ( '' !== $krm_way['link_label'] ) :
 					?>
@@ -138,8 +139,8 @@ get_header();
 		</div>
 		<p class="gallery-tip"><?php echo krm_icon( 'zoom' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php krm_t( 'gallery.tip' ); ?></p>
 		<div class="photo-grid" data-gallery>
-			<?php foreach ( (array) krm_c( 'gallery.photos' ) as $krm_photo ) : ?>
-			<img <?php krm_img_src( $krm_photo['image'] ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async">
+			<?php foreach ( array_values( (array) krm_c( 'gallery.photos' ) ) as $krm_i => $krm_photo ) : ?>
+			<img <?php krm_img_src( $krm_photo['image'], in_array( $krm_i, array( 0, 5 ), true ) ? '(max-width: 820px) 100vw, 600px' : '(max-width: 820px) 50vw, 300px' ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async">
 			<?php endforeach; ?>
 		</div>
 		</div>

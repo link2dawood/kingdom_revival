@@ -28,6 +28,13 @@ function krm_media_manifest() {
 }
 
 /**
+ * Alt texts that theme versions before 1.7.4 gave to every photo of a ministry; Setup replaces them.
+ */
+function krm_old_generic_alts() {
+	return array( 'Baptism in a local community', 'Urdu Bible distribution', 'Children and families in a brick kiln community', 'Deliverance and healing ministry', 'Leadership and discipleship gathering', 'Children receiving care at an orphanage', 'Widows ministry' );
+}
+
+/**
  * How many design files are already linked to Media Library items.
  */
 function krm_media_done_count() {
@@ -56,7 +63,7 @@ function krm_setup_page() {
 	$checks     = array(
 		'media'      => array( true, sprintf( /* translators: 1: done, 2: total */ __( 'Import the design’s images and video into the Media Library (%1$d of %2$d done). Files already in the library are reused, and descriptive alt text is added where missing.', 'kingdom-revival' ), $done, $total ) ),
 		'ministries' => array( true, sprintf( /* translators: %d: count */ __( 'Create the 12 ministries and their groups (currently %d published). Existing ministries with the same slug are left as they are.', 'kingdom-revival' ), (int) $ministries->publish ) ),
-		'posts'      => array( true, __( 'Create the 7 News & Blogs stories and their categories. Stories whose slug already exists are skipped.', 'kingdom-revival' ) ),
+		'posts'      => array( true, __( 'Create the 7 News & Blogs stories and their categories. Stories whose slug already exists are skipped. WordPress’s sample post “Hello world!” is moved to the trash if it was never edited.', 'kingdom-revival' ) ),
 		'pages'      => array( true, __( 'Create the About, Contact, Donate, Become a Partner and News & Blogs pages if they do not exist.', 'kingdom-revival' ) ),
 		'menus'      => array( true, __( 'Create the main and footer menus and assign them to this theme’s empty menu locations.', 'kingdom-revival' ) ),
 		'reading'    => array( ! $reading_ok, $reading_ok ? __( 'Reading settings: a static front page and a posts page are already set. Tick to point the posts page at “News & Blogs” anyway.', 'kingdom-revival' ) : __( 'Reading settings: show a static front page and use “News & Blogs” as the posts page (required for the design).', 'kingdom-revival' ) ),
@@ -165,13 +172,29 @@ function krm_import_media_batch( $offset ) {
 		$alt  = $manifest[ $url ];
 		$name = wp_basename( wp_parse_url( $url, PHP_URL_PATH ) );
 		if ( ! empty( $map[ $url ] ) && get_post( $map[ $url ] ) ) {
+			// Earlier versions gave every photo of a ministry the same alt text; give the Media Library copy this photo's own
+			// (galleries show their own captions, so pages do not change).
+			$id = (int) $map[ $url ];
+			if ( wp_attachment_is_image( $id ) && in_array( get_post_meta( $id, '_wp_attachment_image_alt', true ), krm_old_generic_alts(), true ) ) {
+				update_post_meta( $id, '_wp_attachment_image_alt', sanitize_text_field( $alt ) );
+			}
 			continue;
 		}
-		$id = attachment_url_to_postid( $url );
+		$theme_file = 0 === strpos( $url, 'krm-theme:' ) ? get_theme_file_path( 'assets/' . substr( $url, 10 ) ) : '';
+		$id         = $theme_file ? 0 : attachment_url_to_postid( $url );
 		if ( $id ) {
 			$log[] = sprintf( 'Reused from Media Library: %s', $name );
 		} else {
-			$tmp = download_url( $url, 300 );
+			if ( $theme_file ) {
+				// Shipped with the theme: copy it, because media_handle_sideload() moves the file it is given.
+				$tmp = wp_tempnam( $name );
+				if ( ! $tmp || ! copy( $theme_file, $tmp ) ) {
+					$log[] = sprintf( 'Could not copy %s — the page keeps using the theme’s copy.', $name );
+					continue;
+				}
+			} else {
+				$tmp = download_url( $url, 300 );
+			}
 			if ( is_wp_error( $tmp ) ) {
 				$log[] = sprintf( 'Could not download %s (%s) — the page keeps using the original link.', $name, $tmp->get_error_message() );
 				continue;
@@ -226,6 +249,61 @@ function krm_media_id_fresh( $url ) {
 	return ( is_array( $map ) && ! empty( $map[ $url ] ) && get_post( $map[ $url ] ) ) ? (int) $map[ $url ] : 0;
 }
 
+/**
+ * Bring an existing ministry's photos up to date with theme 1.7.4, touching only what was never edited:
+ * a gallery that still shows only the old placeholder photo gets the ministry's own photos; the old sideways
+ * Urdu Bible photo is swapped for the upright one, keeping its caption. Gallery captions are otherwise left alone.
+ *
+ * @param int   $id Ministry ID.
+ * @param array $m  The ministry's data from inc/data/ministries.php.
+ * @return bool Whether anything changed.
+ */
+function krm_upgrade_ministry_photos( $id, $m ) {
+	$up          = 'https://kingdomrevivalministries.com/wp-content/uploads/';
+	$placeholder = $up . 'elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg';
+	$swaps       = array( $up . '2026/07/Urdu-Bible-Distribution-12.jpg' => 'krm-theme:images/content/urdu-bible-distribution-12.jpg' );
+	$gallery     = (array) get_post_meta( $id, '_krm_gallery', true );
+	$alts        = (array) get_post_meta( $id, '_krm_photo_alts', true );
+	$changed     = false;
+
+	$is_placeholder = static function ( $ref ) use ( $placeholder ) {
+		return (string) $ref === $placeholder || (string) $ref === (string) krm_media_id_fresh( $placeholder );
+	};
+	if ( 1 === count( $gallery ) && $is_placeholder( $gallery[0] ) && ! $is_placeholder( $m['photos'][0][0] ) ) {
+		$gallery = array_map( 'krm_import_ref', wp_list_pluck( $m['photos'], 0 ) );
+		$alts    = array();
+		foreach ( $gallery as $ref ) {
+			$alts[ (string) $ref ] = $m['photos'][ count( $alts ) ][1];
+		}
+		if ( $is_placeholder( get_post_meta( $id, '_krm_explorer_image', true ) ) ) {
+			update_post_meta( $id, '_krm_explorer_image', krm_import_ref( $m['explorer_image'] ) );
+		}
+		if ( is_int( $gallery[0] ) ) {
+			set_post_thumbnail( $id, $gallery[0] );
+		}
+		$changed = true;
+	}
+	foreach ( $swaps as $old => $new ) {
+		$old_refs = array_filter( array( $old, (string) krm_media_id_fresh( $old ) ) );
+		foreach ( $gallery as $i => $ref ) {
+			if ( in_array( (string) $ref, $old_refs, true ) ) {
+				$gallery[ $i ] = krm_import_ref( $new );
+				if ( isset( $alts[ (string) $ref ] ) ) {
+					// The caption stays the same; only the photo changes.
+					$alts[ (string) $gallery[ $i ] ] = $alts[ (string) $ref ];
+					unset( $alts[ (string) $ref ] );
+				}
+				$changed = true;
+			}
+		}
+	}
+	if ( $changed ) {
+		update_post_meta( $id, '_krm_gallery', array_values( $gallery ) );
+		update_post_meta( $id, '_krm_photo_alts', $alts );
+	}
+	return $changed;
+}
+
 /* ---------------------------------------------------------------- Content */
 
 /**
@@ -253,10 +331,12 @@ function krm_import_content( $opts ) {
 			}
 		}
 		foreach ( $data['items'] as $slug => $m ) {
-			$existing = get_page_by_path( $slug, OBJECT, 'ministry' );
+			$existing = krm_get_by_path( $slug, 'ministry' );
 			if ( $existing ) {
 				$ministry_ids[ $slug ] = $existing->ID;
-				$log[]                 = sprintf( 'Ministry exists, left unchanged: %s', $m['title'] );
+				$log[]                 = krm_upgrade_ministry_photos( $existing->ID, $m )
+					? sprintf( 'Ministry exists, photos updated to the theme’s new defaults: %s', $m['title'] )
+					: sprintf( 'Ministry exists, left unchanged: %s', $m['title'] );
 				continue;
 			}
 			$gallery = array();
@@ -302,7 +382,7 @@ function krm_import_content( $opts ) {
 	}
 	foreach ( array_keys( $data['items'] ) as $slug ) {
 		if ( ! isset( $ministry_ids[ $slug ] ) ) {
-			$found = get_page_by_path( $slug, OBJECT, 'ministry' );
+			$found = krm_get_by_path( $slug, 'ministry' );
 			if ( $found ) {
 				$ministry_ids[ $slug ] = $found->ID;
 			}
@@ -312,7 +392,7 @@ function krm_import_content( $opts ) {
 	// Stories.
 	if ( $opts['posts'] ) {
 		foreach ( include KRM_DIR . '/inc/data/posts.php' as $p ) {
-			if ( get_page_by_path( $p['slug'], OBJECT, 'post' ) ) {
+			if ( krm_get_by_path( $p['slug'], 'post' ) ) {
 				$log[] = sprintf( 'Story exists, left unchanged: %s', $p['title'] );
 				continue;
 			}
@@ -352,6 +432,13 @@ function krm_import_content( $opts ) {
 			}
 			$log[] = sprintf( 'Created story: %s', $p['title'] );
 		}
+
+		// WordPress's sample post would show in News & Blogs. Trashed only while it is still untouched.
+		$sample = krm_get_by_path( 'hello-world', 'post' );
+		if ( $sample && 'publish' === $sample->post_status && $sample->post_modified_gmt === $sample->post_date_gmt ) {
+			wp_trash_post( $sample->ID );
+			$log[] = 'Moved WordPress’s sample post “Hello world!” to the trash';
+		}
 	}
 
 	// Pages.
@@ -364,7 +451,7 @@ function krm_import_content( $opts ) {
 	);
 	$page_ids = array();
 	foreach ( $pages as $slug => $title ) {
-		$page = get_page_by_path( $slug );
+		$page = krm_get_by_path( $slug );
 		if ( $page ) {
 			$page_ids[ $slug ] = $page->ID;
 			if ( $opts['pages'] ) {
@@ -393,7 +480,7 @@ function krm_import_content( $opts ) {
 	// Reading settings.
 	if ( $opts['reading'] ) {
 		if ( 'page' !== get_option( 'show_on_front' ) || ! get_option( 'page_on_front' ) ) {
-			$home = get_page_by_path( 'home' );
+			$home = krm_get_by_path( 'home' );
 			$home = $home ? $home->ID : wp_insert_post(
 				array(
 					'post_type'   => 'page',
@@ -532,7 +619,7 @@ function krm_import_menus( $ministry_ids, $page_ids, $data ) {
 	$groups = array(
 		array(
 			'title'   => 'All ministries',
-			'url'     => home_url( '/#all-ministries' ),
+			'archive' => 'ministry',
 			'classes' => 'menu-all',
 		),
 	);
@@ -592,26 +679,9 @@ function krm_import_menus( $ministry_ids, $page_ids, $data ) {
 				$ministry_item( 'urdu-bibles', 'Urdu Bibles' ),
 				$ministry_item( 'leadership-and-discipleship', 'Leadership & Discipleship' ),
 				array(
-					'title' => 'All ministries →',
-					'url'   => home_url( '/#all-ministries' ),
+					'title'   => 'All ministries →',
+					'archive' => 'ministry',
 				),
-			),
-		),
-		'footer_home'       => array(
-			'Footer — Home Page Quick Links',
-			array(
-				array(
-					'title' => 'Home',
-					'url'   => home_url( '/' ),
-				),
-				$page_item( 'about', 'About' ),
-				$page_item( 'blog', 'Latest News & Blogs' ),
-				array(
-					'title' => 'Donate',
-					'url'   => home_url( '/#donate' ),
-				),
-				$page_item( 'contact', 'Contact' ),
-				$page_item( 'partner', 'Become a Partner' ),
 			),
 		),
 	);
@@ -643,7 +713,7 @@ function krm_import_menus( $ministry_ids, $page_ids, $data ) {
  * Add menu items (and their children) to a menu.
  *
  * @param int   $menu_id   Menu ID.
- * @param array $items     Items: title, url, type, object, object_id, classes, children.
+ * @param array $items     Items: title, url, type, object, object_id, archive (post type), classes, children.
  * @param int   $parent_id Parent menu item ID (0 for top level).
  */
 function krm_add_menu_items( $menu_id, $items, $parent_id ) {
@@ -654,7 +724,10 @@ function krm_add_menu_items( $menu_id, $items, $parent_id ) {
 			'menu-item-parent-id' => $parent_id,
 			'menu-item-classes'   => isset( $item['classes'] ) ? $item['classes'] : '',
 		);
-		if ( isset( $item['type'] ) ) {
+		if ( isset( $item['archive'] ) ) {
+			$args['menu-item-type']   = 'post_type_archive';
+			$args['menu-item-object'] = $item['archive'];
+		} elseif ( isset( $item['type'] ) ) {
 			$args['menu-item-type']      = 'post_type';
 			$args['menu-item-object']    = $item['object'];
 			$args['menu-item-object-id'] = $item['id'];

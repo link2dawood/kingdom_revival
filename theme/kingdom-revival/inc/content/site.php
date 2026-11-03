@@ -1,6 +1,6 @@
 <?php
 /**
- * Site text (Kingdom Revival → Site text): header, footers, ministry and story pages, the ministries overview
+ * Site text (Kingdom Revival → Site text): header, footer, ministry and story pages, the All Ministries page
  * and the "page not found" page. Defaults are the approved design's content.
  *
  * @package Kingdom_Revival
@@ -55,10 +55,9 @@ return array(
 		'help'   => __( 'Footer links are set in Appearance → Menus; the address, phone and email in Kingdom Revival → Settings.', 'kingdom-revival' ),
 		'fields' => array(
 			'name'               => krm_f( 'text', __( 'Name', 'kingdom-revival' ), 'Kingdom Revival Ministries' ),
-			'tagline'            => krm_f( 'textarea', __( 'Tagline (inner pages)', 'kingdom-revival' ), 'Bringing the hope of Jesus Christ to the forgotten, the unreached, and the vulnerable across Pakistan.' ),
-			'tagline_home'       => krm_f( 'textarea', __( 'Tagline (home page)', 'kingdom-revival' ), 'Bringing the hope of Jesus Christ to the forgotten, the unreached, and the vulnerable.' ),
+			'tagline'            => krm_f( 'textarea', __( 'Tagline', 'kingdom-revival' ), 'Bringing the hope of Jesus Christ to the forgotten, the unreached, and the vulnerable across Pakistan.' ),
 			'quick_heading'      => krm_f( 'text', __( 'Links heading', 'kingdom-revival' ), 'Quick Links' ),
-			'ministries_heading' => krm_f( 'text', __( 'Ministries heading (inner pages)', 'kingdom-revival' ), 'Ministries' ),
+			'ministries_heading' => krm_f( 'text', __( 'Ministries heading', 'kingdom-revival' ), 'Ministries' ),
 			'contact_heading'    => krm_f( 'text', __( 'Contact heading', 'kingdom-revival' ), 'Contact' ),
 			'copyright'          => krm_f( 'text', __( 'Copyright line', 'kingdom-revival' ), '© {year} Kingdom Revival Ministries', __( '{year} is the current year.', 'kingdom-revival' ) ),
 			'location'           => krm_f( 'text', __( 'Line beside the copyright', 'kingdom-revival' ), 'Faisalabad, Pakistan' ),
@@ -101,14 +100,17 @@ return array(
 		),
 	),
 	'story_give'    => $krm_band,
-	'overview'      => array(
-		'label'  => __( 'Ministries overview (/ministries/)', 'kingdom-revival' ),
+	'ministries'    => array(
+		'label'  => __( 'All Ministries page (/ministries/)', 'kingdom-revival' ),
+		'help'   => __( 'The cards list your published ministries in their menu order (Ministries → edit → Page Attributes → Order). Each card shows the ministry’s explorer photo, group, title and short description (Excerpt).', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Ministry details' ),
-			'heading'      => krm_f( 'text', __( 'Heading', 'kingdom-revival' ), 'Choose a ministry to explore' ),
-			'text'         => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Pick a ministry from the menu above, or browse them all on the home page.' ),
-			'button_label' => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Browse ministries' ),
-			'button_url'   => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{home}#all-ministries' ),
+			'image'        => krm_f( 'image', __( 'Header image', 'kingdom-revival' ), $krm_up . '2026/08/Orphanages-care-19.jpg' ),
+			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our Ministries' ),
+			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Twelve ministries. <em>One Gospel.</em>' ),
+			'lead'         => krm_f( 'textarea', __( 'Introduction (also the page’s meta description)', 'kingdom-revival' ), 'Each ministry carries the hope of Jesus Christ and practical care to children, families and communities across Pakistan. Choose a ministry to see its work, its photos and how you can support it.' ),
+			'list_heading' => krm_f( 'text', __( 'Heading above the cards (for screen readers and search engines)', 'kingdom-revival' ), 'All ministries' ),
+			'card_button'  => krm_f( 'text', __( 'Card button text', 'kingdom-revival' ), 'Learn more' ),
+			'empty'        => krm_f( 'text', __( 'Text when no ministry is published', 'kingdom-revival' ), 'No ministries have been published yet.' ),
 		),
 	),
 	'types'         => array(
@@ -140,7 +142,7 @@ return array(
 			'heading'       => krm_f( 'text', __( 'Heading', 'kingdom-revival' ), 'We couldn’t find that page' ),
 			'text'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'It may have moved. Explore our ministries or read the latest stories from the field.' ),
 			'button1_label' => krm_f( 'text', __( 'First button text', 'kingdom-revival' ), 'Browse ministries' ),
-			'button1_url'   => krm_f( 'url', __( 'First button link', 'kingdom-revival' ), '{home}#all-ministries' ),
+			'button1_url'   => krm_f( 'url', __( 'First button link', 'kingdom-revival' ), '{ministries}' ),
 			'button2_label' => krm_f( 'text', __( 'Second button text', 'kingdom-revival' ), 'See all stories' ),
 			'button2_url'   => krm_f( 'url', __( 'Second button link', 'kingdom-revival' ), '{blog}' ),
 		),

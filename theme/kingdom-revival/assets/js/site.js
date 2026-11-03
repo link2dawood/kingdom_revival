@@ -123,7 +123,8 @@
     zoomIn: '<circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"></path>',
     zoomOut: '<circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3M8 11h6"></path>',
     reset: '<path d="M4 9V4h5M20 15v5h-5M4 15v5h5M20 9V4h-5"></path>',
-    rotate: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path><path d="M21 3v5h-5"></path>',
+    rotateLeft: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path>',
+    rotateRight: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path><path d="M21 3v5h-5"></path>',
     full: '<path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"></path>',
     open: '<path d="M14 3h7v7M10 14L21 3M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"></path>',
     prev: '<path d="M15 18l-6-6 6-6"></path>',
@@ -132,8 +133,12 @@
   function icon(name, size) {
     return '<svg width="' + (size || 20) + '" height="' + (size || 20) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + "</svg>";
   }
+  function tool(act, label, title, iconName, extra) {
+    return '<button type="button" data-act="' + act + '"' + (extra || "") + ' aria-label="' + label + '" title="' + title + '">' + icon(iconName) + "</button>";
+  }
 
-  var MIN = 1, MAX = 5, STEP = 1.5;
+  /* Zoom is relative to the fitted size: 1 = the whole photo fits the stage (at its current rotation). */
+  var MIN = 1, MAX = 5, STEP = 1.5, GAP = 16;
   var lb = null, state = null;
 
   function groupFor(img) {
@@ -158,6 +163,7 @@
       items: group.map(function (el) { return { src: el.currentSrc || el.src, full: el.dataset.full || el.src, alt: el.alt || "" }; }),
       index: Math.max(0, group.indexOf(img)),
       scale: 1, x: 0, y: 0, rotate: 0,
+      fit: { w: 0, h: 0, k: 1 },
       pointers: new Map(), returnFocus: img
     };
     build();
@@ -173,22 +179,30 @@
     lb.setAttribute("aria-label", "Photo viewer");
     var many = state.items.length > 1;
     lb.innerHTML =
-      '<div class="lb-top"><span class="lb-count" aria-live="polite"></span><div class="lb-tools">' +
-      '<button type="button" data-act="out" aria-label="Zoom out" title="Zoom out (−)">' + icon("zoomOut") + "</button>" +
+      '<div class="lb-top"><span class="lb-count" aria-live="polite"></span>' +
+      '<div class="lb-tools" role="toolbar" aria-label="Photo tools">' +
+      tool("out", "Zoom out", "Zoom out (−)", "zoomOut") +
       '<span class="lb-zoom-level">100%</span>' +
-      '<button type="button" data-act="in" aria-label="Zoom in" title="Zoom in (+)">' + icon("zoomIn") + "</button>" +
-      '<button type="button" data-act="reset" aria-label="Fit to screen" title="Fit to screen (0)">' + icon("reset") + "</button>" +
-      '<span class="lb-sep lb-hide-sm" aria-hidden="true"></span>' +
-      '<button type="button" data-act="rotate" class="lb-hide-sm" aria-label="Rotate" title="Rotate (R)">' + icon("rotate") + "</button>" +
-      (document.fullscreenEnabled ? '<button type="button" data-act="full" class="lb-hide-sm" aria-label="Full screen" title="Full screen (F)">' + icon("full") + "</button>" : "") +
-      '<a class="lb-btn lb-hide-sm" data-act="open" target="_blank" rel="noopener" aria-label="Open original image" title="Open original">' + icon("open") + "</a>" +
+      tool("in", "Zoom in", "Zoom in (+)", "zoomIn") +
       '<span class="lb-sep" aria-hidden="true"></span>' +
-      '<button type="button" data-act="close" aria-label="Close viewer" title="Close (Esc)">' + icon("close", 24) + "</button>" +
-      "</div></div>" +
-      '<div class="lb-stage"><span class="lb-spinner" aria-hidden="true"></span><img class="lb-img" alt="" draggable="false">' +
+      tool("left", "Rotate left", "Rotate left (L)", "rotateLeft") +
+      tool("right", "Rotate right", "Rotate right (R)", "rotateRight") +
+      tool("reset", "Reset zoom and rotation", "Reset (0)", "reset") +
+      "</div>" +
+      '<span class="lb-sep" aria-hidden="true"></span><div class="lb-extra">' +
+      (document.fullscreenEnabled ? tool("full", "Full screen", "Full screen (F)", "full") : "") +
+      '<a class="lb-btn" data-act="open" target="_blank" rel="noopener" aria-label="Open original image" title="Open original">' + icon("open") + "</a>" +
+      '</div><span class="lb-sep" aria-hidden="true"></span>' +
+      '<button type="button" class="lb-close" data-act="close" aria-label="Close viewer" title="Close (Esc)">' + icon("close", 24) + "</button>" +
+      "</div>" +
+      '<div class="lb-stage"><span class="lb-spinner" aria-hidden="true"></span><img class="lb-img is-loading" alt="" draggable="false">' +
       (many ? '<button type="button" class="lb-nav lb-prev" data-act="prev" aria-label="Previous photo">' + icon("prev", 26) + '</button><button type="button" class="lb-nav lb-next" data-act="next" aria-label="Next photo">' + icon("next", 26) + "</button>" : "") +
       "</div>" +
-      '<div class="lb-bottom"><p class="lb-caption"></p><p class="lb-hint">Scroll or pinch to zoom · drag to move · double-click to zoom in/out' + (many ? " · ← → for next photo" : "") + "</p>" +
+      '<div class="lb-bottom"><div class="lb-pager">' +
+      (many ? '<button type="button" class="lb-step" data-act="prev" aria-label="Previous photo">' + icon("prev", 24) + "</button>" : "") +
+      '<p class="lb-caption"></p>' +
+      (many ? '<button type="button" class="lb-step" data-act="next" aria-label="Next photo">' + icon("next", 24) + "</button>" : "") +
+      '</div><p class="lb-hint">Scroll or pinch to zoom · drag to move · double-click to zoom in/out · R / L to rotate' + (many ? " · ← → for next photo" : "") + "</p>" +
       (many ? '<div class="lb-thumbs">' + state.items.map(function (item, i) {
         return '<button type="button" class="lb-thumb" data-index="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + item.src + '" alt="" loading="lazy"></button>';
       }).join("") + "</div>" : "") +
@@ -197,7 +211,17 @@
 
     var stage = lb.querySelector(".lb-stage");
     var image = lb.querySelector(".lb-img");
-    image.addEventListener("load", function () { lb && lb.querySelector(".lb-spinner").setAttribute("hidden", ""); });
+    image.addEventListener("load", function () { if (lb) { imageReady(); refit(false); } });
+    image.addEventListener("error", function () { if (lb) imageReady(); });
+
+    // Keep the photo fitted when the window, the phone's orientation or full screen changes the stage size.
+    if (window.ResizeObserver) {
+      state.observer = new ResizeObserver(function () { if (lb) refit(false); });
+      state.observer.observe(stage);
+    } else {
+      state.onResize = function () { if (lb) refit(false); };
+      window.addEventListener("resize", state.onResize);
+    }
 
     lb.addEventListener("click", function (event) {
       var thumb = event.target.closest(".lb-thumb");
@@ -213,11 +237,10 @@
       else if (a === "next") show(state.index + 1);
       else if (a === "in") zoomTo(state.scale * STEP, 0, 0, true);
       else if (a === "out") zoomTo(state.scale / STEP, 0, 0, true);
-      else if (a === "reset") { state.rotate = 0; zoomTo(1, 0, 0, true); }
-      else if (a === "rotate") { state.rotate = (state.rotate + 90) % 360; apply(true); }
-      else if (a === "full") {
-        if (document.fullscreenElement) document.exitFullscreen(); else lb.requestFullscreen().catch(function () {});
-      }
+      else if (a === "reset") reset();
+      else if (a === "left") rotateBy(-90);
+      else if (a === "right") rotateBy(90);
+      else if (a === "full") toggleFullscreen();
     });
 
     stage.addEventListener("wheel", function (event) {
@@ -227,9 +250,8 @@
     }, { passive: false });
 
     stage.addEventListener("dblclick", function (event) {
-      if (event.target.closest("button")) return;
-      var p = stagePoint(event);
-      zoomTo(state.scale > 1 ? 1 : 2.5, p.x, p.y, true);
+      if (event.target.closest("button") || Date.now() - (state.tapZoomAt || 0) < 500) return;
+      toggleZoom(stagePoint(event));
     });
 
     stage.addEventListener("pointerdown", function (event) {
@@ -257,9 +279,11 @@
       if (state.scale > 1) {
         state.x = state.start.ox + dx;
         state.y = state.start.oy + dy;
+        clampPan();
         apply(false);
-      } else {
-        image.style.transform = "translateX(" + dx + "px) rotate(" + state.rotate + "deg)";
+      } else if (state.items.length > 1) {
+        image.classList.remove("is-animating");
+        image.style.transform = transform(dx, 0, 1);
       }
     });
     function endPointer(event) {
@@ -269,9 +293,21 @@
       if (state.pointers.size > 0) {
         var rest = state.pointers.values().next().value;
         state.start = { x: rest.x, y: rest.y, ox: state.x, oy: state.y };
+        state.moved = true;
         return;
       }
       stage.classList.remove("is-dragging");
+      if (event.type === "pointerup" && event.pointerType !== "mouse" && !state.moved && !state.downOnBackdrop) {
+        // Double tap on a touch screen: zoom in on that spot, or back out.
+        var tap = { t: Date.now(), x: event.clientX, y: event.clientY };
+        if (state.lastTap && tap.t - state.lastTap.t < 320 && Math.hypot(tap.x - state.lastTap.x, tap.y - state.lastTap.y) < 30) {
+          state.lastTap = null;
+          state.tapZoomAt = tap.t;
+          toggleZoom(stagePoint(event));
+          return;
+        }
+        state.lastTap = tap;
+      }
       if (state.scale === 1) {
         var dx = event.clientX - state.start.x;
         if (Math.abs(dx) > 60 && state.items.length > 1) show(state.index + (dx < 0 ? 1 : -1));
@@ -285,7 +321,8 @@
     stage.addEventListener("pointerup", endPointer);
     stage.addEventListener("pointercancel", endPointer);
 
-    lb.addEventListener("keydown", onKey);
+    // On the document, so the keys still work after a click or tap on the photo moves focus out of the viewer.
+    document.addEventListener("keydown", onKey);
     lb.querySelector('[data-act="close"]').focus();
   }
 
@@ -298,9 +335,49 @@
     };
   }
 
+  /* A point relative to the centre of the stage, which is where the photo's transform origin sits. */
   function stagePoint(event) {
     var r = lb.querySelector(".lb-stage").getBoundingClientRect();
     return { x: event.clientX - r.left - r.width / 2, y: event.clientY - r.top - r.height / 2 };
+  }
+
+  function sideways() {
+    return ((state.rotate % 360) + 360) % 180 !== 0;
+  }
+
+  /* Room the photo may use: the stage less a margin, and less the side arrows where they are shown. */
+  function room() {
+    var stage = lb.querySelector(".lb-stage"), nav = lb.querySelector(".lb-next");
+    var sx = GAP;
+    if (nav && nav.offsetParent) sx = stage.clientWidth - nav.offsetLeft + GAP / 2;
+    return { w: Math.max(40, stage.clientWidth - 2 * sx), h: Math.max(40, stage.clientHeight - 2 * GAP), stage: stage };
+  }
+
+  /* Size the photo so it fits the stage unrotated (its layout box), and work out the extra scale (k) that makes it
+     fit when turned 90° or 270°, where its width and height swap. Photos are never enlarged past their own size. */
+  function fit() {
+    var image = lb.querySelector(".lb-img");
+    var nw = image.naturalWidth, nh = image.naturalHeight;
+    if (!nw || !nh) return false;
+    var r = room();
+    var flat = Math.min(1, r.w / nw, r.h / nh);
+    var turned = Math.min(1, r.w / nh, r.h / nw);
+    state.fit = { w: nw * flat, h: nh * flat, k: sideways() ? turned / flat : 1 };
+    image.style.width = state.fit.w + "px";
+    image.style.height = state.fit.h + "px";
+    image.classList.add("is-sized");
+    return true;
+  }
+
+  function refit(animate) {
+    if (!fit()) return;
+    clampPan();
+    apply(animate);
+  }
+
+  function imageReady() {
+    lb.querySelector(".lb-spinner").setAttribute("hidden", "");
+    lb.querySelector(".lb-img").classList.remove("is-loading");
   }
 
   function zoomTo(scale, px, py, animate) {
@@ -314,21 +391,44 @@
     apply(animate);
   }
 
+  function toggleZoom(p) {
+    zoomTo(state.scale > 1 ? 1 : 2.5, p.x, p.y, true);
+  }
+
+  function rotateBy(deg) {
+    // The angle keeps counting past 360 so the turn always animates the short way round.
+    state.rotate += deg;
+    refit(true);
+  }
+
+  function reset() {
+    state.rotate = Math.round(state.rotate / 360) * 360;
+    state.scale = 1; state.x = 0; state.y = 0;
+    refit(true);
+  }
+
+  /* Pan only as far as the photo's edges (plus the margin); a side smaller than the stage stays centred. */
   function clampPan() {
-    var image = lb.querySelector(".lb-img"), stage = lb.querySelector(".lb-stage");
-    var sideways = state.rotate % 180 !== 0;
-    var w = (sideways ? image.offsetHeight : image.offsetWidth) * state.scale;
-    var h = (sideways ? image.offsetWidth : image.offsetHeight) * state.scale;
-    var maxX = Math.max(0, (w - stage.clientWidth) / 2 + 40);
-    var maxY = Math.max(0, (h - stage.clientHeight) / 2 + 40);
+    var stage = lb.querySelector(".lb-stage");
+    var size = state.fit.k * state.scale;
+    var w = (sideways() ? state.fit.h : state.fit.w) * size;
+    var h = (sideways() ? state.fit.w : state.fit.h) * size;
+    var maxX = Math.max(0, (w - stage.clientWidth) / 2 + GAP);
+    var maxY = Math.max(0, (h - stage.clientHeight) / 2 + GAP);
+    if (w <= stage.clientWidth - 2 * GAP) maxX = 0;
+    if (h <= stage.clientHeight - 2 * GAP) maxY = 0;
     state.x = Math.min(maxX, Math.max(-maxX, state.x));
     state.y = Math.min(maxY, Math.max(-maxY, state.y));
+  }
+
+  function transform(x, y, scale) {
+    return "translate(" + x + "px," + y + "px) rotate(" + state.rotate + "deg) scale(" + state.fit.k * scale + ")";
   }
 
   function apply(animate) {
     var image = lb.querySelector(".lb-img");
     image.classList.toggle("is-animating", !!animate);
-    image.style.transform = "translate(" + state.x + "px," + state.y + "px) scale(" + state.scale + ") rotate(" + state.rotate + "deg)";
+    image.style.transform = transform(state.x, state.y, state.scale);
     lb.querySelector(".lb-zoom-level").textContent = Math.round(state.scale * 100) + "%";
     lb.querySelector('[data-act="out"]').disabled = state.scale <= MIN;
     lb.querySelector('[data-act="in"]').disabled = state.scale >= MAX;
@@ -338,19 +438,24 @@
   function show(index) {
     var total = state.items.length;
     state.index = (index + total) % total;
-    state.scale = 1; state.x = 0; state.y = 0; state.rotate = 0;
+    state.scale = 1; state.x = 0; state.y = 0; state.rotate = 0; state.fit.k = 1;
     var item = state.items[state.index];
     var image = lb.querySelector(".lb-img");
     lb.querySelector(".lb-spinner").removeAttribute("hidden");
+    image.classList.add("is-loading");
+    image.classList.remove("is-sized");
+    image.style.width = image.style.height = "";
     image.src = item.full;
     image.alt = item.alt;
-    if (image.complete) lb.querySelector(".lb-spinner").setAttribute("hidden", "");
+    if (image.complete && image.naturalWidth) { imageReady(); fit(); }
     lb.querySelector(".lb-caption").textContent = item.alt;
     lb.querySelector(".lb-count").textContent = total > 1 ? (state.index + 1) + " / " + total : "";
     lb.querySelector('[data-act="open"]').href = item.full;
+    var strip = lb.querySelector(".lb-thumbs");
     lb.querySelectorAll(".lb-thumb").forEach(function (thumb, i) {
       thumb.setAttribute("aria-current", i === state.index ? "true" : "false");
-      if (i === state.index) thumb.scrollIntoView({ block: "nearest", inline: "center" });
+      // Scroll the strip itself; scrollIntoView could also scroll the page behind the viewer.
+      if (i === state.index) strip.scrollLeft = thumb.offsetLeft - (strip.clientWidth - thumb.offsetWidth) / 2;
     });
     [state.index - 1, state.index + 1].forEach(function (i) {
       new Image().src = state.items[(i + total) % total].full;
@@ -358,18 +463,33 @@
     apply(false);
   }
 
+  function toggleFullscreen() {
+    if (!document.fullscreenEnabled) return;
+    if (document.fullscreenElement) document.exitFullscreen(); else lb.requestFullscreen().catch(function () {});
+  }
+
   function onKey(event) {
     var k = event.key;
+    var panStep = lb.querySelector(".lb-stage").clientWidth * 0.1;
     if (k === "Escape") { event.preventDefault(); close(); }
-    else if (k === "ArrowLeft" && state.scale === 1) show(state.index - 1);
-    else if (k === "ArrowRight" && state.scale === 1) show(state.index + 1);
+    else if (/^Arrow/.test(k) && state.scale > 1) {
+      // Zoomed in: the arrow keys move the photo.
+      event.preventDefault();
+      if (k === "ArrowLeft") state.x += panStep;
+      else if (k === "ArrowRight") state.x -= panStep;
+      else if (k === "ArrowUp") state.y += panStep;
+      else state.y -= panStep;
+      clampPan();
+      apply(true);
+    }
+    else if (k === "ArrowLeft") show(state.index - 1);
+    else if (k === "ArrowRight") show(state.index + 1);
     else if (k === "+" || k === "=") zoomTo(state.scale * STEP, 0, 0, true);
     else if (k === "-" || k === "_") zoomTo(state.scale / STEP, 0, 0, true);
-    else if (k === "0") { state.rotate = 0; zoomTo(1, 0, 0, true); }
-    else if (k === "r" || k === "R") { state.rotate = (state.rotate + 90) % 360; apply(true); }
-    else if ((k === "f" || k === "F") && document.fullscreenEnabled) {
-      if (document.fullscreenElement) document.exitFullscreen(); else lb.requestFullscreen().catch(function () {});
-    }
+    else if (k === "0") reset();
+    else if (k === "r" || k === "R") rotateBy(event.shiftKey ? -90 : 90);
+    else if (k === "l" || k === "L") rotateBy(-90);
+    else if (k === "f" || k === "F") toggleFullscreen();
     else if (k === "Tab") {
       var focusables = Array.prototype.filter.call(lb.querySelectorAll("button, a[href]"), function (el) {
         return !el.disabled && el.offsetParent !== null;
@@ -383,6 +503,9 @@
   function close() {
     if (!lb) return;
     if (document.fullscreenElement) document.exitFullscreen();
+    if (state.observer) state.observer.disconnect();
+    if (state.onResize) window.removeEventListener("resize", state.onResize);
+    document.removeEventListener("keydown", onKey);
     lb.remove();
     lb = null;
     document.documentElement.style.overflow = "";
@@ -543,6 +666,7 @@
       data.append("action", "krm_form");
       data.append("form", "newsletter");
       data.append("nonce", CONFIG.nonce || "");
+      data.append("token", CONFIG.formToken || "");
       data.append("website", form.elements.website.value);
       data.append("elapsed", String(Date.now() - openedAt));
       data.append("email", value);
@@ -560,7 +684,7 @@
   };
 
   function scheduleNewsletter() {
-    if (!nlShouldShow()) return;
+    if (!nlShouldShow() || CONFIG.noNewsletter) return;
     setTimeout(function tryOpen() {
       // wait while the visitor is busy with the photo viewer or a donation panel
       var busy = document.querySelector(".lb") || document.querySelector('.float-give-toggle[aria-expanded="true"]') ||
@@ -577,6 +701,7 @@
     data.append("action", "krm_form");
     data.append("form", name);
     data.append("nonce", CONFIG.nonce || "");
+    data.append("token", CONFIG.formToken || "");
     data.append("website", form.elements.website ? form.elements.website.value : "");
     data.append("elapsed", String(Date.now() - KRM.formStarted));
     Object.keys(fields).forEach(function (key) { data.append(key, fields[key]); });

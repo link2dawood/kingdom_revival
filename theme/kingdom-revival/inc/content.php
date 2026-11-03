@@ -50,7 +50,7 @@ add_filter(
 				if ( preg_match( '#<figcaption[^>]*>(.*?)</figcaption>#s', $html, $c ) ) {
 					$caption = '<figcaption>' . krm_icon( 'zoom' ) . $c[1] . '</figcaption>';
 				}
-				return '<figure>' . krm_clean_img( $img[0], '(max-width: 900px) 100vw, 740px' ) . $caption . '</figure>';
+				return '<figure>' . krm_clean_img( $img[0], '(max-width: 1040px) 100vw, 740px' ) . $caption . '</figure>';
 
 			case 'core/list':
 				$classes = isset( $block['attrs']['className'] ) ? $block['attrs']['className'] : '';
@@ -69,7 +69,7 @@ add_filter(
 					'',
 					array_map(
 						function ( $img ) {
-							return krm_clean_img( $img, '(max-width: 900px) 50vw, 370px' );
+							return krm_clean_img( $img, '(max-width: 1040px) 50vw, 370px' );
 						},
 						$imgs[0]
 					)
@@ -127,13 +127,13 @@ add_shortcode(
 	'krm_give',
 	function () {
 		$ministry = krm_post_ministry( get_the_ID() );
-		return '<aside class="inline-give"><span class="icon">' . krm_icon( 'heart' ) . '</span><div><h3>' . esc_html__( 'Help write the next chapter', 'kingdom-revival' ) . '</h3>' .
+		return '<div class="inline-give" role="note"><span class="icon">' . krm_icon( 'heart' ) . '</span><div><h3>' . esc_html__( 'Help write the next chapter', 'kingdom-revival' ) . '</h3>' .
 			'<p>' . sprintf(
 				/* translators: %s: ministry name */
 				esc_html__( 'Stories like this happen because people like you give. Your gift to %s goes straight to the work you are reading about.', 'kingdom-revival' ),
 				esc_html( $ministry['title'] )
 			) . '</p>' .
-			'<a class="button button-primary" href="#give">' . esc_html( sprintf( /* translators: %s: ministry name */ __( 'Give to %s', 'kingdom-revival' ), $ministry['title'] ) ) . ' ' . krm_icon( 'arrow' ) . '</a></div></aside>';
+			'<a class="button button-primary" href="#give">' . esc_html( sprintf( /* translators: %s: ministry name */ __( 'Give to %s', 'kingdom-revival' ), $ministry['title'] ) ) . ' ' . krm_icon( 'arrow' ) . '</a></div></div>';
 	}
 );
 
@@ -141,7 +141,7 @@ add_shortcode(
 add_filter(
 	'the_content',
 	function ( $content ) {
-		return preg_replace( '#<p>\s*(<aside class="inline-give">.*?</aside>)\s*</p>#s', '$1', $content );
+		return preg_replace( '#<p>\s*(<div class="inline-give" role="note">.*?</div></div>)\s*</p>#s', '$1', $content );
 	},
 	20
 );
@@ -181,7 +181,7 @@ function krm_post_card( $post, $attrs = array() ) {
 function krm_featured_card( $post ) {
 	$cover = krm_post_cover( $post->ID );
 	?>
-<a class="featured" href="<?php the_permalink( $post ); ?>"><div class="featured-media"><img <?php krm_img_src( $cover, '(max-width: 900px) 100vw, 60vw' ); ?> alt="<?php echo esc_attr( krm_cover_alt( $post->ID ) ); ?>" decoding="async" fetchpriority="high"><span class="featured-badge">★ Featured story</span></div><div class="featured-body"><span class="tag"><?php echo esc_html( krm_post_category( $post->ID ) ); ?></span><h2><?php echo esc_html( get_the_title( $post ) ); ?></h2><p><?php echo esc_html( get_the_excerpt( $post ) ); ?></p><div class="post-meta"><span><?php echo krm_icon( 'cal' ) . esc_html( get_the_date( 'F j, Y', $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><span><?php echo krm_icon( 'clock' ) . esc_html( krm_read_time( $post->ID ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> min read</span></div><span class="button button-primary">Read the full story <?php echo krm_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></div></a>
+<a class="featured" href="<?php the_permalink( $post ); ?>"><div class="featured-media"><img <?php krm_img_src( $cover, '(max-width: 900px) 100vw, 60vw' ); ?> alt="<?php echo esc_attr( krm_cover_alt( $post->ID ) ); ?>" loading="lazy" decoding="async"><span class="featured-badge">★ Featured story</span></div><div class="featured-body"><span class="tag"><?php echo esc_html( krm_post_category( $post->ID ) ); ?></span><h2><?php echo esc_html( get_the_title( $post ) ); ?></h2><p><?php echo esc_html( get_the_excerpt( $post ) ); ?></p><div class="post-meta"><span><?php echo krm_icon( 'cal' ) . esc_html( get_the_date( 'F j, Y', $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><span><?php echo krm_icon( 'clock' ) . esc_html( krm_read_time( $post->ID ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> min read</span></div><span class="button button-primary">Read the full story <?php echo krm_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></div></a>
 	<?php
 }
 

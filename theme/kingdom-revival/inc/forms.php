@@ -81,7 +81,11 @@ add_action(
 				'show_in_rest'    => false,
 				'supports'        => array( 'title' ),
 				'capability_type' => 'post',
-				'capabilities'    => array( 'create_posts' => 'do_not_allow' ),
+				// Visitors' personal details: Editors and Administrators only (not Authors or Contributors).
+				'capabilities'    => array(
+					'create_posts' => 'do_not_allow',
+					'edit_posts'   => 'edit_others_posts',
+				),
 				'map_meta_cap'    => true,
 				'rewrite'         => false,
 				'query_var'       => false,
@@ -103,6 +107,12 @@ function krm_handle_form() {
 	// Logged-in visitors get uncached pages, so their requests must carry a valid nonce.
 	if ( is_user_logged_in() && ! check_ajax_referer( 'krm_form', 'nonce', false ) ) {
 		wp_send_json_error( array( 'message' => __( 'Please reload the page and try again.', 'kingdom-revival' ) ), 403 );
+	}
+
+	// Posts must carry the signed token of a page from this site (bots posting straight to admin-ajax don't).
+	$token = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( krm_form_token_age( $token ) < 0 ) {
+		wp_send_json_error( array( 'message' => __( 'Please reload the page and try again.', 'kingdom-revival' ) ), 400 );
 	}
 
 	// Honeypot: real visitors never see or fill this field. Pretend success so bots learn nothing.
@@ -362,7 +372,7 @@ add_action(
 add_action(
 	'admin_post_krm_export',
 	function () {
-		if ( ! current_user_can( 'edit_posts' ) || ! check_admin_referer( 'krm_export' ) ) {
+		if ( ! current_user_can( 'edit_others_posts' ) || ! check_admin_referer( 'krm_export' ) ) {
 			wp_die( esc_html__( 'Not allowed.', 'kingdom-revival' ) );
 		}
 		$form  = isset( $_GET['krm_form'] ) ? sanitize_key( wp_unslash( $_GET['krm_form'] ) ) : '';

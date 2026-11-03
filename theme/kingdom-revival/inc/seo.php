@@ -4,9 +4,9 @@
  *
  * Metadata is managed by an SEO plugin (Rank Math or Yoast SEO recommended; SureRank, All in One SEO, SEOPress,
  * The SEO Framework and Slim SEO are detected too). While one is active the theme prints no title format, meta,
- * canonical, Open Graph, Twitter or JSON-LD tags of its own: it only offers the design's defaults to Rank Math,
- * Yoast SEO and SureRank for pages where the plugin's own field is empty. Without an SEO plugin the theme prints
- * basic tags itself so the site is never without them.
+ * canonical, Open Graph or Twitter tags of its own: it only offers the design's defaults to Rank Math, Yoast SEO
+ * and SureRank for pages where the plugin's own field is empty. Without an SEO plugin the theme prints basic tags
+ * itself so the site is never without them. Structured data (JSON-LD) is in inc/schema.php.
  *
  * @package Kingdom_Revival
  */
@@ -55,7 +55,7 @@ function krm_seo_title() {
 		return $site . ' — Home';
 	}
 	if ( is_post_type_archive( 'ministry' ) ) {
-		return 'Ministry Details | ' . $site;
+		return 'All Ministries | ' . $site;
 	}
 	if ( is_home() ) {
 		return 'News & Blogs | ' . $site;
@@ -93,7 +93,7 @@ function krm_meta_description() {
 		return 'Stories of hope from the field — read how the Gospel and practical care are changing lives across Pakistan.';
 	}
 	if ( is_post_type_archive( 'ministry' ) ) {
-		return 'Choose a ministry to see what it does and how your support reaches people.';
+		return wp_strip_all_tags( krm_fill( krm_c( 'ministries.lead', 'site' ) ) );
 	}
 	$types = array(
 		'sermon'      => 'sermons',
@@ -359,182 +359,11 @@ add_filter(
 	20
 );
 
-/* ---------- Structured data ---------- */
-
-/**
- * ImageObject for the organisation logo: the Custom Logo when set, else the bundled logo (99×99).
- */
-function krm_logo_schema() {
-	$id    = (int) get_theme_mod( 'custom_logo' );
-	$image = $id ? wp_get_attachment_image_src( $id, 'full' ) : false;
-	if ( $image ) {
-		return array(
-			'@type'  => 'ImageObject',
-			'url'    => $image[0],
-			'width'  => (int) $image[1],
-			'height' => (int) $image[2],
-		);
-	}
-	return array(
-		'@type'  => 'ImageObject',
-		'url'    => krm_asset( 'images/krm-logo.png' ),
-		'width'  => 99,
-		'height' => 99,
-	);
-}
-
-/**
- * Visible breadcrumb trail for the current view: list of [ name, url ].
- */
-function krm_breadcrumbs() {
-	$home  = array( 'Home', home_url( '/' ) );
-	$trail = array();
-	if ( is_singular( 'ministry' ) ) {
-		$trail = array( $home, array( 'Ministries', home_url( '/#all-ministries' ) ), array( get_the_title(), get_permalink() ) );
-	} elseif ( is_singular( 'post' ) ) {
-		$trail = array( $home, array( 'News & Blogs', krm_blog_url() ), array( get_the_title(), get_permalink() ) );
-	} elseif ( is_home() && ! is_front_page() ) {
-		$trail = array( $home, array( 'News & Blogs', krm_blog_url() ) );
-	} elseif ( is_page() && ! is_front_page() ) {
-		$title = get_the_title();
-		if ( 'partner' === krm_design_template() ) {
-			$title = 'Become a Partner';
-		}
-		$trail = array( $home, array( $title, get_permalink() ) );
-	}
-	return $trail;
-}
-
-add_action(
-	'wp_head',
-	function () {
-		if ( krm_seo_plugin_active() ) {
-			return;
-		}
-		$home   = home_url( '/' );
-		$org_id = $home . '#organization';
-		$site   = $home . '#website';
-		$same   = array_values( array_filter( array( krm_opt( 'facebook' ), krm_opt( 'youtube' ), krm_opt( 'instagram' ) ) ) );
-
-		$graph   = array();
-		$graph[] = array_filter(
-			array(
-				'@type'     => 'NGO',
-				'@id'       => $org_id,
-				'name'      => get_bloginfo( 'name' ),
-				'url'       => $home,
-				'logo'      => krm_logo_schema(),
-				'email'     => krm_opt( 'email' ),
-				'telephone' => krm_opt( 'phone_tel' ),
-				'address'   => array(
-					'@type'           => 'PostalAddress',
-					'streetAddress'   => krm_opt( 'address' ),
-					'addressLocality' => 'Faisalabad',
-					'addressRegion'   => 'Punjab',
-					'addressCountry'  => 'PK',
-				),
-				'founder'   => array(
-					'@type' => 'Person',
-					'name'  => 'Pastor Adil Arif',
-				),
-				'sameAs'    => $same,
-			)
-		);
-		$graph[] = array(
-			'@type'           => 'WebSite',
-			'@id'             => $site,
-			'url'             => $home,
-			'name'            => get_bloginfo( 'name' ),
-			'publisher'       => array( '@id' => $org_id ),
-			'inLanguage'      => get_bloginfo( 'language' ),
-			'potentialAction' => array(
-				'@type'       => 'SearchAction',
-				'target'      => array(
-					'@type'       => 'EntryPoint',
-					'urlTemplate' => home_url( '/?s={search_term_string}' ),
-				),
-				'query-input' => 'required name=search_term_string',
-			),
-		);
-
-		$crumbs = krm_breadcrumbs();
-		$url    = is_singular() ? get_permalink() : ( is_home() ? krm_blog_url() : '' );
-		if ( is_front_page() ) {
-			$url = $home;
-		}
-		if ( $url ) {
-			$page = array(
-				'@type'      => is_home() ? 'CollectionPage' : 'WebPage',
-				'@id'        => $url . '#webpage',
-				'url'        => $url,
-				'name'       => wp_get_document_title(),
-				'isPartOf'   => array( '@id' => $site ),
-				'about'      => array( '@id' => $org_id ),
-				'inLanguage' => get_bloginfo( 'language' ),
-			);
-			$desc = krm_meta_description();
-			if ( $desc ) {
-				$page['description'] = $desc;
-			}
-			if ( $crumbs ) {
-				$page['breadcrumb'] = array( '@id' => $url . '#breadcrumb' );
-			}
-			$graph[] = $page;
-		}
-		if ( $crumbs && $url ) {
-			$items = array();
-			foreach ( $crumbs as $i => $crumb ) {
-				$items[] = array(
-					'@type'    => 'ListItem',
-					'position' => $i + 1,
-					'name'     => wp_strip_all_tags( $crumb[0] ),
-					'item'     => $crumb[1],
-				);
-			}
-			$graph[] = array(
-				'@type'           => 'BreadcrumbList',
-				'@id'             => $url . '#breadcrumb',
-				'itemListElement' => $items,
-			);
-		}
-		if ( is_singular( 'post' ) ) {
-			$post    = get_queried_object();
-			$graph[] = array_filter(
-				array(
-					'@type'            => 'BlogPosting',
-					'@id'              => $url . '#article',
-					'headline'         => get_the_title( $post ),
-					'description'      => krm_meta_description(),
-					'image'            => krm_ref_url( krm_post_cover( $post->ID ), 'full' ),
-					'datePublished'    => get_the_date( 'c', $post ),
-					'dateModified'     => get_the_modified_date( 'c', $post ),
-					'author'           => array(
-						'@type' => 'Organization',
-						'name'  => 'Kingdom Revival Ministries Team',
-						'url'   => $home,
-					),
-					'publisher'        => array( '@id' => $org_id ),
-					'mainEntityOfPage' => array( '@id' => $url . '#webpage' ),
-					'articleSection'   => krm_post_category( $post->ID ),
-					'inLanguage'       => get_bloginfo( 'language' ),
-				)
-			);
-		}
-		echo '<script type="application/ld+json">' . wp_json_encode(
-			array(
-				'@context' => 'https://schema.org',
-				'@graph'   => $graph,
-			),
-			JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-		) . "</script>\n";
-	},
-	20
-);
-
 /* ---------- Sitemaps & indexing ---------- */
 
 /*
- * Single testimonials redirect to /testimonials/, so they are left out of every sitemap (the list page stays in).
+ * Single testimonials redirect to /testimonials/, so they are left out of every sitemap (the list page stays in:
+ * Yoast SEO, Rank Math and SureRank list it with the archives, core sitemaps in the archives sitemap below).
  */
 add_filter(
 	'wp_sitemaps_post_types',
@@ -543,24 +372,30 @@ add_filter(
 		return $types;
 	}
 );
+foreach ( array( 'wpseo_sitemap_entry', 'rank_math/sitemap/entry' ) as $krm_hook ) {
+	add_filter(
+		$krm_hook,
+		function ( $url, $type, $item ) {
+			// Rank Math passes database rows rather than WP_Post objects.
+			return 'post' === $type && isset( $item->post_type ) && 'testimonial' === $item->post_type ? false : $url;
+		},
+		10,
+		3
+	);
+}
 add_filter(
-	'wpseo_sitemap_exclude_post_type',
-	function ( $exclude, $post_type ) {
-		return 'testimonial' === $post_type ? true : $exclude;
-	},
-	10,
-	2
-);
-add_filter(
-	'rank_math/sitemap/exclude_post_type',
-	function ( $exclude, $post_type ) {
-		return 'testimonial' === $post_type ? true : $exclude;
+	'surerank_sitemap_posts_cache_args',
+	function ( $args, $post_type ) {
+		if ( 'testimonial' === $post_type ) {
+			$args['post__in'] = array( 0 );
+		}
+		return $args;
 	},
 	10,
 	2
 );
 
-/* Core sitemaps: leave out author archives (they expose usernames and add no content). */
+/* Leave out author archives (they expose usernames and add no content; stories are by the ministry team). */
 add_filter(
 	'wp_sitemaps_add_provider',
 	function ( $provider, $name ) {
@@ -568,6 +403,135 @@ add_filter(
 	},
 	10,
 	2
+);
+add_filter( 'wpseo_sitemap_exclude_author', '__return_empty_array' );
+
+/*
+ * Addresses in Kingdom Revival → Settings → Redirects are left out of every sitemap. When the theme is installed on
+ * the previous site's database, the old Elementor pages (Donate us, Baptisms…), "Hello world!" and Uncategorized are
+ * still published but 301 to their new pages, and a sitemap should only list pages that answer 200.
+ */
+
+/**
+ * IDs of published posts of a type whose address is redirected.
+ *
+ * @param string $post_type Post type.
+ */
+function krm_redirected_post_ids( $post_type ) {
+	$ids = array();
+	foreach ( array_keys( krm_redirects() ) as $path ) {
+		$page       = get_page_by_path( trim( $path, '/' ), OBJECT, $post_type );
+		$candidates = array( url_to_postid( home_url( user_trailingslashit( $path ) ) ), $page ? $page->ID : 0 );
+		foreach ( array_filter( $candidates ) as $id ) {
+			if ( get_post_type( $id ) === $post_type && krm_redirect_for( get_permalink( $id ) ) ) {
+				$ids[] = $id;
+			}
+		}
+	}
+	return array_values( array_unique( $ids ) );
+}
+
+/**
+ * Sitemap post query (core sitemaps, SureRank): leave out redirected posts.
+ *
+ * @param array  $args      WP_Query arguments.
+ * @param string $post_type Post type.
+ */
+function krm_sitemap_posts_args( $args, $post_type ) {
+	$skip = krm_redirected_post_ids( $post_type );
+	if ( $skip ) {
+		$args['post__not_in'] = array_merge( isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array(), $skip );
+	}
+	return $args;
+}
+add_filter( 'wp_sitemaps_posts_query_args', 'krm_sitemap_posts_args', 10, 2 );
+add_filter( 'surerank_sitemap_posts_cache_args', 'krm_sitemap_posts_args', 10, 2 );
+
+/**
+ * Sitemap term query (core sitemaps, SureRank): leave out redirected terms.
+ *
+ * @param array  $args     get_terms() arguments.
+ * @param string $taxonomy Taxonomy.
+ */
+function krm_sitemap_terms_args( $args, $taxonomy ) {
+	$skip  = array();
+	$terms = get_terms(
+		array(
+			'taxonomy'   => $taxonomy,
+			'hide_empty' => false,
+		)
+	);
+	foreach ( is_array( $terms ) ? $terms : array() as $term ) {
+		$link = get_term_link( $term );
+		if ( ! is_wp_error( $link ) && krm_redirect_for( $link ) ) {
+			$skip[] = $term->term_id;
+		}
+	}
+	if ( $skip ) {
+		$args['exclude'] = array_merge( isset( $args['exclude'] ) ? wp_parse_id_list( $args['exclude'] ) : array(), $skip );
+	}
+	return $args;
+}
+add_filter( 'wp_sitemaps_taxonomies_query_args', 'krm_sitemap_terms_args', 10, 2 );
+add_filter( 'surerank_sitemap_taxonomies_cache_args', 'krm_sitemap_terms_args', 10, 2 );
+
+foreach ( array( 'wpseo_sitemap_entry', 'rank_math/sitemap/entry' ) as $krm_hook ) {
+	add_filter(
+		$krm_hook,
+		function ( $url ) {
+			// An empty entry is skipped by Yoast SEO and Rank Math.
+			return is_array( $url ) && ! empty( $url['loc'] ) && krm_redirect_for( $url['loc'] ) ? false : $url;
+		}
+	);
+}
+
+/*
+ * Core sitemaps list single entries but not list pages: add /ministries/ (All Ministries), /sermons/, /events/ and
+ * /testimonials/ while they have published items, so an empty list is never submitted.
+ */
+add_action(
+	'wp_sitemaps_init',
+	function ( $sitemaps ) {
+		if ( ! class_exists( 'KRM_Sitemaps_Archives' ) ) {
+			/**
+			 * Sitemap of the ministry, sermon, event and testimonial list pages: /wp-sitemap-archives-1.xml.
+			 */
+			class KRM_Sitemaps_Archives extends WP_Sitemaps_Provider {
+				/** Set up the provider. */
+				public function __construct() {
+					$this->name        = 'archives';
+					$this->object_type = 'archive';
+				}
+
+				/**
+				 * List pages with at least one published item.
+				 *
+				 * @param int    $page_num       Page of results.
+				 * @param string $object_subtype Unused.
+				 */
+				public function get_url_list( $page_num, $object_subtype = '' ) {
+					$urls = array();
+					foreach ( array( 'ministry', 'sermon', 'event', 'testimonial' ) as $type ) {
+						$link = post_type_exists( $type ) ? get_post_type_archive_link( $type ) : false;
+						if ( $link && (int) wp_count_posts( $type )->publish > 0 ) {
+							$urls[] = array( 'loc' => $link );
+						}
+					}
+					return $urls;
+				}
+
+				/**
+				 * One page at most.
+				 *
+				 * @param string $object_subtype Unused.
+				 */
+				public function get_max_num_pages( $object_subtype = '' ) {
+					return $this->get_url_list( 1 ) ? 1 : 0;
+				}
+			}
+		}
+		$sitemaps->registry->add_provider( 'archives', new KRM_Sitemaps_Archives() );
+	}
 );
 
 /* ---------- Old static-site URLs → WordPress URLs (301) ---------- */
@@ -592,7 +556,7 @@ add_action(
 				$to = krm_blog_url();
 				break;
 			case 'blog-post':
-				$found = $story ? get_page_by_path( $story, OBJECT, 'post' ) : null;
+				$found = $story ? krm_get_by_path( $story, 'post' ) : null;
 				$to    = $found ? get_permalink( $found ) : krm_blog_url();
 				break;
 			case 'all-ministries':

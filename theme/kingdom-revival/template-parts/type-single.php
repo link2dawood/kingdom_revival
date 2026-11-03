@@ -24,9 +24,10 @@ if ( $krm_is_evt ) {
 }
 ?>
 	<main id="main">
-	<section class="post-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_image ) ); ?>')">
+	<?php krm_hero_preload( $krm_image ); ?>
+	<section class="post-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_image ) ); ?>')<?php krm_bg_small( $krm_image ); ?>">
 		<div class="wrap">
-		<ol class="breadcrumb"><li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li><li><a href="<?php echo esc_url( $krm_archive ); ?>"><?php echo esc_html( $krm_label ); ?></a></li><li aria-current="page"><?php the_title(); ?></li></ol>
+		<?php krm_breadcrumb_html(); ?>
 		<?php if ( $krm_tag ) : ?>
 		<span class="tag"><?php echo krm_text( $krm_tag ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 		<?php endif; ?>
@@ -67,7 +68,7 @@ if ( $krm_is_evt ) {
 			$krm_scripture = (string) get_post_meta( $krm_id, '_krm_scripture', true );
 			$krm_video     = (string) get_post_meta( $krm_id, '_krm_video', true );
 			$krm_audio     = (string) get_post_meta( $krm_id, '_krm_audio', true );
-			$krm_embed     = $krm_video ? wp_oembed_get( $krm_video ) : '';
+			$krm_embed     = krm_sermon_video( $krm_id )['html'];
 			if ( $krm_embed ) :
 				?>
 		<div class="type-video"><?php echo $krm_embed; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- oEmbed markup from a WordPress-approved provider. ?></div>

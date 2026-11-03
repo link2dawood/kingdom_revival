@@ -18,6 +18,9 @@ const PAGES = {
   post: ['/blog-post.html?post=learning-beside-the-kilns', '/learning-beside-the-kilns/'],
   'post-oldest': ['/blog-post.html?post=prayer-for-the-sick-and-oppressed', '/prayer-for-the-sick-and-oppressed/'],
   ministry: ['/all-ministries.html?ministry=brick-kiln-children', '/ministries/brick-kiln-children/'],
+  // Theme 1.7.4 photos: Urdu-12 upright (one gallery photo), Outreach's own gallery (replaces the placeholder).
+  'ministry-urdu': ['/all-ministries.html?ministry=urdu-bibles', '/ministries/urdu-bibles/'],
+  'ministry-outreach': ['/all-ministries.html?ministry=outreach-ministry', '/ministries/outreach-ministry/'],
   'ministry-empty': ['/all-ministries.html?ministry=free-medical-camps', '/ministries/free-medical-camps/'],
   'ministries-none': ['/all-ministries.html', '/ministries/'],
 };
@@ -57,6 +60,13 @@ const WIDTHS = { desktop: [1440, 900], tablet: [768, 1024], mobile: [390, 844] }
 
 async function settle(page) {
   await page.addStyleTag({ content: 'video{visibility:hidden!important} *{caret-color:transparent!important}' });
+  // MASK_PHOTOS=1: blank photo pixels on both sides (boxes keep their size), so resized/WebP Media Library copies
+  // don't count and any remaining difference is layout or text.
+  // Inline !important on each element, because responsive hero rules out-rank a stylesheet mask.
+  if (process.env.MASK_PHOTOS) {
+    await page.addStyleTag({ content: 'img{opacity:0!important} *::before,*::after{background-image:none!important}' });
+    await page.evaluate(() => document.querySelectorAll('*').forEach((el) => el.style.setProperty('background-image', 'none', 'important')));
+  }
   // Scroll through the page so lazy images load, then back to the top.
   await page.evaluate(async () => {
     const step = window.innerHeight / 2;

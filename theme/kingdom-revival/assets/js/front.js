@@ -1,7 +1,8 @@
 /* Kingdom Revival Ministries — home page interactions (replaces the design's React state).
    - Amount picker: the hero card and the floating panel share one selected amount.
    - Ministry explorer: picking a ministry swaps the image, number, title, text and "See All" link.
-   - Floating donation panel: open/close. */
+   - Floating donation panel: open/close.
+   - Section links (#all-ministries, #donate…) scroll to the section without leaving the "#…" in the address bar. */
 (function () {
   var DONATE_URL = (window.KRM_CONFIG && KRM_CONFIG.donateUrl) || "./donate.html";
 
@@ -83,5 +84,68 @@
       toggle.querySelector("path").setAttribute("d", open ? "M18 6L6 18M6 6l12 12" : "M12 5v14M5 12h14");
       toggle.querySelector("span").textContent = open ? "Close" : "Donate";
     });
+  }
+
+  /* ---------- Section links without "#" in the address bar ---------- */
+  // The links keep their "#section" href, so they still work without script. Arriving from another page
+  // (/#all-ministries), the anchor is taken out of the address at once and the section is scrolled to here, after the
+  // content is ready and again after load, as site.js does for anchors that stay.
+  function sectionFor(hash) {
+    return hash && hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+  }
+  function cleanAddress() {
+    if (history.replaceState) history.replaceState(history.state, "", location.pathname + location.search);
+  }
+
+  var arrived = sectionFor(location.hash);
+  if (arrived) {
+    cleanAddress();
+    var jump = function () { setTimeout(function () { arrived.scrollIntoView(); }, 50); };
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", jump); else jump();
+    if (document.readyState !== "complete") window.addEventListener("load", jump);
+  }
+
+  document.addEventListener("click", function (event) {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    var link = event.target.closest && event.target.closest("a[href]");
+    if (!link || link.target || link.origin !== location.origin || link.pathname !== location.pathname || link.search !== location.search) return;
+    var section = sectionFor(link.hash);
+    if (!section) return;
+    event.preventDefault();
+    // A section link in the menu closes the menu (the page doesn't reload, so it would stay open over the section).
+    if (link.closest(".site-nav")) {
+      document.querySelectorAll('.site-nav [aria-expanded="true"]').forEach(function (b) { b.setAttribute("aria-expanded", "false"); });
+    }
+    section.scrollIntoView();
+    cleanAddress();
+  });
+
+  /* ---------- Field stories video ---------- */
+  // Its poster is set only when the section comes near the screen, so it doesn't compete with the hero image on
+  // first load (a poster is otherwise downloaded at once, wherever the video is on the page).
+  var lazyVideos = document.querySelectorAll("video[data-krm-poster]");
+  var showPoster = function (v) { if (!v.poster) v.poster = v.getAttribute("data-krm-poster"); };
+  if (lazyVideos.length) {
+    if ("IntersectionObserver" in window) {
+      var posterObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { showPoster(e.target); posterObserver.unobserve(e.target); } });
+      }, { rootMargin: "600px 0px" });
+      lazyVideos.forEach(function (v) { posterObserver.observe(v); });
+    } else {
+      lazyVideos.forEach(showPoster);
+    }
+  }
+
+  /* ---------- Hero video ---------- */
+  // Started once the page has loaded, so its download doesn't hold up the first view.
+  var heroVideo = document.querySelector("video[data-krm-autoplay]");
+  if (heroVideo) {
+    var startVideo = function () {
+      heroVideo.autoplay = true;
+      var playing = heroVideo.play();
+      if (playing && playing.catch) playing.catch(function () {});
+    };
+    if (document.readyState === "complete") startVideo();
+    else window.addEventListener("load", startVideo);
   }
 })();

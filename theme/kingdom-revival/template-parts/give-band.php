@@ -33,7 +33,7 @@ $krm_form = wp_parse_args(
 	)
 );
 ?>
-<section class="give-band" id="<?php echo esc_attr( $krm_args['id'] ); ?>"<?php echo $krm_args['image'] ? ' style="background-image: url(\'' . esc_url( krm_ref_url( $krm_args['image'] ) ) . '\')"' : ''; ?> aria-labelledby="<?php echo esc_attr( $krm_args['heading_id'] ); ?>">
+<section class="give-band" id="<?php echo esc_attr( $krm_args['id'] ); ?>"<?php if ( $krm_args['image'] ) : ?> style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_args['image'] ) ); ?>')<?php krm_bg_small( $krm_args['image'] ); ?>"<?php endif; ?> aria-labelledby="<?php echo esc_attr( $krm_args['heading_id'] ); ?>">
 	<div>
 		<?php if ( $krm_args['eyebrow'] ) : ?>
 		<p class="eyebrow"><?php echo esc_html( $krm_args['eyebrow'] ); ?></p>
