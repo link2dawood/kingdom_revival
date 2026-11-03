@@ -42,7 +42,7 @@ function krm_default_redirects() {
 			'/gallery/outreach-ministry/ /ministries/outreach-ministry/',
 			'/gallery/widows-ministry/ /ministries/widows-ministry/',
 			'/executive-message/ {about}#founder',
-			'/services/ {home}#all-ministries',
+			'/services/ {ministries}',
 			'/form/ {home}',
 			'/elementor-2338/ {home}',
 			'/sample-page/ {home}',

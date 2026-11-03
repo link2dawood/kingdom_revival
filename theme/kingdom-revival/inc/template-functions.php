@@ -58,6 +58,7 @@ Kingdom Revival Ministries",
 		'newsletter_delay'    => 3,
 		'redirects'           => krm_default_redirects(),
 		'image_format'        => 'webp',
+		'trim_assets'         => 'on',
 		'stat_1_value'        => '80',
 		'stat_1_label'        => 'Communities reached',
 		'stat_2_value'        => '200',
@@ -344,6 +345,14 @@ function krm_ministry_url( $slug ) {
 }
 
 /**
+ * URL of the All Ministries page (the ministry archive, /ministries/).
+ */
+function krm_ministries_url() {
+	$url = get_post_type_archive_link( 'ministry' );
+	return $url ? $url : home_url( user_trailingslashit( 'ministries' ) );
+}
+
+/**
  * URL of the Donate page.
  */
 function krm_donate_url() {
@@ -380,8 +389,10 @@ function krm_ministries( $order = 'menu' ) {
 			if ( ! $image ) {
 				$image = get_post_thumbnail_id( $post );
 			}
+			$groups  = get_the_terms( $post, 'ministry_group' );
 			$items[] = array(
 				'slug'       => $post->post_name,
+				'group'      => $groups && ! is_wp_error( $groups ) ? $groups[0]->name : '',
 				'title'      => get_the_title( $post ),
 				'desc'       => $post->post_excerpt,
 				'url'        => get_permalink( $post ),
@@ -395,6 +406,7 @@ function krm_ministries( $order = 'menu' ) {
 		foreach ( $data['items'] as $slug => $m ) {
 			$items[] = array(
 				'slug'       => $slug,
+				'group'      => isset( $data['groups'][ $m['group'] ]['name'] ) ? $data['groups'][ $m['group'] ]['name'] : '',
 				'title'      => $m['title'],
 				'desc'       => $m['excerpt'],
 				'url'        => krm_ministry_url( $slug ),
@@ -432,7 +444,7 @@ function krm_post_ministry( $post_id ) {
 	}
 	return array(
 		'title' => 'Kingdom Revival Ministries',
-		'url'   => home_url( '/#all-ministries' ),
+		'url'   => krm_ministries_url(),
 	);
 }
 
@@ -492,14 +504,48 @@ function krm_icon( $name ) {
 /* ---------- Logo ---------- */
 
 /**
- * URL of the site logo: the Custom Logo set in the Customizer, else the logo bundled with the theme.
+ * URL of the site logo: the Custom Logo set in the Customizer, else the logo bundled with the theme (192×192).
+ * For the header, footer and other small places use krm_logo_img(), which lets the browser pick the right size.
  *
  * @param string $size Image size for an uploaded logo.
  */
-function krm_logo_url( $size = 'full' ) {
+function krm_logo_url( $size = 'medium' ) {
 	$id  = (int) get_theme_mod( 'custom_logo' );
 	$url = $id ? wp_get_attachment_image_url( $id, $size ) : '';
 	return $url ? $url : krm_asset( 'images/krm-logo.png' );
+}
+
+/**
+ * The logo as an <img> with a srcset, so each screen downloads only the size it shows: 64, 128 or 192 px of the
+ * bundled logo, or the Customizer logo's own WordPress sizes (never the full upload).
+ *
+ * @param int    $px    Width and height attributes (the design's size).
+ * @param string $sizes The sizes attribute: how wide the logo is shown.
+ * @param string $alt   Alt text ('' for a decorative copy).
+ * @param string $extra Further attributes, already escaped (e.g. ' loading="lazy"').
+ */
+function krm_logo_img( $px = 64, $sizes = '64px', $alt = '', $extra = '' ) {
+	$id = (int) get_theme_mod( 'custom_logo' );
+	if ( $id && wp_attachment_is_image( $id ) ) {
+		$src    = wp_get_attachment_image_url( $id, 'thumbnail' );
+		$srcset = wp_get_attachment_image_srcset( $id, 'full' );
+	} else {
+		$src    = '';
+		$srcset = '';
+	}
+	if ( ! $src ) {
+		$src    = krm_asset( 'images/krm-logo-64.png' );
+		$srcset = krm_asset( 'images/krm-logo-64.png' ) . ' 64w, ' . krm_asset( 'images/krm-logo-128.png' ) . ' 128w, ' . krm_asset( 'images/krm-logo.png' ) . ' 192w';
+	}
+	printf(
+		'<img src="%s"%s alt="%s" width="%d" height="%d"%s>',
+		esc_url( $src ),
+		$srcset ? ' srcset="' . esc_attr( $srcset ) . '" sizes="' . esc_attr( $sizes ) . '"' : '',
+		esc_attr( $alt ),
+		(int) $px,
+		(int) $px,
+		$extra // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed attribute strings from templates.
+	);
 }
 
 /* ---------- Design page templates (page-templates/*.php) ---------- */

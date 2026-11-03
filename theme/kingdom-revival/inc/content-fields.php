@@ -366,9 +366,9 @@ function krm_fill( $text ) {
 }
 
 /**
- * Resolve a link value. Page placeholders: {home}, {about}, {contact}, {donate}, {partner}, {blog}; contact
- * placeholders: {email} (mailto), {phone} (tel), {whatsapp} (WhatsApp chat), {paypal} (PayPal.me link).
- * Anything after a placeholder is kept, e.g. {home}#all-ministries.
+ * Resolve a link value. Page placeholders: {home}, {about}, {contact}, {donate}, {partner}, {blog}, {ministries}
+ * (the All Ministries page); contact placeholders: {email} (mailto), {phone} (tel), {whatsapp} (WhatsApp chat),
+ * {paypal} (PayPal.me link). Anything after a placeholder is kept, e.g. {home}#all-ministries.
  *
  * @param string $url Stored link.
  */
@@ -383,6 +383,9 @@ function krm_resolve_url( $url ) {
 			break;
 		case 'blog':
 			$base = krm_blog_url();
+			break;
+		case 'ministries':
+			$base = krm_ministries_url();
 			break;
 		case 'email':
 			$base = krm_mailto();

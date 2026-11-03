@@ -48,7 +48,8 @@ const publicText = async (path) => (await (await fetch(WP + path + (path.include
     ['Edit story (block editor)', `/wp-admin/post.php?post=${ids.story}&action=edit`, 'block'],
     ['New story', '/wp-admin/post-new.php', 'block'],
     ['Ministries', '/wp-admin/edit.php?post_type=ministry'],
-    ['Edit ministry (block editor)', `/wp-admin/post.php?post=${ids.ministry}&action=edit`, 'block'],
+    // Ministries have no 'editor' support (title, excerpt and the theme's fields), so WordPress shows the classic screen.
+    ['Edit ministry', `/wp-admin/post.php?post=${ids.ministry}&action=edit`],
     ['Sermons', '/wp-admin/edit.php?post_type=sermon'],
     ['New sermon', '/wp-admin/post-new.php?post_type=sermon', 'block'],
     ['New event', '/wp-admin/post-new.php?post_type=event', 'block'],
@@ -86,6 +87,8 @@ const publicText = async (path) => (await (await fetch(WP + path + (path.include
   }
   async function classicSave(url, fill, button) {
     await page.goto(WP + url);
+    // The Page content and Site text sections are collapsed <details>; open them so their fields can be filled.
+    await page.evaluate(() => document.querySelectorAll('details.krm-section').forEach((d) => { d.open = true; }));
     await fill();
     await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), page.click(button)]);
   }
@@ -141,19 +144,18 @@ const publicText = async (path) => (await (await fetch(WP + path + (path.include
     return { ok: saved && saved2 && changed && restored, note: `saved=${saved} changed=${changed} restored=${restored}` };
   });
 
-  await edit('Ministry: title + meta box in block editor → page', async () => {
-    await page.goto(WP + `/wp-admin/post.php?post=${ids.ministry}&action=edit`);
-    await page.waitForFunction(() => window.wp && wp.data && wp.data.select('core/editor').getCurrentPostId());
-    const old = await page.evaluate(() => wp.data.select('core/editor').getEditedPostAttribute('title'));
+  // Ministries use the classic edit screen (no 'editor' support): title field, the theme's meta box, Update.
+  await edit('Ministry: title + meta box → page', async () => {
+    const url = `/wp-admin/post.php?post=${ids.ministry}&action=edit`;
+    await page.goto(WP + url);
+    const old = await page.inputValue('#title');
     const focusOld = await page.inputValue('[name="krm_focus"]');
-    await page.fill('[name="krm_focus"]', focusOld + ' QA12focus');
-    const saved = await blockEdit(ids.ministry, { title: old + ' QA12' });
+    await classicSave(url, async () => { await page.fill('#title', old + ' QA12'); await page.fill('[name="krm_focus"]', focusOld + ' QA12focus'); }, '#publish');
     const html = await publicText('/ministries/brick-kiln-children/');
     const changed = html.includes(old + ' QA12') && html.includes('QA12focus');
-    await page.fill('[name="krm_focus"]', focusOld);
-    const saved2 = await blockEdit(ids.ministry, { title: old });
+    await classicSave(url, async () => { await page.fill('#title', old); await page.fill('[name="krm_focus"]', focusOld); }, '#publish');
     const restored = !(await publicText('/ministries/brick-kiln-children/')).includes('QA12');
-    return { ok: saved && saved2 && changed && restored, note: `saved=${saved} changed=${changed} restored=${restored}` };
+    return { ok: changed && restored, note: `changed=${changed} restored=${restored}` };
   });
 
   fs.mkdirSync(require('path').dirname(OUT), { recursive: true });

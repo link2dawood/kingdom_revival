@@ -123,7 +123,7 @@ function krm_default_primary_tree() {
 			$groups[] = krm_node( $group['name'], '#', array(), '', false, array_values( $children ) );
 		}
 	}
-	array_unshift( $groups, krm_node( __( 'All ministries', 'kingdom-revival' ), home_url( '/#all-ministries' ), array( 'menu-all' ) ) );
+	array_unshift( $groups, krm_node( __( 'All ministries', 'kingdom-revival' ), krm_ministries_url(), array( 'menu-all' ), '', is_post_type_archive( 'ministry' ) ) );
 
 	return array(
 		krm_node( __( 'Home', 'kingdom-revival' ), home_url( '/' ), array(), '', is_front_page() ),
@@ -177,7 +177,8 @@ function krm_node_has_ministry( $node ) {
 }
 
 /**
- * On the home page, links to the home page become in-page anchors (#top, #all-ministries), as in the design.
+ * On the home page, links to one of its sections ("/#field-stories") become in-page anchors. The Home link itself
+ * stays the home permalink, as in the global header on every other page.
  *
  * @param string $url Link URL.
  */
@@ -186,9 +187,6 @@ function krm_local_url( $url ) {
 		return $url;
 	}
 	$home = trailingslashit( home_url( '/' ) );
-	if ( untrailingslashit( $url ) === untrailingslashit( $home ) ) {
-		return '#top';
-	}
 	if ( 0 === strpos( $url, $home . '#' ) ) {
 		return substr( $url, strlen( $home ) );
 	}
@@ -239,7 +237,7 @@ function krm_menu_url( $url ) {
 		case 'blog':
 			return krm_blog_url() . $hash;
 		case 'all-ministries':
-			return empty( $args['ministry'] ) ? home_url( '/#all-ministries' ) : krm_ministry_url( sanitize_title( $args['ministry'] ) ) . $hash;
+			return empty( $args['ministry'] ) ? krm_ministries_url() : krm_ministry_url( sanitize_title( $args['ministry'] ) ) . $hash;
 		case 'blog-post':
 			$post = empty( $args['post'] ) ? null : krm_get_by_path( sanitize_title( $args['post'] ), 'post' );
 			return ( $post ? get_permalink( $post ) : krm_blog_url() ) . $hash;
@@ -277,8 +275,8 @@ function krm_render_nodes( $nodes, $depth = 0 ) {
 		$classes      = $node['classes'];
 		if ( $has_children ) {
 			$classes[] = 'has-sub';
-			// The design highlights "Ministries" on ministry pages and on the /ministries/ overview. The home page
-			// highlights nothing, although its "All ministries" anchor (#all-ministries) resolves to the current URL.
+			// The design highlights "Ministries" on ministry pages and on the All Ministries page (/ministries/). The
+			// home page highlights nothing, as in the design.
 			if ( 0 === $depth && ! is_front_page() && ( krm_node_has_current( $node ) || ( is_post_type_archive( 'ministry' ) && krm_node_has_ministry( $node ) ) ) ) {
 				$classes[] = 'is-current';
 			}
@@ -298,7 +296,7 @@ function krm_render_nodes( $nodes, $depth = 0 ) {
 				'<a href="%s"%s%s>%s</a>',
 				esc_url( krm_local_url( $node['url'] ) ),
 				$node['ministry'] ? ' data-ministry="' . esc_attr( $node['ministry'] ) . '"' : '',
-				$node['current'] && ! is_front_page() ? ' aria-current="page"' : '',
+				$node['current'] ? ' aria-current="page"' : '',
 				esc_html( $node['title'] )
 			);
 		}
@@ -379,36 +377,9 @@ function krm_footer_links( $location ) {
 			}
 			$links[] = array(
 				'title' => __( 'All ministries →', 'kingdom-revival' ),
-				'url'   => home_url( '/#all-ministries' ),
+				'url'   => krm_ministries_url(),
 			);
 			return $links;
-		case 'footer_home':
-			return array(
-				array(
-					'title' => __( 'Home', 'kingdom-revival' ),
-					'url'   => home_url( '/' ),
-				),
-				array(
-					'title' => __( 'About', 'kingdom-revival' ),
-					'url'   => krm_page_url( 'about' ),
-				),
-				array(
-					'title' => __( 'Latest News & Blogs', 'kingdom-revival' ),
-					'url'   => krm_blog_url(),
-				),
-				array(
-					'title' => __( 'Donate', 'kingdom-revival' ),
-					'url'   => krm_donate_url(),
-				),
-				array(
-					'title' => __( 'Contact', 'kingdom-revival' ),
-					'url'   => krm_page_url( 'contact' ),
-				),
-				array(
-					'title' => __( 'Become a Partner', 'kingdom-revival' ),
-					'url'   => krm_page_url( 'partner' ),
-				),
-			);
 	}
 	return array();
 }

@@ -47,7 +47,7 @@ while ( have_posts() ) :
 			<a class="button button-secondary" href="<?php echo esc_url( krm_blog_url() ); ?>"><?php krm_t( 'story.back', 'site' ); ?></a>
 			</div>
 			<div class="author">
-			<img src="<?php echo esc_url( krm_logo_url() ); ?>" alt="" width="60" height="60" loading="lazy">
+			<?php krm_logo_img( 60, '60px', '', ' loading="lazy"' ); ?>
 			<div><strong><?php krm_t( 'story.author_name', 'site' ); ?></strong><span><?php krm_t( 'story.author_text', 'site' ); ?></span></div>
 			</div>
 			<nav class="post-nav" id="post-nav" aria-label="More stories">

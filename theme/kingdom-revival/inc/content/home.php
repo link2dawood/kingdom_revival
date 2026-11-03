@@ -59,6 +59,8 @@ return array(
 			'support_label' => krm_f( 'text', __( 'Support button text', 'kingdom-revival' ), 'Support this ministry' ),
 			'support_url'   => krm_f( 'url', __( 'Support button link', 'kingdom-revival' ), '{donate}' ),
 			'more_label'    => krm_f( 'text', __( 'Ministry page button text', 'kingdom-revival' ), 'See All' ),
+			'all_label'     => krm_f( 'text', __( 'All Ministries button text', 'kingdom-revival' ), 'View All Ministries' ),
+			'all_url'       => krm_f( 'url', __( 'All Ministries button link', 'kingdom-revival' ), '{ministries}' ),
 		),
 	),
 	'causes'   => array(

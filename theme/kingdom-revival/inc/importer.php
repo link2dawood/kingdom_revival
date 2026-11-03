@@ -619,7 +619,7 @@ function krm_import_menus( $ministry_ids, $page_ids, $data ) {
 	$groups = array(
 		array(
 			'title'   => 'All ministries',
-			'url'     => home_url( '/#all-ministries' ),
+			'archive' => 'ministry',
 			'classes' => 'menu-all',
 		),
 	);
@@ -679,23 +679,9 @@ function krm_import_menus( $ministry_ids, $page_ids, $data ) {
 				$ministry_item( 'urdu-bibles', 'Urdu Bibles' ),
 				$ministry_item( 'leadership-and-discipleship', 'Leadership & Discipleship' ),
 				array(
-					'title' => 'All ministries →',
-					'url'   => home_url( '/#all-ministries' ),
+					'title'   => 'All ministries →',
+					'archive' => 'ministry',
 				),
-			),
-		),
-		'footer_home'       => array(
-			'Footer — Home Page Quick Links',
-			array(
-				array(
-					'title' => 'Home',
-					'url'   => home_url( '/' ),
-				),
-				$page_item( 'about', 'About' ),
-				$page_item( 'blog', 'Latest News & Blogs' ),
-				$page_item( 'donate', 'Donate' ),
-				$page_item( 'contact', 'Contact' ),
-				$page_item( 'partner', 'Become a Partner' ),
 			),
 		),
 	);
@@ -727,7 +713,7 @@ function krm_import_menus( $ministry_ids, $page_ids, $data ) {
  * Add menu items (and their children) to a menu.
  *
  * @param int   $menu_id   Menu ID.
- * @param array $items     Items: title, url, type, object, object_id, classes, children.
+ * @param array $items     Items: title, url, type, object, object_id, archive (post type), classes, children.
  * @param int   $parent_id Parent menu item ID (0 for top level).
  */
 function krm_add_menu_items( $menu_id, $items, $parent_id ) {
@@ -738,7 +724,10 @@ function krm_add_menu_items( $menu_id, $items, $parent_id ) {
 			'menu-item-parent-id' => $parent_id,
 			'menu-item-classes'   => isset( $item['classes'] ) ? $item['classes'] : '',
 		);
-		if ( isset( $item['type'] ) ) {
+		if ( isset( $item['archive'] ) ) {
+			$args['menu-item-type']   = 'post_type_archive';
+			$args['menu-item-object'] = $item['archive'];
+		} elseif ( isset( $item['type'] ) ) {
 			$args['menu-item-type']      = 'post_type';
 			$args['menu-item-object']    = $item['object'];
 			$args['menu-item-object-id'] = $item['id'];

@@ -55,7 +55,7 @@ function krm_seo_title() {
 		return $site . ' — Home';
 	}
 	if ( is_post_type_archive( 'ministry' ) ) {
-		return 'Ministry Details | ' . $site;
+		return 'All Ministries | ' . $site;
 	}
 	if ( is_home() ) {
 		return 'News & Blogs | ' . $site;
@@ -93,7 +93,7 @@ function krm_meta_description() {
 		return 'Stories of hope from the field — read how the Gospel and practical care are changing lives across Pakistan.';
 	}
 	if ( is_post_type_archive( 'ministry' ) ) {
-		return 'Choose a ministry to see what it does and how your support reaches people.';
+		return wp_strip_all_tags( krm_fill( krm_c( 'ministries.lead', 'site' ) ) );
 	}
 	$types = array(
 		'sermon'      => 'sermons',
@@ -395,24 +395,6 @@ add_filter(
 	2
 );
 
-/* /ministries/ is the design's short "Choose a ministry" page; the ministries themselves are listed. */
-foreach ( array( 'wpseo_sitemap_post_type_archive_link', 'rank_math/sitemap/post_type_archive_link' ) as $krm_hook ) {
-	add_filter(
-		$krm_hook,
-		function ( $link, $post_type ) {
-			return 'ministry' === $post_type ? false : $link;
-		},
-		10,
-		2
-	);
-}
-add_filter(
-	'surerank_sitemap_archive_post_types',
-	function ( $types ) {
-		return array_values( array_diff( (array) $types, array( 'ministry' ) ) );
-	}
-);
-
 /* Leave out author archives (they expose usernames and add no content; stories are by the ministry team). */
 add_filter(
 	'wp_sitemaps_add_provider',
@@ -504,16 +486,15 @@ foreach ( array( 'wpseo_sitemap_entry', 'rank_math/sitemap/entry' ) as $krm_hook
 }
 
 /*
- * Core sitemaps list single entries but not list pages: add /sermons/, /events/ and /testimonials/ while they have
- * published items, so an empty list is never submitted. (/ministries/ is the design's short "Choose a ministry"
- * page; the ministries themselves are listed.)
+ * Core sitemaps list single entries but not list pages: add /ministries/ (All Ministries), /sermons/, /events/ and
+ * /testimonials/ while they have published items, so an empty list is never submitted.
  */
 add_action(
 	'wp_sitemaps_init',
 	function ( $sitemaps ) {
 		if ( ! class_exists( 'KRM_Sitemaps_Archives' ) ) {
 			/**
-			 * Sitemap of the sermon, event and testimonial list pages: /wp-sitemap-archives-1.xml.
+			 * Sitemap of the ministry, sermon, event and testimonial list pages: /wp-sitemap-archives-1.xml.
 			 */
 			class KRM_Sitemaps_Archives extends WP_Sitemaps_Provider {
 				/** Set up the provider. */
@@ -530,7 +511,7 @@ add_action(
 				 */
 				public function get_url_list( $page_num, $object_subtype = '' ) {
 					$urls = array();
-					foreach ( array( 'sermon', 'event', 'testimonial' ) as $type ) {
+					foreach ( array( 'ministry', 'sermon', 'event', 'testimonial' ) as $type ) {
 						$link = post_type_exists( $type ) ? get_post_type_archive_link( $type ) : false;
 						if ( $link && (int) wp_count_posts( $type )->publish > 0 ) {
 							$urls[] = array( 'loc' => $link );

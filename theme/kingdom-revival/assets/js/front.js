@@ -120,6 +120,22 @@
     cleanAddress();
   });
 
+  /* ---------- Field stories video ---------- */
+  // Its poster is set only when the section comes near the screen, so it doesn't compete with the hero image on
+  // first load (a poster is otherwise downloaded at once, wherever the video is on the page).
+  var lazyVideos = document.querySelectorAll("video[data-krm-poster]");
+  var showPoster = function (v) { if (!v.poster) v.poster = v.getAttribute("data-krm-poster"); };
+  if (lazyVideos.length) {
+    if ("IntersectionObserver" in window) {
+      var posterObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { showPoster(e.target); posterObserver.unobserve(e.target); } });
+      }, { rootMargin: "600px 0px" });
+      lazyVideos.forEach(function (v) { posterObserver.observe(v); });
+    } else {
+      lazyVideos.forEach(showPoster);
+    }
+  }
+
   /* ---------- Hero video ---------- */
   // Started once the page has loaded, so its download doesn't hold up the first view.
   var heroVideo = document.querySelector("video[data-krm-autoplay]");

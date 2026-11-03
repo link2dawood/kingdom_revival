@@ -49,4 +49,9 @@ foreach ( $krm_list as $krm_i => $krm_m ) :
 </div>
 </div>
 </div>
+<?php if ( '' !== trim( (string) krm_c( 'explorer.all_label' ) ) ) : ?>
+<div style="margin-top: 40px; display: flex; justify-content: center">
+<a class="k-g" href="<?php krm_u( 'explorer.all_url' ); ?>" style="display: inline-flex; gap: 10px; align-items: center; min-height: 48px; padding: 14px 28px; border-radius: 999px; background: var(--color-primary); color: var(--color-white); font-weight: 700; text-decoration: none; box-sizing: border-box"><?php krm_t( 'explorer.all_label' ); ?><?php echo krm_icon( 'arrow16' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+</div>
+<?php endif; ?>
 </section>

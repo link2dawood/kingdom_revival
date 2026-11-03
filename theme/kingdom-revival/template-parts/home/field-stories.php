@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 		<p><?php krm_t( 'field.text' ); ?></p>
 	</div>
 	<div class="krm-field-stories__feature">
-		<video class="krm-field-stories__video" controls playsinline preload="metadata" poster="<?php echo esc_url( krm_ref_url( krm_c( 'field.poster' ) ) ); ?>" title="<?php echo esc_attr( krm_fill( krm_c( 'field.video_title' ) ) ); ?>">
+		<video class="krm-field-stories__video" controls playsinline preload="none" data-krm-poster="<?php echo esc_url( krm_ref_url( krm_c( 'field.poster' ) ) ); ?>" title="<?php echo esc_attr( krm_fill( krm_c( 'field.video_title' ) ) ); ?>">
 		<source src="<?php echo esc_url( krm_media( krm_c( 'field.video' ) ) ); ?>" type="video/mp4">
 		Your browser does not support HTML video. <a href="<?php echo esc_url( krm_media( krm_c( 'field.video' ) ) ); ?>">Open the ministry video</a>.
 		</video>
@@ -29,7 +29,7 @@ defined( 'ABSPATH' ) || exit;
 	<div class="krm-field-stories__gallery" aria-label="Ministry photos" data-gallery>
 		<?php foreach ( (array) krm_c( 'field.photos' ) as $krm_photo ) : ?>
 		<figure>
-			<img <?php krm_img_src( $krm_photo['image'], '(max-width: 640px) 100vw, (max-width: 900px) 34vw, 400px' ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async">
+			<img <?php krm_img_src( $krm_photo['image'], '(max-width: 760px) 100vw, (max-width: 1240px) 33vw, 400px' ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async">
 			<figcaption><?php echo krm_text( $krm_photo['caption'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></figcaption>
 		</figure>
 		<?php endforeach; ?>

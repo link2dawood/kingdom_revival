@@ -6,13 +6,17 @@
  * The ministry explorer, the donation amount picker and the floating donation panel are driven by
  * assets/js/front.js and start in the same state the design rendered.
  *
+ * The header and footer are the global ones (header.php, footer.php). The wrapper below carries the base type and
+ * colour the home page design set on its sections.
+ *
  * @package Kingdom_Revival
  */
 
 defined( 'ABSPATH' ) || exit;
 
-get_header( 'home' );
+get_header();
 ?>
+<div class="krm-home" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--color-text); background: var(--color-white); font-size: 16px; line-height: 1.6">
 <main id="main">
 <?php
 get_template_part( 'template-parts/home/hero' );
@@ -27,6 +31,7 @@ get_template_part( 'template-parts/home/cta' );
 get_template_part( 'template-parts/home/floating-donate' );
 ?>
 </main>
+</div>
 
 <?php
-get_footer( 'home' );
+get_footer();

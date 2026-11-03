@@ -28,12 +28,12 @@ defined( 'ABSPATH' ) || exit;
  * Breadcrumb trail of the current view: list of [ name, url ]. The last item is the current page.
  */
 function krm_breadcrumbs() {
-	if ( is_front_page() || is_404() || is_post_type_archive( 'ministry' ) ) {
+	if ( is_front_page() || is_404() ) {
 		return array();
 	}
 	$trail = array( array( 'Home', home_url( '/' ) ) );
 	if ( is_singular( 'ministry' ) ) {
-		$trail[] = array( 'Ministries', home_url( '/#all-ministries' ) );
+		$trail[] = array( 'Ministries', krm_ministries_url() );
 	} elseif ( is_singular( 'post' ) ) {
 		$trail[] = array( 'News & Blogs', krm_blog_url() );
 	} elseif ( is_singular( array( 'sermon', 'event' ) ) ) {
@@ -45,6 +45,8 @@ function krm_breadcrumbs() {
 		$title = get_the_title( get_queried_object() );
 	} elseif ( is_home() ) {
 		$title = get_the_title( (int) get_option( 'page_for_posts' ) );
+	} elseif ( is_post_type_archive( 'ministry' ) ) {
+		$title = __( 'All Ministries', 'kingdom-revival' );
 	} elseif ( is_post_type_archive( array( 'sermon', 'event', 'testimonial' ) ) ) {
 		$title = krm_fill( krm_c( 'types.' . krm_queried_post_type() . 's_heading', 'site' ) );
 	} elseif ( is_tax( 'sermon_series' ) ) {
@@ -378,7 +380,34 @@ function krm_schema_main_entities( $ids ) {
 	if ( is_singular( 'sermon' ) ) {
 		$nodes[] = krm_schema_video( $ids );
 	}
+	if ( is_post_type_archive( 'ministry' ) ) {
+		$nodes[] = krm_schema_ministry_list( $ids );
+	}
 	return array_values( array_filter( $nodes ) );
+}
+
+/**
+ * All Ministries page: the ministries as an ItemList, in the order the page shows them.
+ *
+ * @param array $ids Node ids (url).
+ */
+function krm_schema_ministry_list( $ids ) {
+	$items = array();
+	foreach ( krm_ministries() as $i => $m ) {
+		$items[] = array(
+			'@type'    => 'ListItem',
+			'position' => $i + 1,
+			'url'      => $m['url'],
+			'name'     => krm_schema_text( $m['title'] ),
+		);
+	}
+	return $items ? array(
+		'@type'           => 'ItemList',
+		'@id'             => $ids['url'] . '#ministries',
+		'name'            => __( 'All Ministries', 'kingdom-revival' ),
+		'numberOfItems'   => count( $items ),
+		'itemListElement' => $items,
+	) : array();
 }
 
 /**

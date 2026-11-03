@@ -20,8 +20,8 @@ function krm_settings_schema() {
 			'address'   => array( __( 'Address', 'kingdom-revival' ), 'textarea', '' ),
 			'whatsapp'  => array( __( 'WhatsApp number', 'kingdom-revival' ), 'text', __( 'Digits with country code, no +, e.g. 923415418733', 'kingdom-revival' ) ),
 		),
-		__( 'Social media (home page top bar)', 'kingdom-revival' ) => array(
-			'facebook'  => array( __( 'Facebook URL', 'kingdom-revival' ), 'url', __( 'Until a URL is saved, the icon links to the contact details in the footer, as in the design.', 'kingdom-revival' ) ),
+		__( 'Social media (top bar)', 'kingdom-revival' ) => array(
+			'facebook'  => array( __( 'Facebook URL', 'kingdom-revival' ), 'url', __( 'Each network with a saved URL gets an icon in the top bar of every page, next to the Donate button. With no URL saved, no icon is shown.', 'kingdom-revival' ) ),
 			'youtube'   => array( __( 'YouTube URL', 'kingdom-revival' ), 'url', '' ),
 			'instagram' => array( __( 'Instagram URL', 'kingdom-revival' ), 'url', '' ),
 		),
@@ -86,6 +86,15 @@ function krm_settings_schema() {
 				array(
 					'webp'     => __( 'WebP (recommended)', 'kingdom-revival' ),
 					'original' => __( 'Same as the upload (JPEG or PNG)', 'kingdom-revival' ),
+				),
+			),
+			'trim_assets'  => array(
+				__( 'Unused plugin styles', 'kingdom-revival' ),
+				'select',
+				__( 'Some plugins load WordPress’s editor styles and the Dashicons icon font on every public page, although the theme’s pages never use them. “Remove” leaves them out for visitors who are not logged in (logged-in users, the admin bar and the dashboard are not affected). A style a plugin really needs is still loaded, because WordPress adds it back as that plugin’s dependency.', 'kingdom-revival' ),
+				array(
+					'on'  => __( 'Remove for visitors (recommended)', 'kingdom-revival' ),
+					'off' => __( 'Keep', 'kingdom-revival' ),
 				),
 			),
 		),

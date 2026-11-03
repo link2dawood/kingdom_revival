@@ -1,6 +1,8 @@
 <?php
 /**
- * Footer for inner pages.
+ * The global footer for every page, the home page included. Text is edited in Kingdom Revival → Site text
+ * (Footer), the link columns in Appearance → Menus (Footer: Quick Links, Footer: Ministries) and the address,
+ * phone and email in Kingdom Revival → Settings.
  *
  * @package Kingdom_Revival
  */
@@ -10,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 	<footer class="site-footer">
 	<div class="wrap footer-grid">
 		<div>
-		<div class="footer-brand"><img src="<?php echo esc_url( krm_logo_url() ); ?>" alt="" width="64" height="64" loading="lazy"><?php krm_t( 'footer.name', 'site' ); ?></div>
+		<div class="footer-brand"><?php krm_logo_img( 64, '64px', '', ' loading="lazy"' ); ?><?php krm_t( 'footer.name', 'site' ); ?></div>
 		<p><?php krm_t( 'footer.tagline', 'site' ); ?></p>
 		</div>
 		<div>

@@ -30,9 +30,8 @@ add_action(
 		register_nav_menus(
 			array(
 				'primary'           => __( 'Main navigation', 'kingdom-revival' ),
-				'footer_quick'      => __( 'Footer: Quick Links (inner pages)', 'kingdom-revival' ),
-				'footer_ministries' => __( 'Footer: Ministries (inner pages)', 'kingdom-revival' ),
-				'footer_home'       => __( 'Footer: Quick Links (home page)', 'kingdom-revival' ),
+				'footer_quick'      => __( 'Footer: Quick Links', 'kingdom-revival' ),
+				'footer_ministries' => __( 'Footer: Ministries', 'kingdom-revival' ),
 			)
 		);
 	}
@@ -108,3 +107,51 @@ add_action(
 		);
 	}
 );
+
+/**
+ * One-time updates of saved content when the theme is updated.
+ *
+ * 1.8.0: links that pointed at the home page's ministry explorer as the "all ministries" page ({home}#all-ministries)
+ * now go to the All Ministries page ({ministries}). Only values still holding that old default are changed.
+ */
+function krm_upgrade_content() {
+	$done = (string) get_option( 'krm_content_version', '' );
+	if ( '' !== $done && version_compare( $done, '1.8.0', '>=' ) ) {
+		return;
+	}
+	$old     = array( '{home}#all-ministries', home_url( '/#all-ministries' ) );
+	$replace = function ( $values ) use ( &$replace, $old ) {
+		if ( is_array( $values ) ) {
+			return array_map( $replace, $values );
+		}
+		return in_array( $values, $old, true ) ? '{ministries}' : $values;
+	};
+
+	$site = get_option( 'krm_site_text' );
+	if ( is_array( $site ) ) {
+		update_option( 'krm_site_text', $replace( $site ), false );
+	}
+	foreach ( array( 'home', 'about', 'contact', 'donate', 'partner', 'blog' ) as $screen ) {
+		foreach ( get_posts(
+			array(
+				'post_type'      => 'any',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_krm_content_' . $screen, // phpcs:ignore WordPress.DB.SlowDBQuery -- runs once.
+			)
+		) as $post_id ) {
+			$values = get_post_meta( $post_id, '_krm_content_' . $screen, true );
+			if ( is_array( $values ) ) {
+				update_post_meta( $post_id, '_krm_content_' . $screen, $replace( $values ) );
+			}
+		}
+	}
+	$settings = get_option( 'krm_settings' );
+	if ( is_array( $settings ) && isset( $settings['redirects'] ) ) {
+		$settings['redirects'] = preg_replace( '#^(/services/\s+)\{home\}\#all-ministries\s*$#m', '$1{ministries}', (string) $settings['redirects'] );
+		update_option( 'krm_settings', $settings );
+	}
+	update_option( 'krm_content_version', KRM_VERSION );
+}
+add_action( 'init', 'krm_upgrade_content', 20 );

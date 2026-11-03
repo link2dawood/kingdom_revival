@@ -38,7 +38,7 @@ return array(
 			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Bringing the hope of Jesus to those the world overlooks' ),
 			'text'         => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), "Kingdom Revival Ministries is based in Faisalabad, Pakistan. We serve unreached villages, marginalised communities and families who live and work beside the brick kilns — many of them trapped in poverty and debt bondage.\n\nOur mission is to glorify God by making disciples of Jesus Christ, proclaiming the Gospel among unreached communities, planting churches, equipping leaders, and serving vulnerable children and brick kiln families.", __( 'Leave a blank line between paragraphs.', 'kingdom-revival' ) ),
 			'button_label' => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Explore our ministries' ),
-			'button_url'   => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{home}#all-ministries' ),
+			'button_url'   => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{ministries}' ),
 		),
 	),
 	'mission' => array(

@@ -15,6 +15,10 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Phase 11 security and accessibility](#kingdom-revival-ministries-phase-11-security-and-accessibility)
 - [Kingdom Revival Ministries: Phase 13 final delivery](#kingdom-revival-ministries-phase-13-final-delivery)
 - [Kingdom Revival Ministries: Phase 14 UI refinement, task 1: emojis to icons](#kingdom-revival-ministries-phase-14-ui-refinement-task-1-emojis-to-icons)
+- [Kingdom Revival Ministries: Phase 15 unification and performance, step 1: audit](#kingdom-revival-ministries-phase-15-unification-and-performance-step-1-audit)
+- [Kingdom Revival Ministries: Phase 15 step 2: one global header](#kingdom-revival-ministries-phase-15-step-2-one-global-header)
+- [Kingdom Revival Ministries: Phase 15 step 3: one global footer](#kingdom-revival-ministries-phase-15-step-3-one-global-footer)
+- [Kingdom Revival Ministries: Phase 15 step 4: All Ministries page, performance, SEO and release 1.8.0](#kingdom-revival-ministries-phase-15-step-4-all-ministries-page-performance-seo-and-release-180)
 
 ---
 
@@ -1812,3 +1816,215 @@ Project: `kingdom-revival.zip`, `PHASE-REPORTS.md`, `DATA-ASSET-INVENTORY.md`, `
   Clean Water Project have no photos (folders empty), so they keep the placeholder.
 - Open from earlier phases: PayPal Business email (donations not connected), About's pale 01/02/03 numbers
   (accessibility contrast), SEO plugin choice and go-live items (Phase 6/7).
+
+## Kingdom Revival Ministries: Phase 15 unification and performance, step 1: audit
+
+**Result: audit only, nothing changed. The full report is [PHASE-1-AUDIT.md](PHASE-1-AUDIT.md) (the brief called
+this step "Phase 1").** On the live home page 1.6 MB of CSS loads and 29 KB of it is the theme's; the rest is
+Elementor, Elementor Pro, Header Footer Elementor, WordPress editor bundles, Google Fonts (Roboto) and Dashicons.
+The live site also uses the old Elementor site's menus (old URLs, 301 redirects), a 500×500 171 KB logo shown at
+64 px, and prints two canonical/description sets per page (not from the theme). Header/footer unification and a
+12-ministry `/ministries/` page change approved-design pixels: decisions 1–6 in the audit are needed before step 2.
+
+## Kingdom Revival Ministries: Phase 15 step 2: one global header
+
+**Result: every page, the home page included, uses the inner-page header from `header.php`. There is one
+header component and one menu location (Main navigation). Each header link goes to a real WordPress permalink,
+and the sticky header and both menus behave the same on every page.** (Theme 1.8.0, uncommitted.)
+
+What changed (most of it with the step-1 decision 1, the rest in this step):
+- `front-page.php` calls `get_header()` / `get_footer()`. `header-home.php`, `footer-home.php`, the
+  `footer_home` menu location and the home-only menu/header CSS in `front.css` are removed. The header's styles
+  are in `theme-global.css`, which the home page loads too. The home sections keep their base type through a
+  `.krm-home` wrapper.
+- [inc/nav.php](theme/kingdom-revival/inc/nav.php): on the home page the Home link was `#top`, a leftover from the
+  old home header. It is now the home permalink, as on every other page. Links to a home-page section (`/#…`) still
+  become `#…` on the home page because they point at the current page. The home page now marks Home with
+  `aria-current="page"` (shown in red), the same current-page rule as the inner pages, where About is red on About
+  and so on.
+- "All ministries" goes to `/ministries/` (`krm_ministries_url()`), not `/#all-ministries`.
+- Dashboard labels: the footer menu locations and two Site text footer fields no longer say "(inner pages)".
+- `header.php` doc comment describes it as the global header.
+
+Verified on the local site (theme copy synced), with 9 pages (home, About, Contact, Donate, Partner,
+`/ministries/`, `/blog/`, a ministry, a story) × 1440 / 768 / 390:
+- One `.topbar` and one `.site-header` on every page. Header crops from the inner pages are pixel-identical to
+  the home page at tablet and mobile (0 px). At desktop, the only differences (215–794 px) are the red
+  current-page link. The markup matches except for that link's `aria-current`.
+- Sticky: the header stays at `top: 0` after scrolling to 400, 1500 and 3000 px on all 27 page/width pairs.
+  When the newsletter popup is open it locks page scroll (`html{overflow:hidden}`, site.js), so sticky does not
+  apply then. That is expected and is not a bug.
+- Desktop: the Ministries dropdown opens on hover. 768/390: the Menu button opens the menu (`aria-expanded=true`),
+  and the submenu opens.
+- Header links: 17 distinct URLs, all HTTP 200 at permalinks (`/`, `/about/`, `/ministries/`, the 12
+  `/ministries/{slug}/`, `/blog/`, `/contact/`, `/donate/`). The only other links are `tel:` and `mailto:`. There are
+  no `#contact`, `.html` or `/#…` links. Menu links typed the old way (`#contact`, `contact.html`) are still
+  rewritten to permalinks by `krm_menu_url()`.
+
+Not covered: the full `npm run pages` pixel run was not repeated. The home page header now intentionally differs
+from `html/index.html` (decision 1), so home is no longer expected to have `diffPct` 0. `kingdom-revival.zip` was
+not rebuilt in this step; it was rebuilt with the verified 1.8.0 release (see "Phase 15 step 4").
+
+## Kingdom Revival Ministries: Phase 15 step 3: one global footer
+
+**Result: every page, the home page included, uses the inner-page footer from `footer.php`. Its markup and
+computed styles are identical on all 11 tested page types at 1440 / 768 / 390, and every footer link goes to a
+real permalink.** (Theme 1.8.0, uncommitted.)
+
+What changed (most of it with the step-1 decision 1 and step 2):
+- `footer-home.php` is removed. It was the home design's inline-styled footer: different logo badge, `tagline_home`,
+  one "Quick links" column from the `footer_home` location, and `id="contact"`. The `footer_home` menu location and
+  its default links (`krm_footer_links()`) are gone. Nothing links to the old `#contact` anchor.
+- `front-page.php` calls `get_footer()`. The footer's styles are in `theme-global.css` (`.site-footer`,
+  `.footer-grid` 4 → 2 → 1 columns), which the home page loads too.
+- Editable: Site text → Footer (name, tagline, headings, copyright, location line), Appearance → Menus
+  (Footer: Quick Links, Footer: Ministries), Settings (address, phone, email). Footer menus go through
+  `krm_menu_url()`, as the header does, so old `#contact` / `contact.html` custom links become permalinks.
+- `footer.php` doc comment and the dashboard labels (step 2) no longer say "inner pages".
+
+Verified on the local site with home, About, Contact, Donate, Partner, `/ministries/`, `/blog/`, a ministry, a
+story, the 404 page and search × 1440 / 768 / 390 (33 checks):
+- One `<footer>` per page. The footer's `outerHTML` and the computed styles of the footer, grid, brand, logo,
+  headings, paragraphs, links, address and bottom bar (font, size, weight, line height, colour, background,
+  margin, padding, grid columns, width) are identical to the home page's in all 33. There is no horizontal
+  scroll at any width.
+- Pixels: footer crops differ by at most a few thousand anti-aliased pixels. These come from the footer's
+  fractional page position (425 vs 426 px crops), and inner pages differ from each other by the same amount.
+  Larger differences were traced to test overlays (the newsletter popup on its timer, the sticky header, and
+  one crop taken mid-scroll), not to the footer.
+- Footer links: 12 URLs, all HTTP 200 (`/`, `/about/`, `/blog/`, `/contact/`, `/partner/`, `/donate/`, 5
+  ministries, `/ministries/`), plus `tel:` and `mailto:`. There are no fragments or `.html` links.
+
+Not covered: the inner-page footer has no social icons (they are in the top bar when set in Settings), so none
+were added. The home footer now intentionally differs from `html/index.html`. `kingdom-revival.zip` was rebuilt
+with the 1.8.0 release (see step 4).
+
+## Kingdom Revival Ministries: Phase 15 step 4: All Ministries page, performance, SEO and release 1.8.0
+
+**Result: theme 1.8.0 is finished, tested on the local staging site, and packaged.** `kingdom-revival.zip` has 135
+files and is byte-identical to the theme folder.
+- **New page and links:** an All Ministries page at `/ministries/`; every former `/#all-ministries` link now goes
+  to it; the home explorer gains a "View All Ministries" button.
+- **Lighter logo and images:** a 3–12 KB logo replaces the 171 KB live logo; phones get 768 px hero images.
+- **Plugin styles:** about 500 KB of plugin styles are left out for visitors.
+- **Mobile PageSpeed on staging** (same images, no plugins) went from 69–87 to 81–88 on the five comparable pages.
+  The sixth, `/ministries/`, scored 99 as an almost empty stub and now scores 79 as a full page.
+- **Simulated production** (1.8.0 with page cache and Brotli, plugins removed as in GO-LIVE-CHECKLIST.md):
+  Home 91, All Ministries 92 and Donate 91; Blog 88, About 87 and a ministry page 82.
+- **90+ is not yet proven on the live site.** That needs the go-live checklist done and a real PageSpeed run on the
+  live address. Nothing on the production site was changed.
+
+### What changed (besides steps 2–3)
+
+- **All Ministries (`archive-ministry.php`, `pages/ministry.css`).**
+  - Layout: the inner-page hero, then all published ministries as cards in menu order, 3 / 2 / 1 per row
+    (breakpoints 999 px and 639 px).
+  - Cards use the home page's giving-card design (photo, group tag, title, short description, red button). Every
+    card links to its ministry page.
+  - Server-rendered from the Ministry post type (`krm_ministries()`, which now also returns the group).
+  - Editable under Site text → All Ministries page: header image, small heading, heading, introduction, card
+    button text and empty text. This replaces the old "Choose a ministry" box fields.
+  - SEO: title "All Ministries | …"; meta description from the introduction; breadcrumb Home › All Ministries;
+    `CollectionPage` with an `ItemList` of the 12 ministries; listed in the core sitemap (the old sitemap
+    exclusions for Yoast, Rank Math and SureRank were removed).
+  - Card photos are lazy-loaded. The button text carries a visually hidden ministry name ("Learn more about …"),
+    which fixed Lighthouse's link-text audit (SEO 92 → 100).
+- **Links to all ministries.**
+  - New `krm_ministries_url()` and a `{ministries}` link placeholder.
+  - Repointed: the default menu and footer links, `all-ministries.html` menu links, the breadcrumb, story
+    fallbacks, the `/services/` redirect, About's button and the 404 button.
+  - Setup creates "All ministries" as a post-type-archive menu item.
+  - A one-time update (`krm_upgrade_content()`) changes saved values that still hold the old default
+    `{home}#all-ministries`. It runs once per site (`krm_content_version`).
+- **Home page explorer.** It is unchanged, plus a navy "View All Ministries" button (editable label and link,
+  default `{ministries}`).
+- **Logo.**
+  - New files `krm-logo-64.png`, `krm-logo-128.png` and `krm-logo.png` (192 px), at 3.2, 7.1 and 11.6 KB, 256-colour
+    PNG with transparency.
+  - Made from the 1254 px church logo in the data folder, with the transparent background of the approved
+    512 px logo, downscaled in one pass. A first attempt shrank colour and transparency separately and came out
+    visibly lighter; it was redone.
+  - `krm_logo_img()` prints the logo with a `srcset`, so screens download 64, 128 or 192 px. A Customizer logo is
+    served through its WordPress sizes, never `full`.
+- **Phone heroes.** Screens up to 600 px get the 768 px copy of the hero (`--krm-bg-s`), with matching preload hints.
+  Tablets keep the 1536 px copy and desktops the full image.
+- **Below-the-fold images.**
+  - Ministry gallery photos are all lazy, with `sizes` matching the real 3 / 2 / 1-column grid.
+  - The blog's featured image no longer competes with the hero (`fetchpriority="high"` → lazy).
+  - The home field-story video uses `preload="none"`, and its poster is set by `front.js` when the section comes
+    near the screen. This saves about 1 MB on the home page.
+  - Field-story `sizes` were corrected.
+- **Plugin styles (`inc/performance.php`).** For visitors who are not logged in, the theme leaves out:
+  - Dashicons and the WordPress editor style bundles when a plugin queues them;
+  - Robo Gallery's empty block stylesheet (before 5.2), which pulled in all the editor styles.
+
+  Turned off under Settings → Images → "Unused plugin styles"; on by default.
+- **Social icons.** Facebook, YouTube and Instagram icons appear in the global top bar only when their URL is set in
+  Settings. On live all three only pointed to `#contact`, so the default top bar is exactly the inner-page design.
+- **Removed:**
+  - `shield24.svg` (unused);
+  - the `overview` Site text section;
+  - `krm_social_href()`;
+  - the home-only `footer.tagline_home` field.
+- **Tools.**
+  - `tools/visual-qa/admin_check.js` now opens the collapsed content sections before filling them, and edits
+    ministries on their classic screen. Both checks failed before for those reasons, not because of a theme fault.
+
+### Verified (local staging, F:/krm-work/site, theme copy byte-identical to the repo)
+
+| Check | Result |
+|---|---|
+| Header/footer, computed styles of every element (10 page types × 1440/768/390) | Identical on all pages, home included. Only the current-page highlight differs |
+| `site_check.js` (33 page types × 3 widths) | 95/99 ok. 3 are the 404 page's own status; 1 is a Google Maps internal 404 inside the Contact map |
+| `compare.js` vs approved design | Every inner page keeps the design's exact height. Differences ≤0.36 % (new logo pixels, WebP photos), Contact 0.05–0.10 % (the known sentence). Home: hero and About sections 0 %; explorer +93 px (the new button); sticky global header |
+| `interactions.js` | Inner pages 0.01–0.42 %. Home states differ because of the global header and the button row. The lightbox difference is the Phase 14 viewer |
+| `forms_check.js` | Contact, Partner and newsletter sent at 1440 and 390; PayPal one-time and monthly links correct; thank-you page `noindex`. IPN 400 (no PayPal email on the test site, as in Phase 13) |
+| `admin_check.js` | 26 screens, 5 real edits (page content, Site text, Settings, story, ministry): 0 problems |
+| `viewer_check.js` | All gallery pages, 320–1440 px: ok |
+| `responsive_check.js` | 279 page/width checks: no horizontal scroll, distortion or overlap. Only the deliberately off-screen honeypot field is flagged |
+| `a11y_check.js` (axe, 1440 and 390) | No new issues. About's pale 01/02/03 numbers (open since Phase 11) remain |
+| `audit.js` | Internal links 29/29 HTTP 200. 0 `.html` links |
+| `seo_check.py` | 30/30 pages: exactly one title, description, canonical and OG/Twitter set |
+| `schema_check.py` | 32/32 pages valid |
+| `index_check.py` | 0 problems; `/ministries/` in the sitemap |
+| Plugin styles test (Robo Gallery 5.1.5 + FormLayer 1.0.6, the live versions, installed on staging) | Setting on: the theme's 3 stylesheets plus FormLayer's. Setting off: 10 more stylesheets (editor bundles, `wp-theme`, Dashicons…). Logged-in users keep Dashicons and the admin bar. Plugins removed again afterwards |
+
+### PageSpeed (Lighthouse 12.2.1, mobile preset, median of 3 runs)
+
+| Page | Live today (1.7.4 + plugins) | Staging 1.7.4 | Staging 1.8.0 | Simulated production 1.8.0 |
+|---|---|---|---|---|
+| Home | 63 | 87 | 88 | **91** |
+| All Ministries `/ministries/` | 75 | 99 (stub page) | 79 → link-text fix | **92** |
+| Donate | 72 | 82 | 82 | **91** |
+| News & Blogs | 64 | 70 | 81 | 88 |
+| About | 62 | 69 | 85 | 87 |
+| Children Ministry | 65 | 73 | 84 | 82 |
+
+- **Live today:** FCP about 3.5 s, caused by the 33–46 plugin stylesheets. Server response about 0.9 s (no page
+  cache).
+- **Staging:** the same WebP images as live, no plugins. PHP's dev server: no compression, server response
+  0.6–1.3 s.
+- **Simulated production:** a local proxy adds a page cache and Brotli, as LiteSpeed would. Its server time is
+  near zero, so this column is optimistic about server response. It is a projection, not a measurement of the
+  live site.
+- **The ministry page's limit** is its portrait hero photo (139 KB even at phone size).
+- Raw reports: F:/krm-work/lh/out.
+
+### Not covered
+
+- **Nothing was done on the production site,** as instructed. That includes plugins, menus, the logo, caching and
+  PageSpeed after changes.
+- **Duplicate tags.** The source of the duplicate canonical, description and OG tags and of the empty-name
+  Organization schema on live is not the theme. It is also not any of 11 free plugins downloaded and searched.
+  GO-LIVE-CHECKLIST.md step 6 says how to find it with Query Monitor on staging.
+- **Card images.** All Ministries and blog cards use portrait photos in landscape boxes, so phones download the
+  full portrait height. A hard-cropped card image size would save more, but needs a thumbnail rebuild on live.
+  It is not done.
+
+### Decisions for you
+
+1. Approve running GO-LIVE-CHECKLIST.md on a staging copy of the live site, then go-live.
+2. Which forms or donation plugins are really in use (SureForms, FormLayer, WPForms, Zeffy)? Each has no form on
+   any public page.
+3. Keep SureRank (the theme supports it), or switch to Rank Math or Yoast. Keep only one.
+4. Optional: lower WebP quality or add a cropped card size, for the last points on About, Blog and ministry pages.
