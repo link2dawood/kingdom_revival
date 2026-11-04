@@ -4,7 +4,7 @@
  * points ("How this ministry serves") as a check list and its focus text; then the ministry's extra sections as panels.
  *
  * The pair uses the 2nd and 3rd photos (the 1st is the hero); with fewer photos it reuses what there is, and with none
- * it shows the design's empty tinted boxes.
+ * it shows the design's empty tinted boxes to administrators only (visitors get the text at full width).
  *
  * @param array $args { ministry, photos }
  *
@@ -24,6 +24,7 @@ $krm_focus  = $krm_m['id'] ? (string) get_post_meta( $krm_m['id'], '_krm_focus',
 $krm_points = $krm_m['id'] ? krm_lines( (string) get_post_meta( $krm_m['id'], '_krm_points', true ) ) : array();
 ?>
 <section class="ministry-intro" aria-labelledby="intro-heading">
+	<?php if ( $krm_n || krm_show_placeholders() ) : // Visitors: no empty photo boxes; the text takes the width. ?>
 	<div class="ministry-pair">
 		<?php foreach ( $krm_pair as $krm_i => $krm_photo ) : ?>
 		<div class="ministry-pair-img is-<?php echo 0 === $krm_i ? 'back' : 'front'; ?>">
@@ -34,6 +35,7 @@ $krm_points = $krm_m['id'] ? krm_lines( (string) get_post_meta( $krm_m['id'], '_
 		<?php endforeach; ?>
 		<span class="ministry-pair-badge" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#141B33" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span>
 	</div>
+	<?php endif; ?>
 	<div class="ministry-intro-text">
 		<p class="ministry-kicker"><?php krm_t( 'ministry.intro_eyebrow', 'site' ); ?></p>
 		<h2 id="intro-heading"><?php krm_t( 'ministry.serves_heading', 'site' ); ?></h2>

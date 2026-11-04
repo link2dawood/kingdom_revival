@@ -124,7 +124,44 @@ return array(
 				'A church in every village we reach',
 			),
 			'sections' => array(),
-			'photos' => array(),
+			'photos' => array(
+				array(
+					'krm-theme:images/content/church-planting-1.jpg',
+					'A pastor preaching to a large gathering seated on mats in a village field',
+				),
+				array(
+					'krm-theme:images/content/church-planting-2.jpg',
+					'Villagers seated on mats in an open field, listening to a preacher',
+				),
+				array(
+					'krm-theme:images/content/church-planting-3.jpg',
+					'An open-air gathering on mats beside the fields at sunset',
+				),
+				array(
+					'krm-theme:images/content/church-planting-4.jpg',
+					'Families seated together outdoors for an evening gathering',
+				),
+				array(
+					'krm-theme:images/content/church-planting-5.jpg',
+					'Children and families seated close together at an outdoor gathering',
+				),
+				array(
+					'krm-theme:images/content/church-planting-6.jpg',
+					'A preacher standing before families seated beside stacked bricks at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/church-planting-7.jpg',
+					'Families gathered on mats beside rows of bricks at a kiln',
+				),
+				array(
+					'krm-theme:images/content/church-planting-8.jpg',
+					'A pastor speaking to a large crowd seated at a brick kiln, the kiln chimney behind',
+				),
+				array(
+					'krm-theme:images/content/church-planting-9.jpg',
+					'A large gathering at a brick kiln listening to a pastor',
+				),
+			),
 			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-10-scaled.jpg',
 			'raised' => '',
 			'goal' => '',
@@ -816,6 +853,14 @@ return array(
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-1-scaled.jpg',
 					'Widows ministry',
+				),
+				array(
+					'krm-theme:images/content/widows-ministry-6.jpg',
+					'A pastor giving a gift to a widow outside her home',
+				),
+				array(
+					'krm-theme:images/content/widows-ministry-7.jpg',
+					'A pastor standing with a widow who holds a gift from the ministry',
 				),
 			),
 			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-5-scaled.jpg',

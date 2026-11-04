@@ -31,6 +31,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Prayer Request, Contact and Donate pages](#kingdom-revival-ministries-prayer-request-contact-and-donate-pages)
 - [Kingdom Revival Ministries: Final pass across the whole site](#kingdom-revival-ministries-final-pass-across-the-whole-site)
 - [Kingdom Revival Ministries: Hero video for desktop only, one version number (theme 1.14.0)](#kingdom-revival-ministries-hero-video-for-desktop-only-one-version-number-theme-1140)
+- [Kingdom Revival Ministries: Photos from the data folder for sections without images](#kingdom-revival-ministries-photos-from-the-data-folder-for-sections-without-images)
 
 ---
 
@@ -2938,3 +2939,26 @@ version is written in one place.**
 
 - The WebM fallback wasn't played in a browser without H.264 support (Chrome picks the MP4 first, as intended).
 - `KRM PAK.pdf`, the client's sitemap scan, is not committed: it is client material, not project work.
+
+## Kingdom Revival Ministries: Photos from the data folder for sections without images
+
+**Result: every photo section on the site now has photos, except Clean Water Projects and Medical & Health Outreach. The
+data folder has no photo of that work, so visitors see no empty photo boxes there.**
+
+A crawl of all pages (visitor and admin) listed the sections without an image. Most are text by design (FAQs, forms,
+gift amounts). The photo sections without photos:
+
+| Section | Before | Now |
+|---|---|---|
+| Church Planting: gallery, hero, intro photo pair | Empty gallery ("no photos yet"), empty grey boxes | 9 photos from `General pictures_` (unused until now): open-air gatherings and preaching in villages and at brick kilns. Alt text describes only what is visible |
+| Widows Support gallery | 5 photos | 7 (the folder's 2 unused widows photos) |
+| Clean Water Projects, Medical & Health Outreach | Empty gallery note and 2 empty grey photo boxes, shown to visitors | Visitors: no photo boxes (the text takes the width) and no gallery. Admins still see both, as a reminder. The folders `Clean Water Project` and `Free medical camp…` are empty, and no other photo shows that work |
+| Children & Orphan Care, "Sunday School" | Text panel | Unchanged: the design has no image there |
+
+How: 11 JPEGs in `assets/images/content/` (same method as theme 1.7.4), listed in `inc/data/media.php` with alt text and
+in `inc/data/ministries.php`. `krm_upgrade_ministry_photos()` (Setup) fills an empty gallery, or adds the new photos to a
+gallery that still holds only the theme's photos; it never touches an edited gallery. The local site was updated through
+that Setup path: Church Planting 9, Widows 7, other ministries unchanged.
+
+Verified: the 4 changed ministry pages at 360 and 1440 have no overflow, 0 axe violations, no broken images and no JS
+errors. Visitor placeholder crawl: 0.

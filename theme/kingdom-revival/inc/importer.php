@@ -289,6 +289,36 @@ function krm_upgrade_ministry_photos( $id, $m ) {
 		}
 		$changed = true;
 	}
+	// Theme 1.14.0 (photos from the client's data folder): an empty gallery gets the ministry's photos (Church
+	// Planting); a gallery that still holds only the theme's photos, unedited, gets the ones added since (Widows
+	// Support). A gallery someone has edited — a photo the theme never had — is left alone.
+	$data_refs = array();
+	foreach ( (array) $m['photos'] as $photo ) {
+		$data_refs[] = array( (string) $photo[0], (string) krm_media_id_fresh( $photo[0] ), (string) $photo[1], $photo[0] );
+	}
+	$in_data = static function ( $ref ) use ( $data_refs ) {
+		foreach ( $data_refs as $d ) {
+			if ( (string) $ref === $d[0] || ( '0' !== $d[1] && (string) $ref === $d[1] ) ) {
+				return true;
+			}
+		}
+		return false;
+	};
+	$unedited = $gallery ? count( array_filter( $gallery, $in_data ) ) === count( $gallery ) : true;
+	if ( $data_refs && $unedited ) {
+		$was_empty = ! $gallery;
+		foreach ( $data_refs as $d ) {
+			if ( ! in_array( $d[0], array_map( 'strval', $gallery ), true ) && ( '0' === $d[1] || ! in_array( $d[1], array_map( 'strval', $gallery ), true ) ) ) {
+				$ref                   = krm_import_ref( $d[3] );
+				$gallery[]             = $ref;
+				$alts[ (string) $ref ] = $d[2];
+				$changed               = true;
+			}
+		}
+		if ( $was_empty && $gallery && is_int( $gallery[0] ) && ! has_post_thumbnail( $id ) ) {
+			set_post_thumbnail( $id, $gallery[0] );
+		}
+	}
 	foreach ( $swaps as $old => $new ) {
 		$old_refs = array_filter( array( $old, (string) krm_media_id_fresh( $old ) ) );
 		foreach ( $gallery as $i => $ref ) {

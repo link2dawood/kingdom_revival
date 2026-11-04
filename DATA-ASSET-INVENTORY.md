@@ -4,6 +4,19 @@
 
 Generated 2026-11-02, updated for theme 1.7.4 the same day. Method at the end. Local test site: 85 design files imported (`krm_media_map`, attachment IDs below), plus the 13 new photos (IDs 185–197). The tables below describe the folder and the site **before** 1.7.4.
 
+## Added in theme 1.14.0
+
+| Theme file | Source in data folder | Where it shows |
+|---|---|---|
+| `church-planting-1.jpg` … `-4.jpg` | `General pictures_/20250919_170238, 173409, 174044, 174100.jpg` | Church Planting gallery (was empty) |
+| `church-planting-5.jpg` | `General pictures_/IMG_20250418_181835.jpg` | Church Planting gallery |
+| `church-planting-6.jpg` … `-9.jpg` | `General pictures_/IMG_2511, IMG_2512, IMG_4302, IMG_4303.HEIC` | Church Planting gallery, hero and intro photos |
+| `widows-ministry-6.jpg`, `-7.jpg` | `Widows ministry/IMG_20240302_123923.jpg`, `IMG_20240302_123933.jpg` | Widows Support gallery (5 → 7) |
+
+Same method as 1.7.4: EXIF orientation applied, metadata stripped, 1600 px long side, JPEG quality 74. Clean Water
+Project and Free medical camp are still empty folders, and no other folder shows that work, so those two ministries
+have no photos (visitors see no empty photo boxes). `Pastor pictures_/` holds one PNG, not used.
+
 ## Contents
 
 - [Imported in theme 1.7.4](#imported-in-theme-174)

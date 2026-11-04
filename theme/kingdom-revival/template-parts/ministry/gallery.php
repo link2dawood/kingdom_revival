@@ -12,6 +12,9 @@ defined( 'ABSPATH' ) || exit;
 
 $krm_m      = $args['ministry'];
 $krm_photos = array_slice( $args['photos'], 0, 9 );
+if ( ! $krm_photos && ! krm_show_placeholders() ) {
+	return; // Visitors: no photo section until the ministry has photos (administrators see the empty note).
+}
 ?>
 <section class="ministry-photos" aria-labelledby="gallery-heading">
 	<div class="ministry-head">
