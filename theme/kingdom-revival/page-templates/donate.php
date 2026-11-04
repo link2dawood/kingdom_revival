@@ -50,7 +50,7 @@ $krm_gift = krm_gift_return();
 				<legend><?php krm_t( 'gift.amount_label' ); ?></legend>
 				<div class="amts">
 				<?php
-				foreach ( krm_donate_amounts() as $krm_a => $krm_on ) :
+				foreach ( array( '$25' => false, '$50' => true, '$100' => false, '$250' => false, 'Other' => false ) as $krm_a => $krm_on ) :
 					?>
 					<label><input type="radio" name="amount" value="<?php echo esc_attr( $krm_a ); ?>"<?php echo $krm_on ? ' checked' : ''; ?>><span><?php echo esc_html( $krm_a ); ?></span></label><?php endforeach; ?></div>
 				<div class="custom" id="custom-wrap" hidden>
@@ -60,13 +60,31 @@ $krm_gift = krm_gift_return();
 			</fieldset>
 			<fieldset>
 				<label class="label" for="fund"><?php krm_t( 'gift.fund_label' ); ?></label>
+				<?php
+				// ?ministry=slug (every "Support this ministry" link) or ?for=Name preselects the fund; donate.js does the same.
+				// phpcs:disable WordPress.Security.NonceVerification.Recommended
+				$krm_pre_slug = isset( $_GET['ministry'] ) ? sanitize_title( wp_unslash( $_GET['ministry'] ) ) : '';
+				$krm_pre_for  = isset( $_GET['for'] ) ? sanitize_text_field( wp_unslash( $_GET['for'] ) ) : '';
+				// phpcs:enable
+				$krm_funds = array( array( 'Where it is needed most', 'where-most-needed', 'Where most needed' ) );
+				foreach ( krm_ministries() as $krm_m ) {
+					$krm_funds[] = array( $krm_m['title'], $krm_m['slug'], $krm_m['title'] );
+				}
+				$krm_funds[] = array( 'Youth Ministry / Women Empowerment', 'youth-women-empowerment', 'Youth Ministry / Women Empowerment' );
+				$krm_pick    = 0;
+				foreach ( $krm_funds as $krm_i => $krm_f ) {
+					if ( ( '' !== $krm_pre_slug && $krm_pre_slug === $krm_f[1] ) || ( '' === $krm_pre_slug && '' !== $krm_pre_for && $krm_pre_for === $krm_f[0] ) ) {
+						$krm_pick = $krm_i;
+					}
+				}
+				?>
 				<select id="fund" name="fund">
-				<option value="Where it is needed most">Where it is needed most</option>
-				<?php foreach ( krm_ministries() as $krm_m ) : ?>
-				<option value="<?php echo esc_attr( $krm_m['title'] ); ?>"><?php echo esc_html( $krm_m['title'] ); ?></option>
+				<?php foreach ( $krm_funds as $krm_i => $krm_f ) : ?>
+				<option value="<?php echo esc_attr( $krm_f[0] ); ?>" data-slug="<?php echo esc_attr( $krm_f[1] ); ?>"<?php selected( $krm_i, $krm_pick ); ?>><?php echo esc_html( $krm_f[2] ); ?></option>
 				<?php endforeach; ?>
 				</select>
 			</fieldset>
+			<fieldset class="donor-details"><legend>Donor details</legend><div class="donor-grid"><label>Full name<input type="text" name="donor_name" autocomplete="name" maxlength="200"></label><label>Email<input type="email" name="donor_email" autocomplete="email" maxlength="200"></label><label>Country<input type="text" name="donor_country" autocomplete="country-name" maxlength="200"></label></div></fieldset>
 			<div class="summary" aria-live="polite">
 				<span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span>
 				<div><small>Your gift</small><strong id="summary-amount"></strong><small id="summary-fund"></small></div>
@@ -76,17 +94,21 @@ $krm_gift = krm_gift_return();
 				<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><?php echo krm_text( $krm_line ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></li>
 				<?php endforeach; ?>
 			</ul>
+			<?php $krm_reg = trim( (string) krm_c( 'accountability.reg_number', 'about' ) ); // About → Accountability; visitors see it once filled in. ?>
+			<div class="donate-trust-row"><?php if ( '' !== $krm_reg ) : ?><span>Reg. No. <strong><?php echo esc_html( $krm_reg ); ?></strong></span><?php endif; ?><a href="<?php echo esc_url( krm_page_url( 'impact' ) ); ?><?php echo krm_impact_has_financials() || krm_show_placeholders() ? '#financial-title' : ''; ?>">Financial transparency →</a></div>
 			</form>
 		</div>
 
 		<div>
 			<p class="step-label"><span>2</span><?php krm_t( 'methods.step' ); ?></p>
 			<div class="card">
-			<div class="tabs" role="tablist" aria-label="Payment methods">
+			<?php $krm_stripe = krm_show_placeholders(); // Stripe is not connected yet: administrators only, so visitors never see a disabled option. ?>
+			<div class="tabs<?php echo $krm_stripe ? '' : ' is-4'; ?>" role="tablist" aria-label="Payment methods">
 				<button type="button" class="tab" role="tab" id="tab-paypal" aria-controls="panel-paypal" data-method="PayPal"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/paypal-logo-png_seeklogo-249214-300x300.png', '48px' ); ?> alt="" width="300" height="300">PayPal</button>
 				<button type="button" class="tab" role="tab" id="tab-bank" aria-controls="panel-bank" data-method="Bank transfer"><span class="tab-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"></path></svg></span>Bank transfer</button>
-				<button type="button" class="tab" role="tab" id="tab-wu" aria-controls="panel-wu" data-method="Western Union"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/western-union-new-20232644.logowik.com_.webp', '48px' ); ?> alt="" width="866" height="650">Western Union</button>
-				<button type="button" class="tab" role="tab" id="tab-mg" aria-controls="panel-mg" data-method="MoneyGram"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/money-gram-1024x642.png', '48px' ); ?> alt="" width="1024" height="642">MoneyGram</button>
+				<?php if ( $krm_stripe ) : ?><button type="button" class="tab" role="tab" id="tab-stripe" aria-controls="panel-stripe" data-method="Stripe"><span class="tab-icon">S</span>Stripe</button><?php endif; ?>
+				<button type="button" class="tab" role="tab" id="tab-wu" aria-controls="panel-wu" data-method="Local - Western Union"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/western-union-new-20232644.logowik.com_.webp', '48px' ); ?> alt="" width="866" height="650">Local transfer</button>
+				<button type="button" class="tab" role="tab" id="tab-mg" aria-controls="panel-mg" data-method="Local - MoneyGram"><img <?php krm_img_src( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/money-gram-1024x642.png', '48px' ); ?> alt="" width="1024" height="642">MoneyGram</button>
 			</div>
 
 			<div class="panel" role="tabpanel" id="panel-paypal" aria-labelledby="tab-paypal">
@@ -135,6 +157,9 @@ $krm_gift = krm_gift_return();
 				</dl>
 				<p class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><span><?php krm_t( 'methods.bank_note' ); ?></span></p>
 			</div>
+			<?php if ( $krm_stripe ) : ?>
+			<div class="panel" role="tabpanel" id="panel-stripe" aria-labelledby="tab-stripe" hidden><p class="krm-admin-only">Only administrators see this option until Stripe is connected.</p><h2>Give securely with Stripe</h2><p>Stripe checkout is not yet connected. Add the verified Stripe account configuration before enabling this option.</p><p class="note"><span>No payment details were supplied in the source PDF, so this option is intentionally unavailable.</span></p><button class="button button-primary" type="button" disabled>Stripe setup required</button></div>
+			<?php endif; ?>
 
 			<div class="panel" role="tabpanel" id="panel-wu" aria-labelledby="tab-wu" hidden>
 				<h2><?php krm_t( 'methods.wu_heading' ); ?></h2>
@@ -176,7 +201,56 @@ $krm_gift = krm_gift_return();
 	</section>
 	<?php endif; ?>
 
-	<section class="section">
+	<?php
+	$krm_proj = array(
+		'current'  => krm_projects( 'current' ),
+		'upcoming' => krm_projects( 'upcoming' ),
+	);
+	$krm_none = ! array_filter( array_merge( $krm_proj['current'], $krm_proj['upcoming'] ), function ( $p ) { return empty( $p['placeholder'] ); } ); // phpcs:ignore Generic.Formatting.MultipleStatementAlignment
+	if ( ! krm_show_placeholders() ) {
+		$krm_proj = array_filter( $krm_proj ); // Visitors: no empty tab; no section when there are no projects.
+	}
+	$krm_tabs = count( $krm_proj ) > 1;
+	if ( $krm_proj ) :
+		?>
+	<section class="section" id="projects" aria-labelledby="projects-heading">
+		<div class="wrap">
+		<div class="section-head center">
+			<?php krm_admin_only_note( $krm_none ); ?>
+			<p class="eyebrow"><?php krm_t( 'projects.eyebrow' ); ?></p>
+			<h2 id="projects-heading"><?php krm_h( 'projects.heading' ); ?></h2>
+			<?php if ( krm_show_placeholders() || ! krm_is_placeholder( krm_c( 'projects.intro' ) ) ) : ?>
+			<p><?php krm_t( 'projects.intro' ); ?></p>
+			<?php endif; ?>
+		</div>
+		<?php if ( $krm_tabs ) : ?>
+		<div class="ministry-filter" role="tablist" aria-label="<?php echo esc_attr( wp_strip_all_tags( krm_fill( krm_c( 'projects.heading' ) ) ) ); ?>" data-krm-tabs data-param="projects">
+			<?php foreach ( $krm_proj as $krm_key => $krm_items ) : ?>
+			<button type="button" role="tab" id="tab-<?php echo esc_attr( $krm_key ); ?>-projects" aria-controls="panel-<?php echo esc_attr( $krm_key ); ?>-projects" aria-selected="<?php echo 'current' === $krm_key ? 'true' : 'false'; ?>" data-tab="<?php echo esc_attr( $krm_key ); ?>"<?php echo 'current' === $krm_key ? '' : ' tabindex="-1"'; ?>><?php krm_t( 'projects.' . $krm_key . '_tab' ); ?></button>
+			<?php endforeach; ?>
+		</div>
+		<?php endif; ?>
+		<?php foreach ( $krm_proj as $krm_key => $krm_items ) : ?>
+		<div id="panel-<?php echo esc_attr( $krm_key ); ?>-projects"<?php if ( $krm_tabs ) : ?> role="tabpanel" aria-labelledby="tab-<?php echo esc_attr( $krm_key ); ?>-projects"<?php endif; ?>>
+			<?php if ( ! $krm_tabs ) : ?>
+			<h3 class="visually-hidden"><?php krm_t( 'projects.' . $krm_key . '_tab' ); ?></h3>
+			<?php endif; ?>
+			<?php if ( $krm_items ) : ?>
+			<ul class="ministry-grid">
+				<?php foreach ( $krm_items as $krm_i => $krm_p ) : ?>
+				<li><?php get_template_part( 'template-parts/project-card', null, array( 'project' => $krm_p, 'index' => $krm_i ) ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+			<?php else : ?>
+			<p class="krm-note"><?php krm_t( 'projects.empty_' . $krm_key ); ?></p>
+			<?php endif; ?>
+		</div>
+		<?php endforeach; ?>
+		</div>
+	</section>
+	<?php endif; ?>
+
+	<section class="section section-soft">
 		<div class="wrap">
 		<div class="section-head center">
 			<p class="eyebrow"><?php krm_t( 'impact.eyebrow' ); ?></p>
@@ -191,7 +265,7 @@ $krm_gift = krm_gift_return();
 		</div>
 	</section>
 
-	<section class="section section-soft">
+	<section class="section">
 		<div class="wrap">
 		<div class="section-head center">
 			<p class="eyebrow"><?php krm_t( 'faq.eyebrow' ); ?></p>

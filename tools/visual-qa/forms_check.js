@@ -52,7 +52,7 @@ async function newPage(browser, width = 1440) {
     // Partner
     p = await newPage(browser, width);
     await p.addInitScript(() => localStorage.setItem('krm-newsletter', JSON.stringify({ dismissed: Date.now() })));
-    await p.goto(WP + '/partner/');
+    await p.goto(WP + '/partner-with-us/');
     await p.locator('input[name="type"][value="Ministry Sponsor"]').check({ force: true });
     await p.fill('#name', `QA Partner ${width}`);
     await p.fill('#email', 'qa-partner@example.test');

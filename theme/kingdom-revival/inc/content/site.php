@@ -33,10 +33,10 @@ $krm_ministry_band                              = krm_give_band_section(
 		'card'    => false,
 	)
 );
-$krm_ministry_band['label']                     = __( 'Ministry pages: give band', 'kingdom-revival' );
+$krm_ministry_band['label']                     = __( 'Ministry pages: side donation card', 'kingdom-revival' );
+$krm_ministry_band['help']                      = __( 'The donation card beside each ministry page: badge (small heading), heading, text, and the points as a note under it. The amounts are the home page donation card’s.', 'kingdom-revival' );
 $krm_ministry_band['fields']['heading']['help'] = $krm_ministry;
-$krm_ministry_band['fields']['text']['label']   = __( 'Text after the ministry focus', 'kingdom-revival' );
-$krm_ministry_band['fields']['text']['help']    = __( 'Shown after the ministry’s “focus” text.', 'kingdom-revival' );
+$krm_ministry_band['fields']['text']['label']   = __( 'Text', 'kingdom-revival' );
 $krm_band['label']                              = __( 'Story pages: give band', 'kingdom-revival' );
 
 return array(
@@ -47,7 +47,7 @@ return array(
 			'brand_name'   => krm_f( 'text', __( 'Name beside the logo', 'kingdom-revival' ), 'Kingdom Revival' ),
 			'brand_sub'    => krm_f( 'text', __( 'Small line under the name', 'kingdom-revival' ), 'MINISTRIES' ),
 			'logo_alt'     => krm_f( 'text', __( 'Logo description (alt text)', 'kingdom-revival' ), 'Kingdom Revival Ministries logo' ),
-			'donate_label' => krm_f( 'text', __( 'Top bar button text', 'kingdom-revival' ), 'Donate Now' ),
+			'donate_label' => krm_f( 'text', __( 'Top bar button text', 'kingdom-revival' ), 'Donate / Give' ),
 		),
 	),
 	'footer'        => array(
@@ -67,14 +67,31 @@ return array(
 		'label'  => __( 'Ministry pages', 'kingdom-revival' ),
 		'help'   => __( 'Each ministry’s own title, description, focus, points and photos are edited on the ministry (Ministries → edit).', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Kingdom Revival Ministries' ),
-			'donate_button'  => krm_f( 'text', __( 'Hero button text', 'kingdom-revival' ), 'Donate to this ministry' ),
-			'focus_heading'  => krm_f( 'text', __( 'Focus heading', 'kingdom-revival' ), 'Ministry focus' ),
-			'serves_heading' => krm_f( 'text', __( 'Points heading', 'kingdom-revival' ), 'How this ministry serves' ),
-			'photos_heading' => krm_f( 'text', __( 'Photos heading', 'kingdom-revival' ), '{ministry} photos', $krm_ministry ),
-			'photos_tip'     => krm_f( 'text', __( 'Photos tip', 'kingdom-revival' ), 'Tap a photo to view it full screen and zoom in.' ),
-			'photos_empty'   => krm_f( 'text', __( 'Text when there are no photos', 'kingdom-revival' ), 'No photos are available for this ministry yet.' ),
-			'hero_image'     => krm_f( 'image', __( 'Hero image for ministries without photos', 'kingdom-revival' ), $krm_up . 'elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg' ),
+			'eyebrow'         => krm_f( 'text', __( 'Hero small heading (only for a ministry without a group; otherwise the group name is shown)', 'kingdom-revival' ), 'Kingdom Revival Ministries' ),
+			'donate_button'   => krm_f( 'text', __( 'Hero button text', 'kingdom-revival' ), 'Donate to this ministry' ),
+			'intro_eyebrow'   => krm_f( 'text', __( 'Intro: small heading', 'kingdom-revival' ), 'What we do' ),
+			'serves_heading'  => krm_f( 'text', __( 'Intro: heading (above the ministry’s points)', 'kingdom-revival' ), 'How this ministry serves' ),
+			'stats_label'     => krm_f( 'text', __( 'Impact strip: label for screen readers', 'kingdom-revival' ), '{ministry} impact', $krm_ministry ),
+			'stats_note'      => krm_f( 'text', __( 'Impact strip: text in the navy panel', 'kingdom-revival' ), 'Our prayer: lives transformed by Christ' ),
+			'stats_note_sub'  => krm_f( 'text', __( 'Impact strip: small line in the navy panel', 'kingdom-revival' ), 'Across Pakistan and beyond' ),
+			'gifts_heading'   => krm_f( 'text', __( 'How your gift helps: heading', 'kingdom-revival' ), 'How your gift helps' ),
+			'gifts_text'      => krm_f( 'text', __( 'How your gift helps: text beside the heading', 'kingdom-revival' ), 'Every amount has a name and a face.' ),
+			'photos_heading'  => krm_f( 'text', __( 'Photos heading', 'kingdom-revival' ), '{ministry} photos', $krm_ministry ),
+			'photos_tip'      => krm_f( 'text', __( 'Photos tip', 'kingdom-revival' ), 'Tap a photo to view it full screen and zoom in.' ),
+			'photos_empty'    => krm_f( 'text', __( 'Text when there are no photos', 'kingdom-revival' ), 'No photos are available for this ministry yet.' ),
+			'photos_more'     => krm_f( 'text', __( 'Link to the Gallery (when a ministry has more than 9 photos)', 'kingdom-revival' ), 'See all {ministry} photos →', $krm_ministry ),
+			'story_eyebrow'   => krm_f( 'text', __( 'Story card: small heading', 'kingdom-revival' ), 'Lives changed' ),
+			'story_heading'   => krm_f( 'text', __( 'Story card: heading', 'kingdom-revival' ), 'A story from the field' ),
+			'story_more'      => krm_f( 'text', __( 'Story card: link to all testimonies', 'kingdom-revival' ), 'More testimonies →' ),
+			'card_button'     => krm_f( 'text', __( 'Side donation card: button text (the amount follows)', 'kingdom-revival' ), 'Donate' ),
+			'camps_heading'   => krm_f( 'text', __( 'Camps / projects timeline heading (shown only when a ministry has rows)', 'kingdom-revival' ), 'Camps / projects completed' ),
+			'camps_people'    => krm_f( 'text', __( 'Camps / projects timeline: label before the number of people', 'kingdom-revival' ), 'People served:' ),
+			'churches_heading' => krm_f( 'text', __( 'Churches list heading (shown only when a ministry has churches)', 'kingdom-revival' ), 'Churches & house churches planted' ),
+			'churches_planted' => krm_f( 'text', __( 'Churches list: label before the year / type', 'kingdom-revival' ), 'Planted:' ),
+			'other_eyebrow'   => krm_f( 'text', __( 'Other ministries: small heading', 'kingdom-revival' ), 'Keep exploring' ),
+			'other_heading'   => krm_f( 'text', __( 'Other ministries: heading', 'kingdom-revival' ), 'Other ministries' ),
+			'other_more'      => krm_f( 'text', __( 'Other ministries: link to What We Do', 'kingdom-revival' ), 'See all ministries →' ),
+			'hero_image'      => krm_f( 'image', __( 'Hero image for ministries without photos', 'kingdom-revival' ), $krm_up . 'elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg' ),
 		),
 	),
 	'ministry_give' => $krm_ministry_band,
@@ -101,15 +118,22 @@ return array(
 	),
 	'story_give'    => $krm_band,
 	'ministries'    => array(
-		'label'  => __( 'All Ministries page (/ministries/)', 'kingdom-revival' ),
-		'help'   => __( 'The cards list your published ministries in their menu order (Ministries → edit → Page Attributes → Order). Each card shows the ministry’s explorer photo, group, title and short description (Excerpt).', 'kingdom-revival' ),
+		'label'  => __( 'What We Do page (/what-we-do/)', 'kingdom-revival' ),
+		'help'   => __( 'The cards list your published ministries in their menu order (Ministries → edit → Page Attributes → Order). Each card shows the ministry’s explorer photo, the label, card text, raised and goal set in its “All Ministries card” fields, and the filter tabs are its Ministry Group. The “Your gift at work”, “Three Ways to Stand With Us” and closing verse sections below the cards are the home page’s: edit them in Pages → Home → Page content.', 'kingdom-revival' ),
 		'fields' => array(
 			'image'        => krm_f( 'image', __( 'Header image', 'kingdom-revival' ), $krm_up . '2026/08/Orphanages-care-19.jpg' ),
 			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our Ministries' ),
-			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Twelve ministries. <em>One Gospel.</em>' ),
-			'lead'         => krm_f( 'textarea', __( 'Introduction (also the page’s meta description)', 'kingdom-revival' ), 'Each ministry carries the hope of Jesus Christ and practical care to children, families and communities across Pakistan. Choose a ministry to see its work, its photos and how you can support it.' ),
+			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'What We Do' ),
+			'subheading'   => krm_f( 'html', __( 'Subheading', 'kingdom-revival' ), 'One Gospel, <em>shared in word and deed.</em>' ),
+			'lead'         => krm_f( 'textarea', __( 'Introduction (also the page’s meta description)', 'kingdom-revival' ), 'Everything we do flows from the Gospel and is expressed through practical love — through our Gospel & Spiritual Ministries and our Compassion & Humanitarian Ministries, among children, families and communities across Pakistan.', __( 'DRAFT — CLIENT TO APPROVE: proposed wording, written only from text already on the site or in the client’s sitemap.', 'kingdom-revival' ) ),
 			'list_heading' => krm_f( 'text', __( 'Heading above the cards (for screen readers and search engines)', 'kingdom-revival' ), 'All ministries' ),
-			'card_button'  => krm_f( 'text', __( 'Card button text', 'kingdom-revival' ), 'Learn more' ),
+			'filter_label' => krm_f( 'text', __( 'Filter tabs: name for screen readers', 'kingdom-revival' ), 'Filter ministries by group' ),
+			'all_label'    => krm_f( 'text', __( 'Filter tabs: first tab', 'kingdom-revival' ), 'All' ),
+			'count_text'   => krm_f( 'text', __( 'Filter tabs: announced after filtering ({n} = number of ministries)', 'kingdom-revival' ), 'Showing {n} ministries' ),
+			'card_button'  => krm_f( 'text', __( 'Card link text', 'kingdom-revival' ), 'Learn more →' ),
+			'donate_label' => krm_f( 'text', __( 'Card button text', 'kingdom-revival' ), 'Donate Now' ),
+			'raised_label' => krm_f( 'text', __( 'Card: “Raised” label', 'kingdom-revival' ), 'Raised' ),
+			'goal_label'   => krm_f( 'text', __( 'Card: “Goal” label', 'kingdom-revival' ), 'Goal' ),
 			'empty'        => krm_f( 'text', __( 'Text when no ministry is published', 'kingdom-revival' ), 'No ministries have been published yet.' ),
 		),
 	),

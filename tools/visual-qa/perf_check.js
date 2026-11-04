@@ -19,10 +19,10 @@ const PAGES = [
   ['about', '/about.html', '/about/'],
   ['contact', '/contact.html', '/contact/'],
   ['donate', '/donate.html', '/donate/'],
-  ['partner', '/partner.html', '/partner/'],
-  ['blog', '/blog.html', '/blog/'],
-  ['post', '/blog-post.html?post=learning-beside-the-kilns', '/learning-beside-the-kilns/'],
-  ['ministry', '/all-ministries.html?ministry=brick-kiln-children', '/ministries/brick-kiln-children/'],
+  ['partner', '/partner.html', '/partner-with-us/'],
+  ['blog', '/blog.html', '/news/'],
+  ['post', '/blog-post.html?post=learning-beside-the-kilns', '/news/learning-beside-the-kilns/'],
+  ['ministry', '/all-ministries.html?ministry=brick-kiln-children', '/what-we-do/brick-kiln-family-care/'],
 ];
 const PROFILES = {
   mobile: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, cpu: 4,

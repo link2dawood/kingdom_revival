@@ -1,0 +1,38 @@
+{
+  "note": "Single source for /our-impact/. Replace null values with verified figures; no layout edits are required.",
+  "hero": { "eyebrow": "Our Impact", "title": "What God has done through your giving", "intro": "See what God is doing through our ministries across Pakistan - in lives served, communities reached and churches strengthened." },
+  "headlineCounters": [
+    { "label": "Communities reached", "value": null }, { "label": "Bibles distributed", "value": null },
+    { "label": "Children supported", "value": null }, { "label": "Families freed", "value": null },
+    { "label": "Churches planted", "value": null }, { "label": "Baptisms", "value": null },
+    { "label": "Medical camp patients", "value": null }, { "label": "Water projects", "value": null }
+  ],
+  "ministries": [
+    { "name": "Evangelism & Outreach", "slug": "evangelism-outreach", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Church Planting", "slug": "church-planting", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Bible Distribution", "slug": "bible-distribution", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Leadership Training & Equipping", "slug": "leadership-training", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Baptisms & Discipleship", "slug": "baptisms-discipleship", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Prayer & Deliverance Ministry", "slug": "prayer-deliverance", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Slavery & Freedom Ministry", "slug": "slavery-freedom", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Brick Kiln Family Care", "slug": "brick-kiln-family-care", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Children & Orphan Care", "slug": "children-orphan-care", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Clean Water Projects", "slug": "clean-water-projects", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Widows Support", "slug": "widows-support", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
+    { "name": "Medical & Health Outreach", "slug": "medical-health-outreach", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] }
+  ],
+  "growth": { "series": [] },
+  "districts": [
+    { "name": "Faisalabad (HQ)", "villages": null, "kilns": null, "churches": null, "pin": { "left": 55, "top": 47 } },
+    { "name": "Jhang", "villages": null, "kilns": null, "churches": null, "pin": { "left": 39, "top": 48 } }
+  ],
+  "freedom": { "familiesFreedPerYear": [] },
+  "financials": [ { "label": "Programs", "percent": null }, { "label": "Administration", "percent": null } ],
+  "stories": [
+    { "title": "Hope beside the brick kilns", "text": "Practical care and the hope of Jesus reach families working beside Punjab's brick kilns.", "image": "krm-theme:images/content/bricks-kiln-slaves-children-2-1-crop.jpg", "alt": "Children and families at a brick kiln" },
+    { "title": "Scripture in every hand", "text": "Urdu Bibles help families and new believers read and understand God's Word.", "image": "krm-theme:images/content/urdu-bible-distribution-10-crop.jpg", "alt": "Urdu Bible distribution" },
+    { "title": "Leaders equipped to serve", "text": "Pastors and leaders are trained to shepherd local congregations and house churches.", "image": "krm-theme:images/content/leadership-and-discipleship-9-crop.jpg", "alt": "Leadership and discipleship gathering" }
+  ],
+  "annualReport": { "label": "Download the annual report", "url": "" },
+  "cta": { "title": "Your generosity becomes Gospel hope in action.", "text": "Stand with a ministry and help the next story of transformation begin.", "buttonLabel": "Give with purpose" }
+}

@@ -138,9 +138,9 @@ const publicText = async (path) => (await (await fetch(WP + path + (path.include
     await page.waitForFunction(() => window.wp && wp.data && wp.data.select('core/editor').getCurrentPostId());
     const old = await page.evaluate(() => wp.data.select('core/editor').getEditedPostAttribute('title'));
     const saved = await blockEdit(ids.story, { title: old + ' QA12' });
-    const changed = (await publicText('/learning-beside-the-kilns/')).includes(old + ' QA12');
+    const changed = (await publicText('/news/learning-beside-the-kilns/')).includes(old + ' QA12');
     const saved2 = await blockEdit(ids.story, { title: old });
-    const restored = !(await publicText('/learning-beside-the-kilns/')).includes('QA12');
+    const restored = !(await publicText('/news/learning-beside-the-kilns/')).includes('QA12');
     return { ok: saved && saved2 && changed && restored, note: `saved=${saved} changed=${changed} restored=${restored}` };
   });
 
@@ -151,10 +151,10 @@ const publicText = async (path) => (await (await fetch(WP + path + (path.include
     const old = await page.inputValue('#title');
     const focusOld = await page.inputValue('[name="krm_focus"]');
     await classicSave(url, async () => { await page.fill('#title', old + ' QA12'); await page.fill('[name="krm_focus"]', focusOld + ' QA12focus'); }, '#publish');
-    const html = await publicText('/ministries/brick-kiln-children/');
+    const html = await publicText('/what-we-do/brick-kiln-family-care/');
     const changed = html.includes(old + ' QA12') && html.includes('QA12focus');
     await classicSave(url, async () => { await page.fill('#title', old); await page.fill('[name="krm_focus"]', focusOld); }, '#publish');
-    const restored = !(await publicText('/ministries/brick-kiln-children/')).includes('QA12');
+    const restored = !(await publicText('/what-we-do/brick-kiln-family-care/')).includes('QA12');
     return { ok: changed && restored, note: `changed=${changed} restored=${restored}` };
   });
 

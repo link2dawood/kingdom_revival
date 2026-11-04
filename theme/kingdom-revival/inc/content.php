@@ -185,7 +185,7 @@ function krm_post_card( $post, $attrs = array() ) {
 		$extra .= ' ' . $k . ( true === $v ? '' : '="' . esc_attr( $v ) . '"' );
 	}
 	?>
-	<a class="post-card" href="<?php the_permalink( $post ); ?>"<?php echo $extra; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><div class="post-card-media"><img <?php krm_img_src( $cover, '(max-width: 760px) 100vw, 400px', true ); ?> alt="<?php echo esc_attr( krm_cover_alt( $post->ID ) ); ?>" loading="lazy" decoding="async"><span class="tag"><?php echo esc_html( krm_post_category( $post->ID ) ); ?></span></div><div class="post-card-body"><div class="post-meta"><span><?php echo krm_icon( 'cal' ) . esc_html( get_the_date( 'F j, Y', $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><span><?php echo krm_icon( 'clock' ) . esc_html( krm_read_time( $post->ID ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> min read</span></div><h3><?php echo esc_html( get_the_title( $post ) ); ?></h3><p><?php echo esc_html( get_the_excerpt( $post ) ); ?></p><span class="read-more">Read the story <?php echo krm_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></div></a>
+	<a class="post-card" href="<?php the_permalink( $post ); ?>"<?php echo $extra; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><div class="post-card-media"><img <?php krm_img_src( $cover, '(max-width: 760px) 100vw, 400px', true ); ?> alt="<?php echo esc_attr( krm_cover_alt( $post->ID ) ); ?>" loading="lazy" decoding="async"><?php if ( get_post_meta( $post->ID, '_krm_sample', true ) ) : ?><span class="sample-badge">Sample story</span><?php endif; ?></div><div class="post-card-body"><div class="post-card-kicker"><?php echo esc_html( krm_post_category( $post->ID ) . ' · ' . get_the_date( 'M j, Y', $post ) ); ?></div><h3><?php echo esc_html( get_the_title( $post ) ); ?></h3><p><?php echo esc_html( get_the_excerpt( $post ) ); ?></p><span class="read-more">Read more <?php echo krm_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></div></a>
 	<?php
 }
 
@@ -197,7 +197,7 @@ function krm_post_card( $post, $attrs = array() ) {
 function krm_featured_card( $post ) {
 	$cover = krm_post_cover( $post->ID );
 	?>
-<a class="featured" href="<?php the_permalink( $post ); ?>"><div class="featured-media"><img <?php krm_img_src( $cover, '(max-width: 900px) 100vw, 60vw' ); ?> alt="<?php echo esc_attr( krm_cover_alt( $post->ID ) ); ?>" loading="lazy" decoding="async"><span class="featured-badge">★ Featured story</span></div><div class="featured-body"><span class="tag"><?php echo esc_html( krm_post_category( $post->ID ) ); ?></span><h2><?php echo esc_html( get_the_title( $post ) ); ?></h2><p><?php echo esc_html( get_the_excerpt( $post ) ); ?></p><div class="post-meta"><span><?php echo krm_icon( 'cal' ) . esc_html( get_the_date( 'F j, Y', $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><span><?php echo krm_icon( 'clock' ) . esc_html( krm_read_time( $post->ID ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> min read</span></div><span class="button button-primary">Read the full story <?php echo krm_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></div></a>
+<a class="featured" href="<?php the_permalink( $post ); ?>"><div class="featured-media"><img <?php krm_img_src( $cover, '(max-width: 900px) 100vw, 60vw' ); ?> alt="<?php echo esc_attr( krm_cover_alt( $post->ID ) ); ?>" loading="lazy" decoding="async"><span class="featured-badge">★ Featured story</span><?php if ( get_post_meta( $post->ID, '_krm_sample', true ) ) : ?><span class="sample-badge">Sample story</span><?php endif; ?></div><div class="featured-body"><span class="tag"><?php echo esc_html( krm_post_category( $post->ID ) ); ?></span><h2><?php echo esc_html( get_the_title( $post ) ); ?></h2><p><?php echo esc_html( get_the_excerpt( $post ) ); ?></p><div class="post-meta"><span><?php echo krm_icon( 'cal' ) . esc_html( get_the_date( 'F j, Y', $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><span><?php echo krm_icon( 'clock' ) . esc_html( krm_read_time( $post->ID ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> min read</span></div><span class="button button-primary">Read the full story <?php echo krm_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></div></a>
 	<?php
 }
 
@@ -211,6 +211,7 @@ function krm_featured_card( $post ) {
 function krm_blog_card_attrs( $post, $featured ) {
 	$cat   = krm_post_category( $post->ID );
 	$attrs = array(
+		// The filter matches the post's sections (Blogs, Updates…); the card label stays its topic category.
 		'data-category' => $cat,
 		'data-search'   => mb_strtolower( get_the_title( $post ) . ' ' . get_the_excerpt( $post ) . ' ' . $cat ),
 	);

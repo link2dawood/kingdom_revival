@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Field definitions per form: key => [ label, required, type ].
  *
- * @param string $form contact|partner|newsletter|prayer.
+ * @param string $form contact|partner|newsletter|prayer|signup.
  */
 function krm_form_fields( $form ) {
 	$fields = array(
@@ -47,7 +47,22 @@ function krm_form_fields( $form ) {
 		'prayer'     => array(
 			'name'    => array( 'Name', true, 'text' ),
 			'contact' => array( 'Email or WhatsApp', true, 'text' ),
+			'country' => array( 'Country', false, 'text' ),
+			'type'    => array( 'Request type', false, 'text' ),
 			'request' => array( 'Prayer request', true, 'textarea' ),
+			'private' => array( 'Keep request private', false, 'text' ),
+		),
+		// Partner With Us: one form per partner type (Prayer Partners, Financial Partner, Church & Ministry
+		// Partners, Volunteer With Us); "church" is asked of church partners only, "project" comes from
+		// Donate → Upcoming Projects → "Pledge / Get notified".
+		'signup'     => array(
+			'type'    => array( 'Partner type', true, 'text' ),
+			'name'    => array( 'Name', true, 'text' ),
+			'contact' => array( 'Email or WhatsApp', true, 'text' ),
+			'country' => array( 'Country', true, 'text' ),
+			'church'  => array( 'Church / organisation', false, 'text' ),
+			'project' => array( 'Project', false, 'text' ),
+			'message' => array( 'Message', false, 'textarea' ),
 		),
 	);
 	return isset( $fields[ $form ] ) ? $fields[ $form ] : array();
@@ -62,6 +77,7 @@ function krm_form_labels() {
 		'partner'    => __( 'Partner sign-up', 'kingdom-revival' ),
 		'newsletter' => __( 'Newsletter sign-up', 'kingdom-revival' ),
 		'prayer'     => __( 'Prayer request', 'kingdom-revival' ),
+		'signup'     => __( 'Partner With Us sign-up', 'kingdom-revival' ),
 	);
 }
 
@@ -178,7 +194,7 @@ function krm_handle_form() {
 	if ( 'contact' === $form && '' !== $data['topic'] ) {
 		$title = $data['topic'] . ' — ' . $data['name'];
 	}
-	if ( 'partner' === $form ) {
+	if ( 'partner' === $form || 'signup' === $form ) {
 		$title = $data['type'] . ' — ' . $data['name'];
 	}
 	$post_id = wp_insert_post(

@@ -14,8 +14,8 @@ const LH = process.env.LIGHTHOUSE || 'lighthouse';
 const RUNS = +(process.env.RUNS || 3);
 const DEVICES = (process.env.DEVICES || 'mobile,desktop').split(',');
 const PAGES = process.env.PAGES ? process.env.PAGES.split(',').map((p) => [p.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'home', p])
-  : [['home', '/'], ['all-ministries', '/ministries/'], ['ministry', '/ministries/brick-kiln-children/'], ['blog', '/blog/'],
-    ['article', '/learning-beside-the-kilns/'], ['contact', '/contact/'], ['donate', '/donate/']];
+  : [['home', '/'], ['all-ministries', '/what-we-do/'], ['ministry', '/what-we-do/brick-kiln-family-care/'], ['blog', '/news/'],
+    ['article', '/news/learning-beside-the-kilns/'], ['contact', '/contact/'], ['donate', '/donate/']];
 const OUT = path.join(__dirname, 'out', 'lh', LABEL);
 fs.mkdirSync(OUT, { recursive: true });
 

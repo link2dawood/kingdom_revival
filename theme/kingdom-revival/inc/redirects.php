@@ -21,36 +21,89 @@ function krm_default_redirects() {
 		array(
 			'/donate-us/ {donate}',
 			'/latest-news-blogs/ {blog}',
-			'/baptisms/ /ministries/baptisms/',
-			'/bricks-kiln-slaves-children/ /ministries/brick-kiln-children/',
-			'/clean-water-project/ /ministries/clean-water-project/',
-			'/deliverance-and-healing-ministry/ /ministries/deliverance-and-healing/',
-			'/freedom-from-slavery-missions/ /ministries/freedom-from-slavery/',
-			'/free-medical-camp-for-brick-kiln-slaves-and-village-people/ /ministries/free-medical-camps/',
-			'/leadership-and-discipleship/ /ministries/leadership-and-discipleship/',
-			'/orphanage-and-underprivileged-children-care/ /ministries/orphan-and-children-care/',
-			'/orphanages-care/ /ministries/orphan-and-children-care/',
-			'/outreach-ministry/ /ministries/outreach-ministry/',
-			'/outreach-evangelism/ /ministries/outreach-ministry/',
-			'/urdu-bibles-distribution/ /ministries/urdu-bibles/',
-			'/widows-ministry/ /ministries/widows-ministry/',
-			'/sunday-school/ /ministries/children-ministry/',
-			'/gallery/bricks-kiln-slaves-children/ /ministries/brick-kiln-children/',
-			'/gallery/deliverance-and-healing-ministry/ /ministries/deliverance-and-healing/',
-			'/gallery/leadership-and-discipleship/ /ministries/leadership-and-discipleship/',
-			'/gallery/orphanages-care/ /ministries/orphan-and-children-care/',
-			'/gallery/outreach-ministry/ /ministries/outreach-ministry/',
-			'/gallery/widows-ministry/ /ministries/widows-ministry/',
+			'/baptisms/ /what-we-do/baptisms-discipleship/',
+			'/bricks-kiln-slaves-children/ /what-we-do/brick-kiln-family-care/',
+			'/clean-water-project/ /what-we-do/clean-water/',
+			'/deliverance-and-healing-ministry/ /what-we-do/prayer-deliverance/',
+			'/freedom-from-slavery-missions/ /what-we-do/slavery-freedom/',
+			'/free-medical-camp-for-brick-kiln-slaves-and-village-people/ /what-we-do/medical-health/',
+			'/leadership-and-discipleship/ /what-we-do/leadership-training/',
+			'/orphanage-and-underprivileged-children-care/ /what-we-do/children-orphan-care/',
+			'/orphanages-care/ /what-we-do/children-orphan-care/',
+			'/outreach-ministry/ /what-we-do/evangelism-outreach/',
+			'/outreach-evangelism/ /what-we-do/evangelism-outreach/',
+			'/urdu-bibles-distribution/ /what-we-do/bible-distribution/',
+			'/widows-ministry/ /what-we-do/widows-support/',
+			'/sunday-school/ /what-we-do/children-orphan-care/',
+			'/gallery/bricks-kiln-slaves-children/ /what-we-do/brick-kiln-family-care/',
+			'/gallery/deliverance-and-healing-ministry/ /what-we-do/prayer-deliverance/',
+			'/gallery/leadership-and-discipleship/ /what-we-do/leadership-training/',
+			'/gallery/orphanages-care/ /what-we-do/children-orphan-care/',
+			'/gallery/outreach-ministry/ /what-we-do/evangelism-outreach/',
+			'/gallery/widows-ministry/ /what-we-do/widows-support/',
 			'/executive-message/ {about}#founder',
 			'/services/ {ministries}',
 			'/form/ {home}',
 			'/elementor-2338/ {home}',
 			'/sample-page/ {home}',
 			'/hello-world/ {blog}',
-			'/category/ministries/ /ministries/',
+			'/category/ministries/ {ministries}',
 			'/category/uncategorized/ {blog}',
 		)
 	);
+}
+
+/**
+ * Addresses this theme itself changed (theme 1.10.0, the client's sitemap): old path => new path or {placeholder}.
+ * Used only when the old address no longer exists (WordPress would show "not found"), so a page someone has
+ * since created at one of these addresses is never redirected away. Includes every ministry's earlier slug.
+ */
+function krm_theme_renames() {
+	$map = array(
+		'/ministries' => '{ministries}',
+		'/blog'       => '{blog}',
+		'/partner'    => '{partner}',
+		'/prayer-request' => '{prayer}',
+		'/partner-with-us/prayer-request' => '{prayer}',
+		'/impact'         => '{impact}',
+	);
+	foreach ( krm_ministry_data()['items'] as $slug => $m ) {
+		$map[ '/ministries/' . $slug ] = '/what-we-do/' . $slug . '/';
+		foreach ( $m['was'] as $old ) {
+			$map[ '/ministries/' . $old ] = '/what-we-do/' . $slug . '/';
+			$map[ '/what-we-do/' . $old ] = '/what-we-do/' . $slug . '/';
+		}
+	}
+	return $map;
+}
+
+/**
+ * Stories moved to /news/{story}/ (theme 1.10.0): the new address of an old /{story}/ address, and of the old
+ * category and tag lists (/category/…, /tag/… → /news/category/…, /news/tag/…). '' when nothing matches or when the
+ * permalinks do not put stories under a base.
+ *
+ * @param string $url Path or URL on this site.
+ */
+function krm_moved_post_url( $url ) {
+	$structure = (string) get_option( 'permalink_structure' );
+	if ( '' === $structure || 0 === strpos( $structure, '/%' ) ) {
+		return '';
+	}
+	$path = krm_redirect_path( $url );
+	$base = krm_redirect_path( home_url( '/' ) );
+	if ( '/' !== $base && 0 === strpos( $path, $base ) ) {
+		$path = krm_redirect_path( substr( $path, strlen( $base ) ) );
+	}
+	if ( preg_match( '#^/([a-z0-9-]+)$#', $path, $m ) ) {
+		$post = get_page_by_path( $m[1], OBJECT, 'post' );
+		return $post && 'publish' === $post->post_status ? get_permalink( $post ) : '';
+	}
+	if ( preg_match( '#^/(category|tag)/([a-z0-9/-]+)$#', $path, $m ) ) {
+		$term = get_term_by( 'slug', basename( $m[2] ), 'category' === $m[1] ? 'category' : 'post_tag' );
+		$link = $term ? get_term_link( $term ) : '';
+		return is_string( $link ) ? $link : '';
+	}
+	return '';
 }
 
 /**
@@ -91,6 +144,12 @@ function krm_redirect_path( $path ) {
  * @param string $target Target as typed.
  */
 function krm_redirect_target( $target ) {
+	// Lists saved before 1.10.0 point at /ministries/{old slug}/: send those straight to the new address.
+	$renames = krm_theme_renames();
+	$path    = krm_redirect_path( $target );
+	if ( '/' === substr( $target, 0, 1 ) && isset( $renames[ $path ] ) && 0 === strpos( $path, '/ministries' ) ) {
+		$target = $renames[ $path ];
+	}
 	if ( '/' === substr( $target, 0, 1 ) ) {
 		return home_url( $target );
 	}
@@ -102,8 +161,8 @@ function krm_redirect_target( $target ) {
  *
  * @param string $url Path or URL on this site.
  */
-function krm_redirect_for( $url ) {
-	$map = krm_redirects();
+function krm_redirect_for( $url, $map = null ) {
+	$map = null === $map ? krm_redirects() : $map;
 	if ( ! $map ) {
 		return '';
 	}
@@ -129,7 +188,17 @@ add_action(
 		if ( is_admin() || wp_doing_ajax() || ! isset( $_SERVER['REQUEST_URI'] ) ) {
 			return;
 		}
-		$to = krm_redirect_for( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+		$uri = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+		$to  = krm_redirect_for( $uri );
+		if ( ! $to && is_404() ) {
+			$to = krm_redirect_for( $uri, krm_theme_renames() );
+			if ( ! $to ) {
+				$to = krm_moved_post_url( $uri );
+			}
+			if ( $to && ! empty( $_SERVER['QUERY_STRING'] ) ) {
+				$to = add_query_arg( wp_parse_args( sanitize_text_field( wp_unslash( $_SERVER['QUERY_STRING'] ) ) ), $to );
+			}
+		}
 		if ( ! $to ) {
 			return;
 		}
@@ -138,4 +207,40 @@ add_action(
 		exit;
 	},
 	0
+);
+
+/*
+ * A ministry that is not published (a draft, e.g. one waiting for its description, or a data-file ministry marked
+ * "hidden") sends its address /what-we-do/{slug}/ to What We Do with a temporary (302) redirect, so the address works
+ * again by itself once the ministry is published.
+ */
+add_action(
+	'template_redirect',
+	function () {
+		if ( ! is_404() || ! isset( $_SERVER['REQUEST_URI'] ) ) {
+			return;
+		}
+		$path = trim( (string) wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH ), '/' );
+		$base = trim( (string) wp_parse_url( krm_ministries_url(), PHP_URL_PATH ), '/' );
+		if ( '' === $base || ! preg_match( '#^' . preg_quote( $base, '#' ) . '/([a-z0-9-]+)$#', $path, $m ) ) {
+			return;
+		}
+		$data   = krm_ministry_data();
+		$hidden = isset( $data['items'][ $m[1] ] ) && 'live' !== $data['items'][ $m[1] ]['status'];
+		$posts  = get_posts(
+			array(
+				'post_type'      => 'ministry',
+				'name'           => $m[1],
+				'post_status'    => array( 'draft', 'pending', 'private', 'future' ),
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			)
+		);
+		if ( $posts || $hidden ) {
+			wp_safe_redirect( krm_ministries_url(), 302, 'Kingdom Revival theme' );
+			exit;
+		}
+	},
+	1
 );

@@ -44,6 +44,10 @@
     var option = Array.prototype.find.call(form.elements.fund.options, function (o) { return o.value === params.get("for"); });
     if (option) option.selected = true;
   }
+  if (params.get("ministry")) {
+    var ministryOption = Array.prototype.find.call(form.elements.fund.options, function (o) { return o.dataset.slug === params.get("ministry"); });
+    if (ministryOption) ministryOption.selected = true;
+  }
 
   function gift() {
     var a = form.elements.amount.value;
@@ -51,7 +55,8 @@
     return {
       amount: Number(value) > 0 ? Number(value) : 0,
       monthly: form.elements.frequency.value === "Monthly",
-      fund: form.elements.fund.value
+      fund: form.elements.fund.value,
+      ministry: form.elements.fund.options[form.elements.fund.selectedIndex].dataset.slug || "where-most-needed"
     };
   }
 
@@ -69,12 +74,14 @@
     var body = "Hello Kingdom Revival Ministries,\n\nI have just sent a gift.\n\nAmount: " + (g.amount ? "$" + g.amount : "-") +
       "\nFrequency: " + (g.monthly ? "Monthly" : "One-time") + "\nFor: " + g.fund +
       "\nPayment method: " + document.querySelector('.tab[aria-selected="true"]').dataset.method +
-      "\nReference / tracking number: \n\nName: \nCountry: \n\nGod bless,";
+      "\nReference / tracking number: \n\nName: " + form.elements.donor_name.value.trim() +
+      "\nEmail: " + form.elements.donor_email.value.trim() + "\nCountry: " + form.elements.donor_country.value.trim() + "\n\nGod bless,";
     document.getElementById("notify-link").href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("My gift to Kingdom Revival Ministries") + "&body=" + encodeURIComponent(body);
     var url = new URL(location.href);
     url.searchParams.set("amount", g.amount || "");
     url.searchParams.set("frequency", g.monthly ? "Monthly" : "One-time");
     url.searchParams.set("for", g.fund);
+    url.searchParams.set("ministry", g.ministry);
     history.replaceState(null, "", url);
   }
   form.addEventListener("change", update);

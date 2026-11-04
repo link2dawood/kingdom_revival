@@ -13,8 +13,8 @@ import urllib.request
 BASE = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith('--') else 'http://127.0.0.1:8899'
 MINISTRIES = ['children-ministry', 'orphan-and-children-care', 'brick-kiln-children', 'widows-ministry', 'freedom-from-slavery', 'free-medical-camps', 'clean-water-project', 'outreach-ministry', 'urdu-bibles', 'baptisms', 'deliverance-and-healing', 'leadership-and-discipleship']
 POSTS = ['gods-word-in-every-home', 'learning-beside-the-kilns', 'new-life-in-the-water', 'a-home-for-the-orphaned', 'standing-with-widows', 'raising-up-shepherds', 'prayer-for-the-sick-and-oppressed']
-PATHS = ['/', '/about/', '/contact/', '/donate/', '/partner/', '/blog/', '/ministries/'] + \
-    [f'/ministries/{m}/' for m in MINISTRIES] + [f'/{p}/' for p in POSTS] + \
+PATHS = ['/', '/about/', '/contact/', '/donate/', '/partner-with-us/', '/news/', '/what-we-do/'] + \
+    [f'/ministries/{m}/' for m in MINISTRIES] + [f'/news/{p}/' for p in POSTS] + \
     ['/sermons/', '/events/', '/testimonials/', '/category/children/']
 REQUIRED = ['title', 'description', 'canonical', 'og:title', 'og:description', 'og:image', 'og:url', 'twitter:card']
 

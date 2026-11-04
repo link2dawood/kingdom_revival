@@ -402,3 +402,255 @@
 @keyframes lb-spin { to { transform: rotate(360deg); } }
 @keyframes float-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @keyframes nl-up { from { opacity: 0; transform: translateY(24px) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* ---------- Shared with the home page design (Homepage-html) ----------
+   Used by the home page and by inner pages built from the same design (All Ministries). */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* The design's hover helpers: red, orange and navy buttons, lifting cards. */
+.k-y{transition:background .2s ease}
+.k-y:hover{background:#A80509}
+.k-o{transition:background .2s ease}
+.k-o:hover{background:#C9701A}
+.k-g{transition:background .2s ease}
+.k-g:hover{background:#06123A}
+.k-card{transition:box-shadow .3s ease,transform .3s ease}
+.k-card:hover{box-shadow:0 18px 40px rgba(12,28,79,0.14);transform:translateY(-4px)}
+
+/* Home page sections reused on an inner page: undo site.css's heading colour, spacing and line height there, so
+   they render as on the home page (front.css has no heading rules). */
+.krm-design :is(h1, h2, h3, h4) { color: inherit; letter-spacing: normal; line-height: inherit; }
+
+/* The design's section and container: 1240px, side padding clamp(16px, 3vw, 32px), section padding clamp(72px, 8vw, 110px). */
+.krm-container { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.krm-band-soft { background: var(--color-bg-soft); }
+
+/* Ministry giving card (template-parts/ministry-card.php; .cause-card because the story sidebar already has a .ministry-card): the home design's "causes" card. */
+.ministry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 26px; margin: 0; padding: 0; list-style: none; }
+.ministry-grid > li { display: flex; min-width: 0; }
+.ministry-grid > li[hidden] { display: none; }
+.cause-card { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; overflow: hidden; border-radius: 10px; background: var(--color-white); box-shadow: 0 6px 20px rgba(12,28,79,0.07); transition: box-shadow .3s ease, transform .3s ease; }
+.cause-card:hover, .cause-card:focus-within { box-shadow: 0 18px 40px rgba(12,28,79,0.14); transform: translateY(-4px); }
+.cause-card-media { position: relative; height: 210px; background: #DDE3F0; }
+.cause-card.is-alt .cause-card-media { background: #CBD4E8; }
+.cause-card-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cause-card-tag { position: absolute; left: 14px; bottom: 14px; padding: 4px 10px; border-radius: 3px; background: var(--color-primary); color: var(--color-white); font-size: 11px; font-weight: 700; line-height: 1.6; letter-spacing: 0.06em; }
+.cause-card-body { display: flex; flex: 1 1 auto; flex-direction: column; gap: 10px; padding: 22px; }
+.cause-card-title { margin: 0; color: var(--color-text); font-size: 19px; font-weight: 800; line-height: 1.3; letter-spacing: 0; }
+.cause-card-title a { color: inherit; text-decoration: none; }
+.cause-card-title a:hover { color: var(--color-secondary); }
+.cause-card-text { margin: 0; color: var(--color-text-muted); font-size: 14px; line-height: 1.6; }
+.cause-card-progress { margin-top: auto; padding-top: 8px; }
+.cause-card-amounts { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 12px; color: var(--color-text-muted); font-size: 13px; line-height: 1.6; }
+.cause-card-amounts strong { color: var(--color-text); }
+.cause-card-bar { height: 6px; margin-top: 6px; overflow: hidden; border-radius: 99px; background: var(--color-border); }
+.cause-card-bar > span { display: block; height: 100%; border-radius: 99px; background: var(--color-primary); }
+.cause-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; margin-top: 8px; }
+.cause-card-donate { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; border-radius: 4px; background: var(--color-secondary); color: var(--color-white); font-size: 14px; font-weight: 700; line-height: 1.6; text-decoration: none; box-sizing: border-box; transition: background .2s ease; }
+.cause-card-donate:hover { background: #A80509; color: var(--color-white); }
+.cause-card-more { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-primary); font-size: 14px; font-weight: 700; line-height: 1.6; text-decoration: none; }
+.cause-card-more:hover { color: var(--color-secondary); }
+@media (prefers-reduced-motion: reduce) {
+  .cause-card, .cause-card:hover, .cause-card:focus-within { transform: none; transition: none; }
+}
+
+/* Ministry group filter: the home explorer's list buttons, side by side. */
+.ministry-filter { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 36px; }
+.ministry-filter button { min-height: 46px; padding: 11px 18px; border: 0; border-radius: 8px; background: var(--color-white); color: var(--color-text); font: 600 15px/1.3 var(--font-body); cursor: pointer; transition: background .2s ease, color .2s ease; box-shadow: inset 0 0 0 1px var(--color-border); }
+.ministry-filter button:hover { color: var(--color-primary); box-shadow: inset 0 0 0 1px var(--color-primary); }
+.ministry-filter button[aria-pressed="true"] { background: var(--color-primary); color: var(--color-white); box-shadow: none; }
+.ministry-filter button:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+@media (max-width: 560px) {
+  .ministry-filter { justify-content: flex-start; }
+  .ministry-filter button { flex: 1 1 auto; padding: 10px 14px; font-size: 14px; }
+}
+
+/* ---------- Components shared since the client's sitemap (theme 1.10.0) ----------
+   Moved unchanged from about.css (work cards, stats strip), ministry.css (photo grid, empty note) and front.css
+   (prayer form on phones), because several pages now use them. */
+.work-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.work-card { padding: 28px 24px; border-radius: var(--radius); background: var(--white); box-shadow: 0 10px 30px rgba(12,28,79,.07); transition: transform .25s ease, box-shadow .25s ease; }
+.work-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+.work-icon { display: grid; width: 52px; height: 52px; place-items: center; border-radius: 12px; background: #FDE7E7; color: var(--red); }
+.work-card h3 { margin: 18px 0 0; font-size: 19px; }
+.work-card p { margin: 10px 0 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+.stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; overflow: hidden; border-radius: var(--radius); background: rgba(255,255,255,.12); }
+.stat { padding: 30px 18px; background: var(--navy); color: #D6DDF0; text-align: center; }
+.stat strong { display: block; color: var(--white); font-size: clamp(32px, 4vw, 44px); font-weight: 800; line-height: 1; }
+.stat span { display: block; margin-top: 10px; font-size: 14px; line-height: 1.4; }
+.stats-wrap { padding: clamp(48px, 6vw, 72px) 0; background: var(--navy-deep); }
+@media (max-width: 1000px) {
+  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stat:nth-child(4), .stat:nth-child(5) { grid-column: span 1; }
+}
+@media (max-width: 520px) {
+  .work-grid { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat:last-child { grid-column: span 2; }
+}
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.photo { position: relative; overflow: hidden; margin: 0; border-radius: 10px; background: #E8ECF6; box-shadow: 0 8px 24px rgba(12,28,79,.09); }
+.photo img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .4s ease; }
+.photo:hover img { transform: scale(1.05); }
+.photo::after { position: absolute; top: 12px; right: 12px; display: grid; width: 36px; height: 36px; place-items: center; border-radius: 50%; background: rgba(8,16,48,.6); color: var(--white); content: "⤢"; font-size: 18px; opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+.photo:hover::after { opacity: 1; }
+.photo figcaption { padding: 12px 14px; background: var(--white); color: var(--muted); font-size: 13px; line-height: 1.5; }
+.empty-gallery { padding: 24px; border: 1px dashed #B7C0D4; border-radius: 10px; color: var(--muted); line-height: 1.7; }
+@media (max-width: 760px) { .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .gallery { grid-template-columns: 1fr; } }
+/* Prayer request form: one column on phones (the design's two columns are too narrow there). */
+@media (max-width: 560px) {
+  form[data-krm-prayer] { grid-template-columns: minmax(0, 1fr) !important; }
+  form[data-krm-prayer] > * { grid-column: 1 / -1 !important; }
+}
+/* Field error text added by components.js under an invalid field of a form[data-krm-form] (prayer, sign-up). */
+.krm-field-error { font-size: 13px; font-weight: 600; line-height: 1.4; color: var(--color-secondary); }
+.krm-field-error[hidden] { display: none; }
+
+/* ---------- New components of the sitemap pages (built from the tokens and patterns above) ---------- */
+/* Hero subheading (What We Do): white, the accent colour for <em>, as the hero title. */
+.page-hero .hero-sub { max-width: 760px; margin: 14px 0 0; color: var(--color-white); font-size: clamp(20px, 2.2vw, 28px); font-weight: 700; line-height: 1.3; }
+.page-hero .hero-sub em { color: var(--color-accent); font-style: normal; }
+
+/* Tabs: the filter buttons' look, for role="tab" buttons (Gallery Photos / Videos, Donate projects). */
+.ministry-filter button[aria-selected="true"] { background: var(--color-primary); color: var(--color-white); box-shadow: none; }
+.ministry-filter.is-start { justify-content: flex-start; }
+.krm-filter-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin: 0 0 28px; }
+.krm-filter-row .ministry-filter { margin: 0; }
+.krm-select { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; max-width: 100%; color: var(--color-text-muted); font-size: 14px; font-weight: 600; }
+.krm-select[hidden] { display: none; }
+.krm-select select { max-width: 100%; min-width: 0; min-height: 46px; padding: 10px 40px 10px 14px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-white); color: var(--color-text); font: 600 15px var(--font-body); }
+.krm-select select:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.krm-note { margin: 0; padding: 18px 20px; border: 1px dashed #B7C0D4; border-radius: 10px; color: var(--color-text-muted); line-height: 1.7; }
+
+/* Timeline (About → Founder testimony). */
+.timeline { position: relative; display: grid; gap: 22px; margin: 28px 0 0; padding: 0 0 0 28px; list-style: none; }
+.timeline::before { position: absolute; top: 6px; bottom: 6px; left: 7px; width: 2px; background: var(--color-bg-tint); content: ""; }
+.timeline li { position: relative; }
+.timeline li::before { position: absolute; top: 5px; left: -28px; width: 16px; height: 16px; border: 3px solid var(--color-white); border-radius: 50%; background: var(--color-secondary); box-shadow: 0 0 0 2px var(--color-secondary); content: ""; box-sizing: border-box; }
+.timeline strong { display: block; color: var(--color-secondary); font-size: 13px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.timeline h3 { margin: 4px 0 0; font-size: 19px; }
+.timeline p { margin: 6px 0 0; color: var(--color-text-muted); line-height: 1.7; }
+
+/* People (About → Meet the Team, Shepherding the Flock): the home page team card. */
+.person-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; }
+.person-grid.is-small { grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr)); }
+.person-photo { position: relative; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 12px; background: #DDE3F0; }
+.person-grid li:nth-child(even) .person-photo { background: #CBD4E8; }
+.person-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; }
+.person h3 { margin: 14px 0 0; color: var(--color-text); font-size: 18px; letter-spacing: 0; }
+.person .person-role { margin: 2px 0 0; color: var(--color-secondary); font-size: 14px; font-weight: 700; }
+.person .person-bio { margin: 8px 0 0; color: var(--color-text-muted); font-size: 14px; line-height: 1.6; }
+
+/* Link cards (About → What we are here to do, Our Impact, Partner With Us): the work card as a link. */
+a.work-card { display: flex; flex-direction: column; color: inherit; text-decoration: none; }
+.work-card .card-more { margin-top: auto; padding-top: 16px; color: var(--color-secondary); font-weight: 700; }
+.work-card ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.work-card li a { color: var(--color-primary); font-size: 15px; font-weight: 600; text-decoration: none; }
+.work-card li a:hover { color: var(--color-secondary); }
+.work-grid.is-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.work-grid.is-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .work-grid.is-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 680px) { .work-grid.is-2, .work-grid.is-3 { grid-template-columns: 1fr; } }
+
+/* Impact by ministry. */
+.impact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; }
+.impact-card { display: flex; flex-direction: column; gap: 14px; height: 100%; padding: 24px; border-radius: 10px; background: var(--color-white); box-shadow: 0 6px 20px rgba(12,28,79,0.07); box-sizing: border-box; }
+.impact-card-title { margin: 0; color: var(--color-text); font-size: 19px; letter-spacing: 0; }
+.impact-card-title a { color: inherit; text-decoration: none; }
+.impact-card-title a:hover { color: var(--color-secondary); }
+.impact-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin: 0; }
+.impact-stats div { padding: 14px; border-radius: 8px; background: var(--color-bg-soft); }
+.impact-stats dt { color: var(--color-primary); font-size: 26px; font-weight: 800; line-height: 1.1; }
+.impact-stats dd { margin: 4px 0 0; color: var(--color-text-muted); font-size: 13px; line-height: 1.4; }
+.impact-card .krm-note { padding: 12px 14px; font-size: 14px; }
+.impact-card .card-more { margin-top: auto; color: var(--color-secondary); font-size: 14px; font-weight: 700; text-decoration: none; }
+
+/* Testimony cards: the home page "Stories from the field" card. */
+.testimony-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; }
+.testimony { display: flex; flex-direction: column; gap: 18px; height: 100%; margin: 0; padding: 28px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-white); box-sizing: border-box; }
+.testimony blockquote { margin: 0; color: var(--color-text); font-size: 17px; line-height: 1.6; }
+.testimony blockquote p { margin: 0 0 10px; }
+.testimony figcaption { display: flex; gap: 12px; align-items: center; margin-top: auto; }
+.testimony figcaption img, .testimony .avatar { flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; background: #DDE3F0; object-fit: cover; }
+.testimony figcaption span { display: flex; flex-direction: column; line-height: 1.3; }
+.testimony figcaption small { color: var(--color-text-muted); font-size: 14px; }
+.testimony .tag { align-self: flex-start; padding: 4px 10px; border-radius: 3px; background: var(--color-primary); color: var(--color-white); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+
+/* Videos: YouTube thumbnails that become the player when pressed. */
+.video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; }
+.video-card { margin: 0; }
+.video-card button, .video-frame { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; padding: 0; border: 0; border-radius: 10px; overflow: hidden; background: #1A2550; cursor: pointer; }
+.video-card button img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.video-card button::after { position: absolute; top: 50%; left: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: var(--color-secondary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M8 5l11 7-11 7z'/%3E%3C/svg%3E") center / 28px no-repeat; box-shadow: 0 10px 24px rgba(0,0,0,0.22); content: ""; transition: transform .2s ease; }
+.video-card button:hover::after { transform: scale(1.08); }
+.video-card button:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+.video-card figcaption { margin-top: 10px; color: var(--color-text); font-weight: 700; }
+.video-card figcaption small { display: block; color: var(--color-text-muted); font-size: 13px; font-weight: 600; }
+
+/* Projects: the giving card with a date line and an "Upcoming" label. */
+.cause-card-meta { margin: 0; color: var(--color-text-muted); font-size: 13px; font-weight: 600; }
+.cause-card-meta a { color: var(--color-primary); text-decoration: none; }
+.cause-card-goal { margin: auto 0 0; padding-top: 8px; color: var(--color-text-muted); font-size: 13px; }
+.cause-card-goal strong { color: var(--color-text); }
+.cause-card-tag.is-upcoming { background: #E18426; color: var(--color-text); }
+.cause-card-more.is-button { padding: 10px 18px; border: 1.5px solid var(--color-primary); border-radius: 4px; box-sizing: border-box; }
+
+/* Banner with text and buttons (About → Join the Mission): the home page CTA banner. */
+.cta-banner { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 100px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.cta-banner > div { display: flex; flex-wrap: wrap; gap: 24px 48px; align-items: center; justify-content: space-between; padding: clamp(32px, 5vw, 56px); border-radius: 14px; background: var(--color-primary); color: var(--color-white); }
+.cta-banner-text { flex: 999 1 480px; min-width: 0; }
+.cta-banner h2 { margin: 0; color: var(--color-white); font-size: clamp(24px, 2.8vw, 34px); font-weight: 800; line-height: 1.25; letter-spacing: normal; }
+.cta-banner p { margin: 10px 0 0; color: var(--color-text-on-dark); line-height: 1.7; }
+.cta-banner-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.cta-banner .button-light { background: var(--color-white); color: var(--color-primary); }
+
+/* Partner With Us: one section per partner type with its sign-up form. */
+.partner-type { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 64px); align-items: start; scroll-margin-top: 90px; }
+.partner-type + .partner-type { margin-top: clamp(56px, 7vw, 88px); padding-top: clamp(56px, 7vw, 88px); border-top: 1px solid var(--color-border); }
+.partner-type h2 { margin: 0; font-size: clamp(28px, 3.4vw, 38px); font-weight: 800; }
+.partner-type .lead-text { margin: 14px 0 0; color: var(--color-text-muted); font-size: 17px; line-height: 1.75; }
+.partner-type h3 { margin: 24px 0 0; font-size: 18px; }
+.check-list { display: grid; gap: 12px; margin: 14px 0 0; padding: 0; list-style: none; }
+.check-list li { display: flex; gap: 12px; align-items: flex-start; color: #3D465D; line-height: 1.6; }
+.check-list li::before { flex: 0 0 24px; width: 24px; height: 24px; margin-top: 1px; border-radius: 50%; background: var(--color-primary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / 12px no-repeat; content: ""; }
+.signup-card { padding: clamp(24px, 4vw, 36px); border-radius: 14px; background: var(--color-white); box-shadow: 0 6px 20px rgba(12,28,79,0.07); }
+.section-soft .signup-card { box-shadow: none; }
+.signup-card .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.signup-card .field { display: grid; gap: 7px; font-size: 14px; font-weight: 600; }
+.signup-card .field.is-wide { grid-column: 1 / -1; }
+.signup-card textarea { min-height: 110px; resize: vertical; }
+.signup-card [aria-invalid="true"] { border-color: var(--color-secondary); }
+.signup-card .button { margin-top: 20px; }
+.signup-card .form-status { margin: 14px 0 0; color: #1E5B3A; font-weight: 600; }
+.signup-card .form-error { margin: 14px 0 0; color: var(--color-secondary); font-weight: 600; }
+@media (max-width: 900px) { .partner-type { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .signup-card .form-grid { grid-template-columns: 1fr; } }
+
+/* Placeholders: the label administrators see on a section visitors don't (krm_admin_only_note()). */
+.krm-admin-only { display: inline-block; margin: 0 0 14px; padding: 4px 10px; border: 1px dashed #B7C0D4; border-radius: 4px; background: #FFF8E6; color: #5A4A1A; font: 600 12px/1.4 var(--font-body); letter-spacing: 0; text-transform: none; }
+/* A section hidden from visitors (no real data yet) can leave two soft bands next to each other (Donate without
+   projects): they read as one band, with the usual space between their contents. No page has two by design. */
+.section-soft + .section-soft { padding-top: 0; }
+.work-grid.is-1 { grid-template-columns: minmax(0, 1fr); max-width: 560px; margin-inline: auto; }
+/* A Statement of Faith line without its explanation yet: the accordion row, without the toggle. */
+.faq .faq-plain { margin: 0; padding: 20px 22px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-white); color: var(--color-primary); font-size: 17px; font-weight: var(--font-weight-bold); }
+
+/* ---------- Touch targets (final pass): 44px tall on phones and tablets; desktop unchanged ---------- */
+.skip-link { min-height: 44px; display: inline-flex; align-items: center; font-family: var(--font-body); }
+/* Card title links: a 44px tall tap area without moving the layout. */
+.cause-card-title a { display: inline-block; padding: 10px 0; margin: -10px 0; }
+@media (max-width: 900px) {
+  .submenu a, .submenu .sub-toggle { min-height: 44px; }
+}
+@media (max-width: 1024px) {
+  .topbar-inner { padding: 4px 0; }
+  .topbar a, .topbar .donate-link { min-height: 44px; }
+  .topbar .donate-link { padding-top: 0; padding-bottom: 0; }
+  .footer-links { gap: 0; }
+  .footer-links a, .site-footer address a { display: inline-flex; align-items: center; min-height: 44px; }
+  .breadcrumb li { display: flex; align-items: center; }
+  .breadcrumb a { display: inline-flex; align-items: center; min-height: 44px; }
+  .seg span { display: flex; align-items: center; justify-content: center; min-height: 44px; }
+  .donate-trust-row a, .krm-field-stories__video-link { display: inline-flex; align-items: center; min-height: 44px; }
+}

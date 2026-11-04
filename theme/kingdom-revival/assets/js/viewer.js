@@ -31,7 +31,8 @@
   function groupFor(img) {
     var container = img.closest("[data-gallery]");
     var images = container ? container.querySelectorAll("img") : document.querySelectorAll('img[data-zoom="' + img.dataset.zoom + '"]');
-    return Array.prototype.filter.call(images, function (el) { return !el.closest(".lb"); });
+    // Photos a filter has hidden (Gallery page) are left out of browsing.
+    return Array.prototype.filter.call(images, function (el) { return !el.closest(".lb") && !el.closest("[hidden]"); });
   }
 
   KRM.refreshZoomables = function (root) {

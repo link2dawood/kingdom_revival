@@ -13,7 +13,7 @@ return array(
 		'label'  => __( 'Hero', 'kingdom-revival' ),
 		'fields' => array(
 			'image'   => krm_f( 'image', __( 'Background image', 'kingdom-revival' ), 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg' ),
-			'eyebrow' => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'News & Blogs' ),
+			'eyebrow' => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'News & Updates' ),
 			'title'   => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Stories of hope <em>from the field</em>' ),
 			'lead'    => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'Real moments from the villages, kilns and churches we serve — and the people whose lives are being changed by the love of Jesus.' ),
 		),

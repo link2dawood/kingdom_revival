@@ -75,3 +75,7 @@ TBT, CLS, Speed Index, bytes, JS execution time and requests. Raw reports and `s
 `PAGES=/,/about/` limits the pages.
 
 Environment: `HTML_URL`, `WP_URL`, `CHROME_PATH` (defaults: the ports above and `/usr/bin/google-chrome`).
+
+`node placeholder_check.js` crawls the WordPress site logged out (home page, sitemap and every internal link) and lists
+any "[…]" placeholder visitors could see (text, alt/title/aria-label, `<title>`, meta tags), plus links to the Testimonies
+page or hidden ministries while those are hidden. Exit code 1 when a placeholder is found. Run it before a release.

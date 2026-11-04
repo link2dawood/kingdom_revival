@@ -1,6 +1,6 @@
 <?php
 /**
- * Home: flagship cards (Urdu Bibles, Church Planting).
+ * Home: flagship cards (Bible Distribution, Church Planting).
  *
  * @package Kingdom_Revival
  */

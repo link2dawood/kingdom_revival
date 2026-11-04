@@ -24,10 +24,18 @@ get_header();
 		</div>
 	</section>
 
-	<div class="wrap contact-cards">
+	<?php
+	// Office hours: visitors see the card only once hours are filled in (an empty or [placeholder] value is ''), and the grid closes up.
+	$krm_hours = '' !== trim( (string) krm_c( 'cards.hours_text' ) );
+	?>
+	<div class="wrap contact-cards<?php echo $krm_hours ? '' : ' is-4'; ?>">
 		<a class="contact-card" href="<?php echo esc_url( krm_tel() ); ?>"><span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span><span><h2><?php krm_t( 'cards.call_title' ); ?></h2><p><strong><?php echo esc_html( krm_opt( 'phone' ) ); ?></strong><br><?php krm_t( 'cards.call_text' ); ?></p></span></a>
 		<a class="contact-card" href="<?php echo esc_url( krm_mailto() ); ?>"><span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg></span><span><h2><?php krm_t( 'cards.email_title' ); ?></h2><p><strong><?php echo esc_html( krm_opt( 'email' ) ); ?></strong><br><?php krm_t( 'cards.email_text' ); ?></p></span></a>
 		<div class="contact-card"><span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span><span><h2><?php krm_t( 'cards.visit_title' ); ?></h2><p><?php echo esc_html( krm_opt( 'address' ) ); ?></p></span></div>
+		<a class="contact-card" href="<?php echo esc_url( krm_whatsapp_url() ); ?>" target="_blank" rel="noopener"><span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"></path></svg></span><span><h2><?php krm_t( 'cards.whatsapp_title' ); ?></h2><p><strong><?php echo esc_html( krm_opt( 'phone' ) ); ?></strong><br><?php krm_t( 'cards.whatsapp_text' ); ?></p></span></a>
+		<?php if ( $krm_hours ) : ?>
+		<div class="contact-card"><span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><span><h2><?php krm_t( 'cards.hours_title' ); ?></h2><p><strong><?php krm_t( 'cards.hours_text' ); ?></strong><br><?php krm_t( 'cards.hours_note' ); ?></p></span></div>
+		<?php endif; ?>
 	</div>
 
 	<section class="section">
@@ -103,6 +111,10 @@ get_header();
 		<div class="map">
 			<iframe title="<?php echo esc_attr( krm_fill( krm_c( 'map.title' ) ) ); ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="<?php echo esc_url( 'https://www.google.com/maps?q=' . urlencode( krm_fill( krm_c( 'map.query' ) ) ) . '&output=embed' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode -- "+" for spaces, as in the design's map link. ?>"></iframe>
 		</div>
+		<?php endif; ?>
+		<?php $krm_socials = array_filter( array( 'Facebook' => krm_opt( 'facebook' ), 'Instagram' => krm_opt( 'instagram' ), 'YouTube' => krm_opt( 'youtube' ) ) ); ?>
+		<?php if ( $krm_socials || krm_show_placeholders() ) : // Visitors: no section without links. ?>
+		<section class="contact-social" aria-labelledby="contact-social-title"><div><p class="eyebrow">Follow the ministry</p><h2 id="contact-social-title">See what God is doing</h2></div><?php if ( $krm_socials ) : ?><div><?php foreach ( $krm_socials as $krm_name => $krm_url ) : ?><a class="button button-secondary" href="<?php echo esc_url( $krm_url ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $krm_name ); ?></a><?php endforeach; ?></div><?php else : ?><p class="krm-admin-only">Only administrators see this section: add the Facebook, YouTube or Instagram links in Kingdom Revival → Settings.</p><?php endif; ?></section>
 		<?php endif; ?>
 		</div>
 	</section>

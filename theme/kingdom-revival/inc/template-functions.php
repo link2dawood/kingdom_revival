@@ -132,6 +132,25 @@ function krm_stats( $context = '' ) {
 }
 
 /**
+ * The five impact stats as krm_stats() returns them, without those whose number is not set yet for visitors
+ * (keys kept, as some templates pick stats by position).
+ *
+ * @param string $context As krm_stats().
+ */
+function krm_visible_stats( $context = '' ) {
+	$stats = krm_stats( $context );
+	if ( krm_show_placeholders() ) {
+		return $stats;
+	}
+	return array_filter(
+		$stats,
+		function ( $s ) {
+			return ! krm_is_placeholder( $s['value'] );
+		}
+	);
+}
+
+/**
  * URL of a file in the theme's assets/ folder (a child theme's copy wins).
  *
  * @param string $path Path inside assets/.
@@ -370,17 +389,17 @@ function krm_ministry_url( $slug ) {
 	static $cache = array();
 	if ( ! isset( $cache[ $slug ] ) ) {
 		$post           = krm_get_by_path( $slug, 'ministry' );
-		$cache[ $slug ] = $post ? get_permalink( $post ) : home_url( user_trailingslashit( 'ministries/' . $slug ) );
+		$cache[ $slug ] = $post ? get_permalink( $post ) : home_url( user_trailingslashit( 'what-we-do/' . $slug ) );
 	}
 	return $cache[ $slug ];
 }
 
 /**
- * URL of the All Ministries page (the ministry archive, /ministries/).
+ * URL of the What We Do page (the ministry archive, /what-we-do/).
  */
 function krm_ministries_url() {
 	$url = get_post_type_archive_link( 'ministry' );
-	return $url ? $url : home_url( user_trailingslashit( 'ministries' ) );
+	return $url ? $url : home_url( user_trailingslashit( 'what-we-do' ) );
 }
 
 /**
@@ -391,9 +410,18 @@ function krm_donate_url() {
 }
 
 /**
- * All ministries in a normalised shape. Falls back to the design data until content is imported.
+ * All ministries in a normalised shape: the one list every page reads ministry content from.
  *
- * @param string $order 'menu' (navigation/donation order) or 'home' (homepage explorer order).
+ * Each item: slug, title, url, image, group (name), group_short (tab label), group_slug, tag, desc (Excerpt), summary
+ * (card text), raised, goal (whole dollars as strings, '' when not set), stats ([ value, label ] pairs), sections
+ * (extra panels: heading, text, points), camps ([ date, location, people served ]), churches ([ name, place, planted ]),
+ * gifts ([ amount, title, text ]), layout ('freedom' or ''), menu_order, home_order. Only published ministries are listed (a "hidden"
+ * ministry of the data file is a draft post, or skipped while the list falls back to the data file).
+ * A ministry post's own fields win; anything it has not set falls back to inc/data/ministries.php by slug, and the
+ * whole list falls back to that file until Setup has created the posts.
+ *
+ * @param string $order 'menu' (navigation/donation order) or 'home' (homepage explorer order; ministries whose
+ *                      explorer position is 0 are left out).
  * @return array[]
  */
 function krm_ministries( $order = 'menu' ) {
@@ -401,6 +429,7 @@ function krm_ministries( $order = 'menu' ) {
 	if ( isset( $cache[ $order ] ) ) {
 		return $cache[ $order ];
 	}
+	$data  = krm_ministry_data();
 	$items = array();
 	$posts = get_posts(
 		array(
@@ -416,36 +445,90 @@ function krm_ministries( $order = 'menu' ) {
 	);
 	if ( $posts ) {
 		foreach ( $posts as $post ) {
+			$d     = isset( $data['items'][ $post->post_name ] ) ? $data['items'][ $post->post_name ] : array();
 			$image = get_post_meta( $post->ID, '_krm_explorer_image', true );
 			if ( ! $image ) {
 				$image = get_post_thumbnail_id( $post );
 			}
-			$groups  = get_the_terms( $post, 'ministry_group' );
+			$groups = get_the_terms( $post, 'ministry_group' );
+			$group  = $groups && ! is_wp_error( $groups ) ? $groups[0] : null;
+			$home   = get_post_meta( $post->ID, '_krm_home_order', true );
+			$meta   = function ( $key, $fallback ) use ( $post ) {
+				return metadata_exists( 'post', $post->ID, $key ) ? get_post_meta( $post->ID, $key, true ) : $fallback;
+			};
+			$stats    = $meta( '_krm_stats', null );
+			$sections = $meta( '_krm_sections', null );
+			$camps    = $meta( '_krm_camps', null );
+			$churches = $meta( '_krm_churches', null );
+			$gifts    = $meta( '_krm_gifts', null );
 			$items[] = array(
+				'id'         => $post->ID,
 				'slug'       => $post->post_name,
-				'group'      => $groups && ! is_wp_error( $groups ) ? $groups[0]->name : '',
-				'title'      => get_the_title( $post ),
+				// Plain text ("&", not "&amp;"): templates escape it, and links pass it to Donate's fund list.
+				'group'      => $group ? wp_specialchars_decode( $group->name, ENT_QUOTES ) : '',
+				'group_slug' => $group ? $group->slug : '',
+				'title'      => wp_specialchars_decode( get_the_title( $post ), ENT_QUOTES ),
 				'desc'       => $post->post_excerpt,
+				'summary'    => (string) $meta( '_krm_summary', isset( $d['summary'] ) ? $d['summary'] : '' ),
+				'tag'        => (string) $meta( '_krm_tag', isset( $d['tag'] ) ? $d['tag'] : ( $group ? $group->name : '' ) ),
+				'raised'     => (string) $meta( '_krm_raised', isset( $d['raised'] ) ? $d['raised'] : '' ),
+				'goal'       => (string) $meta( '_krm_goal', isset( $d['goal'] ) ? $d['goal'] : '' ),
+				'stats'      => null === $stats ? ( isset( $d['stats'] ) ? $d['stats'] : array() ) : krm_parse_stats( $stats ),
+				'sections'   => null === $sections ? ( isset( $d['sections'] ) ? $d['sections'] : array() ) : krm_parse_sections( $sections ),
+				'camps'      => null === $camps ? ( isset( $d['camps'] ) ? $d['camps'] : array() ) : krm_parse_rows( $camps, 3 ),
+				'churches'   => null === $churches ? ( isset( $d['churches'] ) ? $d['churches'] : array() ) : krm_parse_rows( $churches, 3 ),
+				'gifts'      => null === $gifts ? ( isset( $d['gifts'] ) ? $d['gifts'] : array() ) : krm_parse_rows( $gifts, 3 ),
+				'layout'     => isset( $d['layout'] ) ? $d['layout'] : '',
 				'url'        => get_permalink( $post ),
 				'image'      => $image,
 				'menu_order' => (int) $post->menu_order,
-				'home_order' => (int) get_post_meta( $post->ID, '_krm_home_order', true ) ? (int) get_post_meta( $post->ID, '_krm_home_order', true ) : 999,
+				'home_order' => '0' === (string) $home ? 0 : ( (int) $home ? (int) $home : 999 ),
 			);
 		}
 	} else {
-		$data = include KRM_DIR . '/inc/data/ministries.php';
 		foreach ( $data['items'] as $slug => $m ) {
+			if ( 'live' !== $m['status'] ) {
+				continue;
+			}
 			$items[] = array(
+				'id'         => 0,
 				'slug'       => $slug,
 				'group'      => isset( $data['groups'][ $m['group'] ]['name'] ) ? $data['groups'][ $m['group'] ]['name'] : '',
+				'group_slug' => $m['group'],
 				'title'      => $m['title'],
 				'desc'       => $m['excerpt'],
+				'summary'    => $m['summary'],
+				'tag'        => $m['tag'],
+				'raised'     => $m['raised'],
+				'goal'       => $m['goal'],
+				'stats'      => $m['stats'],
+				'sections'   => $m['sections'],
+				'camps'      => isset( $m['camps'] ) ? $m['camps'] : array(),
+				'churches'   => isset( $m['churches'] ) ? $m['churches'] : array(),
+				'gifts'      => isset( $m['gifts'] ) ? $m['gifts'] : array(),
+				'layout'     => isset( $m['layout'] ) ? $m['layout'] : '',
 				'url'        => krm_ministry_url( $slug ),
 				'image'      => $m['explorer_image'],
 				'menu_order' => $m['menu_order'],
 				'home_order' => $m['home_order'],
 			);
 		}
+	}
+	foreach ( $items as $i => $m ) {
+		if ( '' === trim( $m['summary'] ) ) {
+			$items[ $i ]['summary'] = $m['desc'];
+		}
+		$items[ $i ]['group_short'] = isset( $data['groups'][ $m['group_slug'] ]['short'] ) ? $data['groups'][ $m['group_slug'] ]['short'] : $m['group'];
+	}
+	if ( 'home' === $order ) {
+		$items = array_values(
+			array_filter(
+				$items,
+				function ( $m ) {
+					return $m['home_order'] > 0;
+				}
+			)
+		);
 	}
 	$key = 'home' === $order ? 'home_order' : 'menu_order';
 	usort(
@@ -456,6 +539,220 @@ function krm_ministries( $order = 'menu' ) {
 	);
 	$cache[ $order ] = $items;
 	return $items;
+}
+
+/**
+ * A ministry's photos: [ reference, alt text ] pairs, from its gallery (or the data file before Setup).
+ *
+ * @param array $m A ministry from krm_ministries().
+ * @return array[]
+ */
+function krm_ministry_photos( $m ) {
+	$out = array();
+	if ( $m['id'] ) {
+		$alts = (array) get_post_meta( $m['id'], '_krm_photo_alts', true );
+		foreach ( array_filter( (array) get_post_meta( $m['id'], '_krm_gallery', true ) ) as $ref ) {
+			$out[] = array( $ref, ! empty( $alts[ (string) $ref ] ) ? $alts[ (string) $ref ] : krm_ref_alt( $ref, $m['title'] ) );
+		}
+		return $out;
+	}
+	$data = krm_ministry_data();
+	return isset( $data['items'][ $m['slug'] ] ) ? $data['items'][ $m['slug'] ]['photos'] : array();
+}
+
+/**
+ * The ministry data file (inc/data/ministries.php), loaded once.
+ *
+ * @return array{groups:array,items:array}
+ */
+function krm_ministry_data() {
+	static $data = null;
+	if ( null === $data ) {
+		$data = include KRM_DIR . '/inc/data/ministries.php';
+	}
+	return $data;
+}
+
+/**
+ * Ministry groups in their order, for the What We Do filter tabs and the About page: slug => short name
+ * ("Gospel & Spiritual"). Groups no published ministry is in are left out.
+ *
+ * @param array[] $ministries From krm_ministries().
+ * @return string[]
+ */
+function krm_ministry_groups( $ministries ) {
+	$used  = wp_list_pluck( $ministries, 'group_short', 'group_slug' );
+	$order = array();
+	foreach ( krm_ministry_data()['groups'] as $slug => $group ) {
+		$order[ $slug ] = $group['order'];
+	}
+	$terms = get_terms(
+		array(
+			'taxonomy'   => 'ministry_group',
+			'hide_empty' => false,
+		)
+	);
+	if ( ! is_wp_error( $terms ) ) {
+		foreach ( $terms as $term ) {
+			$saved = get_term_meta( $term->term_id, 'krm_order', true );
+			if ( '' !== $saved ) {
+				$order[ $term->slug ] = (int) $saved;
+			}
+		}
+	}
+	$groups = array();
+	foreach ( $used as $slug => $name ) {
+		if ( '' !== $slug ) {
+			$groups[ $slug ] = $name;
+		}
+	}
+	uksort(
+		$groups,
+		function ( $a, $b ) use ( $order ) {
+			return ( isset( $order[ $a ] ) ? $order[ $a ] : 99 ) - ( isset( $order[ $b ] ) ? $order[ $b ] : 99 );
+		}
+	);
+	return $groups;
+}
+
+/**
+ * Impact stats from the "value | label" lines of the ministry editor.
+ *
+ * @param string|array $raw Lines, or already parsed pairs.
+ * @return array[] [ value, label ] pairs.
+ */
+function krm_parse_stats( $raw ) {
+	if ( is_array( $raw ) ) {
+		return $raw;
+	}
+	$out = array();
+	foreach ( preg_split( '/\R/', (string) $raw ) as $line ) {
+		$parts = array_map( 'trim', explode( '|', $line, 2 ) );
+		if ( '' !== $parts[0] ) {
+			$out[] = array( $parts[0], isset( $parts[1] ) ? $parts[1] : '' );
+		}
+	}
+	return $out;
+}
+
+/**
+ * Rows of "a | b | c" lines (e.g. medical camps: date | location | people served). Empty lines are skipped.
+ *
+ * @param string|array $raw  Lines, or already parsed rows.
+ * @param int          $cols Number of columns.
+ * @return array[]
+ */
+function krm_parse_rows( $raw, $cols ) {
+	if ( is_array( $raw ) ) {
+		return $raw;
+	}
+	$out = array();
+	foreach ( preg_split( '/\R/', (string) $raw ) as $line ) {
+		if ( '' === trim( $line ) ) {
+			continue;
+		}
+		$out[] = array_pad( array_map( 'trim', explode( '|', $line, $cols ) ), $cols, '' );
+	}
+	return $out;
+}
+
+/**
+ * Extra ministry sections from the editor's text: a line "## Heading" starts a section, lines starting with "- " are
+ * its points, other lines its text.
+ *
+ * @param string|array $raw Text, or already parsed sections.
+ * @return array[] { heading, text, points }.
+ */
+function krm_parse_sections( $raw ) {
+	if ( is_array( $raw ) ) {
+		return $raw;
+	}
+	$out = array();
+	$cur = null;
+	foreach ( preg_split( '/\R/', (string) $raw ) as $line ) {
+		$line = trim( $line );
+		if ( '' === $line ) {
+			continue;
+		}
+		if ( 0 === strpos( $line, '##' ) ) {
+			if ( $cur ) {
+				$out[] = $cur;
+			}
+			$cur = array(
+				'heading' => trim( substr( $line, 2 ) ),
+				'text'    => '',
+				'points'  => array(),
+			);
+			continue;
+		}
+		if ( ! $cur ) {
+			$cur = array(
+				'heading' => '',
+				'text'    => '',
+				'points'  => array(),
+			);
+		}
+		if ( 0 === strpos( $line, '- ' ) ) {
+			$cur['points'][] = trim( substr( $line, 2 ) );
+		} else {
+			$cur['text'] = trim( $cur['text'] . ' ' . $line );
+		}
+	}
+	if ( $cur ) {
+		$out[] = $cur;
+	}
+	return $out;
+}
+
+/**
+ * Sections as the editor shows them (the reverse of krm_parse_sections()).
+ *
+ * @param array[] $sections Sections.
+ */
+function krm_sections_text( $sections ) {
+	$lines = array();
+	foreach ( (array) $sections as $s ) {
+		$lines[] = '## ' . $s['heading'];
+		if ( '' !== $s['text'] ) {
+			$lines[] = $s['text'];
+		}
+		foreach ( (array) $s['points'] as $p ) {
+			$lines[] = '- ' . $p;
+		}
+		$lines[] = '';
+	}
+	return trim( implode( "\n", $lines ) );
+}
+
+/**
+ * A card amount for display ('$12,500'), or the design's "[Amount]" placeholder when it is not set.
+ *
+ * @param string $amount Digits.
+ */
+function krm_card_amount( $amount ) {
+	$amount = preg_replace( '/[^0-9]/', '', (string) $amount );
+	return '' === $amount ? '[Amount]' : '$' . number_format_i18n( (int) $amount );
+}
+
+/**
+ * Whether a giving card shows its raised / goal line and progress bar: once a goal is set (administrators always,
+ * with "[Amount]" while it is not). The Donate button shows either way.
+ *
+ * @param string $goal Goal amount.
+ */
+function krm_show_progress( $goal ) {
+	return krm_show_placeholders() || (int) preg_replace( '/[^0-9]/', '', (string) $goal ) > 0;
+}
+
+/**
+ * Share of the goal raised, 0–100 (0 when either amount is not set).
+ *
+ * @param array $m A ministry from krm_ministries().
+ */
+function krm_raised_pct( $m ) {
+	$raised = (int) preg_replace( '/[^0-9]/', '', (string) $m['raised'] );
+	$goal   = (int) preg_replace( '/[^0-9]/', '', (string) $m['goal'] );
+	return $goal > 0 ? (int) min( 100, round( $raised / $goal * 100 ) ) : 0;
 }
 
 /**
@@ -501,6 +798,46 @@ function krm_read_time( $post_id ) {
 function krm_post_category( $post_id ) {
 	$cats = get_the_category( $post_id );
 	return $cats ? $cats[0]->name : '';
+}
+
+/**
+ * The News & Updates sections of a post: the top-level categories it is filed under (Blogs, Updates, …).
+ *
+ * @param int $post_id Post ID.
+ * @return string[] Names.
+ */
+function krm_post_sections( $post_id ) {
+	$out = array();
+	foreach ( get_the_category( $post_id ) as $cat ) {
+		$top = $cat;
+		while ( $top->parent ) {
+			$parent = get_category( $top->parent );
+			if ( ! $parent || is_wp_error( $parent ) ) {
+				break;
+			}
+			$top = $parent;
+		}
+		$out[ $top->term_id ] = $top->name;
+	}
+	return array_values( $out );
+}
+
+/**
+ * The News & Updates filter: every top-level category except "Uncategorized", by name.
+ *
+ * @return string[] Names.
+ */
+function krm_news_sections() {
+	$terms = get_terms(
+		array(
+			'taxonomy'   => 'category',
+			'parent'     => 0,
+			'hide_empty' => false,
+			'exclude'    => array( (int) get_option( 'default_category' ) ),
+			'orderby'    => 'name',
+		)
+	);
+	return is_wp_error( $terms ) ? array() : wp_list_pluck( $terms, 'name' );
 }
 
 /**
@@ -586,11 +923,11 @@ function krm_logo_img( $px = 64, $sizes = '64px', $alt = '', $extra = '' ) {
  * Slugs of the pages that have their own design template in page-templates/.
  */
 function krm_design_pages() {
-	return array( 'about', 'contact', 'donate', 'partner' );
+	return array( 'about', 'contact', 'donate', 'partner', 'impact', 'testimonies', 'gallery', 'prayer' );
 }
 
 /**
- * Which design template the current page uses ('about', 'contact', 'donate', 'partner'), or ''.
+ * Which design template the current page uses (a key of krm_design_pages()), or ''.
  *
  * A page uses one when it is assigned in Page Attributes → Template, or, with no template assigned, when its slug
  * matches (see the page_template_hierarchy filter in inc/setup.php).
@@ -605,4 +942,180 @@ function krm_design_template() {
 	}
 	$slug = get_queried_object()->post_name;
 	return in_array( $slug, krm_design_pages(), true ) ? $slug : '';
+}
+
+/* ---------- Placeholders: shown to admins, hidden from visitors ---------- */
+
+/**
+ * Whether placeholder content is shown: to logged-in administrators only. Visitors never see a data-driven section
+ * (counters, gift cards, stories, churches, camps, projects, team, testimonies) that has no real data, nor a single
+ * counter, card or person that is still a placeholder. Filter 'krm_show_placeholders' to change who sees them.
+ */
+function krm_show_placeholders() {
+	static $show = null;
+	if ( null === $show ) {
+		$show = (bool) apply_filters( 'krm_show_placeholders', is_user_logged_in() && current_user_can( 'manage_options' ) );
+	}
+	return $show;
+}
+
+/**
+ * Whether a value is not real data yet: empty, or holding a [bracketed placeholder] such as "[$ ]" or "[Name]".
+ *
+ * @param mixed $value Value.
+ */
+function krm_is_placeholder( $value ) {
+	$value = trim( wp_strip_all_tags( (string) $value ) );
+	return '' === $value || (bool) preg_match( '/\[[^\]]*\]/', $value );
+}
+
+/**
+ * The items of a data-driven list that may be shown: all of them for an administrator, else only those whose key
+ * value is real (krm_is_placeholder()).
+ *
+ * @param array           $items Items.
+ * @param string|int|callable $key   The item's key holding its value (e.g. 'amount', 0), or a callback returning it.
+ * @return array
+ */
+function krm_visible( $items, $key ) {
+	$items = array_values( (array) $items );
+	if ( krm_show_placeholders() ) {
+		return $items;
+	}
+	return array_values(
+		array_filter(
+			$items,
+			function ( $item ) use ( $key ) {
+				if ( is_callable( $key ) ) {
+					$value = call_user_func( $key, $item );
+				} else {
+					$value = is_array( $item ) && isset( $item[ $key ] ) ? $item[ $key ] : '';
+				}
+				return ! krm_is_placeholder( $value );
+			}
+		)
+	);
+}
+
+/**
+ * The one filter for client content printed on the site: for visitors, a value holding a [bracketed placeholder]
+ * ("[Amount]", "[00]", "[District]", "[Name]"…) is treated as empty (''); lists and arrays are filtered item by item.
+ * Administrators get the value unchanged. krm_c(), krm_text() and krm_inline() pass everything through it; templates
+ * printing other client data (ministries, posts' meta) call it directly.
+ *
+ * @param mixed $value Value.
+ * @return mixed
+ */
+function krm_public( $value ) {
+	if ( krm_show_placeholders() ) {
+		return $value;
+	}
+	if ( is_array( $value ) ) {
+		return array_map( 'krm_public', $value );
+	}
+	if ( is_string( $value ) && preg_match( '/\[[^\]]*\]/', $value ) ) {
+		return '';
+	}
+	return $value;
+}
+
+/**
+ * A text with its [placeholder] parts taken out for visitors, with the separator before them ("Help free a family ·
+ * [Amount]" → "Help free a family"). For labels that still make sense without the missing part.
+ *
+ * @param string $value Text.
+ */
+function krm_strip_placeholders( $value ) {
+	if ( krm_show_placeholders() ) {
+		return (string) $value;
+	}
+	return trim( preg_replace( '/\s*[·|:–—-]?\s*\[[^\]]*\]/u', '', (string) $value ) );
+}
+
+/**
+ * Print, for administrators only, a small label on a section that visitors do not see until it has real data.
+ *
+ * @param bool $hidden Whether visitors would not see this section.
+ */
+function krm_admin_only_note( $hidden = true ) {
+	if ( $hidden && krm_show_placeholders() ) {
+		echo '<p class="krm-admin-only">' . esc_html__( 'Only administrators see this section: visitors don’t, until it has real content.', 'kingdom-revival' ) . '</p>';
+	}
+}
+
+/**
+ * Whether the Testimonies page is hidden: for visitors, while no Testimonial is published. It is then left out of
+ * menus, links and sitemaps, and its address redirects (302) to Our Impact; the first published testimonial brings it
+ * back by itself.
+ */
+function krm_testimonies_hidden() {
+	static $hidden = null;
+	if ( null === $hidden ) {
+		$count  = wp_count_posts( 'testimonial' );
+		$hidden = ! krm_show_placeholders() && ( ! $count || empty( $count->publish ) );
+	}
+	return $hidden;
+}
+
+add_action(
+	'template_redirect',
+	function () {
+		if ( 'testimonies' === krm_design_template() && krm_testimonies_hidden() ) {
+			wp_safe_redirect( krm_page_url( 'impact' ), 302, 'Kingdom Revival theme' );
+			exit;
+		}
+	},
+	2
+);
+
+/**
+ * The ID of the published Testimonies page, or 0.
+ */
+function krm_testimonies_page_id() {
+	$pages = krm_design_template_pages();
+	return isset( $pages['testimonies'] ) ? (int) $pages['testimonies']->ID : 0;
+}
+
+/* Sitemaps leave the Testimonies page out while it is hidden: WordPress, Yoast SEO and Rank Math. */
+add_filter(
+	'wp_sitemaps_posts_query_args',
+	function ( $args, $post_type ) {
+		if ( 'page' === $post_type && krm_testimonies_hidden() && krm_testimonies_page_id() ) {
+			$args['post__not_in'] = array_merge( isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array(), array( krm_testimonies_page_id() ) );
+		}
+		return $args;
+	},
+	10,
+	2
+);
+add_filter(
+	'wpseo_exclude_from_sitemap_by_post_ids',
+	function ( $ids ) {
+		return krm_testimonies_hidden() && krm_testimonies_page_id() ? array_merge( (array) $ids, array( krm_testimonies_page_id() ) ) : $ids;
+	}
+);
+add_filter(
+	'rank_math/sitemap/entry',
+	function ( $url, $type, $post ) {
+		return ( 'post' === $type && is_object( $post ) && isset( $post->ID ) && (int) $post->ID === krm_testimonies_page_id() && krm_testimonies_hidden() ) ? false : $url;
+	},
+	10,
+	3
+);
+
+
+/**
+ * Whether Our Impact shows its "How donations are used" section to visitors: at least one allocation percentage
+ * in inc/data/impact.json. Donate's "Financial transparency" link points at that section only when it is there.
+ */
+function krm_impact_has_financials() {
+	static $has = null;
+	if ( null === $has ) {
+		$data = json_decode( (string) file_get_contents( KRM_DIR . '/inc/data/impact.json' ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local theme file.
+		$has  = false;
+		foreach ( isset( $data['financials'] ) ? (array) $data['financials'] : array() as $row ) {
+			$has = $has || ( isset( $row['percent'] ) && is_numeric( $row['percent'] ) );
+		}
+	}
+	return $has;
 }

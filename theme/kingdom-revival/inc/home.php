@@ -29,11 +29,46 @@ function krm_social_links() {
 /**
  * Donate page link for an amount picked on the home page (same parameters the design used).
  *
- * @param string $amount '$50' or 'Other'.
+ * @param string $amount   '$50' or 'Other'.
+ * @param string $for      Fund name (?for=…), used when no ministry slug is given.
+ * @param string $ministry Ministry slug (?ministry=…), which Donate preselects.
  */
-function krm_home_donate_href( $amount ) {
+function krm_home_donate_href( $amount, $for = '', $ministry = '' ) {
 	$value = 'Other' === $amount ? '' : str_replace( '$', '', $amount );
-	return krm_donate_url() . '?amount=' . rawurlencode( $value ) . '&frequency=One-time#give';
+	$fund  = '' !== $ministry ? '&ministry=' . rawurlencode( $ministry ) : ( '' !== $for ? '&for=' . rawurlencode( $for ) : '' );
+	return krm_donate_url() . '?amount=' . rawurlencode( $value ) . '&frequency=One-time' . $fund . '#give';
+}
+
+/**
+ * Donate page link that preselects a ministry: /donate/?ministry=slug#give (plus optional extra parameters).
+ *
+ * @param string $slug Ministry slug.
+ * @param array  $args Extra query parameters (e.g. amount).
+ */
+function krm_ministry_donate_url( $slug, $args = array() ) {
+	$args = array_merge( '' !== (string) $slug ? array( 'ministry' => rawurlencode( $slug ) ) : array(), $args );
+	return add_query_arg( $args, krm_donate_url() ) . '#give';
+}
+
+/**
+ * The ministry the hero donation card gives to (Pages → Home → Page content → card ministry): its title, or ''.
+ */
+function krm_home_card_ministry_slug() {
+	$slug = sanitize_title( (string) krm_c( 'hero.card_ministry', 'home' ) );
+	return '' !== krm_home_card_ministry() ? $slug : '';
+}
+
+/**
+ * The hero donation card ministry's title, or ''.
+ */
+function krm_home_card_ministry() {
+	$slug = sanitize_title( (string) krm_c( 'hero.card_ministry', 'home' ) );
+	foreach ( krm_ministries() as $m ) {
+		if ( $m['slug'] === $slug ) {
+			return $m['title'];
+		}
+	}
+	return '';
 }
 
 /**
@@ -75,6 +110,7 @@ function krm_explorer_data( $ministries ) {
 			'title'  => $m['title'],
 			'desc'   => $m['desc'],
 			'url'    => $m['url'],
+			'slug'   => $m['slug'],
 			'img'    => krm_ref_url( $m['image'] ),
 			'srcset' => $id ? (string) wp_get_attachment_image_srcset( $id, 'full' ) : '',
 		);
@@ -87,12 +123,12 @@ function krm_explorer_data( $ministries ) {
  */
 function krm_home_causes() {
 	return array(
-		array( 'EDUCATION', 'Brick Kiln Children', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Bricks-kiln-slaves-children-2-1-scaled-rsiliajqeyghqckx2003kqpavypwam7blarw8gd3dk.jpg', 'Schooling, Sunday school and care for children growing up beside the kilns.' ),
-		array( 'SCRIPTURE', 'Urdu Bible Distribution', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Urdu-Bible-Distribution-10-e1787225652778-rs6ku7xozhzlsfp1dnnhtt4zfx755n9wewbth95tnc.jpg', 'Placing Urdu Bibles in the hands of families and new believers.' ),
-		array( 'ORPHAN CARE', 'Orphanage & Children Care', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Orphanages-care-16-scaled-e1787819076312-rsij8jj20ojpz9btf5v77vd2yjnnuanqoo6mn3kqjc.jpg', 'Shelter, food and daily care for orphaned and underprivileged children.' ),
-		array( 'WIDOWS', 'Widows Ministry', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Widows-ministry-1-scaled-rsinedytivoatdo3ffn47k3g4v35x8jaac67u3ecm0.jpg', 'Support and fellowship for widows in the church and the village.' ),
-		array( 'HEALING', 'Deliverance & Healing', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Deliverance-and-Healing-ministry-5-scaled-e1787225773575-rs6kxdo5ygbat93txitcpifrbjmk10tf6j9kjqh6qg.jpg', 'Prayer for the sick and oppressed in the power of Jesus Christ.' ),
-		array( 'FREEDOM', 'Freedom from Slavery', 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg', 'Helping families held in debt bondage at brick kilns walk free.' ),
+		array( 'FAMILY CARE', 'Brick Kiln Family Care', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Bricks-kiln-slaves-children-2-1-scaled-rsiliajqeyghqckx2003kqpavypwam7blarw8gd3dk.jpg', 'Schooling, Sunday school and care for children growing up beside the kilns.' ),
+		array( 'SCRIPTURE', 'Bible Distribution', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Urdu-Bible-Distribution-10-e1787225652778-rs6ku7xozhzlsfp1dnnhtt4zfx755n9wewbth95tnc.jpg', 'Placing Urdu Bibles in the hands of families and new believers.' ),
+		array( 'CHILDREN', 'Children & Orphan Care', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Orphanages-care-16-scaled-e1787819076312-rsij8jj20ojpz9btf5v77vd2yjnnuanqoo6mn3kqjc.jpg', 'Shelter, food and daily care for orphaned and underprivileged children.' ),
+		array( 'WIDOWS', 'Widows Support', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Widows-ministry-1-scaled-rsinedytivoatdo3ffn47k3g4v35x8jaac67u3ecm0.jpg', 'Support and fellowship for widows in the church and the village.' ),
+		array( 'PRAYER', 'Prayer & Deliverance Ministry', 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/Deliverance-and-Healing-ministry-5-scaled-e1787225773575-rs6kxdo5ygbat93txitcpifrbjmk10tf6j9kjqh6qg.jpg', 'Prayer for the sick and oppressed in the power of Jesus Christ.' ),
+		array( 'FREEDOM', 'Slavery & Freedom Ministry', 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg', 'Helping families held in debt bondage at brick kilns walk free.' ),
 	);
 }
 

@@ -1,7 +1,12 @@
 <?php
 /**
- * /ministries/ — All Ministries: the inner-page hero and every published ministry as a card (the home page's
- * giving-card design), in menu order. Text is edited in Kingdom Revival → Site text → All Ministries page.
+ * /what-we-do/ — What We Do: the inner-page hero, filter tabs by ministry group (All · Gospel & Spiritual ·
+ * Compassion & Humanitarian), every published ministry as a giving card (template-parts/ministry-card.php), then the home page's "Your gift at work", "Three Ways to Stand
+ * With Us" and closing verse sections.
+ *
+ * Text: Kingdom Revival → Site text → What We Do page. Cards: each ministry's own fields (krm_ministries()).
+ * The three closing sections read the home page's content, so they are edited once, in Pages → Home.
+ * The tabs are buttons that assets/js/components.js reveals and drives; without JavaScript every card shows.
  *
  * @package Kingdom_Revival
  */
@@ -10,9 +15,9 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$krm_hero = krm_c( 'ministries.image', 'site' );
-$krm_list = krm_ministries();
-$krm_more = krm_fill( krm_c( 'ministries.card_button', 'site' ) );
+$krm_hero   = krm_c( 'ministries.image', 'site' );
+$krm_list   = krm_ministries();
+$krm_groups = krm_ministry_groups( $krm_list );
 ?>
 	<main id="main">
 	<?php krm_hero_preload( $krm_hero ); ?>
@@ -21,30 +26,39 @@ $krm_more = krm_fill( krm_c( 'ministries.card_button', 'site' ) );
 		<?php krm_breadcrumb_html(); ?>
 		<p class="eyebrow"><?php krm_t( 'ministries.eyebrow', 'site' ); ?></p>
 		<h1><?php krm_h( 'ministries.heading', 'site' ); ?></h1>
+		<?php if ( '' !== trim( (string) krm_c( 'ministries.subheading', 'site' ) ) ) : ?>
+		<p class="hero-sub"><?php krm_h( 'ministries.subheading', 'site' ); ?></p>
+		<?php endif; ?>
 		<p class="lead"><?php krm_t( 'ministries.lead', 'site' ); ?></p>
 		</div>
 	</section>
 
-	<section class="section section-soft" aria-labelledby="ministries-heading">
-		<div class="wrap">
+	<section class="krm-band krm-band-soft" aria-labelledby="ministries-heading">
+		<div class="krm-container">
 		<h2 class="visually-hidden" id="ministries-heading"><?php krm_t( 'ministries.list_heading', 'site' ); ?></h2>
 		<?php if ( $krm_list ) : ?>
-		<ul class="ministries-grid">
-			<?php foreach ( $krm_list as $krm_m ) : ?>
-			<li class="ministries-card">
-				<a class="ministries-card-media" href="<?php echo esc_url( $krm_m['url'] ); ?>" tabindex="-1" aria-hidden="true">
-					<?php if ( $krm_m['image'] ) : ?>
-					<img <?php krm_img_src( $krm_m['image'], '(max-width: 639px) calc(100vw - 32px), (max-width: 999px) 50vw, 400px', true ); ?> alt="" width="400" height="210" loading="lazy" decoding="async">
-					<?php endif; ?>
-					<?php if ( $krm_m['group'] ) : ?>
-					<span class="ministries-card-tag"><?php echo esc_html( $krm_m['group'] ); ?></span>
-					<?php endif; ?>
-				</a>
-				<div class="ministries-card-body">
-					<h3><a href="<?php echo esc_url( $krm_m['url'] ); ?>"><?php echo esc_html( $krm_m['title'] ); ?></a></h3>
-					<p><?php echo esc_html( $krm_m['desc'] ); ?></p>
-					<a class="ministries-card-button" href="<?php echo esc_url( $krm_m['url'] ); ?>"><?php echo esc_html( $krm_more ); ?><span class="visually-hidden"> <?php echo esc_html( sprintf( /* translators: %s: ministry name */ __( 'about %s', 'kingdom-revival' ), $krm_m['title'] ) ); ?></span><?php echo krm_icon( 'arrow16' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
-				</div>
+			<?php if ( count( $krm_groups ) > 1 ) : ?>
+		<div class="ministry-filter" role="group" aria-label="<?php echo esc_attr( krm_fill( krm_c( 'ministries.filter_label', 'site' ) ) ); ?>" data-krm-filter="ministries" data-param="group" hidden>
+			<button type="button" data-group="" aria-pressed="true"><?php krm_t( 'ministries.all_label', 'site' ); ?></button>
+				<?php foreach ( $krm_groups as $krm_slug => $krm_name ) : ?>
+			<button type="button" data-group="<?php echo esc_attr( $krm_slug ); ?>" aria-pressed="false"><?php echo esc_html( $krm_name ); ?></button>
+				<?php endforeach; ?>
+		</div>
+		<p class="visually-hidden" aria-live="polite" data-krm-filter-status="ministries" data-text="<?php echo esc_attr( krm_fill( krm_c( 'ministries.count_text', 'site' ) ) ); ?>"></p>
+			<?php endif; ?>
+		<ul class="ministry-grid" data-krm-filter-list="ministries">
+			<?php foreach ( $krm_list as $krm_i => $krm_m ) : ?>
+			<li data-group="<?php echo esc_attr( $krm_m['group_slug'] ); ?>">
+				<?php
+				get_template_part(
+					'template-parts/ministry-card',
+					null,
+					array(
+						'ministry' => $krm_m,
+						'index'    => $krm_i,
+					)
+				);
+				?>
 			</li>
 			<?php endforeach; ?>
 		</ul>
@@ -53,6 +67,14 @@ $krm_more = krm_fill( krm_c( 'ministries.card_button', 'site' ) );
 		<?php endif; ?>
 		</div>
 	</section>
+
+	<div class="krm-design">
+	<?php
+	foreach ( array( 'gift', 'get-involved', 'cta' ) as $krm_part ) {
+		get_template_part( 'template-parts/home/' . $krm_part, null, array( 'screen' => 'home' ) );
+	}
+	?>
+	</div>
 	</main>
 <?php
 get_footer();

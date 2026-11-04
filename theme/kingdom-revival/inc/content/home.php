@@ -11,6 +11,8 @@ defined( 'ABSPATH' ) || exit;
 $krm_up     = 'https://kingdomrevivalministries.com/wp-content/uploads/';
 $krm_poster = $krm_up . 'elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg';
 $krm_video  = $krm_up . '2026/08/a.mp4';
+$krm_hero_v = 'krm-theme:video/hero.mp4'; // The client's hero video, shipped with the theme (assets/video/hero.mp4: 15 s, 1280px, no audio, H.264).
+$krm_hero_w = 'krm-theme:video/hero.webm'; // The same clip as WebM (VP9), for browsers without H.264.
 $krm_hl     = __( 'Wrap highlighted words in <span style="color: #F5A04A">…</span>.', 'kingdom-revival' );
 
 return array(
@@ -18,7 +20,8 @@ return array(
 		'label'  => __( 'Hero and donation card', 'kingdom-revival' ),
 		'fields' => array(
 			'image'          => krm_f( 'image', __( 'Background image (also shown before the video plays)', 'kingdom-revival' ), $krm_poster ),
-			'video'          => krm_f( 'url', __( 'Background video (MP4 link)', 'kingdom-revival' ), $krm_video, __( 'Upload the video in Media → Add New and paste its link here. Leave empty to show only the image.', 'kingdom-revival' ) ),
+			'video'          => krm_f( 'url', __( 'Background video (MP4 link)', 'kingdom-revival' ), $krm_hero_v, __( 'Upload the video in Media → Add New and paste its link here. Leave empty to show only the image. It plays on screens 768px and wider only (not with data saver or reduced motion); phones always see the background image. Keep it short (about 15 s), without sound, under 4 MB.', 'kingdom-revival' ) ),
+			'video_webm'     => krm_f( 'url', __( 'Background video, WebM version (optional)', 'kingdom-revival' ), $krm_hero_w, __( 'The same clip as WebM, for browsers that cannot play the MP4. Leave empty if you only have the MP4.', 'kingdom-revival' ) ),
 			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Bringing Hope to the Forgotten' ),
 			'title'          => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Sharing the Hope of <span style="color: #F5A04A">Jesus Christ</span> with the Unreached & <span style="color: #F5A04A">Vulnerable</span>', $krm_hl ),
 			'lead'           => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'We preach the Gospel, plant churches and care for brick kiln families, orphans and widows across Pakistan and beyond.' ),
@@ -29,6 +32,7 @@ return array(
 			'card_badge'     => krm_f( 'text', __( 'Donation card: badge', 'kingdom-revival' ), 'MAKE AN IMPACT' ),
 			'card_heading'   => krm_f( 'text', __( 'Donation card: heading', 'kingdom-revival' ), 'Help Brick Kiln Children Go to School & Know Christ' ),
 			'card_text'      => krm_f( 'textarea', __( 'Donation card: text', 'kingdom-revival' ), 'Your gift provides Sunday school, education and care for children growing up beside the kilns.' ),
+			'card_ministry'  => krm_f( 'text', __( 'Donation card: ministry the gift goes to', 'kingdom-revival' ), 'children-orphan-care', __( 'The ministry’s slug (Ministries → edit → permalink), e.g. children-orphan-care. The card’s Donate button opens Donate with this ministry chosen. Leave empty for “Where it is needed most”.', 'kingdom-revival' ) ),
 			'card_note'      => krm_f( 'textarea', __( 'Donation card: small print', 'kingdom-revival' ), 'Every gift helps children learn, grow in faith and build a brighter future.' ),
 			'amounts'        => krm_f( 'text', __( 'Amounts (US dollars)', 'kingdom-revival' ), '25, 50, 100, 250', __( 'Used by the donation card and the floating “Donate” panel. Numbers separated by commas; “Other” is always added.', 'kingdom-revival' ) ),
 			'default_amount' => krm_f( 'text', __( 'Amount selected at first', 'kingdom-revival' ), '50' ),
@@ -53,25 +57,25 @@ return array(
 						'amount' => '$10',
 						'title'  => 'One Urdu Bible',
 						'text'   => 'Scripture for a family or new believer.',
-						'url'    => '{donate}',
+						'url'    => '{donate}?ministry=bible-distribution&amount=10#give',
 					),
 					array(
 						'amount' => '$45',
 						'title'  => 'Medical camp for a family',
 						'text'   => 'Check-up and medicine at a kiln or village camp.',
-						'url'    => '{donate}',
+						'url'    => '{donate}?ministry=medical-health&amount=45#give',
 					),
 					array(
 						'amount' => '[$ ]',
 						'title'  => 'A child’s schooling',
 						'text'   => 'Fees, books and uniform for a kiln child.',
-						'url'    => '{donate}',
+						'url'    => '{donate}?ministry=brick-kiln-family-care#give',
 					),
 					array(
 						'amount' => '[$ ]',
 						'title'  => 'Frees a family',
 						'text'   => 'Clears a bonded family’s debt and helps them start again.',
-						'url'    => '{donate}',
+						'url'    => '{donate}?ministry=slavery-freedom#give',
 					),
 				)
 			),
@@ -96,14 +100,23 @@ return array(
 		'label'  => __( 'Ministry explorer', 'kingdom-revival' ),
 		'help'   => __( 'The list shows your published ministries. Each ministry’s explorer photo and position are set on the ministry (Ministries → edit).', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our Ministries' ),
-			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Twelve ministries. One Gospel. Explore them.' ),
+			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'What We Do' ),
+			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'One Gospel, shared in word and deed.' ),
 			'intro'         => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'Choose a ministry to see what it does and how your support reaches people.' ),
 			'support_label' => krm_f( 'text', __( 'Support button text', 'kingdom-revival' ), 'Support this ministry' ),
 			'support_url'   => krm_f( 'url', __( 'Support button link', 'kingdom-revival' ), '{donate}' ),
-			'more_label'    => krm_f( 'text', __( 'Ministry page button text', 'kingdom-revival' ), 'See All' ),
+			'more_label'    => krm_f( 'text', __( 'Ministry page button text', 'kingdom-revival' ), 'Learn more' ),
 			'all_label'     => krm_f( 'text', __( 'All Ministries button text', 'kingdom-revival' ), 'View All Ministries' ),
 			'all_url'       => krm_f( 'url', __( 'All Ministries button link', 'kingdom-revival' ), '{ministries}' ),
+		),
+	),
+	'projects' => array(
+		'label'  => __( 'Current projects', 'kingdom-revival' ),
+		'help'   => __( 'The first three current projects (Projects in the dashboard). Until a project is added, the placeholder projects show.', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow'  => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our projects' ),
+			'heading'  => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Current projects' ),
+			'all_label' => krm_f( 'text', __( 'Link to all projects', 'kingdom-revival' ), 'See all projects →' ),
 		),
 	),
 	'causes'   => array(
@@ -138,9 +151,9 @@ return array(
 		),
 	),
 	'freedom'  => array(
-		'label'  => __( 'Flagship: Freedom from Slavery', 'kingdom-revival' ),
+		'label'  => __( 'Flagship: Slavery & Freedom Ministry', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Flagship ministry · Freedom from Slavery' ),
+			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Flagship ministry · Slavery & Freedom' ),
 			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Behind every brick, a family waiting to be free.' ),
 			'text'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Whole families labour at brick kilns under debts passed down for generations. Here is exactly how your gift brings a family out.' ),
 			'steps'         => krm_list_f(
@@ -182,11 +195,11 @@ return array(
 			'after_label'   => krm_f( 'text', __( 'After photo label', 'kingdom-revival' ), 'After · Free' ),
 			'compare_label' => krm_f( 'text', __( 'Slider label', 'kingdom-revival' ), 'Drag to compare' ),
 			'button_label'  => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Help free a family · [Amount]' ),
-			'button_url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{donate}' ),
+			'button_url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{donate}?ministry=slavery-freedom#give' ),
 		),
 	),
 	'flagship' => array(
-		'label'  => __( 'Flagship cards (Urdu Bibles, Church Planting)', 'kingdom-revival' ),
+		'label'  => __( 'Flagship cards (Bible Distribution, Church Planting)', 'kingdom-revival' ),
 		'fields' => array(
 			'cards' => krm_list_f(
 				__( 'Cards', 'kingdom-revival' ),
@@ -204,11 +217,11 @@ return array(
 					array(
 						'image'        => $krm_up . 'elementor/thumbs/Urdu-Bible-Distribution-6-e1787296463599-rs8073jb4tpz51knz3wuum8c11mkotg8ytctdb8ink.jpg',
 						'image_alt'    => 'Urdu Bible distribution',
-						'eyebrow'      => 'Flagship · Urdu Bibles',
+						'eyebrow'      => 'Flagship · Bible Distribution',
 						'title'        => 'Hands that never held a book are holding this one.',
 						'text'         => 'We place Urdu Bibles with families and new believers, then follow up so they can read and understand.',
 						'button_label' => '$10 places one Urdu Bible',
-						'button_url'   => '{donate}',
+						'button_url'   => '{donate}?ministry=bible-distribution#give',
 					),
 					array(
 						'image'        => $krm_up . '2026/08/Leadership-and-Discipleship-10-scaled.jpg',
@@ -217,7 +230,7 @@ return array(
 						'title'        => 'A church in every village we reach.',
 						'text'         => 'Local congregations and house churches, led by pastors we train and walk alongside.',
 						'button_label' => 'See the churches',
-						'button_url'   => '{ministries}',
+						'button_url'   => '{ministries}church-planting/#churches',
 					),
 				),
 				__( 'The first card has the red button, the second the dark blue one.', 'kingdom-revival' )
@@ -416,7 +429,7 @@ return array(
 			'button_url'     => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '#prayer' ),
 			'whatsapp_label' => krm_f( 'text', __( 'WhatsApp button text', 'kingdom-revival' ), 'WhatsApp', __( 'Links to the WhatsApp number in Settings. Leave empty to hide the button.', 'kingdom-revival' ) ),
 			'story_label'    => krm_f( 'text', __( 'Story link text', 'kingdom-revival' ), 'Read his story →', __( 'Leave empty to hide the link.', 'kingdom-revival' ) ),
-			'story_url'      => krm_f( 'url', __( 'Story link', 'kingdom-revival' ), '{about}#founder' ),
+			'story_url'      => krm_f( 'url', __( 'Story link', 'kingdom-revival' ), '{about}#founder-story' ),
 		),
 	),
 	'beliefs'  => array(
@@ -426,7 +439,7 @@ return array(
 			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Our statement of faith' ),
 			'points'       => krm_f( 'textarea', __( 'Beliefs', 'kingdom-revival' ), "The Bible is the inspired Word of God and our final authority.\nOne God, eternally existing as Father, Son and Holy Spirit.\nJesus Christ is fully God and fully man; He died for our sins and rose again.\nSalvation is by grace alone, through faith in Jesus Christ alone.\nThe Holy Spirit lives in every believer and empowers the Church.\nJesus Christ will return; we are called to make disciples of all nations.", __( 'One point per line.', 'kingdom-revival' ) ),
 			'link_label'   => krm_f( 'text', __( 'Link text', 'kingdom-revival' ), 'Read the full statement →', __( 'Leave empty to hide the link.', 'kingdom-revival' ) ),
-			'link_url'     => krm_f( 'url', __( 'Link', 'kingdom-revival' ), '{about}' ),
+			'link_url'     => krm_f( 'url', __( 'Link', 'kingdom-revival' ), '{about}#beliefs' ),
 			'team_eyebrow' => krm_f( 'text', __( 'Team: small heading', 'kingdom-revival' ), 'Our team' ),
 			'team_heading' => krm_f( 'html', __( 'Team: heading', 'kingdom-revival' ), 'The people on the ground' ),
 			'team'         => krm_list_f(

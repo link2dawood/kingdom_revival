@@ -6,8 +6,8 @@ const { chromium } = require('playwright-core');
 const { prepare } = require('./lib');
 
 const WP = process.env.WP_URL || 'http://127.0.0.1:8899';
-const PAGES = process.argv.slice(2).length ? process.argv.slice(2) : ['/', '/about/', '/contact/', '/donate/', '/partner/', '/blog/',
-  '/learning-beside-the-kilns/', '/ministries/brick-kiln-children/', '/ministries/'];
+const PAGES = process.argv.slice(2).length ? process.argv.slice(2) : ['/', '/about/', '/contact/', '/donate/', '/partner-with-us/', '/news/',
+  '/news/learning-beside-the-kilns/', '/what-we-do/brick-kiln-family-care/', '/what-we-do/'];
 const WIDTHS = [360, 390, 414, 520, 600, 640, 700, 760, 768, 820, 900, 1000, 1024, 1040, 1100, 1240, 1280, 1440, 1920];
 
 (async () => {

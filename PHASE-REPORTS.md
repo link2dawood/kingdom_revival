@@ -22,6 +22,15 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Phase 15 step 5: logo and image sizes (theme 1.8.1)](#kingdom-revival-ministries-phase-15-step-5-logo-and-image-sizes-theme-181)
 - [Kingdom Revival Ministries: Phase 15 step 6: mobile PageSpeed (theme 1.8.2)](#kingdom-revival-ministries-phase-15-step-6-mobile-pagespeed-theme-182)
 - [Kingdom Revival Ministries: Phase 16: new home page sections and Ministries mega menu (theme 1.9.0)](#kingdom-revival-ministries-phase-16-new-home-page-sections-and-ministries-mega-menu-theme-190)
+- [Kingdom Revival Ministries: Phase 17: All Ministries page rebuilt from the home design (theme 1.10.0)](#kingdom-revival-ministries-phase-17-all-ministries-page-rebuilt-from-the-home-design-theme-1100)
+- [Kingdom Revival Ministries: Phase 18: the client's sitemap (theme 1.10.0)](#kingdom-revival-ministries-phase-18-the-clients-sitemap-theme-1100)
+- [Kingdom Revival Ministries: Phase 18 follow-up: decisions, drafts for sign-off (theme 1.10.0)](#kingdom-revival-ministries-phase-18-follow-up-decisions-drafts-for-sign-off-theme-1100)
+- [Kingdom Revival Ministries: Phase 19: one template for every ministry page (theme 1.11.0)](#kingdom-revival-ministries-phase-19-one-template-for-every-ministry-page-theme-1110)
+- [Kingdom Revival Ministries: Phase 19 follow-up: placeholders for admins only (theme 1.11.1)](#kingdom-revival-ministries-phase-19-follow-up-placeholders-for-admins-only-theme-1111)
+- [Kingdom Revival Ministries: Phase 19 follow-up 2: no placeholders for visitors anywhere (theme 1.11.2)](#kingdom-revival-ministries-phase-19-follow-up-2-no-placeholders-for-visitors-anywhere-theme-1112)
+- [Kingdom Revival Ministries: Prayer Request, Contact and Donate pages](#kingdom-revival-ministries-prayer-request-contact-and-donate-pages)
+- [Kingdom Revival Ministries: Final pass across the whole site](#kingdom-revival-ministries-final-pass-across-the-whole-site)
+- [Kingdom Revival Ministries: Hero video for desktop only, one version number (theme 1.14.0)](#kingdom-revival-ministries-hero-video-for-desktop-only-one-version-number-theme-1140)
 
 ---
 
@@ -2351,3 +2360,581 @@ were too narrow); grids use `min(…px, 100%)` so cards never overflow a phone.
    (Evangelism & Church, Compassion, Children & Education, Freedom). The design also lists "Church Planting",
    which is not one of the 12 ministries.
 
+## Kingdom Revival Ministries: Phase 17: All Ministries page rebuilt from the home design (theme 1.10.0)
+
+*Correction: before release, Phase 18 replaced this phase's 4 groups / 13 ministries with the client's sitemap
+(2 groups, 16 ministries) and moved /ministries/ to /what-we-do/. Both phases ship together as theme 1.10.0.*
+
+**Result: /ministries/ now has the brief's five parts: the shared inner hero, filter tabs for the four groups, all
+13 ministries as the home design's giving card (with the raised/goal bar and a "Learn more →" link), then the home page's
+"Your gift at work", "Three Ways to Stand With Us" and closing-verse sections. All ministry content comes from one
+source. Every other page is pixel-identical to theme 1.9.0.**
+
+The brief also listed the design tokens and shared parts (top bar extras, a 4-group mega menu, seasonal strip,
+inner hero, CTA, footer). The questions sent back about those (re-baseline the old pages to the new tokens? which
+footer? /news URLs? menu groups?) are still open, so this phase changes only /ministries/ and the data behind it.
+
+### What changed
+
+| Area | Change |
+|---|---|
+| One ministry source | `inc/data/ministries.php` now holds the four groups (Evangelism & Church, Compassion, Children & Education, Freedom), the 13th ministry (Church Planting), the brief's order, and per ministry `tag`, `summary` (the home "causes" card text where there is one, else the Excerpt), `raised`, `goal` and `stats`. `krm_ministries()` returns these for every page. A ministry post's own fields win, and anything never saved falls back to the data file by slug |
+| Ministry editor | New "All Ministries card" fields: label, card text, raised, goal, impact stats (`value \| label` lines). Explorer position 0 = not in the home explorer (Church Planting, so the home page keeps its twelve) |
+| Upgrade (runs once, option `krm_ministry_data_version` = 2) | Creates the 4 group terms. A ministry is moved only if its group and menu order are still the 1.9 defaults. Church Planting is created only on sites that already have ministries; its photo is the stand-in used on the home flagship card (Leadership & Discipleship 10). The three old groups are deleted once empty. Menus are not touched |
+| Card | `template-parts/ministry-card.php`, styles `.cause-card` in `theme-global.css`. The story sidebar already used `.ministry-card`, so the new card got a different name. "Donate Now" opens `/donate/?for=<ministry>#give` with the ministry preselected |
+| Filter | Buttons with `aria-pressed`, count announced in a live region, `?group=` kept in the address (it can be linked to and survives Back). The tabs are hidden without JavaScript, so all cards show (`assets/js/ministries.js`, loaded on /ministries/ only) |
+| Reused home sections | `home/gift.php`, `get-involved.php` and `cta.php` take `screen => 'home'`, so they are edited once, on the home page. On the inner page they are wrapped in `.krm-design`, which cancels `site.css`'s heading colour, spacing and line height (without it, "Give" was navy on navy) |
+| Shared CSS | `.k-y/.k-o/.k-g/.k-card` and `.visually-hidden` moved to `theme-global.css`, and the design's 1240px container became `.krm-container` |
+
+### Verified
+
+| Check | Result |
+|---|---|
+| All pages, 1.9.0 vs 1.10.0 (`compare.js` + `wpdiff.js`, 39 shots) | 36 at 0 %. Only /ministries/ (3 shots) differs, as intended |
+| /ministries/ at 1440 / 768 / 390 / 360 | 3 / 2 / 1 / 1 columns, `scrollWidth` = viewport at every width, no JS errors |
+| Reused sections vs home (computed styles: colour, letter-spacing, line-height, size, weight, height) | Identical for every heading, text, card and button checked |
+| Filter | Compassion → 3 cards, "Showing 3 ministries", `?group=compassion`. Back → 13. `?group=freedom` → Freedom from Slavery only. No JS → 13 cards, tabs hidden |
+| Home explorer | Still 12 |
+| Upgrade on the local site | 4 groups (6/3/3/1), old groups gone, Church Planting created (ID 173), order 1–13 as the brief |
+| axe-core WCAG 2.1 A/AA on /ministries/ (1440, 390) | 0 violations |
+| `php -l` on every changed file, `node --check` | No errors |
+
+### Not covered
+
+- Setup on a fresh install was not re-run; it reads the same data file and the 4 groups.
+- Lighthouse was not re-run (the page has one more card and one small script).
+
+### Decisions for you
+
+1. **Intro [FROM PDF]:** there is no PDF in the project, so the existing intro is kept (Site text → All Ministries page).
+   The same goes for the longer descriptions: the cards use the home page's text.
+2. **"Twelve ministries" with 13 cards:** the H1 is as briefed, but Church Planting makes 13. Change the H1, or keep
+   Church Planting off this list?
+3. **Raised / Goal:** no figures exist, so every card shows "[Amount]" and an empty bar, as the design does. Enter real
+   numbers per ministry. Impact stats are empty for the same reason.
+4. **Photos:** Free Medical Camps and Clean Water Project share the same stand-in photo (general pictures 14), and
+   Church Planting uses a Leadership & Discipleship photo.
+5. **Menu:** the existing Appearance → Menus still has the old three group headings and no Church Planting. Updating
+   it to the 4-group mega menu is part of the shared-parts work that is waiting on your answers.
+
+## Kingdom Revival Ministries: Phase 18: the client's sitemap (theme 1.10.0)
+
+**Result: the site now follows the client's handwritten sitemap (KRM PAK.pdf). The changes:**
+
+- **Navigation:** Home · About Us · What We Do · Our Impact · News & Updates · Partner With Us · Contact, plus the red "Donate / Give" button.
+- **What We Do:** 16 ministries in 2 groups.
+- **New pages:** Our Impact (with Testimonies and the Photo & Video Gallery) and Partner With Us, which has four sign-up forms and a Prayer Request page.
+- **Changed pages:** Donate gains "Our Projects", and About Us is rebuilt in the PDF's order.
+
+**Everything is built from the existing components and tokens. No body text was invented: anything the client hasn't
+supplied is a clearly marked [placeholder] (checklist below). Setup on a fresh install and the one-time upgrade of an
+existing site both produce the same structure.**
+
+The user's answers to the PDF questions:
+
+- **Groups:** the PDF's 2 groups, used for the filter tabs and the mega menu.
+- **Ministries:** the PDF's 16.
+- **Youth / Women:** one slot, "Youth Ministry / Women Empowerment", hidden until the client decides.
+- **Merge:** Children Ministry is merged into Children & Orphan Care, with Sunday School inside it.
+- **Scope:** Brick Kiln Children is widened to Brick Kiln Family Care.
+- **Discipleship:** goes with Baptisms.
+- **Names:** the PDF's, with "Urdu" kept in the Bible Distribution description.
+- **Heading:** H1 "What We Do" with the subheading "One Gospel, shared in word and deed.", and "Twelve" removed everywhere.
+
+### What changed
+
+| Area | Change |
+|---|---|
+| Ministry data | `inc/data/ministries.php` was regenerated from the old file (photos and texts carried over exactly): 16 entries, a `status` (live / hidden), `was` (old slugs, redirected), `sections` (extra panels). New ministries (Persecuted Christian Support, Food Relief, Disaster Relief & Recovery Ministry) and the hidden Youth/Women slot have placeholder text. `krm_ministries()` lists published ministries only |
+| URLs | `/ministries/` → `/what-we-do/`, `/blog/` → `/news/`, `/partner/` → `/partner-with-us/`. New: `/our-impact/`, `/our-impact/testimonies/`, `/our-impact/gallery/`, `/partner-with-us/prayer-request/`. Built-in 301s (only when the old address would 404): every old ministry slug, `/ministries/*`, `/blog/`, `/partner/`, `/prayer-request/`, `/testimonials/`. The editable redirect defaults now point straight at the new slugs, and saved lists that point at `/ministries/…` are mapped |
+| Navigation | `krm_menu_definitions()` (`inc/upgrade.php`) is shared by Setup and the upgrade. The mega menu shows "All ministries" plus 2 columns. Footer Quick Links and Footer Ministries use the new names |
+| What We Do | H1, subheading, tabs All · Gospel & Spiritual · Compassion & Humanitarian; Children & Orphan Care shows a "Sunday School" panel |
+| Home | Explorer shows every live ministry (15) under "One Gospel, shared in word and deed." Causes, flagship and gift cards use the new names. Gift cards open Donate with their ministry (and amount) chosen. New "Current projects" section (first 3) |
+| Our Impact | Impact numbers (Settings), impact by ministry per group (each ministry's "Impact stats"), links to Testimonies and Gallery |
+| Testimonies | Testimonials as story-style cards, filter tabs by ministry; marked placeholder until there are any |
+| Gallery | Tabs Photos / Videos, ministry filter (select), 106 ministry photos with the existing lightbox (filtered-out photos are skipped), YouTube links from the page's content box (click-to-load, youtube-nocookie) |
+| News & Updates | Categories "Blogs" (the 5 topic categories filed under it) and "Updates"; the filter chips are the top-level categories, so a new one appears automatically |
+| Partner With Us | Hero, 5 cards, sections Prayer Partners / Financial Partner (Donate button + pledge form) / Church & Ministry Partners / Volunteer With Us, each with "What it involves" and a sign-up form (new form `signup`: name, email or WhatsApp, country, church/organisation for church partners, project for pledges, message; same token / honeypot / rate limit, saved as "Partner With Us sign-up" and emailed). FAQ and closing verse kept |
+| Prayer Request | Own page using the home page's prayer form (edited once, on Home) |
+| Donate | "Our Projects": tabs Current (photo, ministry, raised/goal bar, "Give to this project") and Upcoming (target, planned date, "Pledge / Get notified" → pledge form with the project prefilled). Projects are a dashboard post type (Projects); `inc/data/projects.php` holds placeholder projects shown until the first is published |
+| About Us | a. Who we are + Ministry history · b. Founder testimony with a timeline · c. Vision & Mission · d. Statement of Faith (accordion) · e. What we are here to do (2 group cards, impact numbers → Our Impact) · f. Meet the team (4) and Shepherding the Flock (5) · g. Join the mission (Partner With Us / Contact Us). The collage badge counts the published ministries |
+| Shared code | `assets/js/components.js` (filters, tabs, videos, prayer and sign-up forms) replaces `ministries.js` and the prayer code in `front.js`. Shared CSS moved unchanged into `theme-global.css` (stats strip, work cards, photo grid, prayer form on phones) plus the new components (tabs, timeline, people, impact cards, testimony cards, videos, CTA banner, partner sections) |
+| Upgrade | `krm_upgrade_to_sitemap()`, once per site with a lock. It only changes values that are still a theme default: titles, order and group. Children Ministry becomes a draft, its photos and stories move to Children & Orphan Care. Old menus are kept, renamed "… (before 1.10)". Saved page text holding an old default name is updated |
+
+### Verified
+
+| Check | Result |
+|---|---|
+| Upgrade of the local site (state after Phase 17), from a database backup, run twice after one fix | 2 groups (6 + 9 live), 16 ministries (Youth/Women and the merged Children Ministry are drafts), Children & Orphan Care 24 photos; pages renamed and created with the right parents and templates; 3 new menus assigned, old ones kept; Blogs/Updates categories |
+| Setup on an empty database (fresh WordPress, media step off) | Same groups, ministries, pages, menus and categories; all pages 200; Sunday School panel present. Then the local database was restored |
+| Status codes | 18 pages 200; the hidden ministry 404; 12 old addresses → 301 to the right new page (query strings kept) |
+| 13 pages × 1440 / 768 / 390 / 360 | No horizontal overflow, no JS errors (the Gallery select overflowed at 360 px, fixed) |
+| Functions | What We Do filter (Compassion → 9, `?group=`), Gallery filter (Widows → 5 photos) and tabs (click, arrow keys), lightbox, Donate tabs and links, pledge prefill, sign-up validation (3 required fields marked) and send, prayer request send, News chips (Blogs 7, Updates → empty note), menu order and mega columns. Both test submissions were saved complete and then deleted |
+| axe-core WCAG 2.1 A/AA | 0 violations on 11 pages (What We Do, a ministry, About, Our Impact, Testimonies, Gallery, Partner With Us, Prayer Request, Donate, News, Home) |
+| Old names in the HTML | "Twelve" 0, `/ministries/` links 0. "Brick Kiln Children" remains only in the hero donation card heading and a story title (content, see checklist) |
+| `php -l` on every theme file, `node --check` on every script | No errors |
+
+### Not covered
+
+- Pixel comparison with `html/`: the pages the sitemap changes (About, Partner, Donate, ministry pages, News, navigation) no longer
+  match the original design by intent. The QA tools' URLs were updated to the new addresses.
+- Email delivery of sign-ups (no mail server here); saving was verified.
+- Lighthouse / PageSpeed was not re-run.
+- "Camps timeline stays" (Medical & Health Outreach): the theme has no camps timeline, so there was nothing to keep. If one is
+  wanted, the client must supply the camp dates.
+
+### Placeholders waiting on the client
+
+Everything below shows as **[bracketed text]** (or an empty grey image box) until it's replaced. Where to edit is in brackets.
+
+**What We Do and the ministries** (Ministries → edit)
+1. Youth Ministry / Women Empowerment: which one, then all its text and photos. It is a draft; publish it to show it.
+2. Persecuted Christian Support, Food Relief, Disaster Relief & Recovery Ministry: short description, focus, "how this ministry
+   serves", photos.
+3. Raised and goal amounts for all 15 live ministries (cards show "[Amount]").
+4. Impact stats for all 15 (shown on Our Impact).
+5. Photos for Church Planting (a Leadership & Discipleship stand-in), Clean Water Projects and Medical & Health Outreach (they share
+   one stand-in photo).
+6. Wording to confirm:
+   - Brick Kiln Family Care still has the children-only description.
+   - Baptisms & Discipleship's description mentions only baptism.
+   - Children & Orphan Care's "Sunday School" panel reuses the old Children Ministry text.
+7. What We Do intro: the existing approved text is kept (the PDF has none). Replace it if the client sends one.
+
+**Home** (Pages → Home → Page content)
+8. Still open from Phase 16: the two "[$ ]" gift amounts and "[Amount]" on the Freedom button, "[00] villages · [00] kilns" and two
+   "[District]" rows, the three stories, Pastor Adil's quote, and three team members.
+9. The donation card heading "Help Brick Kiln Children Go to School & Know Christ" is a campaign line. Keep it or reword it.
+
+**Projects** (dashboard → Projects; Donate → Page content → Our Projects)
+10. Real projects (3 current and 2 upcoming placeholders show now): name, description, ministry, goal, raised, planned date, photo.
+11. The "Our Projects" introduction.
+
+**Our Impact, Testimonies, Gallery**
+12. Introductions of Our Impact, Testimonies and the Gallery; the two card descriptions on Our Impact.
+13. Testimonies (Testimonials → Add New: name, words, photo, role or place, ministry).
+14. Videos: YouTube links (Gallery page → Page content → Videos). Optional "General photos".
+
+**Partner With Us** (page content)
+15. Volunteer With Us: description and "what it involves".
+16. To confirm: the Prayer, Financial and Church descriptions and check lists reuse the approved design's wording.
+
+**About Us** (page content)
+17. Ministry history. Do not copy it from hmpak.org / gsministries.org; the client must supply or approve the wording.
+18. Founder testimony "From a vision to a mission", and the timeline (three "[Year] / [Milestone]" entries; add or remove entries).
+19. Statement of Faith: the six beliefs are the approved lines; each answer is a placeholder (explanation, Scripture references).
+20. Meet the team: name, photo and bio of the Projects Coordinator, the International Relations Coordinator and the Co-Founder.
+    Pastor Adil (Founder & Director) uses his existing photo and bio.
+21. Shepherding the Flock: introduction, and the five pastors' names, photos and descriptions.
+22. Join the mission: description.
+
+**Also to review**
+23. The SEO descriptions of the new pages (Our Impact, Testimonies, Gallery, Partner With Us, Prayer Request) were written for the
+    theme; replace them in the SEO plugin if the client prefers other wording.
+
+### Decisions for you
+
+1. Page titles in WordPress: "About" and "Donate" kept their titles (the menu says "About Us" and "Donate / Give"); rename them in
+   Pages if the browser tab should match.
+2. Story addresses stay /story-name/ (only the list moved to /news/). Moving stories to /news/story-name/ would need a permalink
+   change and 7 more redirects.
+
+## Kingdom Revival Ministries: Phase 18 follow-up: decisions, drafts for sign-off (theme 1.10.0)
+
+**Result: the five decisions on Phase 18 are applied:**
+
+1. The page titles are "About Us" and "Donate / Give".
+2. Stories live at /news/{story}/ and the old addresses redirect.
+3. Medical & Health Outreach has a camps timeline that reads a data array and is hidden while it is empty.
+4. Checklist items 6, 7, 12 and 22 have proposed wording, marked DRAFT — CLIENT TO APPROVE.
+5. The hero donation card gives to Children & Orphan Care.
+
+**The rest of the Phase 18 checklist is still a placeholder.**
+
+### What changed
+
+| Decision | Change |
+|---|---|
+| 1. Page titles | `inc/data/pages.php` (Setup) and a second upgrade step (`krm_upgrade_sitemap_2()`, option `krm_sitemap_version` = 2) rename "About" → "About Us" and "Donate" → "Donate / Give" when the title is still the old one. Slugs /about/ and /donate/ are unchanged |
+| 2. Stories under /news/ | The theme is not live yet (the live site is still the old Elementor site), so the permalink structure is now `/news/%postname%/`: set by Setup, and by the upgrade when it is still Setup's `/%postname%/`. Categories follow at /news/category/…. When an address would 404, an old /{story}/ redirects to the story's new address (query string kept), and /category/… and /tag/… redirect to their /news/ lists (`krm_moved_post_url()`). The rewrite rules are flushed on the next request, because category rules are registered before the upgrade runs. The QA scripts use the new story URLs |
+| 3. Camps timeline | `camps` on a ministry: rows of date, location and people served, in the data file (Medical & Health Outreach: empty) or in the ministry editor ("Medical camps", one "date \| location \| people served" line each). The ministry page shows a timeline (the About timeline component) only when there is at least one row; with none, nothing is printed, with no heading and no placeholder rows. Labels are in Site text → Ministry pages |
+| 4. Drafts | The wording below. In the data file each draft has a `// DRAFT — CLIENT TO APPROVE` comment and a `drafts` list, and the ministry editor shows a "DRAFT — CLIENT TO APPROVE" notice naming the fields. Page-text drafts have "DRAFT — CLIENT TO APPROVE" as the field help in the Page content box / Site text. The upgrade puts them in only where the earlier default (or placeholder) is still saved |
+| 5. Hero donation card | Heading unchanged. New field "Donation card: ministry the gift goes to" (default `children-orphan-care`). The card's Donate button opens Donate with Children & Orphan Care chosen and the selected amount (the floating Donate panel stays general) |
+
+Also fixed: ministry titles and group names containing "&" were passed to links as "&amp;", so "Donate" links for
+those ministries did not preselect them on Donate. `krm_ministries()` now returns plain text, and templates escape it.
+
+### Verified
+
+| Check | Result |
+|---|---|
+| Upgrade step 2 on the local site | Titles "About Us", "Donate / Give"; structure `/news/%postname%/`; both ministry excerpts updated; category rules correct on the next request without a manual flush |
+| Addresses | /news/, /news/{story}/, /news/category/blogs/ 200; /{story}/ → /news/{story}/ (7 stories, query kept), /category/blogs/ → /news/category/blogs/, /category/children/ → /news/category/blogs/children/; earlier redirects (/blog/, /hello-world/, /ministries/…) unchanged |
+| Camps timeline | Empty: no camps markup at all on /what-we-do/medical-health/. One test row: "Medical camps" timeline with date, place, "People served: 1". Test row removed |
+| Hero card | $100 chosen → `/donate/?amount=100&frequency=One-time&for=Children%20%26%20Orphan%20Care#give`; Donate opens with fund "Children & Orphan Care" and $100. A What We Do card (Prayer & Deliverance Ministry) preselects its ministry too |
+| 16 pages × 1440 / 768 / 390 / 360 | No horizontal overflow, no JS errors |
+| axe-core WCAG 2.1 A/AA | 0 violations on 13 pages (incl. a story at /news/…, Medical & Health Outreach) |
+| `php -l`, `node --check` (theme and QA scripts) | No errors |
+
+### Drafts for client sign-off
+
+Each line is proposed wording built only from text already on the site or in the client's sitemap: no new numbers, names,
+dates or claims. The source of each phrase is in brackets.
+
+**Item 6: ministry wording** (Ministries → edit; data file `inc/data/ministries.php`)
+
+- **Brick Kiln Family Care, short description:** "Care, education and the Gospel for families who live and work beside the brick
+  kilns." *(earlier description "Education, care and the Gospel…"; About: "families who live and work beside the brick kilns")*
+- **Brick Kiln Family Care, card text:** "Schooling, Sunday school and care for children, and practical care for families who live
+  and work beside the kilns." *(earlier card text; About founder text: "practical care among … brick kiln families")*
+- **Baptisms & Discipleship, short description:** "New believers publicly following Jesus Christ in baptism, and discipled to grow
+  in their faith." *(earlier description; About: "Discipling believers…")*
+- **Children & Orphan Care, "Sunday School" section:** "Sunday School and Bible teaching for children in village and brick kiln
+  communities." with the points "Sunday School", "Bible teaching for children", "Care for children in villages and brick kiln
+  communities". *(the earlier Children Ministry wording, unchanged; to confirm)*
+
+**Item 7: What We Do introduction** (Kingdom Revival → Site text → What We Do page)
+
+- "Everything we do flows from the Gospel and is expressed through practical love — through our Gospel & Spiritual Ministries
+  and our Compassion & Humanitarian Ministries, among children, families and communities across Pakistan." *(About "What we do"
+  intro; the sitemap's two groups; the earlier What We Do intro)*
+
+**Item 12: Our Impact, Testimonies, Gallery** (each page's Page content box)
+
+- **Our Impact, introduction:** "See what God is doing through our ministries across Pakistan — in numbers, in testimonies and in
+  pictures." *(Partner page: "see what God is doing"; the sitemap: impact numbers, testimonies, photo & video gallery)*
+- **Our Impact, Testimonies card:** "Lives changed through the Gospel and practical care, in their own words." *(home: "Lives
+  changed"; About: "practical care")*
+- **Our Impact, Gallery card:** "Moments from our ministry, in photos and videos." *(earlier About gallery heading "Moments from
+  our ministry")*
+- **Testimonies, introduction:** "Stories of hope from the field — lives changed through the Gospel and practical care across
+  Pakistan." *(News & Updates heading "Stories of hope from the field")*
+- **Gallery, introduction:** "Moments from our ministry — photos and videos from our ministries across Pakistan." *(as above)*
+
+**Item 22: About → Join the mission** (About Us → Page content)
+
+- "Pray with us, give, or serve alongside us as the Gospel reaches villages, kilns and homes across Pakistan." *(Partner page
+  introduction: "praying faithfully, giving regularly and walking with us as the Gospel reaches villages, kilns and homes")*
+
+### Checklist status
+
+- Items 6, 7, 12 and 22 are drafts (above).
+- Item 9 is decided: the heading stays and the card gives to Children & Orphan Care.
+- Item 24 is built: the timeline is empty and hidden until the camp dates arrive.
+- Every other Phase 18 item is still a placeholder.
+- Phase 18's two decisions are applied.
+
+### Not covered
+
+- Email delivery (no mail server here).
+- Lighthouse was not re-run.
+
+## Kingdom Revival Ministries: Phase 19: one template for every ministry page (theme 1.11.0)
+
+**Result: all 15 live ministry pages (/what-we-do/{slug}/) come from one template, filled from the shared ministry data
+(`krm_ministries()` → the ministry post, falling back to `inc/data/ministries.php`). Each page has the 9 sections of the
+brief plus the special layouts. KRM PAK.pdf (3 handwritten sitemap pages) has no activities, numbers, amounts, camp dates or
+churches, so nothing in "[FROM PDF]" could be filled from it. Existing approved wording is used where it exists; everything
+else is a marked [placeholder] or is hidden while empty.**
+
+### What changed
+
+| Section | Built from | Content source |
+|---|---|---|
+| 1. Hero | The inner hero (unchanged component) | First photo, breadcrumb Home / What We Do / name, **group name as the eyebrow** (was "Kingdom Revival Ministries"), title, Excerpt |
+| 2. Intro | The home About section's overlapping photo pair + check list | 2nd and 3rd photos (tinted empty boxes when a ministry has none); "What we do" / "How this ministry serves"; the ministry's existing points (3 each) and focus text; extra sections (Sunday School) as panels |
+| 3. Impact counters | The home stats bar (white card, round icons, navy panel) | The ministry's "Impact stats" (the same field Our Impact uses), up to 4; numbers count up once in view (not with reduced motion; the real value stays in the markup). Empty: three "[00]" placeholders |
+| 4. How your gift helps | The home "Your gift at work" cards | New field "How your gift helps" (amount \| what it gives \| text), up to 4, padded to 3 with "[$ ]" cards. Seeded with the home page's 4 existing cards (Bible Distribution $10, Medical & Health $45, Brick Kiln Family Care, Slavery & Freedom). Each card opens Donate with the ministry and amount |
+| 5. Photos | `.gallery` + the photo viewer | Up to 9 photos; more → "See all … photos →" (Gallery filtered to the ministry) |
+| 6. Story | The home "Stories from the field" card | First Testimonial whose Related ministry is this one, else a marked placeholder |
+| 7. Donation card | The home hero donation card | Sticky beside 2–6 on desktop (top 104 px, under the header), after them on tablet/phone. Badge/heading/text/points from Site text → "Ministry pages: side donation card" (the former give band fields), the home card's amounts, the ministry's raised/goal bar; Donate → `/donate/?amount=…&frequency=One-time&for={ministry}#give` |
+| 8. Other ministries | The What We Do giving card | 3 from the same group, the ones after this ministry in menu order (wrapping round) |
+| 9. CTA | The home closing-verse banner | Pages → Home |
+| Slavery & Freedom | The home Flagship part (`template-parts/home/freedom.php`, now takes a `screen` argument) | The home page's 5 steps and before/after slider (`'layout' => 'freedom'` in the data file) |
+| Church Planting | New list with pin icons | New field "Churches & house churches planted" (name \| place \| planted). **Hidden while empty**, like the camps timeline |
+| Medical & Health, Clean Water | The existing camps timeline | "Camps / projects completed" (date \| location \| people served), now also on Clean Water. Hidden while empty |
+
+Code: `single-ministry.php` + `template-parts/ministry/{hero,intro,stats,gifts,gallery,story,give-card,churches,camps,others}.php`;
+helpers `krm_current_ministry()`, `krm_ministry_gifts()`, `krm_ministry_counters()`, `krm_related_ministries()`,
+`krm_ministry_testimonial()`, `krm_filled_rows()` in `inc/ministry.php`; `krm_ministries()` returns `churches`, `gifts`,
+`layout`. Styles in `assets/css/pages/ministry.css`. The before/after slider script moved from `front.js` to
+`components.js`, which also has the counters and the card's amount picker. New Site text → Ministry pages fields; "Focus heading"
+was removed (the focus is now the intro text) and the camps heading default is "Camps / projects completed".
+`krm_ministry_give_band_args()` was removed (the give band no longer shows on ministry pages).
+
+### Verified
+
+| Check | Result |
+|---|---|
+| 15 live ministries | All 200 with every section; no PHP warnings |
+| Test data (removed afterwards): 2 counters, 2 gift rows, 2 churches, 2 projects, a testimonial | Counters 1,200+ / 35 count up from 0 and end on the real value; gift links carry ministry + amount; churches list and timeline render; Medical (no rows) prints neither; testimonial replaces the placeholder |
+| Side card | $100 → `/donate/?amount=100&frequency=One-time&for=Bible%20Distribution#give`, button "Donate $100"; stays at 104 px from the top while scrolling |
+| Slider | Slavery & Freedom and home: range 20 / 30 → `inset(0 80% 0 0)` / `inset(0 70% 0 0)`; home hero card unchanged |
+| Lightbox | Opens from the gallery |
+| 3 pages × 1440 / 768 / 390 / 360 | No horizontal overflow, no JS errors |
+| axe-core WCAG 2.1 A/AA | 0 violations on 6 ministry pages (Slavery & Freedom, Church Planting, Clean Water, Bible Distribution, Children & Orphan Care, Food Relief) |
+| `php -l` every theme file, `node --check` every script | No errors |
+
+### Not covered
+
+- The before/after slider shows its empty grey halves, as on the home page: the local site's Home content has no before/after
+  photos (open since Phase 16).
+- No map of churches: the list is a card grid. A map needs places or coordinates from the client.
+- Pixel comparison with `html/` doesn't apply (the ministry page is a new design). Lighthouse was not re-run.
+
+### Placeholders waiting on the client (adds to the Phase 18 checklist)
+
+1. Impact numbers for each ministry (3–4 each), e.g. Bibles distributed, villages reached, camps held, children enrolled.
+2. "How your gift helps": 3–4 amounts with what each gives, per ministry (4 ministries have one card from the home page).
+3. One testimony per ministry (Testimonials → Related ministry).
+4. 1–2 more activities per ministry if wanted (each has 3 approved points; the brief asks for 4–5).
+5. Church Planting: churches and house churches (name, place, year). Medical & Health and Clean Water: camps / projects (date,
+   place, people served).
+6. Before/after photos for the freedom slider (Pages → Home → Flagship).
+
+### Decisions for you
+
+1. **Address:** the brief says /ministries/[slug]. Pages stay at /what-we-do/[slug]/ (the Phase 18 sitemap decision), with
+   breadcrumb "What We Do", and /ministries/… still redirects there. Tell me if you want /ministries/ back.
+2. **Placeholders vs hidden:** counters, gift cards and the story show "[…]" placeholders (the brief asks for them on every
+   page). Churches and camps are hidden while empty, as decided for the camps timeline in Phase 18. Either can be switched.
+
+## Kingdom Revival Ministries: Phase 19 follow-up: placeholders for admins only (theme 1.11.1)
+
+**Result: both Phase 19 decisions are applied.**
+
+1. Ministry pages stay at /what-we-do/[slug]/, with "What We Do" in the breadcrumb. The /ministries/… 301s stay, and
+   the /ministries/[slug] brief is superseded.
+2. One rule now applies to every data-driven section: counters, gift cards, stories, churches, camps, projects, team
+   and testimonies.
+   - Logged-in administrators see empty sections with their marked placeholders, plus a small "Only administrators see
+     this section" label.
+   - Visitors see only real entries. A counter, card, story or person that is empty or still a `[placeholder]` is left
+     out on its own, and a section with none is not printed at all: no heading, no wrapper, no gap.
+
+### What changed
+
+| Area | Visitors now |
+|---|---|
+| Helpers (`inc/template-functions.php`) | `krm_show_placeholders()` (logged in with `manage_options`; filter `krm_show_placeholders`), `krm_is_placeholder()` (empty or containing `[…]`), `krm_visible()` (real items only for visitors), `krm_visible_stats()` (the Settings impact numbers, keys kept), `krm_admin_only_note()` |
+| Counters | Ministry strip, home stats bar, About and Our Impact numbers, the News page strip: each empty number left out; no strip without any. Our Impact "by ministry": only ministries with numbers; no group or section without any |
+| Gift cards | Home / What We Do "Your gift at work": the two "[$ ]" cards are left out ($10 and $45 stay). Ministry "How your gift helps": real amounts only; no section without any (Bible Distribution and Medical & Health show 1 card; Slavery & Freedom and Brick Kiln Family Care none) |
+| Stories / testimonies | Home "Stories from the field": hidden (all three are placeholders). Ministry story: only with a linked Testimonial. Testimonies page: no section until there are testimonials |
+| Churches, camps | Unchanged for visitors (hidden while empty). Administrators now see a placeholder row on Church Planting, Medical & Health and Clean Water |
+| Projects | The data file's sample projects are loaded for administrators only, so the home "Current projects" and Donate "Our Projects" are not shown to visitors. With real projects, an empty tab (Current or Upcoming) is left out, and with one tab left there is no tab bar. The "[Introduction]" placeholder is hidden from visitors |
+| Team | Home "Our team": Pastor Adil only (the three "[Name]" people are left out). About: Meet the team = Pastor Adil; Shepherding the Flock (5 placeholders) is not shown |
+| Bands | `.section-soft + .section-soft { padding-top: 0 }` (theme-global.css): Donate without projects would otherwise put two soft bands together; now they read as one band with the usual spacing. A scan of every page linked from the home page, as visitor and as admin, found no other adjacent pair. The ministry layout followed by churches/camps no longer doubles its spacing |
+
+### Verified
+
+| Check | Result |
+|---|---|
+| 12 pages, visitor vs admin (temporary admin user, deleted afterwards) | Visitor: none of the sections above when empty, no admin labels, no JS errors. Admin: all sections and their placeholders, one label per hidden section |
+| Band order (top-level sections and their backgrounds) | No two adjacent sections with the same background except Donate's soft pair, which is merged (checked on a screenshot). Our Impact's hero → navy numbers band is unchanged from before |
+| Ministry page without data (Food Relief, as a visitor) | Hero → intro + card → photos → other ministries → CTA, with no gaps |
+| One real project (test post, deleted) | Donate shows "Our Projects" with no tab bar or Upcoming panel. The home page shows the project |
+| axe-core WCAG 2.1 A/AA, visitor | 0 violations on 9 pages (3 ministries, Home, About, Our Impact, Testimonies, Donate, News) |
+| `php -l` every theme file | No errors |
+
+### Not covered
+
+- Placeholders outside the listed sections are still shown to visitors:
+  - "[Amount]" raised/goal on the giving cards and the donation card.
+  - The freedom button "Help free a family · [Amount]".
+  - "[00] villages · [00] kilns" and "[District]" in Where we work.
+  - The three new ministries' "[Short description]", "[Ministry focus]" and points.
+  - About's history, founder testimony, timeline and Statement of Faith answers.
+- Page caching: a cache plugin must not serve a logged-in page to visitors. The usual ones skip logged-in users, as
+  the local proxy does.
+
+### Decisions for you
+
+1. Should the same rule cover the placeholders listed in "Not covered"? For example, hide "[Amount]" and the progress
+   bar on cards until a goal is set, or hide a ministry whose description is still a placeholder.
+2. The Testimonies page shows only its hero to visitors until the first testimonial. Hide it from the menu until then,
+   or leave it as it is?
+
+## Kingdom Revival Ministries: Phase 19 follow-up 2: no placeholders for visitors anywhere (theme 1.11.2)
+
+**Result: the "no placeholders" rule now covers the whole public site, with one safety-net helper behind it.**
+
+- A logged-out crawl of the 67 public pages found **0 placeholders**. The crawl covered visible text, alt/title/aria-label
+  attributes, `<title>` and meta tags.
+- It found no links to Testimonies or to the hidden ministries, and the sitemap lists neither.
+
+Administrators still see every placeholder.
+
+### What changed
+
+| Item | Visitors now |
+|---|---|
+| Safety net | `krm_public()` (`inc/template-functions.php`): a value matching `\[[^\]]*\]` is empty for visitors, item by item in lists. `krm_c()`, `krm_text()` and `krm_inline()` pass everything through it, so every page content field and Site text is covered. `krm_c_raw()` reads a saved value unfiltered. `krm_strip_placeholders()` removes only the bracketed part |
+| Giving / donation cards | What We Do cards, project cards and the ministry donation card show raised/goal and the progress bar only once a goal is set (`krm_show_progress()`). The Donate button always shows. An upcoming project's "Target · Planned" line shows only the parts that are set |
+| Freedom button | "Help free a family · [Amount]" → "Help free a family" until an amount is typed in (home and Slavery & Freedom) |
+| Where we work | Faisalabad and Jhang with their pins. Their counts are hidden until set, and the two [District] rows are gone |
+| 3 ministries | Persecuted Christian Support, Food Relief, Disaster Relief & Recovery: `status => hidden` in the data file. Upgrade step 3 (`krm_sitemap_version` 3) makes them drafts on existing sites while their description is still the placeholder. They're gone from cards, filters, the explorer, donate/partner lists and sitemap.xml. Menus now skip items that link to any unpublished post, and their sub-items. Their addresses (and Youth / Women's) redirect to /what-we-do/ (302), and publishing one brings it back |
+| About | History, founder testimony (with its heading) and timeline print only with real content. Statement of Faith: the six statements are plain lines (same look as the accordion rows, without the toggle). A line becomes an accordion only when it has an explanation |
+| Testimonies | With 0 published testimonials (`krm_testimonies_hidden()`), for visitors: no menu item, no Our Impact card (that section then shows only the Gallery card, without its "Stories from the field" heading), no ministry-page link, and left out of the WordPress, Yoast and Rank Math sitemaps. The page redirects to /our-impact/ (302) |
+| QA tool | `tools/visual-qa/placeholder_check.js`: the logged-out crawl, which exits 1 when it finds a placeholder |
+
+### Verified
+
+| Check | Result |
+|---|---|
+| Crawl, logged out (home + sitemap + every internal link) | 67 pages, all 200; placeholders 0; links to Testimonies 0; links to hidden ministries 0; sitemap entries for them 0 |
+| Detector works | The same check as an administrator finds 42 placeholders on Home, 28 on About and 26 on What We Do. curl of the raw HTML (scripts removed) for 8 pages: 0 for visitors |
+| Redirects | /what-we-do/food-relief/, /persecuted-christians/ and /youth-or-women/ → 302 /what-we-do/. /our-impact/testimonies/ → 302 /our-impact/. /what-we-do/children-ministry/ still 301 → Children & Orphan Care. Bible Distribution 200 |
+| Testimonies coming back | Testimonies item temporarily added to both menus, then 1 test testimonial published. With 0: menu 0, page 302, Our Impact card 0, sitemap 0. With 1: menu 2, page 200, card shown, sitemap 1. Test data removed |
+| Upgrade step 3 | Local site: the 3 ministries became drafts. The other 12 are unchanged |
+| Bands | Visitor scan of every linked page: the only adjacent same-background pair is Donate's, which the Phase 19 follow-up rule merges |
+| axe-core WCAG 2.1 A/AA | 0 violations on 7 pages (Home, About, Our Impact, What We Do, Donate, 2 ministries) |
+| 6 pages × 1440 / 768 / 390 / 360 | No horizontal overflow, no JS errors |
+| `php -l`, `node --check` | No errors |
+
+### Placeholders found by the crawl
+
+None. Admin-only placeholders still waiting on the client are in the Phase 18 and 19 checklists.
+
+### Not covered
+
+- SureRank's sitemap (the live site's SEO plugin) has no documented exclusion filter. While Testimonies is hidden its
+  sitemap may still list the page, which then redirects to Our Impact. The WordPress, Yoast and Rank Math sitemaps are
+  handled.
+- Text inside a story's body (the post editor) and testimonials are printed as written. They aren't page content
+  fields, and none contains a placeholder today.
+
+## Kingdom Revival Ministries: Prayer Request, Contact and Donate pages
+
+**Result: all three pages meet the brief, and `/donate/?ministry=slug` works. It used to return a 500 error.**
+
+Most of the markup was already in the working copy when this work started: the full prayer form, the five contact cards
+with map and social block, and the Donate gift card, payment tabs, trust row, gift cards and FAQ. This pass tested
+those pages against the brief and fixed what failed.
+
+### What changed
+
+| Item | Change |
+|---|---|
+| `?ministry=` routing | "ministry" is also the post type's public query variable. So `/donate/?ministry=clean-water` loaded that ministry inside the Donate template (fatal TypeError, 500). An unknown slug gave a 404, and an old slug 301'd to the ministry page. A `request` filter in `inc/ministry.php` now drops the variable when the request is for a page. `/what-we-do/{slug}/` is unaffected |
+| "Support this ministry" links | Ministry cards, the ministry page's give card (also after an amount is picked, `components.js`), the ministry gift rows and project cards now link to `/donate/?ministry={slug}#give`, through the new `krm_ministry_donate_url()` (`inc/home.php`). Donate also preselects the fund server-side (no JS needed). An unknown slug falls back to "Where most needed". `?for=Name` links still work |
+| Prayer form validation | Errors were shown by red border only. Each invalid field now gets a text message under it, linked with `aria-describedby` (all `form[data-krm-form]` forms). "Email or WhatsApp" must be an email address or a phone number |
+| Contact cards | The WhatsApp and Office hours cards are now editable fields (Page content → Contact cards). The hours default to a [placeholder], so visitors don't see the card until it is filled in, and the other four cards fill the row (`.contact-cards.is-4`). Before, visitors saw "Awaiting client confirmation" |
+| Contact social block | With no social URLs in Settings, visitors don't see the section. Before, it showed them the admin hint "Social links can be added in Kingdom Revival → Settings" |
+| Donate trust row | The Reg. No. comes from About Us → Accountability → Registration number and shows only once that is filled in. Before, visitors saw a hard-coded "Awaiting client confirmation" |
+| Donate Stripe tab | Shown to administrators only until Stripe is connected. Visitors get 4 payment tabs in one row (`.tabs.is-4`) |
+| `/impact/` | 301 to Our Impact (`krm_theme_renames()`), like `/prayer-request/` |
+
+### Verified (local WordPress, logged out unless noted)
+
+| Check | Result |
+|---|---|
+| `/donate/?ministry=` with a valid, an old and an unknown slug | 200 Donate. Selected: Clean Water Projects / Where most needed / Where most needed. `?for=Widows Support` → Widows Support. Canonical stays `/donate/` |
+| Donate | 14 fund options (Where most needed + 13). Monthly + $100 → "$100 / month". "Other" opens the amount box. 4 gift cards, 4 FAQ items. No "Awaiting", [placeholder] or Stripe text for visitors |
+| Ministry page (Widows Support) | Every ministry Donate link uses `?ministry=`. The give card after picking $25 links to `/donate/?amount=25&frequency=One-time&ministry=widows-support#give` |
+| Prayer form | Empty submit: 3 messages. Bad contact: "Please enter a valid email address or WhatsApp number." A real submission is saved with all 7 fields (country, type, private included). The test entry was deleted. WhatsApp link → wa.me |
+| Contact | 4 cards in 4 columns for visitors. Map: Chak No 220, RB Nasrat Colony … Jhang Road, Faisalabad. Contact form: 3 errors on empty submit |
+| Admin view (`krm_show_placeholders` on) | Office hours card with its [placeholder], the social block's admin-only note, the Reg. No. [placeholder], and the Stripe tab with its admin-only note |
+| `placeholder_check.js` | 44 pages, all 200, 0 placeholders |
+| 390 / 768 px | No horizontal overflow on the 3 pages. No JS errors |
+| `php -l`, `node --check` | No errors |
+
+### Not covered
+
+- No pixel diff: these pages are new sitemap pages with no approved HTML to compare against.
+- A form filled in under 2.5 s after page load gets a fake "success" and is not saved (the existing anti-bot rule).
+  Automated tests have to wait before submitting.
+- Our Impact still shows visitors "Locations: To be supplied" in the ministry explorer (`page-templates/impact.php`).
+  This is the same kind of unbracketed placeholder, outside this brief, and is left as it is.
+
+### Decisions for you
+
+- Stripe and the Reg. No. are waiting on the client. Stripe needs a real integration before its tab goes public.
+- Office hours: enter them in Pages → Contact → Page content → Contact cards.
+- Version: `functions.php` says 1.14.0 while `style.css` says 1.11.2 (both changed by other work in progress). This
+  pass didn't change either.
+
+## Kingdom Revival Ministries: Final pass across the whole site
+
+**Result: all 34 public pages pass the final checks: 0 axe violations, 0 placeholders for visitors, one header and footer,
+no overflow at 360/768/1024/1440, no JS errors, a unique title and description for every page.** The client still has to
+supply content; a per-page list is at the end.
+
+### What changed
+
+| Area | Change |
+|---|---|
+| Home links | Gift cards, the hero card, the Urdu Bibles flagship card and "Help free a family" open Donate with their ministry chosen (`?ministry=slug`). "See the churches" goes to `/what-we-do/church-planting/#churches` (new `id` on the churches section). The explorer's extra "See All" button, which opened one ministry, now says "Learn more". The stats bar has a "See our impact →" link. Every one of the home page's 67 links returns 200 with no redirect, and every anchor exists |
+| Nav | "Our Impact" was already in the main menu and footer (the client sitemap's name for /impact); `/impact/` 301s to it. Ministry pages stay at `/what-we-do/{slug}/` (Phase 19 decision); `/ministries/{slug}/` still 301s there |
+| Placeholders for visitors | Our Impact: counters, impact by ministry, growth chart, district table, families-freed chart, financial section and the "coming soon" report pill show only with data (impact.json is all `null` today). The script's empty texts are for administrators only (`showPending`). About: the timeline, founder "full biography", the six belief explanations (a plain line until explained), the "Additional team members" card and Registration & accountability show only once filled in. Donate's transparency link jumps to the financial section only when it exists |
+| Layout fixes | Our Impact: the hero `<h1>` and CTA heading were navy on navy/red (invisible or unreadable), now white. The before/after slider is full width while the chart beside it is hidden. Same-colour neighbours merge into one band. About: the founder photo's frame no longer widens the page at 360 |
+| Colours | 3 public colours outside the tokens/design palette replaced by their design equivalents: `#0F6B3A`→`#1E5B3A`, `#F3F5FA`→`--color-bg-soft`, `#FFE3E3`→`#FDE7E7`. The 8 others are admin-only (editor screens, admin notes) |
+| Contrast | Impact eyebrows on navy use the accent, explorer tab numbers use the red, About belief numbers use the red. The About 01/02 watermarks are CSS-generated decoration |
+| Tap targets (≤1024px) | 44px: top bar links, footer links and contact links, breadcrumb links, mobile submenu rows, share buttons, filter chips, News sidebar filters, the donate frequency pills, the transparency and video links. Ministry card titles have a 44px hit area without moving the layout. Desktop is unchanged |
+| SEO | News category pages without their own description get one that names the category (it was the same as /news/ on 5 pages) |
+| Fonts | The skip link used the browser serif; now the theme font |
+| QA tools | `tools/visual-qa/final_pass.js` (crawl: consistency, overflow ×4 widths, axe ×2 widths, tap targets, focus, SEO tags, images, scripts) and `final_interactions.js` (menus, sliders, charts, gallery, FAQ, tabs, forms) |
+
+### Verified (local WordPress, logged out)
+
+| Check | Result |
+|---|---|
+| Pages crawled (home + sitemap + links) | 34, all 200 |
+| Header / footer markup | 1 variant each across all 34 pages |
+| Fonts drawn | Plus Jakarta Sans only |
+| Horizontal overflow at 360 / 768 / 1024 / 1440 | 0 on every page |
+| axe-core WCAG 2.1 A/AA at 1440 and 360 | 0 violations (was 4 contrast findings) |
+| Focus visible on the first 6 Tab stops | All pages |
+| Tap targets under 44px at 360 | Only measurement artifacts left: 44×44 rounding, the 41×44 breadcrumb "Home", the visually hidden radio input |
+| Titles / descriptions / canonical / og:image / favicon / one `<h1>` | Present on all; no duplicate titles or descriptions. `/sitemap.xml` → `/wp-sitemap.xml`, listed in robots.txt. Favicon and touch icon are the logo |
+| Images | 0 without alt, 0 eager below the fold, 0 served over 2.5× their drawn size. CLS at 390 on slow 3G: 0 on Home, News, a story, Donate, a ministry and About; 0.024 on Gallery |
+| Scripts | Page scripts load only on their page (donate, contact, impact, blog, post, front); the photo viewer only where zoomable photos are; comment-reply only on stories with comments open. No JS errors |
+| Interactions | Mobile menu and submenus (360), desktop mega menu + Escape (1440), both before/after sliders, home explorer, Impact explorer, gallery filter + viewer, FAQ, payment tabs by keyboard, partner and contact validation, real sends of the prayer and contact forms (test entries deleted) |
+| Placeholder crawl (visitor) | 0 |
+
+### Not covered
+
+- The hero video is 10.2 MB and also plays on phones (not with Save-Data or reduced motion). No ffmpeg on this machine to
+  make a smaller phone version.
+- Images printed without `width`/`height` (94 on story/news cards) were left: they sit in fixed-size boxes and the
+  measured layout shift is 0.
+- Pixel diffs against the original HTML were not rerun: the sitemap pages have no original to compare against.
+
+### Decisions for you
+
+- Hero video on phones: encode a ~2 MB phone version (needs ffmpeg), or show the still image on phones.
+- Version: `functions.php` 1.14.0 vs `style.css` 1.11.2 (unchanged by this pass).
+
+## Kingdom Revival Ministries: Hero video for desktop only, one version number (theme 1.14.0)
+
+**Result: phones download no video. The desktop hero video went from 10.17 MB to 2.18 MB (MP4) / 3.07 MB (WebM). The theme
+version is written in one place.**
+
+### What changed
+
+| Item | Change |
+|---|---|
+| Hero video markup | `template-parts/home/hero.php` prints `<video preload="none">` with no `src` and no `poster`: only `data-src-mp4`, `data-src-webm`, `data-poster` (WebP) and `data-poster-jpg` |
+| Hero video script | `assets/js/front.js` adds the sources and the poster only when `(min-width: 768px)` matches, `navigator.connection.saveData` is not `true` and reduced motion is not requested. The poster is the WebP, or the JPG where WebP isn't supported. Otherwise the element stays empty and the section's photo shows |
+| Re-encode (ffmpeg 9.0.2, installed as a user tool in `~/krm-work/ffmpeg-venv`, no sudo) | The source was 76 s, 1280×720, 10.17 MB. The loop is the 15 s from 0:08 to 0:23: 0:00–0:08 has burned-in title cards that clashed with the hero heading. 1280px wide, because the source is 1280 and upscaling past it adds nothing. No audio. MP4: H.264, CRF 28, `-preset veryfast`, `+faststart` → **2.18 MB**. WebM: VP9, CRF 38 → **3.07 MB** |
+| Poster | The hero photo, already compressed: WebP **78 KB** (phones get its 768px copy, 57 KB, as the background) and JPG original **117 KB**. Both are under 200 KB, so it was not re-encoded |
+| Content field | New "Background video, WebM version" (Pages → Home → Hero), default `krm-theme:video/hero.webm` |
+| Version | `style.css` `Version: 1.14.0` is the only place the version is written. `functions.php` defines `KRM_VERSION` from `wp_get_theme( get_template() )->get( 'Version' )` (the parent theme even under a child theme). CLAUDE.md updated |
+| QA | `final_pass.js` loads every page at 390px, scrolls it, and fails on any video request in the network log. As a control, the home page at 1440 must request the hero video |
+| Repo | `.gitignore` also ignores the client data folder under its new name (trailing space instead of `_`, 721 MB) |
+
+### Verified
+
+| Check | Result |
+|---|---|
+| Home at 390 / 767 | No video request, no sources, no poster. Only the background photo (768px WebP at 390) |
+| Home at 768 / 1440 | 2 sources added, `hero.mp4` downloaded and playing, WebP poster |
+| 1440 + reduced motion, 1440 + Save-Data | No video request |
+| `final_pass.js`, 34 pages | Video requests at 390: **0**. Control at 1440: `hero.mp4`. 0 axe violations, 0 overflow at 4 widths, 1 header and 1 footer, no JS errors, no duplicate titles or descriptions |
+| `final_interactions.js` | 33 ok. The 4 "FAIL" lines are expected: 1024 shows the desktop menu, and the Impact charts are hidden for visitors while there is no data |
+| `placeholder_check.js` (visitor) | 48 pages, all 200, 0 placeholders |
+| Lint | `php -l` on every PHP file, `node --check` on every script: no errors. `KRM_VERSION` = 1.14.0, assets load as `?ver=1.14.0` |
+
+### Not covered
+
+- The WebM fallback wasn't played in a browser without H.264 support (Chrome picks the MP4 first, as intended).
+- `KRM PAK.pdf`, the client's sitemap scan, is not committed: it is client material, not project work.

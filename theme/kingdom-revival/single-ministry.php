@@ -1,6 +1,18 @@
 <?php
 /**
- * Single ministry — markup from all-ministries.html, rendered on the server.
+ * Single ministry (/what-we-do/{slug}/) — one template for every ministry, filled from krm_ministries() (the ministry
+ * post, falling back to inc/data/ministries.php).
+ *
+ * Sections (template-parts/ministry/*):
+ *  1. Inner hero: first photo, breadcrumb, group eyebrow, H1, the Excerpt.
+ *  2. Intro: overlapping photo pair (the home About section), "What we do", the ministry's points and focus text,
+ *     then any extra sections (e.g. Sunday School inside Children & Orphan Care).
+ *  3. Impact counters (the home stats bar).  4. How your gift helps (the home "Your gift at work" cards).
+ *  5. Photos with the lightbox (up to 9).    6. One testimony (the home "Stories from the field" card).
+ *  7. Side donation card (the home hero card), sticky beside 2–6, giving to this ministry.
+ *  Special layouts: the freedom steps and before/after slider ('layout' => 'freedom'), churches planted and the
+ *  camps / projects timeline (each shown only when it has rows).
+ *  8. Other ministries of the same group.    9. CTA banner (the home page's).
  *
  * @package Kingdom_Revival
  */
@@ -11,84 +23,44 @@ get_header();
 
 while ( have_posts() ) :
 	the_post();
-	$krm_title   = get_the_title();
-	$krm_focus   = (string) get_post_meta( get_the_ID(), '_krm_focus', true );
-	$krm_points  = array_filter( array_map( 'trim', explode( "\n", (string) get_post_meta( get_the_ID(), '_krm_points', true ) ) ) );
-	$krm_gallery = array_values( array_filter( (array) get_post_meta( get_the_ID(), '_krm_gallery', true ) ) );
-	$krm_alts    = (array) get_post_meta( get_the_ID(), '_krm_photo_alts', true );
-	$krm_hero    = $krm_gallery ? $krm_gallery[0] : krm_c( 'ministry.hero_image', 'site' );
+	$krm_m      = krm_current_ministry();
+	$krm_photos = krm_ministry_photos( $krm_m );
+	$krm_args   = array(
+		'ministry' => $krm_m,
+		'photos'   => $krm_photos,
+	);
 	?>
 	<main id="main">
 	<div id="ministry-content">
-		<?php krm_hero_preload( $krm_hero ); ?>
-		<section class="page-hero" id="ministry-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( $krm_hero ) ); ?>')<?php krm_bg_small( $krm_hero ); ?>">
-		<div class="wrap">
-			<?php krm_breadcrumb_html( 'crumb-title' ); ?>
-			<p class="eyebrow"><?php krm_t( 'ministry.eyebrow', 'site' ); ?></p>
-			<h1 id="ministry-title"><?php echo esc_html( $krm_title ); ?></h1>
-			<p class="lead" id="ministry-description"><?php echo esc_html( get_the_excerpt() ); ?></p>
-			<div class="hero-actions">
-			<a class="button button-primary" href="#support"><?php echo krm_icon( 'heart18' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php krm_t( 'ministry.donate_button', 'site' ); ?></a>
-			</div>
-		</div>
-		</section>
+		<?php get_template_part( 'template-parts/ministry/hero', null, $krm_args ); ?>
 
-		<div class="wrap section">
-		<div class="details">
-			<section class="panel">
-			<h2><?php krm_t( 'ministry.focus_heading', 'site' ); ?></h2>
-			<p id="ministry-focus"><?php echo esc_html( $krm_focus ); ?></p>
-			</section>
-			<section class="panel">
-			<h2><?php krm_t( 'ministry.serves_heading', 'site' ); ?></h2>
-			<ul class="focus-list" id="ministry-points">
-			<?php
-			foreach ( $krm_points as $krm_point ) :
-				?>
-				<li><?php echo krm_icon( 'check' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><span><?php echo esc_html( $krm_point ); ?></span></li><?php endforeach; ?></ul>
-			</section>
-		</div>
-
-		<section aria-labelledby="gallery-heading">
-			<div class="gallery-head">
-			<h2 id="gallery-heading"><?php echo krm_site_ministry_text( 'ministry.photos_heading', $krm_title ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in krm_site_ministry_text(). ?></h2>
-			<p id="gallery-tip"<?php echo $krm_gallery ? '' : ' hidden'; ?>><?php echo krm_icon( 'zoom' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php krm_t( 'ministry.photos_tip', 'site' ); ?></p>
-			</div>
-			<?php if ( $krm_gallery ) : ?>
-			<div class="gallery" id="ministry-gallery" data-gallery>
+		<div class="wrap ministry-layout">
+			<div class="ministry-main">
 				<?php
-				foreach ( $krm_gallery as $krm_ref ) :
-					$krm_alt = ! empty( $krm_alts[ (string) $krm_ref ] ) ? $krm_alts[ (string) $krm_ref ] : krm_ref_alt( $krm_ref, $krm_title );
-					?>
-			<figure class="photo"><img <?php krm_img_src( $krm_ref, '(max-width: 520px) calc(100vw - 32px), (max-width: 760px) calc(50vw - 25px), (max-width: 1240px) calc(33vw - 24px), 400px', true ); ?> alt="<?php echo esc_attr( $krm_alt ); ?>" loading="lazy" decoding="async"><figcaption><?php echo esc_html( $krm_alt ); ?></figcaption></figure>
-				<?php endforeach; ?>
+				foreach ( array( 'intro', 'stats', 'gifts', 'gallery', 'story' ) as $krm_part ) {
+					get_template_part( 'template-parts/ministry/' . $krm_part, null, $krm_args );
+				}
+				?>
 			</div>
-			<?php else : ?>
-			<p class="empty-gallery"><?php krm_t( 'ministry.photos_empty', 'site' ); ?></p>
-			<?php endif; ?>
-		</section>
-
-		<div class="give-wrap">
-			<?php
-			get_template_part(
-				'template-parts/give-band',
-				null,
-				krm_ministry_give_band_args(
-					'ministry_give',
-					$krm_title,
-					array(
-						'id'         => 'support',
-						'heading_id' => 'support-heading',
-						'text_id'    => 'support-text',
-						'form'       => array(
-							'id'   => 'support-form',
-							'give' => $krm_title,
-						),
-					)
-				)
-			);
-			?>
+			<aside class="ministry-aside" aria-labelledby="support-heading">
+				<?php get_template_part( 'template-parts/ministry/give-card', null, $krm_args ); ?>
+			</aside>
 		</div>
+
+		<?php if ( 'freedom' === $krm_m['layout'] ) : ?>
+		<div class="krm-design ministry-freedom">
+			<?php get_template_part( 'template-parts/home/freedom', null, array( 'screen' => 'home' ) ); ?>
+		</div>
+		<?php endif; ?>
+
+		<?php
+		get_template_part( 'template-parts/ministry/churches', null, $krm_args );
+		get_template_part( 'template-parts/ministry/camps', null, $krm_args );
+		get_template_part( 'template-parts/ministry/others', null, $krm_args );
+		?>
+
+		<div class="krm-design">
+			<?php get_template_part( 'template-parts/home/cta', null, array( 'screen' => 'home' ) ); ?>
 		</div>
 	</div>
 	</main>

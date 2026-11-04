@@ -16,10 +16,12 @@ $krm_map = krm_c( 'where.map' );
 <p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary)"><?php krm_t( 'where.eyebrow' ); ?></p>
 <h2 style="margin: 0; font-size: clamp(32px, 3.8vw, 46px); font-weight: 800; line-height: 1.12; color: var(--color-primary)"><?php krm_h( 'where.heading' ); ?></h2>
 <div style="display: flex; flex-direction: column; margin-top: 28px">
-<?php foreach ( (array) krm_c( 'where.places' ) as $krm_place ) : ?>
+<?php foreach ( krm_visible( krm_c( 'where.places' ), 'name' ) as $krm_place ) : // Visitors: no [District] rows; counts only once set. ?>
 <div style="display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid #DDE3F0">
 <span style="display: flex; gap: 10px; align-items: center; font-weight: 700"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-secondary)"></span><?php echo krm_text( $krm_place['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+<?php if ( '' !== trim( (string) $krm_place['count'] ) ) : ?>
 <span style="color: var(--color-text-muted)"><?php echo krm_text( $krm_place['count'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+<?php endif; ?>
 </div>
 <?php endforeach; ?>
 </div>
@@ -31,7 +33,7 @@ $krm_map = krm_c( 'where.map' );
 <span style="position: absolute; left: 12px; top: 12px; font-size: 12px; color: var(--color-text); background: var(--color-white); padding: 3px 8px; border-radius: 4px"><?php krm_t( 'where.map_note' ); ?></span>
 <?php endif; ?>
 <?php
-foreach ( array_values( (array) krm_c( 'where.pins' ) ) as $krm_i => $krm_pin ) :
+foreach ( krm_visible( krm_c( 'where.pins' ), 'label' ) as $krm_i => $krm_pin ) :
 	$krm_left = (float) $krm_pin['left'];
 	$krm_top  = (float) $krm_pin['top'];
 	$krm_size = $krm_i ? 12 : 16;

@@ -18,7 +18,7 @@ from seo_check import BASE, PATHS, NoRedirect
 # Pages that should stay out of search results on purpose (not reported as problems).
 INTENTIONAL_NOINDEX = ['/?s=water', '/wp-login.php', '/this-page-does-not-exist/']
 # Indexable but left out of the sitemap on purpose: the short "Choose a ministry" page.
-NOT_IN_SITEMAP = ['/ministries/']
+NOT_IN_SITEMAP = ['/what-we-do/']
 CRAWL_LIMIT = 300
 
 

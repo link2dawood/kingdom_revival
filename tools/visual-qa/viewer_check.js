@@ -16,9 +16,9 @@ const PAGES = [
   ['about collage', '/about/', '.collage img'],
   ['about photos', '/about/', '.photo-grid img'],
   ['about founder', '/about/', 'img[data-zoom]'],
-  ['ministry', '/ministries/brick-kiln-children/', '#ministry-gallery img'],
-  ['ministry outreach (portrait photos)', '/ministries/outreach-ministry/', '#ministry-gallery img'],
-  ['story', '/learning-beside-the-kilns/', '#article-body img'],
+  ['ministry', '/what-we-do/brick-kiln-family-care/', '#ministry-gallery img'],
+  ['ministry outreach (portrait photos)', '/what-we-do/evangelism-outreach/', '#ministry-gallery img'],
+  ['story', '/news/learning-beside-the-kilns/', '#article-body img'],
 ].filter(([name]) => !process.env.PAGE || new RegExp(process.env.PAGE).test(name));
 const TOL = 1.5;
 

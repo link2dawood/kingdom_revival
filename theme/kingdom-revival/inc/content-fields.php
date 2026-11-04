@@ -22,13 +22,17 @@ defined( 'ABSPATH' ) || exit;
  */
 function krm_content_screens() {
 	return array(
-		'home'    => __( 'Home page', 'kingdom-revival' ),
-		'about'   => __( 'About page', 'kingdom-revival' ),
-		'contact' => __( 'Contact page', 'kingdom-revival' ),
-		'donate'  => __( 'Donate page', 'kingdom-revival' ),
-		'partner' => __( 'Become a Partner page', 'kingdom-revival' ),
-		'blog'    => __( 'News & Blogs page', 'kingdom-revival' ),
-		'site'    => __( 'Site text', 'kingdom-revival' ),
+		'home'        => __( 'Home page', 'kingdom-revival' ),
+		'about'       => __( 'About page', 'kingdom-revival' ),
+		'impact'      => __( 'Our Impact page', 'kingdom-revival' ),
+		'testimonies' => __( 'Testimonies page', 'kingdom-revival' ),
+		'gallery'     => __( 'Photo & Video Gallery page', 'kingdom-revival' ),
+		'blog'        => __( 'News & Updates page', 'kingdom-revival' ),
+		'partner'     => __( 'Partner With Us page', 'kingdom-revival' ),
+		'prayer'      => __( 'Prayer Request page', 'kingdom-revival' ),
+		'contact'     => __( 'Contact page', 'kingdom-revival' ),
+		'donate'      => __( 'Donate page', 'kingdom-revival' ),
+		'site'        => __( 'Site text', 'kingdom-revival' ),
 	);
 }
 
@@ -152,6 +156,16 @@ function krm_content_values( $screen, $post_id = null ) {
  * @return mixed
  */
 function krm_c( $path, $screen = '' ) {
+	return is_admin() ? krm_c_raw( $path, $screen ) : krm_public( krm_c_raw( $path, $screen ) );
+}
+
+/**
+ * One content value as saved, [placeholders] included (krm_c() gives visitors '' for those).
+ *
+ * @param string $path   section.field.
+ * @param string $screen Screen.
+ */
+function krm_c_raw( $path, $screen = '' ) {
 	$screen                  = $screen ? $screen : krm_current_screen();
 	list( $section, $field ) = array_pad( explode( '.', $path, 2 ), 2, '' );
 	$values                  = krm_content_values( $screen );
@@ -440,7 +454,7 @@ function krm_inline_tags() {
  * @param string $value Value.
  */
 function krm_text( $value ) {
-	return esc_html( krm_fill( $value ) );
+	return esc_html( krm_fill( krm_public( $value ) ) );
 }
 
 /**
@@ -449,7 +463,7 @@ function krm_text( $value ) {
  * @param string $value Value.
  */
 function krm_inline( $value ) {
-	return krm_link_rel( wp_kses( krm_fill( $value ), krm_inline_tags() ) );
+	return krm_link_rel( wp_kses( krm_fill( krm_public( $value ) ), krm_inline_tags() ) );
 }
 
 /**
@@ -484,20 +498,6 @@ function krm_site_give_band_args( $section, $ministry, $args = array() ) {
 		$band[ $key ] = str_replace( '{ministry}', $ministry, $band[ $key ] );
 	}
 	$band['points'] = str_replace( '{ministry}', $ministry, $band['points'] );
-	return $band;
-}
-
-/**
- * Give band arguments for a ministry page: the ministry's focus followed by the shared text.
- *
- * @param string $section  Section (ministry_give).
- * @param string $ministry Ministry name.
- * @param array  $args     Extra arguments.
- */
-function krm_ministry_give_band_args( $section, $ministry, $args = array() ) {
-	$band         = krm_site_give_band_args( $section, $ministry, $args );
-	$focus        = (string) get_post_meta( get_the_ID(), '_krm_focus', true );
-	$band['text'] = trim( $focus . ' ' . $band['text'] );
 	return $band;
 }
 
@@ -575,6 +575,10 @@ function krm_sanitize_field( $value, $f ) {
 			$value = trim( $value );
 			if ( '' === $value || '#' === $value[0] || '{' === $value[0] ) {
 				return sanitize_text_field( $value );
+			}
+			// A file shipped with the theme (e.g. the default hero video, "krm-theme:video/hero.mp4").
+			if ( preg_match( '#^krm-theme:[a-z0-9/_.-]+$#i', $value ) && false === strpos( $value, '..' ) ) {
+				return $value;
 			}
 			return esc_url_raw( $value, array( 'http', 'https', 'mailto', 'tel' ) );
 		case 'image':

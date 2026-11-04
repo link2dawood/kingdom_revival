@@ -50,7 +50,7 @@ Local tools on this machine: PHP at `F:/xamp/php/php` (XAMPP), Node, Python 3.
 
 **Bootstrap.** `functions.php` only defines `KRM_VERSION` / `KRM_DIR` and requires `inc/*.php`
 (`inc/importer.php` admin-only). All functions are prefixed `krm_`; text domain `kingdom-revival`.
-Bump `KRM_VERSION` on release — it versions enqueued assets and triggers a rewrite-rule flush
+Bump the `Version:` header in `style.css` on release (the only place the version is written; `KRM_VERSION` reads it via `wp_get_theme()`) — it versions enqueued assets and triggers a rewrite-rule flush
 (`krm_rewrite_version` option in `inc/content-types.php`).
 
 **Editable content system (Phase 5)** — the core abstraction, spread over several files:

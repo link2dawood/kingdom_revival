@@ -15,7 +15,6 @@ body { margin: 0; background: var(--white); line-height: var(--line-height-body)
 img { max-width: 100%; }
 a { color: inherit; }
 h1, h2, h3, h4 { color: var(--navy); font-family: var(--font-heading); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); }
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 [hidden] { display: none !important; }
 
 .eyebrow { margin: 0 0 12px; color: var(--red); font-size: 13px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
@@ -81,3 +80,6 @@ h1, h2, h3, h4 { color: var(--navy); font-family: var(--font-heading); line-heig
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
+
+/* Final pass: breadcrumb links are 44px tall on phones and tablets (theme-global.css), so less space below. */
+@media (max-width: 1024px) { .breadcrumb { margin-bottom: 10px; } }

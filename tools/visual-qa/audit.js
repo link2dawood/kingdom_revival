@@ -17,11 +17,11 @@ const PAGES = [
   ['about', '/about.html', '/about/'],
   ['contact', '/contact.html', '/contact/'],
   ['donate', '/donate.html', '/donate/'],
-  ['partner', '/partner.html', '/partner/'],
-  ['blog', '/blog.html', '/blog/'],
-  ['ministries (no slug)', '/all-ministries.html', '/ministries/'],
+  ['partner', '/partner.html', '/partner-with-us/'],
+  ['blog', '/blog.html', '/news/'],
+  ['ministries (no slug)', '/all-ministries.html', '/what-we-do/'],
   ...MINISTRIES.map((s) => [`ministry: ${s}`, `/all-ministries.html?ministry=${s}`, `/ministries/${s}/`]),
-  ...POSTS.map((s) => [`post: ${s}`, `/blog-post.html?post=${s}`, `/${s}/`]),
+  ...POSTS.map((s) => [`post: ${s}`, `/blog-post.html?post=${s}`, `/news/${s}/`]),
 ];
 
 // Where a link in the HTML design should point in WordPress.
@@ -32,10 +32,10 @@ function mapHtmlUrl(href) {
   const q = u.searchParams;
   let p;
   if (file === '' || file === 'index.html') p = '/';
-  else if (file === 'blog-post.html' && q.get('post')) { p = `/${q.get('post')}/`; q.delete('post'); }
+  else if (file === 'blog-post.html' && q.get('post')) { p = `/news/${q.get('post')}/`; q.delete('post'); }
   else if (file === 'all-ministries.html' && q.get('ministry')) { p = `/ministries/${q.get('ministry')}/`; q.delete('ministry'); }
-  else if (file === 'all-ministries.html') p = '/ministries/';
-  else if (file === 'blog.html') p = '/blog/';
+  else if (file === 'all-ministries.html') p = '/what-we-do/';
+  else if (file === 'blog.html') p = '/news/';
   else p = '/' + file.replace(/\.html$/, '') + '/';
   const qs = q.toString();
   return WP + p + (qs ? '?' + qs : '') + u.hash;

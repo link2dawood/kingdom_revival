@@ -28,8 +28,17 @@ function krm_menu_tree( $location ) {
 	}
 	_wp_menu_item_classes_by_context( $items );
 
-	$nodes = array();
+	$nodes   = array();
+	$skipped = array();
 	foreach ( $items as $item ) {
+		// Left out, with their sub-items: links to an unpublished ministry or page (e.g. a ministry waiting for its
+		// description), and the Testimonies page while there are no testimonies (krm_testimonies_hidden()).
+		$gone = 'post_type' === $item->type && 'publish' !== get_post_status( (int) $item->object_id );
+		$gone = $gone || ( krm_testimonies_hidden() && krm_redirect_path( $item->url ) === krm_redirect_path( krm_page_url( 'testimonies' ) ) );
+		if ( $gone || isset( $skipped[ (int) $item->menu_item_parent ] ) ) {
+			$skipped[ $item->ID ] = true;
+			continue;
+		}
 		$ministry = ( 'ministry' === $item->object && 'post_type' === $item->type ) ? get_post_field( 'post_name', $item->object_id ) : '';
 		// Keep only classes typed in the menu editor (e.g. "menu-all"), not WordPress's generated ones.
 		$classes            = array_filter(
@@ -127,9 +136,11 @@ function krm_default_primary_tree() {
 
 	return array(
 		krm_node( __( 'Home', 'kingdom-revival' ), home_url( '/' ), array(), '', is_front_page() ),
-		krm_node( __( 'Ministries', 'kingdom-revival' ), '#', array(), '', false, $groups ),
-		krm_node( __( 'About', 'kingdom-revival' ), krm_page_url( 'about' ), array(), '', 'about' === krm_design_template() ),
-		krm_node( __( 'News & Blogs', 'kingdom-revival' ), krm_blog_url(), array(), '', is_home() || is_singular( 'post' ) ),
+		krm_node( __( 'About Us', 'kingdom-revival' ), krm_page_url( 'about' ), array(), '', 'about' === krm_design_template() ),
+		krm_node( __( 'What We Do', 'kingdom-revival' ), '#', array(), '', false, $groups ),
+		krm_node( __( 'Our Impact', 'kingdom-revival' ), krm_page_url( 'impact' ), array(), '', in_array( krm_design_template(), array( 'impact', 'testimonies', 'gallery' ), true ) ),
+		krm_node( __( 'News & Updates', 'kingdom-revival' ), krm_blog_url(), array(), '', is_home() || is_singular( 'post' ) ),
+		krm_node( __( 'Partner With Us', 'kingdom-revival' ), krm_page_url( 'partner' ), array(), '', in_array( krm_design_template(), array( 'partner', 'prayer' ), true ) ),
 		krm_node( __( 'Contact', 'kingdom-revival' ), krm_page_url( 'contact' ), array(), '', 'contact' === krm_design_template() ),
 	);
 }
@@ -280,7 +291,7 @@ function krm_render_nodes( $nodes, $depth = 0 ) {
 		$classes      = $node['classes'];
 		if ( $has_children ) {
 			$classes[] = 'has-sub';
-			// The design highlights "Ministries" on ministry pages and on the All Ministries page (/ministries/). The
+			// The design highlights "What We Do" on ministry pages and on the What We Do page (/what-we-do/). The
 			// home page highlights nothing, as in the design.
 			if ( 0 === $depth && ! is_front_page() && ( krm_node_has_current( $node ) || ( is_post_type_archive( 'ministry' ) && krm_node_has_ministry( $node ) ) ) ) {
 				$classes[] = 'is-current';
@@ -351,37 +362,39 @@ function krm_footer_links( $location ) {
 					'url'   => home_url( '/' ),
 				),
 				array(
-					'title' => __( 'About', 'kingdom-revival' ),
+					'title' => __( 'About Us', 'kingdom-revival' ),
 					'url'   => krm_page_url( 'about' ),
 				),
 				array(
-					'title' => __( 'News & Blogs', 'kingdom-revival' ),
+					'title' => __( 'What We Do', 'kingdom-revival' ),
+					'url'   => krm_ministries_url(),
+				),
+				array(
+					'title' => __( 'Our Impact', 'kingdom-revival' ),
+					'url'   => krm_page_url( 'impact' ),
+				),
+				array(
+					'title' => __( 'News & Updates', 'kingdom-revival' ),
 					'url'   => krm_blog_url(),
+				),
+				array(
+					'title' => __( 'Partner With Us', 'kingdom-revival' ),
+					'url'   => krm_page_url( 'partner' ),
 				),
 				array(
 					'title' => __( 'Contact', 'kingdom-revival' ),
 					'url'   => krm_page_url( 'contact' ),
 				),
 				array(
-					'title' => __( 'Become a Partner', 'kingdom-revival' ),
-					'url'   => krm_page_url( 'partner' ),
-				),
-				array(
-					'title' => __( 'Donate', 'kingdom-revival' ),
+					'title' => __( 'Donate / Give', 'kingdom-revival' ),
 					'url'   => krm_donate_url(),
 				),
 			);
 		case 'footer_ministries':
 			$links = array();
-			foreach ( array(
-				'children-ministry'           => 'Children Ministry',
-				'orphan-and-children-care'    => 'Orphan & Children Care',
-				'freedom-from-slavery'        => 'Freedom from Slavery',
-				'urdu-bibles'                 => 'Urdu Bibles',
-				'leadership-and-discipleship' => 'Leadership & Discipleship',
-			) as $slug => $title ) {
+			foreach ( array( 'evangelism-outreach', 'bible-distribution', 'children-orphan-care', 'slavery-freedom', 'brick-kiln-family-care' ) as $slug ) {
 				$links[] = array(
-					'title' => $title,
+					'title' => krm_ministry_data()['items'][ $slug ]['title'],
 					'url'   => krm_ministry_url( $slug ),
 				);
 			}

@@ -294,12 +294,21 @@ add_action(
 	}
 );
 
-/* Testimonials are shown in lists only; a single testimonial address leads to the list. */
+/*
+ * Testimonials are shown in lists only: a single testimonial address, and the /testimonials/ list, lead to the
+ * Testimonies page (Our Impact → Testimonies) when it is published, else to the /testimonials/ list.
+ */
 add_action(
 	'template_redirect',
 	function () {
+		$pages = krm_design_template_pages();
+		$page  = isset( $pages['testimonies'] ) ? get_permalink( $pages['testimonies'] ) : '';
 		if ( is_singular( 'testimonial' ) ) {
-			wp_safe_redirect( get_post_type_archive_link( 'testimonial' ), 301 );
+			wp_safe_redirect( $page ? $page : get_post_type_archive_link( 'testimonial' ), 301 );
+			exit;
+		}
+		if ( $page && is_post_type_archive( 'testimonial' ) && ! is_feed() ) {
+			wp_safe_redirect( $page, 301 );
 			exit;
 		}
 	}

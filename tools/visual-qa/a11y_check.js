@@ -14,11 +14,11 @@ const PAGES = {
   about: ['/about.html', '/about/'],
   contact: ['/contact.html', '/contact/'],
   donate: ['/donate.html', '/donate/'],
-  partner: ['/partner.html', '/partner/'],
-  blog: ['/blog.html', '/blog/'],
-  post: ['/blog-post.html?post=learning-beside-the-kilns', '/learning-beside-the-kilns/'],
-  ministry: ['/all-ministries.html?ministry=brick-kiln-children', '/ministries/brick-kiln-children/'],
-  'ministries-none': ['/all-ministries.html', '/ministries/'],
+  partner: ['/partner.html', '/partner-with-us/'],
+  blog: ['/blog.html', '/news/'],
+  post: ['/blog-post.html?post=learning-beside-the-kilns', '/news/learning-beside-the-kilns/'],
+  ministry: ['/all-ministries.html?ministry=brick-kiln-children', '/what-we-do/brick-kiln-family-care/'],
+  'ministries-none': ['/all-ministries.html', '/what-we-do/'],
   notfound: [null, '/no-such-page-krm/'],
 };
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');

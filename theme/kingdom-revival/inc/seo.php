@@ -55,10 +55,10 @@ function krm_seo_title() {
 		return $site . ' — Home';
 	}
 	if ( is_post_type_archive( 'ministry' ) ) {
-		return 'All Ministries | ' . $site;
+		return 'What We Do | ' . $site;
 	}
 	if ( is_home() ) {
-		return 'News & Blogs | ' . $site;
+		return wp_strip_all_tags( get_the_title( (int) get_option( 'page_for_posts' ) ) ) . ' | ' . $site;
 	}
 	if ( is_page() ) {
 		$map    = krm_page_seo();
@@ -75,10 +75,14 @@ function krm_seo_title() {
  */
 function krm_page_seo() {
 	return array(
-		'about'   => array( 'About Us', 'Kingdom Revival Ministries is a Gospel-centred ministry serving Pakistan’s forgotten — preaching Christ, planting churches and caring for orphans, widows and brick kiln families.' ),
-		'contact' => array( 'Contact Us', 'Get in touch with Kingdom Revival Ministries in Faisalabad, Pakistan — for partnership, giving, prayer requests or visits.' ),
-		'donate'  => array( 'Donate', 'Give to Kingdom Revival Ministries by PayPal, bank transfer, Western Union or MoneyGram and bring the hope of Jesus to Pakistan’s forgotten.' ),
-		'partner' => array( 'Become a Partner', 'Become a partner with Kingdom Revival Ministries — pray, give monthly, sponsor a ministry or partner as a church to carry the Gospel to Pakistan’s forgotten.' ),
+		'about'       => array( 'About Us', 'Kingdom Revival Ministries is a Gospel-centred ministry serving Pakistan’s forgotten — preaching Christ, planting churches and caring for orphans, widows and brick kiln families.' ),
+		'contact'     => array( 'Contact Us', 'Get in touch with Kingdom Revival Ministries in Faisalabad, Pakistan — for partnership, giving, prayer requests or visits.' ),
+		'donate'      => array( 'Donate', 'Give to Kingdom Revival Ministries by PayPal, bank transfer, Western Union or MoneyGram and bring the hope of Jesus to Pakistan’s forgotten.' ),
+		'partner'     => array( 'Partner With Us', 'Partner with Kingdom Revival Ministries — as a prayer partner, a financial partner, a church or ministry partner or a volunteer — to carry the Gospel to Pakistan’s forgotten.' ),
+		'impact'      => array( 'Our Impact', 'The impact of Kingdom Revival Ministries across Pakistan: numbers for each ministry, testimonies and a photo and video gallery.' ),
+		'testimonies' => array( 'Testimonies', 'Testimonies of lives changed through the Gospel and practical care of Kingdom Revival Ministries in Pakistan.' ),
+		'gallery'     => array( 'Photo & Video Gallery', 'Photos and videos from every ministry of Kingdom Revival Ministries in Pakistan.' ),
+		'prayer'      => array( 'Prayer Request', 'Send a prayer request to Kingdom Revival Ministries. Our pastors and prayer team pray over every request we receive.' ),
 	);
 }
 
@@ -124,8 +128,14 @@ function krm_meta_description() {
 		if ( '' !== $desc ) {
 			return $desc;
 		}
-		// Story categories without their own description use the News & Blogs description.
-		return is_tax( 'sermon_series' ) ? krm_fill( krm_c( 'footer.tagline', 'site' ) ) : 'Stories of hope from the field — read how the Gospel and practical care are changing lives across Pakistan.';
+		// Story categories without their own description: the News & Updates description, named after the category
+		// so that every list page has its own description.
+		if ( is_tax( 'sermon_series' ) ) {
+			return krm_fill( krm_c( 'footer.tagline', 'site' ) );
+		}
+		$term = get_queried_object();
+		$name = $term && isset( $term->name ) ? $term->name : '';
+		return ( '' !== $name ? $name . ': stories' : 'Stories' ) . ' of hope from the field — read how the Gospel and practical care are changing lives across Pakistan.';
 	}
 	return '';
 }
@@ -486,7 +496,7 @@ foreach ( array( 'wpseo_sitemap_entry', 'rank_math/sitemap/entry' ) as $krm_hook
 }
 
 /*
- * Core sitemaps list single entries but not list pages: add /ministries/ (All Ministries), /sermons/, /events/ and
+ * Core sitemaps list single entries but not list pages: add /what-we-do/ (What We Do), /sermons/, /events/ and
  * /testimonials/ while they have published items, so an empty list is never submitted.
  */
 add_action(
@@ -511,7 +521,11 @@ add_action(
 				 */
 				public function get_url_list( $page_num, $object_subtype = '' ) {
 					$urls = array();
+					$pages = krm_design_template_pages();
 					foreach ( array( 'ministry', 'sermon', 'event', 'testimonial' ) as $type ) {
+						if ( 'testimonial' === $type && isset( $pages['testimonies'] ) ) {
+							continue; // /testimonials/ redirects to the Testimonies page, which is in the pages sitemap.
+						}
 						$link = post_type_exists( $type ) ? get_post_type_archive_link( $type ) : false;
 						if ( $link && (int) wp_count_posts( $type )->publish > 0 ) {
 							$urls[] = array( 'loc' => $link );

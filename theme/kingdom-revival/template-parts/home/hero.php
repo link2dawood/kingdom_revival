@@ -10,9 +10,20 @@ defined( 'ABSPATH' ) || exit;
 <!-- Hero -->
 <?php krm_hero_preload( krm_c( 'hero.image' ) ); ?>
 <section id="top" style="position: relative; background: #1A2550 url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>') center/cover no-repeat<?php krm_bg_small( krm_c( 'hero.image' ) ); ?>">
-<?php if ( krm_c( 'hero.video' ) ) : ?>
-<?php // Started by front.js once the page has loaded; until then the section's background (the same image) shows through. ?>
-<video aria-hidden="true" data-krm-autoplay muted loop playsinline preload="none" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"><source src="<?php echo esc_url( krm_media( krm_c( 'hero.video' ) ) ); ?>" type="video/mp4"></video>
+<?php
+if ( krm_c( 'hero.video' ) ) :
+	// No src or poster in the HTML: front.js adds the sources and the poster only on screens 768px and wider, without
+	// data saver or reduced motion, so phones never download the video. Until then (and on phones) the element is
+	// empty and transparent and the section's background, the same photo, shows. Poster: the photo's WebP, else its
+	// original JPG (both well under 200 KB).
+	$krm_hero_img = krm_c( 'hero.image' );
+	$krm_poster_w = krm_ref_url( $krm_hero_img );
+	$krm_hero_id  = krm_media_id( (string) $krm_hero_img );
+	$krm_poster_j = $krm_hero_id ? (string) wp_get_original_image_url( $krm_hero_id ) : '';
+	$krm_poster_j = preg_match( '/\.jpe?g$/i', $krm_poster_j ) ? $krm_poster_j : $krm_poster_w;
+	$krm_webm     = trim( (string) krm_c( 'hero.video_webm' ) );
+	?>
+<video aria-hidden="true" data-krm-autoplay muted loop playsinline preload="none" data-src-mp4="<?php echo esc_url( krm_media( krm_c( 'hero.video' ) ) ); ?>"<?php if ( '' !== $krm_webm ) : ?> data-src-webm="<?php echo esc_url( krm_media( $krm_webm ) ); ?>"<?php endif; ?> data-poster="<?php echo esc_url( $krm_poster_w ); ?>" data-poster-jpg="<?php echo esc_url( $krm_poster_j ); ?>" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></video>
 <?php endif; ?>
 <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(8,16,48,0.62)"></div>
 
@@ -40,7 +51,7 @@ foreach ( krm_home_amounts() as $krm_a => $krm_on ) :
 <button type="button" data-amount="<?php echo esc_attr( $krm_a ); ?>" aria-pressed="<?php echo $krm_on ? 'true' : 'false'; ?>" style="font: 600 14px 'Plus Jakarta Sans', sans-serif; min-height: 44px; border-radius: 4px; cursor: pointer; border: 1px solid <?php echo $krm_on ? 'var(--color-primary)' : '#D3D9E6'; ?>; background: <?php echo $krm_on ? 'var(--color-primary)' : 'var(--color-white)'; ?>; color: <?php echo $krm_on ? 'var(--color-white)' : 'var(--color-text)'; ?>"><?php echo esc_html( $krm_a ); ?></button>
 <?php endforeach; ?>
 </div>
-<a class="k-y" data-krm-donate="hero" href="<?php echo esc_url( krm_home_donate_href( krm_home_selected_amount() ) ); ?>" style="margin-top: 14px; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; background: var(--color-secondary); color: var(--color-white); font-weight: 700; padding: 14px; border-radius: 4px; min-height: 44px; box-sizing: border-box">Donate <span><?php echo esc_html( 'Other' === krm_home_selected_amount() ? 'Now' : krm_home_selected_amount() ); ?></span></a>
+<a class="k-y" data-krm-donate="hero" data-for="<?php echo esc_attr( krm_home_card_ministry() ); ?>" data-ministry="<?php echo esc_attr( krm_home_card_ministry_slug() ); ?>" href="<?php echo esc_url( krm_home_donate_href( krm_home_selected_amount(), krm_home_card_ministry(), krm_home_card_ministry_slug() ) ); ?>" style="margin-top: 14px; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; background: var(--color-secondary); color: var(--color-white); font-weight: 700; padding: 14px; border-radius: 4px; min-height: 44px; box-sizing: border-box">Donate <span><?php echo esc_html( 'Other' === krm_home_selected_amount() ? 'Now' : krm_home_selected_amount() ); ?></span></a>
 </div>
 </div>
 </section>

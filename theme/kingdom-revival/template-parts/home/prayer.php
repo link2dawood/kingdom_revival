@@ -1,34 +1,45 @@
 <?php
 /**
- * Home: prayer request form. Posts to WordPress like the contact form (inc/forms.php, form "prayer");
- * assets/js/front.js sends it.
+ * Prayer request form (home page, and the Prayer Request page with screen => 'home'). Posts to WordPress like the
+ * contact form (inc/forms.php, form "prayer"); assets/js/components.js sends it.
+ *
+ * @param array $args { screen: content screen to read; id: section id (default "prayer"). }
  *
  * @package Kingdom_Revival
  */
 
 defined( 'ABSPATH' ) || exit;
 
+$krm_screen = isset( $args['screen'] ) ? (string) $args['screen'] : '';
+$krm_id     = isset( $args['id'] ) ? (string) $args['id'] : 'prayer';
+$krm_full   = 'request' === $krm_id;
+
 $krm_input = "font: 400 16px 'Plus Jakarta Sans', sans-serif; padding: 12px 14px; border: 1px solid #D3D9E6; border-radius: 8px; background: #FFFFFF; min-height: 46px; box-sizing: border-box";
 ?>
 <!-- Prayer request -->
-<section id="prayer" style="max-width: 1240px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 32px) clamp(72px, 8vw, 110px)">
+<section id="<?php echo esc_attr( $krm_id ); ?>" style="max-width: 1240px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 32px) clamp(72px, 8vw, 110px)">
 <div style="border-radius: 16px; background: var(--color-bg-soft); padding: clamp(28px, 4vw, 52px); display: flex; flex-wrap: wrap; gap: 32px 56px">
 <div style="flex: 1 1 320px; min-width: 0">
-<p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary)"><?php krm_t( 'prayer.eyebrow' ); ?></p>
-<h2 style="margin: 0; font-size: clamp(30px, 3.4vw, 40px); font-weight: 800; line-height: 1.15; color: var(--color-primary)"><?php krm_h( 'prayer.heading' ); ?></h2>
-<p style="margin: 14px 0 0; color: var(--color-text-muted)"><?php krm_t( 'prayer.text' ); ?></p>
-<?php if ( '' !== trim( (string) krm_c( 'prayer.whatsapp_label' ) ) ) : ?>
-<a href="<?php echo esc_url( krm_whatsapp_url() ); ?>" target="_blank" rel="noopener" style="margin-top: 16px; display: inline-flex; gap: 8px; align-items: center; font-weight: 700; min-height: 44px"><?php krm_t( 'prayer.whatsapp_label' ); ?></a>
+<p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary)"><?php krm_t( 'prayer.eyebrow', $krm_screen ); ?></p>
+<h2 style="margin: 0; font-size: clamp(30px, 3.4vw, 40px); font-weight: 800; line-height: 1.15; color: var(--color-primary)"><?php krm_h( 'prayer.heading', $krm_screen ); ?></h2>
+<p style="margin: 14px 0 0; color: var(--color-text-muted)"><?php krm_t( 'prayer.text', $krm_screen ); ?></p>
+<?php if ( '' !== trim( (string) krm_c( 'prayer.whatsapp_label', $krm_screen ) ) ) : ?>
+<a href="<?php echo esc_url( krm_whatsapp_url() ); ?>" target="_blank" rel="noopener" style="margin-top: 16px; display: inline-flex; gap: 8px; align-items: center; font-weight: 700; min-height: 44px"><?php krm_t( 'prayer.whatsapp_label', $krm_screen ); ?></a>
 <?php endif; ?>
 </div>
-<form data-krm-prayer novalidate style="flex: 1.3 1 380px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<form data-krm-prayer data-krm-form="prayer" novalidate style="flex: 1.3 1 380px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
 <p class="krm-hp" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden"><label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label></p>
 <label class="krm-prayer__half" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Your name<input type="text" name="name" autocomplete="name" required maxlength="200" style="<?php echo esc_attr( $krm_input ); ?>"></label>
-<label class="krm-prayer__half" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Email or WhatsApp<input type="text" name="contact" autocomplete="email" required maxlength="200" style="<?php echo esc_attr( $krm_input ); ?>"></label>
-<label style="grid-column: span 2; display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Your prayer request<textarea name="request" rows="4" required maxlength="5000" style="font: 400 16px 'Plus Jakarta Sans', sans-serif; padding: 12px 14px; border: 1px solid #D3D9E6; border-radius: 8px; background: #FFFFFF; resize: vertical"></textarea></label>
-<button type="submit" class="k-g" style="grid-column: span 2; justify-self: start; font: 700 15px 'Plus Jakarta Sans', sans-serif; background: var(--color-primary); color: var(--color-white); border: 0; border-radius: 8px; padding: 0 26px; min-height: 48px; cursor: pointer"><?php krm_t( 'prayer.button' ); ?></button>
-<p data-krm-prayer-status role="status" hidden style="grid-column: span 2; margin: 0; font-weight: 600; color: #0F6B3A"><?php krm_t( 'prayer.success' ); ?></p>
-<p data-krm-prayer-error role="alert" hidden style="grid-column: span 2; margin: 0; font-weight: 600; color: var(--color-secondary)"><?php krm_t( 'prayer.error' ); ?></p>
+<label class="krm-prayer__half" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Email or WhatsApp<input type="text" name="contact" autocomplete="email" required maxlength="200" data-validate="email-or-phone" style="<?php echo esc_attr( $krm_input ); ?>"></label>
+<?php if ( $krm_full ) : ?>
+<label class="krm-prayer__half" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Country<input type="text" name="country" autocomplete="country-name" maxlength="200" style="<?php echo esc_attr( $krm_input ); ?>"></label>
+<label class="krm-prayer__half" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Request type<select name="type" style="<?php echo esc_attr( $krm_input ); ?>"><option>Healing</option><option>Family</option><option>Salvation</option><option>Other</option></select></label>
+<?php endif; ?>
+<label style="grid-column: span 2; display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Message<textarea name="request" rows="<?php echo $krm_full ? '7' : '4'; ?>" required maxlength="5000" style="font: 400 16px 'Plus Jakarta Sans', sans-serif; padding: 12px 14px; border: 1px solid #D3D9E6; border-radius: 8px; background: #FFFFFF; resize: vertical"></textarea></label>
+<?php if ( $krm_full ) : ?><label class="krm-prayer-private" style="grid-column:span 2;display:flex;gap:10px;align-items:flex-start;font-size:14px"><input type="checkbox" name="private" value="Yes" style="width:20px;height:20px;accent-color:#0C1C4F"><span><strong>Keep my request private</strong><br><small style="color:var(--color-text-muted)">Only the ministry's designated prayer team will see it.</small></span></label><?php endif; ?>
+<button type="submit" class="k-g" style="grid-column: span 2; justify-self: start; font: 700 15px 'Plus Jakarta Sans', sans-serif; background: var(--color-primary); color: var(--color-white); border: 0; border-radius: 8px; padding: 0 26px; min-height: 48px; cursor: pointer"><?php krm_t( 'prayer.button', $krm_screen ); ?></button>
+<p data-krm-form-status role="status" hidden style="grid-column: span 2; margin: 0; font-weight: 600; color: #1E5B3A"><?php krm_t( 'prayer.success', $krm_screen ); ?></p>
+<p data-krm-form-error role="alert" hidden style="grid-column: span 2; margin: 0; font-weight: 600; color: var(--color-secondary)"><?php krm_t( 'prayer.error', $krm_screen ); ?></p>
 </form>
 </div>
 </section>

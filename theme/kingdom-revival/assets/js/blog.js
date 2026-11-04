@@ -16,7 +16,7 @@
     cards.forEach(function (card) {
       var visible = filter === "All" && !q
         ? !card.dataset.featured
-        : (filter === "All" || card.dataset.category === filter) && (!q || card.dataset.search.indexOf(q) !== -1);
+        : (filter === "All" || (card.dataset.category || "").split("|").indexOf(filter) !== -1) && (!q || card.dataset.search.indexOf(q) !== -1);
       card.hidden = !visible;
       if (visible) shown++;
     });
@@ -30,6 +30,18 @@
     filter = chip.dataset.filter;
     filters.querySelectorAll(".chip").forEach(function (c) { c.setAttribute("aria-pressed", c === chip ? "true" : "false"); });
     render();
+  });
+  document.querySelectorAll("[data-sidebar-filter]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var wanted = button.dataset.sidebarFilter;
+      var chip = Array.prototype.filter.call(filters.querySelectorAll("[data-filter]"), function (item) { return item.dataset.filter === wanted; })[0];
+      if (chip) chip.click();
+      filters.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
+  var subscribe = document.querySelector("[data-open-newsletter]");
+  if (subscribe) subscribe.addEventListener("click", function () {
+    if (window.KRM && typeof window.KRM.openNewsletter === "function") window.KRM.openNewsletter();
   });
   if (search) search.addEventListener("input", function (event) { query = event.target.value; render(); });
 })();

@@ -12,9 +12,9 @@ const PLAN = [
   ['/about/', [['click', '.menu-toggle', 2], ['click', '[data-gallery] img', 1], ['key', 'Escape', 1]]],
   ['/donate/', [['click', 'button[data-amount], .amount-grid button, .amounts button', 3], ['click', '.tab', 4]]],
   ['/contact/', [['type', 'input[name="name"], input[type="text"]', 1], ['click', '.menu-toggle', 2]]],
-  ['/blog/', [['click', '.menu-toggle', 2], ['click', '.filters button, [data-filter]', 3]]],
-  ['/learning-beside-the-kilns/', [['click', '.menu-toggle', 2], ['click', '.post-content figure img, article img', 1], ['key', 'Escape', 1]]],
-  ['/ministries/brick-kiln-children/', [['click', '.menu-toggle', 2], ['click', '.photo img', 1], ['key', 'Escape', 1]]],
+  ['/news/', [['click', '.menu-toggle', 2], ['click', '.filters button, [data-filter]', 3]]],
+  ['/news/learning-beside-the-kilns/', [['click', '.menu-toggle', 2], ['click', '.post-content figure img, article img', 1], ['key', 'Escape', 1]]],
+  ['/what-we-do/brick-kiln-family-care/', [['click', '.menu-toggle', 2], ['click', '.photo img', 1], ['key', 'Escape', 1]]],
 ];
 
 (async () => {

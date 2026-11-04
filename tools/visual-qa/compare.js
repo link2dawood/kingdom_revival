@@ -13,16 +13,16 @@ const PAGES = {
   about: ['/about.html', '/about/'],
   contact: ['/contact.html', '/contact/'],
   donate: ['/donate.html', '/donate/'],
-  partner: ['/partner.html', '/partner/'],
-  blog: ['/blog.html', '/blog/'],
-  post: ['/blog-post.html?post=learning-beside-the-kilns', '/learning-beside-the-kilns/'],
-  'post-oldest': ['/blog-post.html?post=prayer-for-the-sick-and-oppressed', '/prayer-for-the-sick-and-oppressed/'],
-  ministry: ['/all-ministries.html?ministry=brick-kiln-children', '/ministries/brick-kiln-children/'],
+  partner: ['/partner.html', '/partner-with-us/'],
+  blog: ['/blog.html', '/news/'],
+  post: ['/blog-post.html?post=learning-beside-the-kilns', '/news/learning-beside-the-kilns/'],
+  'post-oldest': ['/blog-post.html?post=prayer-for-the-sick-and-oppressed', '/news/prayer-for-the-sick-and-oppressed/'],
+  ministry: ['/all-ministries.html?ministry=brick-kiln-children', '/what-we-do/brick-kiln-family-care/'],
   // Theme 1.7.4 photos: Urdu-12 upright (one gallery photo), Outreach's own gallery (replaces the placeholder).
-  'ministry-urdu': ['/all-ministries.html?ministry=urdu-bibles', '/ministries/urdu-bibles/'],
-  'ministry-outreach': ['/all-ministries.html?ministry=outreach-ministry', '/ministries/outreach-ministry/'],
-  'ministry-empty': ['/all-ministries.html?ministry=free-medical-camps', '/ministries/free-medical-camps/'],
-  'ministries-none': ['/all-ministries.html', '/ministries/'],
+  'ministry-urdu': ['/all-ministries.html?ministry=urdu-bibles', '/what-we-do/bible-distribution/'],
+  'ministry-outreach': ['/all-ministries.html?ministry=outreach-ministry', '/what-we-do/evangelism-outreach/'],
+  'ministry-empty': ['/all-ministries.html?ministry=free-medical-camps', '/what-we-do/medical-health/'],
+  'ministries-none': ['/all-ministries.html', '/what-we-do/'],
 };
 const CACHE = path.join(__dirname, 'cache');
 fs.mkdirSync(CACHE, { recursive: true });

@@ -1,6 +1,6 @@
 <?php
 /**
- * The seven News & Blogs stories.
+ * Six clearly marked sample News stories. Replace their copy in WordPress before publication.
  *
  * Generated from the approved HTML design. Used by the setup importer, and as a fallback before content is imported.
  *
@@ -9,11 +9,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-return array(
+return array_slice( array(
 	array(
 		'slug' => 'gods-word-in-every-home',
 		'title' => 'God’s Word in Every Home: Placing Urdu Bibles in Waiting Hands',
-		'category' => 'Scripture',
+		'category' => 'Urdu Bibles',
 		'ministry' => 'urdu-bibles',
 		'ministryName' => 'Urdu Bibles',
 		'date' => '2026-10-14',
@@ -193,7 +193,7 @@ return array(
 	array(
 		'slug' => 'new-life-in-the-water',
 		'title' => 'New Life in the Water: Celebrating Baptisms Across Our Communities',
-		'category' => 'Church',
+		'category' => 'Events',
 		'ministry' => 'baptisms',
 		'ministryName' => 'Baptisms',
 		'date' => '2026-09-18',
@@ -348,7 +348,7 @@ return array(
 	array(
 		'slug' => 'standing-with-widows',
 		'title' => 'Standing With Widows: Dignity, Fellowship and Daily Bread',
-		'category' => 'Care',
+		'category' => 'Freedom',
 		'ministry' => 'widows-ministry',
 		'ministryName' => 'Widows Ministry',
 		'date' => '2026-08-21',
@@ -413,7 +413,7 @@ return array(
 	array(
 		'slug' => 'raising-up-shepherds',
 		'title' => 'Raising Up Shepherds: Training Leaders for Growing House Churches',
-		'category' => 'Church',
+		'category' => 'Church Planting',
 		'ministry' => 'leadership-and-discipleship',
 		'ministryName' => 'Leadership & Discipleship',
 		'date' => '2026-08-07',
@@ -553,4 +553,4 @@ return array(
 			),
 		),
 	),
-);
+), 0, 6 );

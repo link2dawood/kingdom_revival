@@ -58,7 +58,9 @@ add_action(
 			wp_enqueue_style( 'krm-front', krm_asset( 'css/front.css' ), array( 'krm-global' ), $ver );
 		} else {
 			wp_enqueue_style( 'krm-site', krm_asset( 'css/site.css' ), array( 'krm-global' ), $ver );
-			wp_enqueue_style( 'krm-' . $view, krm_asset( 'css/pages/' . $view . '.css' ), array( 'krm-site' ), $ver );
+			if ( file_exists( KRM_DIR . '/assets/css/pages/' . $view . '.css' ) ) {
+				wp_enqueue_style( 'krm-' . $view, krm_asset( 'css/pages/' . $view . '.css' ), array( 'krm-site' ), $ver );
+			}
 			if ( 'page' === $view ) {
 				// Story cards for fallback listings.
 				wp_enqueue_style( 'krm-blog', krm_asset( 'css/pages/blog.css' ), array( 'krm-site' ), $ver );
@@ -92,11 +94,14 @@ add_action(
 
 		// The photo viewer, only where gallery photos or [data-zoom] images are printed: home, About, ministry pages,
 		// stories, sermons and events.
-		if ( in_array( $view, array( 'front', 'about', 'post' ), true ) || is_singular( 'ministry' ) ) {
+		if ( in_array( $view, array( 'front', 'about', 'post', 'gallery' ), true ) || is_singular( 'ministry' ) ) {
 			wp_enqueue_script( 'krm-viewer', krm_asset( 'js/viewer.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
 		}
 
-		$scripts = array( 'front', 'blog', 'post', 'contact', 'donate', 'partner' );
+		// Filters, tabs, click-to-play videos and the prayer / partner sign-up forms, on every page.
+		wp_enqueue_script( 'krm-components', krm_asset( 'js/components.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
+
+		$scripts = array( 'front', 'blog', 'post', 'contact', 'donate', 'impact' );
 		if ( in_array( $view, $scripts, true ) ) {
 			wp_enqueue_script( 'krm-' . $view, krm_asset( 'js/' . $view . '.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
 		}

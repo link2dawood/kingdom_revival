@@ -33,9 +33,14 @@ function krm_breadcrumbs() {
 	}
 	$trail = array( array( 'Home', home_url( '/' ) ) );
 	if ( is_singular( 'ministry' ) ) {
-		$trail[] = array( 'Ministries', krm_ministries_url() );
+		$trail[] = array( __( 'What We Do', 'kingdom-revival' ), krm_ministries_url() );
 	} elseif ( is_singular( 'post' ) ) {
-		$trail[] = array( 'News & Blogs', krm_blog_url() );
+		$trail[] = array( get_option( 'page_for_posts' ) ? get_the_title( (int) get_option( 'page_for_posts' ) ) : __( 'News & Updates', 'kingdom-revival' ), krm_blog_url() );
+	} elseif ( is_page() ) {
+		// Child pages (Our Impact → Testimonies, Partner With Us → Prayer Request) show their parents.
+		foreach ( array_reverse( get_post_ancestors( get_queried_object_id() ) ) as $ancestor ) {
+			$trail[] = array( get_the_title( $ancestor ), get_permalink( $ancestor ) );
+		}
 	} elseif ( is_singular( array( 'sermon', 'event' ) ) ) {
 		$trail[] = array( krm_fill( krm_c( 'types.' . get_post_type( get_queried_object() ) . 's_heading', 'site' ) ), get_post_type_archive_link( get_post_type( get_queried_object() ) ) );
 	}
@@ -46,7 +51,7 @@ function krm_breadcrumbs() {
 	} elseif ( is_home() ) {
 		$title = get_the_title( (int) get_option( 'page_for_posts' ) );
 	} elseif ( is_post_type_archive( 'ministry' ) ) {
-		$title = __( 'All Ministries', 'kingdom-revival' );
+		$title = __( 'What We Do', 'kingdom-revival' );
 	} elseif ( is_post_type_archive( array( 'sermon', 'event', 'testimonial' ) ) ) {
 		$title = krm_fill( krm_c( 'types.' . krm_queried_post_type() . 's_heading', 'site' ) );
 	} elseif ( is_tax( 'sermon_series' ) ) {
@@ -404,7 +409,7 @@ function krm_schema_ministry_list( $ids ) {
 	return $items ? array(
 		'@type'           => 'ItemList',
 		'@id'             => $ids['url'] . '#ministries',
-		'name'            => __( 'All Ministries', 'kingdom-revival' ),
+		'name'            => __( 'What We Do', 'kingdom-revival' ),
 		'numberOfItems'   => count( $items ),
 		'itemListElement' => $items,
 	) : array();

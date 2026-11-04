@@ -1,6 +1,6 @@
 <?php
 /**
- * Home: the twelve-ministry explorer. The list switches the panel via assets/js/front.js.
+ * Home: the ministry explorer (every published ministry whose explorer position is not 0). The list switches the panel via assets/js/front.js.
  *
  * @param array $args { ministries: ministries in home order, from krm_ministries( 'home' ). }
  *
@@ -15,9 +15,10 @@ $krm_active = $krm_list ? $krm_list[0] : array(
 	'title' => '',
 	'desc'  => '',
 	'url'   => '',
+	'slug'  => '',
 );
 ?>
-<!-- Twelve ministries explorer -->
+<!-- Ministry explorer -->
 <section id="all-ministries" style="max-width: 1240px; margin: 0 auto; padding: clamp(24px, 3vw, 40px) clamp(16px, 3vw, 32px) clamp(72px, 8vw, 110px)">
 <div style="display: flex; flex-wrap: wrap; gap: 20px 64px; justify-content: space-between; align-items: flex-end; margin-bottom: 44px">
 <div style="flex: 1 1 520px; min-width: 0">
@@ -44,7 +45,7 @@ foreach ( $krm_list as $krm_i => $krm_m ) :
 <p style="margin: 0; font-size: clamp(56px, 6vw, 72px); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--color-accent)" data-krm-explorer="num">01</p>
 <h3 style="margin: 22px 0 0; font-size: clamp(26px, 2.6vw, 32px); font-weight: 800; line-height: 1.2" data-krm-explorer="title"><?php echo esc_html( $krm_active['title'] ); ?></h3>
 <p style="margin: 16px 0 0; font-size: 16px; line-height: 1.7; color: var(--color-text-on-dark)" data-krm-explorer="desc"><?php echo esc_html( $krm_active['desc'] ); ?></p>
-<a class="k-o" href="<?php krm_u( 'explorer.support_url' ); ?>" style="margin-top: 26px; align-self: flex-start; text-decoration: none; background: #E18426; color: var(--color-text); font-weight: 700; padding: 14px 24px; border-radius: 999px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center"><?php krm_t( 'explorer.support_label' ); ?></a>
+<a class="k-o" data-krm-explorer="support" href="<?php echo esc_url( add_query_arg( 'ministry', $krm_active['slug'], krm_donate_url() ) ); ?>#give" style="margin-top: 26px; align-self: flex-start; text-decoration: none; background: #E18426; color: var(--color-text); font-weight: 700; padding: 14px 24px; border-radius: 999px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center"><?php krm_t( 'explorer.support_label' ); ?></a>
 <a data-krm-explorer="link" href="<?php echo esc_url( $krm_active['url'] ); ?>" style="margin-top: 12px; align-self: flex-start; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 24px; border: 2px solid var(--color-white); border-radius: 999px; color: var(--color-white); font-weight: 700; text-decoration: none; box-sizing: border-box"><?php krm_t( 'explorer.more_label' ); ?></a>
 </div>
 </div>
