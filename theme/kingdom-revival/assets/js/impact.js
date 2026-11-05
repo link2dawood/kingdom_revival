@@ -29,7 +29,7 @@
     var w = 720, h = 260, base = 220, gap = w / good.length, bw = Math.min(54, gap * .56);
     var svg = '<div class="impact-chart__visual"><svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+esc(label)+'">';
     [0,.25,.5,.75,1].forEach(function (p) { var y=base-(p*180); svg += '<line x1="35" y1="'+y+'" x2="710" y2="'+y+'" stroke="'+grid+'" opacity=".45"/><text x="2" y="'+(y+4)+'">'+num(Math.round(max*p))+'</text>'; });
-    good.forEach(function (r,i) { var bh=Number(r.value)/max*180,x=35+i*gap+(gap-bw)/2,y=base-bh; svg += '<rect data-tip="'+esc(r.year+': '+num(r.value))+'" x="'+x+'" y="'+y+'" width="'+bw+'" height="'+bh+'" rx="4" fill="'+colors[i%3]+'"><title>'+esc(r.year+': '+num(r.value))+'</title></rect><text text-anchor="middle" x="'+(x+bw/2)+'" y="242">'+esc(r.year)+'</text>'; });
+    good.forEach(function (r,i) { var bh=Number(r.value)/max*180,x=35+i*gap+(gap-bw)/2,y=base-bh; svg += '<rect data-tip="'+esc(r.year+': '+num(r.value))+'" x="'+x+'" y="'+y+'" width="'+bw+'" height="'+bh+'" rx="4" fill="'+(dark?colors[1]:colors[i%3])+'"><title>'+esc(r.year+': '+num(r.value))+'</title></rect><text text-anchor="middle" x="'+(x+bw/2)+'" y="242">'+esc(r.year)+'</text>'; });
     svg += '</svg></div><table><caption>'+esc(label)+' data</caption><thead><tr><th>Year</th><th>Value</th></tr></thead><tbody>' + good.map(function(r){return '<tr><th>'+esc(r.year)+'</th><td>'+num(r.value)+'</td></tr>';}).join("") + '</tbody></table>';
     el.innerHTML = svg;
   }

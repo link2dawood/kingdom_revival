@@ -39,6 +39,10 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Team photos and freedom before/after photos (theme 1.15.1)](#kingdom-revival-ministries-team-photos-and-freedom-beforeafter-photos-theme-1151)
 - [Kingdom Revival Ministries: Smaller theme zip for upload (theme 1.15.2)](#kingdom-revival-ministries-smaller-theme-zip-for-upload-theme-1152)
 - [Kingdom Revival Ministries: No raised / goal bar on project cards (theme 1.15.3)](#kingdom-revival-ministries-no-raised--goal-bar-on-project-cards-theme-1153)
+- [Kingdom Revival Ministries: Our Impact hero like the other pages (theme 1.15.4)](#kingdom-revival-ministries-our-impact-hero-like-the-other-pages-theme-1154)
+- [Kingdom Revival Ministries: Home "Our team" with the real team (theme 1.15.5)](#kingdom-revival-ministries-home-our-team-with-the-real-team-theme-1155)
+- [Kingdom Revival Ministries: Dummy stories on the home page (theme 1.15.6)](#kingdom-revival-ministries-dummy-stories-on-the-home-page-theme-1156)
+- [Kingdom Revival Ministries: Hero video autoplays everywhere and loops (theme 1.15.7)](#kingdom-revival-ministries-hero-video-autoplays-everywhere-and-loops-theme-1157)
 
 ---
 
@@ -3210,3 +3214,101 @@ $…" and the progress bar, at the user's request. The card goes straight from i
   stored, not shown on current cards); upcoming cards keep "Target · Planned". Ministry pages' side donation card keeps
   its bar (not a project card).
 - Verified on local WP: Donate 5 cards, home 3 cards, 0 bars and no "Raised" text; screenshot at 1440 checked.
+
+## Kingdom Revival Ministries: Our Impact hero like the other pages (theme 1.15.4)
+
+**Result: /our-impact/ uses the shared inner-page hero (`.page-hero`: photo under the navy gradient, standard H1 size,
+same padding) instead of its own plain navy block with a decorative orange ring and an 82 px heading. It now matches
+About, Testimonies, Contact etc. at 1440 / 390 and in dark mode.**
+
+- `page-templates/impact.php`: hero markup = the `.page-hero` used by the other templates, with `krm_hero_preload()` and
+  the small-screen background (`krm_bg_small()`). The text and photo come from the page's existing "Hero" fields
+  (`inc/content/impact.php`), which the template had been ignoring (it read `impact.json` → `hero`). Field defaults
+  set to the wording visitors saw before ("What God has done through your giving" + the same intro), so the text is
+  unchanged; the photo is the field's default (Bricks-kiln-slaves-children-38).
+- `assets/css/pages/impact.css`: the `.impact-hero*` rules removed; `.impact-hero + .impact-section--navy` → `.page-hero + …`.
+- Verified on local WP: H1 64 px at 1440 / 38 px at 390 (same as About), white on the overlay in light and dark,
+  axe WCAG 2 A/AA on the hero 0 violations.
+- `impact.json` → `hero` is no longer read (left in the file).
+
+## Kingdom Revival Ministries: Home "Our team" with the real team (theme 1.15.5)
+
+**Result: the home page's "Our team / The people on the ground" (beside "Our statement of faith") shows the five real
+team members with their photos, as round gradient portraits in soft cards — the About page's style — instead of one
+photo and three empty grey squares with dummy names.**
+
+- `inc/content/home.php` → `beliefs.team`: Pastor Adil Arif (Founder), Sajid Arif (Co-founder), Aber Sarwar
+  (Administrator), Samia Arif (International Relations Coordinator), Sehrish Gill (Projects Coordinator), photos
+  `krm-theme:images/content/team-*.jpg` (added in 1.15.1). Replaces Sarah Masih / Daniel Gill / Imran Bhatti.
+- `template-parts/home/beliefs.php`: list markup `.krm-team` (photo, h3 name, role); a person without a photo shows
+  their initial on the gradient instead of an empty box.
+- `theme-global.css`: `.krm-team` — 3 per row centred (3 + 2), 2 per row ≤560 px (2 + 2 + 1), tokens only (dark mode
+  checked).
+- Verified on local WP at 1440 / 768 / 390 and dark: 5/5 photos load, no overflow, axe on #beliefs 0 violations.
+
+## Kingdom Revival Ministries: Dummy stories on the home page (theme 1.15.6)
+
+**Result: the home page's "Lives changed — Stories from the field" shows three dummy stories instead of [bracket]
+placeholders, so visitors now see the section (it was hidden from them and shown to administrators with the
+"Only administrators see this section" note).**
+
+- `inc/content/home.php` → `stories.items`: the same dummy people as the dummy Testimonials (inc/data/testimonials.php),
+  so the site tells one story: Yousaf Masih (Freed family · Faisalabad district), Saima Bibi (Answered prayer · Jhang
+  district), Pastor Javed Masih (House church · Faisalabad district). **Dummy — replace with real stories before launch**
+  (Pages → Home → Page content → Stories from the field).
+- `template-parts/home/stories.php`: a story without a photo shows the person's initial on the red–orange gradient
+  (as the team cards) instead of an empty grey circle.
+- Verified as a visitor at 1440 / 390 and dark: 3 cards, no brackets, no admin note, axe 0 violations;
+  `placeholder_check.js` over the whole site: 0 pages with placeholders.
+
+## Kingdom Revival Ministries: Our Impact filled with dummy figures; compact "What We Do" dropdown (theme 1.15.7)
+
+**Result: /our-impact/ now shows every section to visitors — 8 headline counters, the 12-ministry explorer (3 numbers,
+a yearly chart and locations each), "Growth over the years", the district table and the families-freed chart —
+instead of only the map, freedom slider and stories. The desktop "What We Do" dropdown is a card as wide as its
+content, centred under the menu item, instead of a panel across the whole header.**
+
+- `inc/data/impact.json` (the page's only data source): **all figures are dummy — replace before launch.** They reuse
+  the dummy numbers already on the site so pages agree: counters = Settings impact numbers (80 communities, 650 Bibles,
+  500 children, 200 churches, 400 baptisms) plus 35 families freed, 3,200 medical camp patients, 18 water projects
+  (ministry stats in `inc/data/ministries.php`); each ministry's key metrics = its ministry stats; yearly values
+  2021–2025 split its first number; growth = cumulative children / baptisms / churches; districts Faisalabad 50 villages
+  / 8 kilns / 140 churches, Jhang 30 / 4 / 60; families freed per year 4, 6, 7, 8, 10. Locations are Faisalabad /
+  Jhang only. Slugs `clean-water-projects` → `clean-water`, `medical-health-outreach` → `medical-health` (match the
+  ministries, used by "Support this ministry").
+- Bugs that were hidden while the sections were empty: the ministry name was navy on the navy panel (`impact.css`
+  `color:inherit`); the panel chart drew every third bar navy on navy (`impact.js`: one orange on the dark panel);
+  tab numbers were orange on white, 2.9:1 (now the red text token, light orange on the selected tab); the district and
+  growth tables widened the page by 46 px at 360 (grid `min-width:0`, tighter cells ≤600 px).
+- Dropdown: `theme-global.css` (last block) — `li.is-mega` relative, panel `width:max-content`, centred with
+  `translate`, rounded card 20 px below the item (hover bridge 20 px); `effects.js` sets `--mega-shift` when the card
+  would come within 16 px of the screen edge. Mobile menu unchanged.
+- Verified on local WP: panel 1034 px wide at 1440/1280, 809 px (2 columns) at 1100/1024, 16 px from the edge at 920;
+  click, Enter/Escape and hover into the panel open/close it. `final_pass.js` over 35 pages: overflow 0, JS errors 0,
+  contrast 0 in light and dark.
+- Note: commit b355c2a (1.15.3, another session) already contains the first part of this work (impact.json,
+  effects.js, the first dropdown CSS); this section describes the whole change.
+
+## Kingdom Revival Ministries: Hero video autoplays everywhere and loops (theme 1.15.7)
+
+**Result: the home hero's background video autoplays on every screen size, also for visitors with "reduce motion"
+on (Windows "Animation effects: off"), and restarts when it ends. Before, it played only at ≥768 px without reduced
+motion, so many visitors never saw it. A pause / play button was added (WCAG 2.2.2, moving content longer than 5 s).**
+
+- `assets/js/front.js`: sources + poster still added only after `load` (no effect on first paint); then `muted`,
+  `loop`, `autoplay`, `preload=auto`, `load()`, `play()`. Extra: `ended` → back to 0 and play (in case `loop` is
+  dropped); resumes on `visibilitychange`; paused off-screen (IntersectionObserver) as before; if `play()` is refused
+  (iOS low-power mode) it retries on the first pointer / touch / key / scroll. Data saver: still no video.
+- `template-parts/home/hero.php`: `<button class="hero-video-toggle" hidden>` after the video (shown on `playing`),
+  `aria-label` "Pause background video" / "Play background video"; a pause by the visitor stays until they press play.
+- `assets/css/front.css`: 44 × 44 round frosted button, bottom left of the hero, focus ring.
+- Verified (local WP, headless Chrome): plays within 0.5–0.8 s of page load at 1440 / 768 / 390 and with reduced
+  motion; jumping to the last 0.6 s → playing again at 2 s, also with `loop` removed; pause → stays paused after
+  scrolling away and back; play → resumes; off-screen → paused, back → playing; the button is not covered at
+  390 / 768 / 1024 / 1440; axe on the hero 0 violations.
+
+### Not covered
+
+- Phones now download the hero video (WebM 3.1 MB or MP4 2.2 MB) after the page has loaded. Mobile PageSpeed (Phase 15
+  step 6) was not re-run; first paint / LCP should be unchanged because nothing starts before `load`, but total bytes
+  grow. Real iPhone / iOS Safari not tested.

@@ -12,9 +12,9 @@ defined( 'ABSPATH' ) || exit;
 <section id="top" style="position: relative; background: var(--color-band-2) url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>') center/cover no-repeat<?php krm_bg_small( krm_c( 'hero.image' ) ); ?>">
 <?php
 if ( krm_c( 'hero.video' ) ) :
-	// No src or poster in the HTML: front.js adds the sources and the poster only on screens 768px and wider, without
-	// data saver or reduced motion, so phones never download the video. Until then (and on phones) the element is
-	// empty and transparent and the section's background, the same photo, shows. Poster: the photo's WebP, else its
+	// No src or poster in the HTML: front.js adds the sources and the poster once the page has loaded (on every screen
+	// size; not with data saver on), so the video never delays the first view. Until then the element is empty and
+	// transparent and the section's background, the same photo, shows. The pause/play button appears when it plays. Poster: the photo's WebP, else its
 	// original JPG (both well under 200 KB).
 	$krm_hero_img = krm_c( 'hero.image' );
 	$krm_poster_w = krm_ref_url( $krm_hero_img );
@@ -24,6 +24,7 @@ if ( krm_c( 'hero.video' ) ) :
 	$krm_webm     = trim( (string) krm_c( 'hero.video_webm' ) );
 	?>
 <video aria-hidden="true" data-krm-autoplay muted loop playsinline preload="none" data-src-mp4="<?php echo esc_url( krm_media( krm_c( 'hero.video' ) ) ); ?>"<?php if ( '' !== $krm_webm ) : ?> data-src-webm="<?php echo esc_url( krm_media( $krm_webm ) ); ?>"<?php endif; ?> data-poster="<?php echo esc_url( $krm_poster_w ); ?>" data-poster-jpg="<?php echo esc_url( $krm_poster_j ); ?>" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></video>
+<button type="button" class="hero-video-toggle" data-krm-video-toggle hidden aria-label="<?php esc_attr_e( 'Pause background video', 'kingdom-revival' ); ?>" data-label-pause="<?php esc_attr_e( 'Pause background video', 'kingdom-revival' ); ?>" data-label-play="<?php esc_attr_e( 'Play background video', 'kingdom-revival' ); ?>"><svg class="hero-video-toggle__pause" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4v16H6zM14 4h4v16h-4z"></path></svg><svg class="hero-video-toggle__play" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg></button>
 <?php endif; ?>
 <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(8,16,48,0.62)"></div>
 

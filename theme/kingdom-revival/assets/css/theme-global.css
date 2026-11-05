@@ -1044,3 +1044,14 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
 @media (min-width: 901px) and (max-width: 1100px) {
   .menu > li.is-mega > .submenu { grid-template-columns: auto auto; }
 }
+
+/* Home "Our team" (beside What we believe): the About page's round gradient portraits, as compact cards */
+.krm-team{list-style:none;margin:28px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.krm-team li{flex:0 0 calc((100% - 32px) / 3);box-sizing:border-box;min-width:0;display:flex;flex-direction:column;align-items:center;padding:22px 12px 20px;border-radius:14px;background:var(--color-bg-soft);text-align:center;box-shadow:0 1px 2px rgba(var(--shadow-rgb), calc(.06 * var(--shadow-k)))}
+.krm-team__photo{width:min(120px,100%);aspect-ratio:1/1;border-radius:50%;overflow:hidden;background:linear-gradient(180deg,var(--color-secondary) 0%,var(--color-orange) 100%);box-shadow:0 10px 22px rgba(var(--shadow-rgb), calc(.16 * var(--shadow-k)));display:grid;place-items:center}
+.krm-team__photo img{display:block;width:100%;height:100%;object-fit:cover}
+.krm-team__photo span{color:var(--color-white);font-size:44px;font-weight:800}
+.krm-team h3{margin:16px 0 0;color:var(--color-heading);font-size:17px;line-height:1.25}
+.krm-team p{margin:6px 0 0;color:var(--color-secondary-text);font-size:14px;font-style:italic;font-synthesis:style;font-weight:500;line-height:1.4}
+@media(max-width:560px){.krm-team{gap:12px}.krm-team li{flex-basis:calc((100% - 12px) / 2);padding:18px 10px 16px}.krm-team h3{font-size:16px}}
+

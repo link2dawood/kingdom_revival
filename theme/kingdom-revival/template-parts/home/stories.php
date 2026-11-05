@@ -34,7 +34,7 @@ $krm_none = ! array_filter(
 	<?php if ( $krm_story['photo'] ) : ?>
 <img loading="lazy" decoding="async" src="<?php echo esc_url( krm_ref_url( $krm_story['photo'], 'thumbnail' ) ); ?>" alt="" width="48" height="48" style="flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; object-fit: cover">
 	<?php else : ?>
-<span aria-hidden="true" style="flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; background: var(--color-placeholder)"></span>
+<span aria-hidden="true" style="flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(180deg, var(--color-secondary) 0%, var(--color-orange) 100%); color: var(--color-white); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800"><?php echo esc_html( mb_substr( (string) preg_replace( '/^Pastor\s+/i', '', trim( wp_strip_all_tags( krm_fill( (string) $krm_story['name'] ) ) ) ), 0, 1 ) ); ?></span>
 	<?php endif; ?>
 <span style="display: flex; flex-direction: column; line-height: 1.3"><strong><?php echo krm_text( $krm_story['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong><span style="font-size: 14px; color: var(--color-text-muted)"><?php echo krm_text( $krm_story['place'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></span>
 </figcaption>

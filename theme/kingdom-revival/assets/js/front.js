@@ -142,41 +142,74 @@
   }
 
   /* ---------- Hero video ---------- */
-  // Started once the page has loaded, so its download doesn't hold up the first view. Not started at all for
-  // visitors who ask for reduced motion or have data saver on, or on phones (the 15 s clip is about 2 MB): the section background,
-  // the same picture, shows instead. Paused while scrolled out of view, so it doesn't decode frames nobody sees.
-  // The HTML carries no src or poster (hero.php). Sources and poster are added here only on screens 768px and wider,
-  // without data saver or reduced motion: phones never download the video and keep the section's photo.
+  // Autoplays (muted, inline) on every screen and restarts when it ends. Sources and poster are added only after the
+  // page has loaded, so the download never holds up the first view; the HTML carries no src (hero.php). Skipped only
+  // with data saver on: the section's background, the same picture, shows instead. Paused while scrolled out of view
+  // or while the tab is hidden, and resumed after. The pause/play button (WCAG 2.2.2) stops it for good until pressed
+  // again. If the browser refuses to autoplay (e.g. iOS low-power mode), it starts on the visitor's first touch or key.
   var heroVideo = document.querySelector("video[data-krm-autoplay]");
+  var heroToggle = document.querySelector("[data-krm-video-toggle]");
   var saveData = !!(navigator.connection && navigator.connection.saveData === true);
-  var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var wide = window.matchMedia && matchMedia("(min-width: 768px)").matches;
-  if (heroVideo && wide && !saveData && !still && heroVideo.getAttribute("data-src-mp4")) {
-    var webp = (function () { try { return document.createElement("canvas").toDataURL("image/webp").indexOf("data:image/webp") === 0; } catch (e) { return false; } })();
-    var poster = webp ? heroVideo.getAttribute("data-poster") : (heroVideo.getAttribute("data-poster-jpg") || heroVideo.getAttribute("data-poster"));
-    if (poster) heroVideo.poster = poster;
-    [["data-src-mp4", "video/mp4"], ["data-src-webm", "video/webm"]].forEach(function (s) {
-      var src = heroVideo.getAttribute(s[0]);
-      if (!src) return;
-      var source = document.createElement("source");
-      source.src = src;
-      source.type = s[1];
-      heroVideo.appendChild(source);
-    });
+  if (heroVideo && !saveData && heroVideo.getAttribute("data-src-mp4")) {
     var heroVisible = true;
+    var userPaused = false;
+    var started = false;
+    var setToggle = function () {
+      if (!heroToggle) return;
+      var paused = heroVideo.paused;
+      heroToggle.classList.toggle("is-paused", paused);
+      heroToggle.setAttribute("aria-label", heroToggle.getAttribute(paused ? "data-label-play" : "data-label-pause"));
+    };
     var play = function () {
+      if (userPaused || !heroVisible || document.hidden) return;
       var playing = heroVideo.play();
-      if (playing && playing.catch) playing.catch(function () {});
+      if (playing && playing.catch) playing.catch(function () { armGesture(); });
+    };
+    var armGesture = function () {
+      var once = function () {
+        ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (t) { window.removeEventListener(t, once, true); });
+        play();
+      };
+      ["pointerdown", "keydown", "touchstart", "scroll"].forEach(function (t) { window.addEventListener(t, once, { capture: true, passive: true }); });
     };
     var startVideo = function () {
+      if (started) return;
+      started = true;
+      var webp = (function () { try { return document.createElement("canvas").toDataURL("image/webp").indexOf("data:image/webp") === 0; } catch (e) { return false; } })();
+      var poster = webp ? heroVideo.getAttribute("data-poster") : (heroVideo.getAttribute("data-poster-jpg") || heroVideo.getAttribute("data-poster"));
+      if (poster) heroVideo.poster = poster;
+      [["data-src-webm", "video/webm"], ["data-src-mp4", "video/mp4"]].forEach(function (s) {
+        var src = heroVideo.getAttribute(s[0]);
+        if (!src) return;
+        var source = document.createElement("source");
+        source.src = src;
+        source.type = s[1];
+        heroVideo.appendChild(source);
+      });
+      heroVideo.muted = true;
+      heroVideo.loop = true;
       heroVideo.autoplay = true;
-      if (heroVisible) play();
+      heroVideo.preload = "auto";
+      heroVideo.load();
+      // Belt and braces for browsers that drop "loop" (or a stalled end): start again from the beginning.
+      heroVideo.addEventListener("ended", function () { heroVideo.currentTime = 0; play(); });
+      heroVideo.addEventListener("play", setToggle);
+      heroVideo.addEventListener("pause", setToggle);
+      heroVideo.addEventListener("playing", function () { if (heroToggle) heroToggle.hidden = false; });
       if ("IntersectionObserver" in window) {
         new IntersectionObserver(function (entries) {
           heroVisible = entries[0].isIntersecting;
           if (heroVisible) play(); else heroVideo.pause();
         }).observe(heroVideo);
       }
+      document.addEventListener("visibilitychange", function () { if (!document.hidden) play(); });
+      if (heroToggle) {
+        heroToggle.addEventListener("click", function () {
+          userPaused = !heroVideo.paused;
+          if (userPaused) heroVideo.pause(); else play();
+        });
+      }
+      play();
     };
     if (document.readyState === "complete") startVideo();
     else window.addEventListener("load", startVideo);

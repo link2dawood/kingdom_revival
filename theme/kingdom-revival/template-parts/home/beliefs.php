@@ -36,19 +36,21 @@ $krm_none = ! array_filter(
 <?php krm_admin_only_note( $krm_none ); ?>
 <p style="<?php echo esc_attr( $krm_eyebrow ); ?>"><?php krm_t( 'beliefs.team_eyebrow' ); ?></p>
 <h2 style="<?php echo esc_attr( $krm_heading ); ?>"><?php krm_h( 'beliefs.team_heading' ); ?></h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; margin-top: 24px">
+<ul class="krm-team">
 <?php foreach ( $krm_team as $krm_person ) : ?>
-<div>
-<div style="position: relative; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; background: var(--color-placeholder)">
+<li>
+<div class="krm-team__photo">
 	<?php if ( $krm_person['photo'] ) : ?>
-<img loading="lazy" decoding="async" <?php krm_img_src( $krm_person['photo'], '(max-width: 760px) 50vw, 240px' ); ?> alt="<?php echo krm_alt( $krm_person['photo'], $krm_person['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%">
+<img loading="lazy" decoding="async" <?php krm_img_src( $krm_person['photo'], '(max-width: 560px) 40vw, 150px' ); ?> alt="<?php echo krm_alt( $krm_person['photo'], $krm_person['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
+	<?php else : ?>
+<span aria-hidden="true"><?php echo esc_html( mb_substr( wp_strip_all_tags( (string) $krm_person['name'] ), 0, 1 ) ); ?></span>
 	<?php endif; ?>
 </div>
-<p style="margin: 10px 0 0; font-weight: 700"><?php echo krm_text( $krm_person['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-<p style="margin: 0; font-size: 14px; color: var(--color-text-muted)"><?php echo krm_text( $krm_person['role'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-</div>
+<h3><?php echo krm_text( $krm_person['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
+<p><?php echo krm_text( $krm_person['role'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+</li>
 <?php endforeach; ?>
-</div>
+</ul>
 </div>
 <?php endif; ?>
 </section>

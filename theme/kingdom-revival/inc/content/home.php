@@ -378,21 +378,21 @@ return array(
 				),
 				array(
 					array(
-						'quote' => '[Story of a freed brick kiln family, in their own words.]',
-						'name'  => '[Name]',
-						'place' => 'Freed family · [Village]',
+						'quote' => 'For eleven years our whole family worked at the kiln to pay a debt that never got smaller. When the ministry cleared it, my children went to school for the first time. Now we work for ourselves.',
+						'name'  => 'Yousaf Masih',
+						'place' => 'Freed family · Faisalabad district',
 						'photo' => '',
 					),
 					array(
-						'quote' => '[Story of healing or answered prayer.]',
-						'name'  => '[Name]',
-						'place' => 'Healed · [Village]',
+						'quote' => 'My daughter had a fever for weeks and we had no money for a doctor. At the medical camp she was treated, and the team prayed with us. She is well and back at school.',
+						'name'  => 'Saima Bibi',
+						'place' => 'Answered prayer · Jhang district',
 						'photo' => '',
 					),
 					array(
-						'quote' => '[A pastor on how the church in his village began.]',
-						'name'  => 'Pastor [Name]',
-						'place' => 'House church · [Village]',
+						'quote' => 'We started with four families praying in my courtyard. Today more than forty people worship together every Sunday, and the village has its own church.',
+						'name'  => 'Pastor Javed Masih',
+						'place' => 'House church · Faisalabad district',
 						'photo' => '',
 					),
 				)
@@ -478,24 +478,29 @@ return array(
 				),
 				array(
 					array(
-						'photo' => $krm_up . '2026/08/file_00000000b46471f484befac1dc0ee291.png',
+						'photo' => 'krm-theme:images/content/team-adil-arif.jpg',
 						'name'  => 'Pastor Adil Arif',
-						'role'  => 'Founder & Pastor',
+						'role'  => 'Founder',
 					),
 					array(
-						'photo' => '',
-						'name'  => 'Sarah Masih',
-						'role'  => 'Projects Coordinator',
+						'photo' => 'krm-theme:images/content/team-sajid-arif.jpg',
+						'name'  => 'Sajid Arif',
+						'role'  => 'Co-founder',
 					),
 					array(
-						'photo' => '',
-						'name'  => 'Daniel Gill',
+						'photo' => 'krm-theme:images/content/team-aber-sarwar.jpg',
+						'name'  => 'Aber Sarwar',
+						'role'  => 'Administrator',
+					),
+					array(
+						'photo' => 'krm-theme:images/content/team-samia-arif.jpg',
+						'name'  => 'Samia Arif',
 						'role'  => 'International Relations Coordinator',
 					),
 					array(
-						'photo' => '',
-						'name'  => 'Imran Bhatti',
-						'role'  => 'Co-Founder',
+						'photo' => 'krm-theme:images/content/team-sehrish-gill.jpg',
+						'name'  => 'Sehrish Gill',
+						'role'  => 'Projects Coordinator',
 					),
 				)
 			),

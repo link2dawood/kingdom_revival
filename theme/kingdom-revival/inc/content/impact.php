@@ -15,8 +15,8 @@ return array(
 		'fields' => array(
 			'image'   => krm_f( 'image', __( 'Background image', 'kingdom-revival' ), 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg' ),
 			'eyebrow' => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our Impact' ),
-			'title'   => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Our Impact' ),
-			'lead'    => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'See what God is doing through our ministries across Pakistan — in numbers, in testimonies and in pictures.', __( 'DRAFT — CLIENT TO APPROVE: proposed wording, written only from text already on the site or in the client’s sitemap.', 'kingdom-revival' ) ),
+			'title'   => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'What God has done through your giving' ),
+			'lead'    => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'See what God is doing through our ministries across Pakistan — in lives served, communities reached and churches strengthened.' ),
 		),
 	),
 	'numbers'    => array(
