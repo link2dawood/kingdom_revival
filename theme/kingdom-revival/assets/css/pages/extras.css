@@ -7,17 +7,17 @@
 .type-video { position: relative; margin: 0 0 24px; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius); background: var(--navy-deep); }
 .type-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .type-audio { margin: 0 0 24px; }
-.type-scripture { margin: 0 0 24px; color: var(--navy); }
+.type-scripture { margin: 0 0 24px; color: var(--color-heading); }
 .section-past { margin-top: clamp(48px, 6vw, 72px); }
 .section-past h2 { margin: 0 0 24px; font-size: clamp(26px, 3vw, 34px); }
 .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
-.testimonial { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; margin: 0; padding: 28px; border: 1px solid var(--line); border-left: 4px solid var(--red); border-radius: var(--radius); background: var(--white); }
+.testimonial { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; margin: 0; padding: 28px; border: 1px solid var(--line); border-left: 4px solid var(--color-secondary); border-radius: var(--radius); background: var(--color-surface); }
 .testimonial blockquote { margin: 0; color: var(--ink); font-size: 17px; line-height: 1.65; }
 .testimonial blockquote p { margin: 0 0 10px; }
 .testimonial blockquote p:last-child { margin: 0; }
 .testimonial figcaption { display: flex; gap: 12px; align-items: center; }
 .testimonial figcaption img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
 .testimonial figcaption span { display: flex; flex-direction: column; }
-.testimonial figcaption strong { color: var(--navy); }
+.testimonial figcaption strong { color: var(--color-heading); }
 .testimonial figcaption small { color: var(--muted); }
 @media (max-width: 560px) { .type-details div { grid-template-columns: 1fr; gap: 2px; } }

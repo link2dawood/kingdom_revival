@@ -98,6 +98,9 @@ add_action(
 			wp_enqueue_script( 'krm-viewer', krm_asset( 'js/viewer.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
 		}
 
+		// Theme toggle, scroll progress bar, header state, scroll reveal and photo bands (Phase 20), on every page.
+		wp_enqueue_script( 'krm-effects', krm_asset( 'js/effects.js' ), array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+
 		// Filters, tabs, click-to-play videos and the prayer / partner sign-up forms, on every page.
 		wp_enqueue_script( 'krm-components', krm_asset( 'js/components.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
 

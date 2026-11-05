@@ -3,6 +3,9 @@
 //                  hero heading size, colours drawn that are not in the token/design palette (computed styles)
 //   responsive   — horizontal overflow at 360 / 768 / 1024 / 1440
 //   a11y         — axe-core WCAG 2.1 A/AA at 1440 and 360, images without alt, tap targets under 44px at 360
+//   contrast     — WCAG AA colour contrast (axe color-contrast) in BOTH themes: light (part of the axe run above) and
+//                  dark (<html data-theme="dark">, saved choice), at 1440 and 360. Scroll-reveal blocks are shown
+//                  first (krmReveal.flush), so nothing is skipped as invisible
 //                  (links inside running text excluded: WCAG exempts them), a visible focus style on the first Tab stops
 //   SEO          — <title>, meta description, canonical, og:image, favicon; unique titles/descriptions across pages
 //   performance  — images without lazy-loading below the first screen, images without width/height,
@@ -48,6 +51,8 @@ async function collectPages(ctx) {
 (async () => {
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome' });
   const ctx = await b.newContext();
+  const darkCtx = await b.newContext({ colorScheme: 'dark' });
+  await darkCtx.addInitScript(() => { try { localStorage.setItem('krm-newsletter', JSON.stringify({ dismissed: Date.now() })); localStorage.setItem('krm-theme', 'dark'); } catch (e) {} });
   await ctx.addInitScript(() => { try { localStorage.setItem('krm-newsletter', JSON.stringify({ dismissed: Date.now() })); } catch (e) {} });
   const pages = await collectPages(ctx);
   console.error('pages', pages.length);
@@ -123,6 +128,8 @@ async function collectPages(ctx) {
       }));
     }
     await p.addScriptTag({ content: AXE });
+    await p.evaluate(() => window.krmReveal && window.krmReveal.flush());
+    await p.waitForTimeout(700);
     r.axe[1440] = await p.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] })).violations.map((v) => [v.id, v.impact, v.nodes.length, v.nodes.slice(0, 2).map((n) => n.target.join(' '))]));
     r.overflow[1440] = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     r.errors = errors;
@@ -152,6 +159,8 @@ async function collectPages(ctx) {
           return [...out];
         });
         await p.addScriptTag({ content: AXE });
+        await p.evaluate(() => window.krmReveal && window.krmReveal.flush());
+        await p.waitForTimeout(700);
         r.axe[360] = await p.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] })).violations.map((v) => [v.id, v.impact, v.nodes.length, v.nodes.slice(0, 2).map((n) => n.target.join(' '))]));
       }
       await p.close();
@@ -168,7 +177,22 @@ async function collectPages(ctx) {
       r.videoRequests390 = media;
       await p.close();
     }
-    console.error(u, JSON.stringify(r.overflow), 'axe', r.axe[1440].length, r.axe[360].length, 'small', r.smallTargets.length);
+    // ---- dark theme: colour contrast at 1440 and 360
+    r.darkContrast = {};
+    for (const w of [1440, 360]) {
+      p = await darkCtx.newPage();
+      await p.setViewportSize({ width: w, height: w === 360 ? 740 : 900 });
+      await p.goto(B + u, { waitUntil: 'load' });
+      await p.evaluate(() => window.krmReveal && window.krmReveal.flush());
+      await p.waitForTimeout(700);
+      await p.addScriptTag({ content: AXE });
+      r.darkContrast[w] = await p.evaluate(async () => {
+        const res = await axe.run(document, { runOnly: ['color-contrast'] });
+        return { theme: document.documentElement.getAttribute('data-theme'), violations: res.violations.flatMap((v) => v.nodes.map((n) => [n.target.join(' '), (n.any[0] && n.any[0].data) ? [n.any[0].data.fgColor, n.any[0].data.bgColor, n.any[0].data.contrastRatio, n.any[0].data.expectedContrastRatio] : null])) };
+      });
+      await p.close();
+    }
+    console.error(u, JSON.stringify(r.overflow), 'axe', r.axe[1440].length, r.axe[360].length, 'dark contrast', r.darkContrast[1440].violations.length, r.darkContrast[360].violations.length, 'small', r.smallTargets.length);
   }
   // site-wide
   const vals = Object.values(results);
@@ -182,6 +206,9 @@ async function collectPages(ctx) {
     missing: Object.entries(results).filter(([u, r]) => !r.title || !r.desc || !r.ogImage || !r.favicon || !r.canonical || r.h1count !== 1).map(([u, r]) => [u, { title: !!r.title, desc: !!r.desc, og: !!r.ogImage, favicon: !!r.favicon, canonical: !!r.canonical, h1: r.h1count }]),
     overflow: Object.entries(results).filter(([u, r]) => Object.values(r.overflow).some((v) => v > 0)).map(([u, r]) => [u, r.overflow]),
     jsErrors: Object.entries(results).filter(([u, r]) => r.errors.length).map(([u, r]) => [u, r.errors]),
+    contrastLight: Object.entries(results).map(([u, r]) => [u, [1440, 360].flatMap((w) => (r.axe[w] || []).filter((v) => v[0] === 'color-contrast').map((v) => w + ': ' + v[2] + ' × ' + v[3].join(', ')))]).filter(([u, v]) => v.length),
+    contrastDark: Object.entries(results).map(([u, r]) => [u, [1440, 360].flatMap((w) => r.darkContrast[w].violations.map((v) => w + ': ' + v[0] + ' ' + JSON.stringify(v[1])))]).filter(([u, v]) => v.length),
+    darkThemeApplied: Object.values(results).every((r) => r.darkContrast[1440].theme === 'dark'),
     videoRequestsOn390: Object.entries(results).filter(([u, r]) => r.videoRequests390.length).map(([u, r]) => [u, r.videoRequests390]),
   };
   // Control: the same detection must see the hero video on a desktop viewport, else the 390 check proves nothing.

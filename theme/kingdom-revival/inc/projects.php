@@ -152,10 +152,10 @@ function krm_projects( $status = '', $limit = 0 ) {
 					'placeholder' => false,
 				);
 			}
-		} elseif ( krm_show_placeholders() ) {
-			// The sample projects are placeholders: administrators see them, visitors see no projects at all.
+		} else {
+			// No project published yet: everyone sees the data file's dummy projects.
 			foreach ( include KRM_DIR . '/inc/data/projects.php' as $p ) {
-				$p['placeholder'] = true;
+				$p['placeholder'] = false;
 				$all[]            = $p;
 			}
 		}

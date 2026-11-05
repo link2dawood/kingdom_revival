@@ -1104,18 +1104,45 @@ add_filter(
 );
 
 
+
 /**
- * Whether Our Impact shows its "How donations are used" section to visitors: at least one allocation percentage
- * in inc/data/impact.json. Donate's "Financial transparency" link points at that section only when it is there.
+ * Browser UI colours (meta theme-color) for the light and dark themes (Phase 20). The same values as the
+ * --color-primary (light) and --color-bg (dark) tokens in theme-global.css.
+ *
+ * @return string[] { light, dark }
  */
-function krm_impact_has_financials() {
-	static $has = null;
-	if ( null === $has ) {
-		$data = json_decode( (string) file_get_contents( KRM_DIR . '/inc/data/impact.json' ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local theme file.
-		$has  = false;
-		foreach ( isset( $data['financials'] ) ? (array) $data['financials'] : array() as $row ) {
-			$has = $has || ( isset( $row['percent'] ) && is_numeric( $row['percent'] ) );
-		}
-	}
-	return $has;
+function krm_theme_colors() {
+	return array(
+		'light' => '#0C1C4F',
+		'dark'  => '#0A1230',
+	);
+}
+
+/**
+ * Prints the <head> parts of the light/dark theme: color-scheme and theme-color metas, and the tiny inline script
+ * that runs before the stylesheets are applied. It adds the "js" class to <html> and sets data-theme from the
+ * visitor's saved choice, so the page never paints in the wrong theme first. With no saved choice the CSS follows
+ * the device setting (prefers-color-scheme).
+ */
+function krm_theme_head() {
+	$c = krm_theme_colors();
+	?>
+	<meta name="color-scheme" content="light dark">
+	<meta name="theme-color" content="<?php echo esc_attr( $c['light'] ); ?>" media="(prefers-color-scheme: light)" data-light="<?php echo esc_attr( $c['light'] ); ?>" data-dark="<?php echo esc_attr( $c['dark'] ); ?>">
+	<meta name="theme-color" content="<?php echo esc_attr( $c['dark'] ); ?>" media="(prefers-color-scheme: dark)" data-light="<?php echo esc_attr( $c['light'] ); ?>" data-dark="<?php echo esc_attr( $c['dark'] ); ?>">
+	<script>(function(h){h.classList.add("js");var t;try{t=localStorage.getItem("krm-theme")}catch(e){}if(t==="dark"||t==="light"){h.setAttribute("data-theme",t);var m=document.querySelectorAll('meta[name="theme-color"]');for(var i=0;i<m.length;i++)m[i].setAttribute("content",m[i].getAttribute("data-"+t))}})(document.documentElement);</script>
+	<?php
+}
+
+/**
+ * The light/dark toggle button (header on desktop, mobile menu). effects.js keeps aria-label and aria-pressed in
+ * step with the theme; the sun/moon icon is switched by CSS so it is right from the first paint.
+ */
+function krm_theme_toggle() {
+	?>
+	<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="<?php esc_attr_e( 'Switch to dark mode', 'kingdom-revival' ); ?>">
+		<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+		<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+	</button>
+	<?php
 }

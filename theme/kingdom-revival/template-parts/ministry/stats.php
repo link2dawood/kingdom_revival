@@ -31,7 +31,7 @@ $krm_real  = array_filter(
 	<ul class="ministry-stats-list">
 		<?php foreach ( $krm_stats as $krm_i => $krm_stat ) : ?>
 		<li>
-			<span class="ministry-stat-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0C1C4F" stroke-width="2"><path d="<?php echo esc_attr( $krm_icons[ $krm_i % count( $krm_icons ) ] ); ?>"></path></svg></span>
+			<span class="ministry-stat-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" style="stroke: var(--color-heading)"><path d="<?php echo esc_attr( $krm_icons[ $krm_i % count( $krm_icons ) ] ); ?>"></path></svg></span>
 			<span class="ministry-stat-text"><strong<?php echo preg_match( '/^[^\[\d]*\d/', (string) $krm_stat[0] ) ? ' data-krm-count' : ''; ?>><?php echo esc_html( $krm_stat[0] ); ?></strong><span><?php echo esc_html( $krm_stat[1] ); ?></span></span>
 		</li>
 		<?php endforeach; ?>

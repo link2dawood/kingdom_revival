@@ -39,6 +39,8 @@ npm run audit          # text/headings/links/images/buttons per page + internal 
 python3 bands.py out/pages <page> <desktop|tablet|mobile>   # where two screenshots differ
 python3 seo_check.py [site URL]   # exactly one title/description/canonical/OG/Twitter set per page
 node a11y_check.js                # axe-core accessibility audit, HTML vs WP, + skip link / focus checks
+node final_pass.js                # whole-site crawl: overflow, axe, contrast in light AND dark, SEO, scripts
+node phase20_check.js             # dark mode, no-flash, progress bar, scroll reveal, header over hero (WP_USER/WP_PASS for admin bar)
 ```
 
 Env vars: `HTML_URL`, `WP_URL`, `CHROME_PATH` (default `/usr/bin/google-chrome` — set it on Windows).
@@ -91,6 +93,13 @@ and inner pages (menu, image viewer, popups, buttons, header/footer, forms, stor
 enqueued once as `krm-global`, a dependency of `krm-front` and `krm-site`. Put shared rules there, not in two files;
 a rule that must override a rule left in `site.css`/`front.css` has to stay after it (load order).
 `assets/css/site.css` holds the inner pages' base and layout, `front.css` the home page's own rules.
+**Colours (Phase 20)** are tokens by *role*, light in `:root` and dark in the two blocks after it (device setting, or
+`<html data-theme>` from the visitor's saved choice, set by the inline script `krm_theme_head()` before CSS paints):
+navy as text is `--color-heading`, navy as a background `--color-band`, white as a background `--color-surface`, the page
+`--color-bg`, red as text `--color-secondary-text`. Never write a hex colour in a template, inline style or script;
+SVG colours go in `style="fill: var(--…)"`. Check both themes with `final_pass.js` (contrastLight / contrastDark).
+`assets/js/effects.js` (every page) holds the theme toggle, scroll progress bar, header state, scroll reveal
+(`data-reveal`, `data-reveal-stagger`, auto-applied to headings and card grids) and lazy photo bands (`krm_photo_band_attrs()`).
 `assets/js/site.js` is the design's original shared script — keep it as close to the original as possible
 (differences are only WordPress wiring: URLs, form posting).
 Per-page CSS/JS in `assets/css/pages/` and `assets/js/`, enqueued per view in `inc/enqueue.php`. The font is

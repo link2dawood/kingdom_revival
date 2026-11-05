@@ -31,7 +31,7 @@ foreach ( krm_ministries() as $krm_m ) {
 }
 $krm_tabs = array();
 foreach ( $krm_items as $krm_p ) {
-	$krm_mid = (int) get_post_meta( $krm_p->ID, '_krm_ministry', true );
+	$krm_mid = krm_testimonial_ministry_id( $krm_p->ID );
 	if ( isset( $krm_by_id[ $krm_mid ] ) ) {
 		$krm_tabs[ $krm_by_id[ $krm_mid ]['slug'] ] = $krm_by_id[ $krm_mid ];
 	}
@@ -74,7 +74,7 @@ uasort(
 		<ul class="testimony-grid" data-krm-filter-list="testimonies">
 			<?php
 			foreach ( $krm_items as $krm_p ) :
-				$krm_mid  = (int) get_post_meta( $krm_p->ID, '_krm_ministry', true );
+				$krm_mid  = krm_testimonial_ministry_id( $krm_p->ID );
 				$krm_m    = isset( $krm_by_id[ $krm_mid ] ) ? $krm_by_id[ $krm_mid ] : null;
 				$krm_role = (string) get_post_meta( $krm_p->ID, '_krm_role', true );
 				$krm_img  = get_post_thumbnail_id( $krm_p );
@@ -84,7 +84,7 @@ uasort(
 				<?php if ( $krm_m ) : ?>
 				<a class="tag" href="<?php echo esc_url( $krm_m['url'] ); ?>" style="text-decoration: none"><?php echo esc_html( $krm_m['title'] ); ?></a>
 				<?php endif; ?>
-				<svg width="34" height="34" viewBox="0 0 24 24" fill="#E18426" aria-hidden="true"><path d="M7 7h4v4c0 3-1.5 5-4 6l-.7-1.2C8 15 8.6 13.8 8.7 12H7zM14 7h4v4c0 3-1.5 5-4 6l-.7-1.2C15 15 15.6 13.8 15.7 12H14z"></path></svg>
+				<svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true" style="fill: var(--color-orange)"><path d="M7 7h4v4c0 3-1.5 5-4 6l-.7-1.2C8 15 8.6 13.8 8.7 12H7zM14 7h4v4c0 3-1.5 5-4 6l-.7-1.2C15 15 15.6 13.8 15.7 12H14z"></path></svg>
 				<blockquote><?php echo wp_kses_post( wpautop( $krm_p->post_content ) ); ?></blockquote>
 				<figcaption>
 					<?php if ( $krm_img ) : ?>

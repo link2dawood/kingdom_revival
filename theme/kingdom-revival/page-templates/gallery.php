@@ -29,17 +29,31 @@ foreach ( (array) krm_c( 'photos.items' ) as $krm_p ) {
 	}
 }
 $krm_videos = array();
-foreach ( (array) krm_c( 'videos.items' ) as $krm_v ) {
-	if ( empty( $krm_v['url'] ) || ! preg_match( '~(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/))([A-Za-z0-9_-]{11})~', $krm_v['url'], $krm_match ) ) {
+$krm_video_items = (array) krm_c( 'videos.items' );
+if ( ! $krm_video_items ) {
+	$krm_gallery_schema = krm_content_schema( 'gallery' );
+	$krm_video_items    = (array) $krm_gallery_schema['videos']['fields']['items']['default'];
+}
+foreach ( $krm_video_items as $krm_v ) {
+	if ( empty( $krm_v['url'] ) ) {
 		continue;
 	}
 	$krm_key      = strtolower( trim( (string) $krm_v['ministry'] ) );
-	$krm_videos[] = array(
-		'id'       => $krm_match[1],
+	$krm_video   = array(
+		'id'       => '',
+		'src'      => '',
 		'title'    => krm_fill( $krm_v['title'] ),
 		'ministry' => isset( $krm_by_t[ $krm_key ] ) ? $krm_by_t[ $krm_key ] : '',
 		'name'     => trim( (string) $krm_v['ministry'] ),
 	);
+	if ( preg_match( '~(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/))([A-Za-z0-9_-]{11})~', $krm_v['url'], $krm_match ) ) {
+		$krm_video['id'] = $krm_match[1];
+	} elseif ( preg_match( '#^(?:krm-theme:video/|https?://).+\.mp4(?:\?.*)?$#i', $krm_v['url'] ) ) {
+		$krm_video['src'] = krm_media( $krm_v['url'] );
+	} else {
+		continue;
+	}
+	$krm_videos[] = $krm_video;
 }
 $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_column( $krm_videos, 'ministry' ) ) );
 ?>
@@ -97,9 +111,13 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 				<?php foreach ( $krm_videos as $krm_v ) : ?>
 				<li data-group="<?php echo esc_attr( $krm_v['ministry'] ); ?>">
 				<figure class="video-card">
+					<?php if ( $krm_v['id'] ) : ?>
 					<button type="button" data-krm-video="<?php echo esc_attr( $krm_v['id'] ); ?>" data-title="<?php echo esc_attr( $krm_v['title'] ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: video title */ __( 'Play video: %s', 'kingdom-revival' ), $krm_v['title'] ) ); ?>">
 					<img src="<?php echo esc_url( 'https://i.ytimg.com/vi/' . $krm_v['id'] . '/hqdefault.jpg' ); ?>" alt="" width="480" height="360" loading="lazy" decoding="async">
 					</button>
+					<?php else : ?>
+					<video controls preload="metadata" playsinline aria-label="<?php echo esc_attr( $krm_v['title'] ); ?>"><source src="<?php echo esc_url( $krm_v['src'] ); ?>" type="video/mp4"><?php esc_html_e( 'Your browser does not support HTML video.', 'kingdom-revival' ); ?></video>
+					<?php endif; ?>
 					<figcaption><?php echo esc_html( $krm_v['title'] ); ?><?php if ( '' !== $krm_v['name'] ) : ?><small><?php echo esc_html( $krm_v['name'] ); ?></small><?php endif; ?></figcaption>
 				</figure>
 				</li>

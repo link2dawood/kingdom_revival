@@ -32,6 +32,10 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Final pass across the whole site](#kingdom-revival-ministries-final-pass-across-the-whole-site)
 - [Kingdom Revival Ministries: Hero video for desktop only, one version number (theme 1.14.0)](#kingdom-revival-ministries-hero-video-for-desktop-only-one-version-number-theme-1140)
 - [Kingdom Revival Ministries: Photos from the data folder for sections without images](#kingdom-revival-ministries-photos-from-the-data-folder-for-sections-without-images)
+- [Kingdom Revival Ministries: Ministry pages show the work in action](#kingdom-revival-ministries-ministry-pages-show-the-work-in-action)
+- [Kingdom Revival Ministries: A real map in "Where we work"](#kingdom-revival-ministries-a-real-map-in-where-we-work)
+- [Kingdom Revival Ministries: Dummy content instead of [placeholders] (theme 1.14.1)](#kingdom-revival-ministries-dummy-content-instead-of-placeholders-theme-1141)
+- [Kingdom Revival Ministries: Phase 20 dark mode, scroll effects and photo bands (theme 1.15.0)](#kingdom-revival-ministries-phase-20-dark-mode-scroll-effects-and-photo-bands-theme-1150)
 
 ---
 
@@ -2962,3 +2966,181 @@ that Setup path: Church Planting 9, Widows 7, other ministries unchanged.
 
 Verified: the 4 changed ministry pages at 360 and 1440 have no overflow, 0 axe violations, no broken images and no JS
 errors. Visitor placeholder crawl: 0.
+
+## Kingdom Revival Ministries: Ministry pages show the work in action
+
+**Result: every ministry page with a story or photos now has a "The ministry in action" section after the intro.
+It is built only from content the site already has; no text, numbers or claims were written for it.**
+
+The request: ministry pages showed mostly photos and little about the work's impact. The approved design's per-ministry
+text is the same short copy already on the pages, so the real sources are the 7 published stories (150–280 words each,
+already linked to their ministries) and the photos' Media Library descriptions.
+
+| Part | Content |
+|---|---|
+| From the field | The ministry's latest story: cover photo, title, date, its opening paragraphs word for word (`krm_story_opening()`, about 90 words), "Read the full story →". Bible Distribution, Brick Kiln Family Care, Baptisms & Discipleship, Children & Orphan Care, Widows Support, Leadership Training & Equipping, Prayer & Deliverance |
+| In pictures | Three more of the ministry's photos (not the hero or intro pair), captioned with what each shows (`krm_photo_caption()`: the Media Library alt, else the gallery caption). All ministries with photos |
+| Gallery alt text | Now the same descriptions instead of one generic phrase per ministry |
+| Hidden | Clean Water Projects and Medical & Health Outreach have neither a story nor photos, so no section |
+
+Labels are editable in Site text → Ministry pages (`impact_eyebrow`, `impact_heading`, `impact_story`, `impact_read`,
+`impact_photos`). Files: `template-parts/ministry/impact.php`, helpers in `inc/ministry.php`, styles in
+`assets/css/pages/ministry.css` (tokens only).
+
+Verified: 12 ministry pages × 360 and 1440: no overflow, 0 axe violations, no broken images, no JS errors.
+
+Decisions for you: the five ministries without a story (Evangelism & Outreach, Church Planting, Slavery & Freedom,
+Clean Water, Medical & Health) get a "From the field" card as soon as a story is published with that Related ministry.
+
+## Kingdom Revival Ministries: A real map in "Where we work"
+
+**Result: the home page's "Where we work" box shows a map of central Punjab with real district boundaries and the
+Faisalabad (HQ) and Jhang pins on the two cities, instead of an empty tinted box with a "locations to be pinned" note.**
+
+| Item | Detail |
+|---|---|
+| Data | geoBoundaries Pakistan ADM1/ADM2, simplified (licence: public domain, 2019 boundaries) |
+| Map | `assets/images/where-map.svg`, 25 KB (about 10 KB compressed), inlined. Area: 70.85–74.55° E, 30.28–32.44° N, centred on the two towns; equirectangular projection. Punjab districts white with names; Faisalabad and Jhang districts shaded navy; Punjab's border dashed orange; neighbouring Khyber Pakhtunkhwa districts tinted. Colours: tokens and design colours only |
+| Pins | Drawn inside the SVG (`template-parts/home/where.php`), so they stay on their towns at every width. The map fills the box (`slice`), with the towns at the centre so phones keep them. Defaults: Faisalabad 60.2 / 47.3, Jhang 39.7 / 54.3 (from 31.418° N 73.079° E and 31.268° N 72.318° E). The field help gives the formula for another town |
+| Uploaded map | A "Map image" still replaces the built-in map, with the pins placed on top as before |
+| Accessibility | The SVG is `role="img"` with the map description as its `<title>` |
+
+Verified: home page at 1440 and 360/390, 2 pins, no overflow, 0 axe violations, no JS errors.
+
+Not changed: Our Impact's "Where we work" uses its own simple outline map. It could use this map too.
+
+## Kingdom Revival Ministries: Dummy content instead of [placeholders] (theme 1.14.1)
+
+**Result: no page shows a "[…]" placeholder any more, to visitors or administrators. Every section that was
+waiting for the client's content now shows made-up (dummy) content, including 12 dummy Testimonials. Before
+launch, ALL of it must be replaced with real content or deleted. The list below says where each item is.**
+
+The user's request (2026-11-05): "don't add [bracket] content; where there is no data add dummy data, and add
+dummy testimonials". This replaces the earlier rule (Phase 18/19) that unsupplied content is a marked placeholder
+shown only to administrators.
+
+| Where | Dummy content (edit here) |
+|---|---|
+| Home → Where we work | Faisalabad 35 villages · 12 kilns, Jhang 20 · 8, **Toba Tek Singh** 15 villages, **Chiniot** 10 villages (Pages → Home → Page content) |
+| Home → Flagship button | "Help free a family" (no amount) |
+| Home → Stories from the field | 3 quotes: Yousaf Masih, Saima Bibi, Pastor Javed Masih |
+| Home → Founder quote | A quote attributed to Pastor Adil — **he must approve or replace it** |
+| Home → team / About → Our staff | Imran Bhatti (Co-Founder), Sarah Masih (Projects Coordinator), Daniel Gill (International Relations Coordinator), with bios |
+| About → history, founder testimony | 3 + 2 paragraphs, built from the existing timeline (2018 start) and founder text |
+| About → Statement of faith | One explanation with Scripture references for each of the 6 beliefs |
+| About → Shepherding the Flock | Introduction + 5 pastors with descriptions |
+| About → Accountability | Board: Pastor Adil Arif (Chairman), Imran Bhatti (Secretary), Sarah Masih (Treasurer). **Registration number left empty on purpose** (a made-up number would be a false legal claim); partners left empty |
+| Ministries (inc/data/ministries.php) | All 16: 3 impact numbers, raised / goal, and 1–3 "How your gift helps" cards; Medical camps 3 rows, Clean Water projects 2 rows, Church Planting 3 churches; descriptions for the 4 draft ministries (still drafts) |
+| Donate → Our Projects (inc/data/projects.php) | 3 current + 2 upcoming projects with goals and raised amounts. Now shown to **visitors** too, until the first real Project is published |
+| Testimonials (inc/data/testimonials.php) | 12, one per published ministry, created by Setup (step "News stories and testimonials"), marked `_krm_sample` |
+| Short texts | Volunteer With Us text + 3 points, Contact office hours "Mon–Sat, 9am–5pm (Pakistan time)", Donate introduction, Gallery "no videos" text, Testimonies "empty" text, Impact "no numbers" text |
+
+The highest-risk items are the **fundraising amounts** (ministry and project raised / goal), the **testimonials and
+named people**, and the **founder quote**. Donors would read them as real.
+
+Also in this release:
+- About → Our staff cards follow the user's reference layout in the theme's colours: round photo on a red-to-orange
+  gradient, italic role, and an "Email <first name>" link (new optional **Email** field per person; empty =
+  "Email the team" to the site email). Two cards per row on phones.
+- Your gift at work: "A child's schooling" $40 (opens Donate with $40 chosen); "Frees a family" shows "Any amount",
+  because each family's debt is different.
+- Fixed: a Testimonial's "Related ministry" is saved as a slug by the editor but was looked up by ID, so a
+  testimonial linked in the editor never appeared on its ministry page or under its Testimonies tab. Both lookups
+  now accept a slug or an ID (`krm_testimonial_ministry_id()`).
+- Ministry pages no longer pad "How your gift helps" to three cards with "[$ ]" cards for administrators.
+
+Verified on the local site: `placeholder_check.js` crawled 53 pages, with 0 placeholders as a visitor and 0 with
+the administrator view forced on. Screenshots checked: Donate (projects), Medical & Health Outreach (numbers,
+gift card, testimony, camps), Testimonies (12 cards, ministry filter tabs), About (staff), home (gift cards).
+
+Not covered: the pixel comparison against `html/` was not re-run. Changed text and numbers alter the home page and
+the other pages by design. If a ministry is created later with empty fields, administrators still see the "[00]",
+camps, churches and testimony placeholders for that ministry only.
+
+- Home → "See the ministry in action": the three photos are now link cards to their ministry pages (Prayer &
+  Deliverance, Evangelism & Outreach, Bible Distribution). The photo fills the card under a dark gradient, with a
+  red ministry label, the caption and "View ministry →"; hover zooms the photo. New fields per photo: Small label,
+  Link. Clicking no longer opens the photo viewer. Checked at 1440 / 768 / 390: links return 200, no overflow.
+
+- Theme 1.14.2: the text arrows → and ← in labels ("Read more →", "View all posts →", "← All stories",
+  "Previous / Next story", "All ministries →", "Learn more →", "Contact us →"…) are printed as an SVG arrow icon
+  in the text colour (`inc/arrows.php`: front-end HTML, text between tags only; attributes, scripts, styles,
+  `<title>`, `<option>` and the admin are untouched; the mega menu's CSS arrow is an SVG mask). Editors keep typing
+  → / ← in the fields. A crawl of the 53 local pages finds no text arrow left.
+- Fixed (from the "ministry in action" change): a stray `</div>` closed the home page wrapper early, so every
+  section after it fell back to the browser's serif font. Opening and closing `<div>` tags are now balanced (135 / 135).
+- Sideways photos: every gallery photo was checked (152 images on the local site, 84 originals on the old site, the
+  theme's own photos). None is stored sideways or carries an EXIF rotation flag, and all show upright locally, so
+  the sideways view the user saw could not be reproduced. Open: which site and page it was.
+
+Decisions for you:
+- Replace or delete every item in the table before launch. Dummy testimonials can be found in Testimonials.
+- Sites set up before this version only get the new defaults where nothing was saved. Testimonials are created
+  by running Kingdom Revival → Setup again (existing entries are skipped).
+
+## Kingdom Revival Ministries: Phase 20 dark mode, scroll effects and photo bands (theme 1.15.0)
+
+**Result: the site has a light and a dark theme (device setting first, then the visitor's saved choice, with no flash of
+the wrong theme), a scroll progress bar, scroll-reveal animations, a header that sits transparent over the hero and turns
+to frosted glass on scroll, and four sections with a photo behind a see-through brand overlay. Every page passes WCAG AA
+colour contrast in both themes (35 pages × 2 widths × 2 themes, 0 failures), with no layout shift and an unchanged
+Lighthouse score. Light mode is pixel-identical to 1.14.2 except where the new features change it on purpose.**
+
+The brief asked first to inspect hmpak.org's transparency effects. The site could not be opened (DNS: `ENOTFOUND
+hmpak.org`), so the brief's fallback specification was implemented as written.
+
+### What changed
+
+| Area | Change |
+|---|---|
+| Colour tokens | Every colour in the theme's CSS, templates, inline styles and scripts is now a token in `theme-global.css`. A script rewrote them **by role**, keeping each light value exact: navy as text → `--color-heading`, navy as a background → `--color-band`, white as a background → `--color-surface`, red as text → `--color-secondary-text`, image stand-ins → `--color-placeholder*`, navy shadows → `rgba(var(--shadow-rgb), calc(x * var(--shadow-k)))`. SVG `fill`/`stroke` attributes became `style="fill: var(--…)"` (attributes can't hold `var()`). Our Impact's private `--impact-*` colours and the home page's JS colour objects were converted too. The only hex left are the token definitions and `krm_theme_colors()` (meta theme-color, which needs a literal colour). Proof: light screenshots of 9 pages × 390/1440 before and after the rewrite were **pixel-identical** (one diff was a lazy image still loading) |
+| Dark palette | As briefed: bg `#0A1230`, surface `#111B40`, grey sections `#18234F`, navy bands `#142257`, footer `#060D28`, text `#E8ECF6` / `#A9B3CC`, border `#26336A`, red `#E0262A` (hover `#F04044`, white text 4.7:1), orange `#F5A04A` with dark `#141B33` text, placeholders `#1F2A5A` / `#26336A`, shadows black at ×2.9 opacity. **Adjusted after contrast checks:** red *as text* is `#FF6B6E` (`#E0262A` is 3.96:1 on the dark page); headings `#F1F4FB`; field borders `#5B6BA6` (3.3:1, so fields stay visible); navy buttons and the chosen amount are `#34499A` in dark (navy-on-navy disappeared); chart colours `--color-chart-1…4` |
+| Applied | `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }` and `:root[data-theme="dark"]`. `color-scheme` follows the theme (site.css forced `light` on `:root`; removed) |
+| Toggle | Sun/moon button in the header (desktop) and as the last row of the mobile menu ("Dark mode"). 44×44px, focus ring, `aria-pressed`, `aria-label` "Switch to dark mode" / "Switch to light mode". Hidden without JavaScript. The icon switches in CSS, so it is right on the first paint |
+| No flash | `krm_theme_head()` prints `<meta name="color-scheme" content="light dark">`, a theme-color meta per scheme, and a one-line inline script **before any stylesheet** that adds `js` to `<html>` and sets `data-theme` from `localStorage` (try/catch). The choice applies in other open tabs too (`storage` event) |
+| Dark details | Header logo on a white round badge (padding via a token, so light mode is unchanged); footer badge stays white; photos untouched, hero overlays kept; form fields without their own background use the surface colour (zero-specificity rule), readable placeholders, autofill without a white box; Our Impact charts read `--color-chart-*` and redraw on the `krm:themechange` event; project progress fills use the chart colour (navy fill vanished); orange pill buttons keep dark text; the Google Map iframe gets a border |
+| Progress bar | `.krm-progress`: 3px, fixed at the top, z-index 95 (header 90), red→orange gradient from tokens, `transform: scaleX()` with `transform-origin: left`, updated once per frame from a passive scroll listener, re-measured on resize, `load` and a `ResizeObserver` on `<body>`. Hidden when a page scrolls less than 48px. Under the admin bar when logged in (32px / 46px). `aria-hidden="true"`. The old story-page-only reading bar was removed (it would have been a second bar) |
+| Scroll reveal | `assets/js/effects.js` (deferred, every page). IntersectionObserver, fade + 20px rise, 600ms ease-out, once, then unobserved. Triggers when the block's top passes 85% of the screen height (works for blocks taller than the screen, where a 15% ratio may never be reached). Items of a grid are staggered 80ms each, at most 400ms. Applied automatically to section headings with their small heading and introduction, card grids and wrapping card rows (ministry, gift, project, news, team, testimony, stats, steps), the About timeline, galleries and CTA banners. Never: the hero, anything on the first screen, the header, forms, donation cards, floating buttons, popups, `[data-no-reveal]`. Elements are hidden only by the script (class `reveal-pending`), so without JavaScript, for search engines, and with reduced motion (no animation at all), everything is visible. Safety net: reaching the bottom or printing shows anything still waiting. Editors: class `krm-reveal` / `krm-reveal-stagger` (block editor → Additional CSS class) or `data-reveal` / `data-reveal-stagger` |
+| Counters | The home stats strip now counts up too (`data-krm-count`). Counters that are already on screen when the page opens keep their value (nothing above the fold animates); the rest count when revealed |
+| Header over the hero | On pages that open with a hero (home, `.page-hero`, `.post-hero`, `.impact-hero`, `[data-hero]`, detected with `:has()`), the header overlaps the hero; the hero's top padding grows by the header height (85px / 73px), so content doesn't move. At the top: transparent, white text, white logo badge, plus a soft navy scrim (needed: white text over the bright sky at the top of the home photo was 3.99:1). After 80px: frosted glass `blur(12px)`, light `rgba(255,255,255,.92)` (the brief's .85 let dark content lower the red current-page link to 4.0:1), dark `rgba(10,18,48,.85)`, with a solid fallback without `backdrop-filter`. Solid while any menu is open. 250ms transitions. The top bar scrolls away as before. The 404 page has no hero and keeps the solid header |
+| Photo bands | `krm_photo_band_attrs()`: home "Flagship: Slavery & Freedom" (navy overlay .82, step cards frosted), home "Closing verse" CTA (navy → deep red gradient ~.86–.9), About "Join the mission" (navy .84), Our Impact numbers strip (navy .86, counters as frosted cards; **this strip only shows once impact numbers are set**). New "Background photo" field on each; empty = plain colour. Photo set by the script 400px before the band reaches the screen (lazy). Desktop: the WordPress WebP copy ≤ 250 KB (measured 166–214 KB); phones: the 768px copy. `background-attachment: fixed` only at ≥1025px with hover and no reduced motion; normal scroll on phones/iOS. Frosted cards: `rgba(255,255,255,.10)`, `blur(10px)`, 1px `rgba(255,255,255,.18)` border, solid navy fallback |
+| Contrast fixes found on the way | About → Accountability (shown since the 1.14.1 dummy board): red small headings (2.96:1) and navy card titles (1.17:1) on navy → orange / white. This was already wrong in light mode. The skip link peeked 4px out at the top of the home page (64px tall, hidden by 60px); now hidden by 120px |
+| Other | `style.css` Version 1.15.0. readme.md: new section "Light and dark mode, scroll effects" and the file map. CLAUDE.md: colour roles, effects.js, new checks. Hero heading default highlight uses `var(--color-accent)` (kses keeps it) |
+
+### Verified (local WordPress 7.1.4)
+
+| Check | Result |
+|---|---|
+| Token rewrite, light mode | 18 screenshots (9 pages × 390/1440) pixel-identical before/after |
+| `final_pass.js`, 35 pages | Overflow at 360/768/1024/1440: 0. JS errors: 0. axe WCAG 2.1 A/AA at 1440 and 360: 0 violations. **Contrast, light: 0. Contrast, dark: 0** (dark applied on every page). One header and one footer variant |
+| `phase20_check.js` | 0 failures. 6 pages × light/dark × 390/1440: no horizontal scroll, no console errors, CLS max 0, nothing left hidden after scrolling to the bottom. First frame: saved light with a dark device, and saved dark with a light device, both paint in the saved theme (body background checked on the first animation frame); the theme script precedes the first stylesheet. Toggle: aria states/labels correct, 44×44, saves, next page dark on its first frame; mobile-menu toggle works. Progress: scaleX 0 at the top, 1 at the bottom, hidden on a short page, 32px / 46px under the admin bar (temporary QA user, deleted afterwards). Reveal: 0 elements hidden with JS off or reduced motion, 0 hidden on the first screen. Header: transparent at the top, frosted after scrolling on 5 hero pages × 2 themes × 2 widths; nav text contrast measured on the pixels behind it: minimum **4.64:1** |
+| Photo bands | Lazy (not set at load when far below), WebP 166–214 KB, fixed on desktop |
+| Lighthouse 12.2.1 (production-like proxy, 3 runs, median), 5 pages, effects.js on vs off | Mobile 98–100 on vs 99–100 off (donate "off" had one noisy run at 90); desktop 100 both. CLS 0.000 everywhere, LCP the same (±0.07s). effects.js costs about 40ms of JS execution on simulated mobile, plus 20ms TBT on the home page only |
+| Lint | `php -l` on every PHP file, `node --check` on every script: no errors |
+| Screens checked by eye | Every page in dark at 1440; home, About, Our Impact at 390; mega menu, Donate form, newsletter popup, FAQ, lightbox, header states, the three visible photo bands |
+
+### Not covered
+
+- hmpak.org could not be opened from this machine, so nothing was matched against it.
+- Real devices: iOS Safari (fixed backgrounds fall back to scroll by width/hover, not tested on an iPhone) and Firefox
+  were not run; the transparent header uses `:has()` (Safari 15.4+, Firefox 121+). Without `:has()` the header simply
+  stays solid.
+- Autofill colours in dark mode were styled but not triggered in a test (needs a saved browser profile).
+- The Lighthouse comparison isolates the new script (theme with effects.js vs dequeued). A clean pre-Phase-20 build
+  wasn't available (the root zip had been rebuilt mid-work by another session).
+- The Our Impact numbers band is built and styled, but not visible until impact numbers exist.
+- Another session added `assets/video/gallery/` (3 MP4s, 66 MB) during this phase. The theme zip is now **79 MB** (was
+  13.5 MB), and `final_pass.js` finds that `/our-impact/gallery/` downloads these videos on a 390px phone. That is not
+  part of Phase 20 and was left as found.
+
+### Decisions for you
+
+- **Logo**: dark mode uses the white round badge. If the client has a light/white version of the logo, it can replace
+  the badge.
+- **Header frost**: 92% white in light mode instead of the brief's 85% (contrast). Keep, or lower the red current-page
+  link colour's use there instead.
+- **Gallery videos (other session's work)**: 79 MB is above many hosts' upload limit (often 2–64 MB) for
+  Appearance → Themes → Upload. Better: put them in the Media Library and load them only when played.
+- The toggle uses both a changing `aria-label` and `aria-pressed`, as the brief asked. Screen readers then announce, e.g.,
+  "Switch to light mode, pressed". If you prefer, a fixed label "Dark mode" with `aria-pressed` alone is the more
+  common pattern.

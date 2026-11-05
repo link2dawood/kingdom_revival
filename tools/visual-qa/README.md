@@ -79,3 +79,16 @@ Environment: `HTML_URL`, `WP_URL`, `CHROME_PATH` (defaults: the ports above and 
 `node placeholder_check.js` crawls the WordPress site logged out (home page, sitemap and every internal link) and lists
 any "[…]" placeholder visitors could see (text, alt/title/aria-label, `<title>`, meta tags), plus links to the Testimonies
 page or hidden ministries while those are hidden. Exit code 1 when a placeholder is found. Run it before a release.
+
+`node final_pass.js [out.json]` crawls every public page (consistency, overflow at 4 widths, axe at 1440 and 360,
+tap targets, SEO tags, images, scripts). Since Phase 20 it also checks WCAG AA colour contrast in **both themes**:
+light in the main axe run, dark in a second context (`data-theme="dark"`), at 1440 and 360, after showing any
+scroll-reveal blocks; failures are listed under `contrastLight` / `contrastDark` in the summary.
+
+`WP_USER=… WP_PASS=… node phase20_check.js [out.json]` (Phase 20): screenshots of Home, What We Do, a ministry, Our Impact,
+About and Donate in light + dark at 390 and 1440 (`out/phase20/shots/`); the saved theme on the first frame of the
+next page (no flash) and the toggle's state; the progress bar (0 at the top, 1 at the bottom, hidden on short pages,
+under the admin bar when logged in — needs a user, else skipped); scroll reveal with JavaScript off, with reduced motion,
+on the first screen and after scrolling to the bottom; the header transparent → frosted, with the nav text contrast
+measured on the pixels behind it; photo bands (lazy, ≤ 250 KB); and per page/width/theme: horizontal scroll, console
+errors and CLS. Every failure is printed as `FAIL …` and listed in `failures`.

@@ -95,7 +95,7 @@ $krm_gift = krm_gift_return();
 				<?php endforeach; ?>
 			</ul>
 			<?php $krm_reg = trim( (string) krm_c( 'accountability.reg_number', 'about' ) ); // About → Accountability; visitors see it once filled in. ?>
-			<div class="donate-trust-row"><?php if ( '' !== $krm_reg ) : ?><span>Reg. No. <strong><?php echo esc_html( $krm_reg ); ?></strong></span><?php endif; ?><a href="<?php echo esc_url( krm_page_url( 'impact' ) ); ?><?php echo krm_impact_has_financials() || krm_show_placeholders() ? '#financial-title' : ''; ?>">Financial transparency →</a></div>
+			<div class="donate-trust-row"><?php if ( '' !== $krm_reg ) : ?><span>Reg. No. <strong><?php echo esc_html( $krm_reg ); ?></strong></span><?php endif; ?><a href="<?php echo esc_url( krm_page_url( 'impact' ) ); ?>">Financial transparency →</a></div>
 			</form>
 		</div>
 

@@ -45,6 +45,11 @@ defined( 'ABSPATH' ) || exit;
 		<span><?php krm_t( 'footer.location', 'site' ); ?></span>
 	</div>
 	</footer>
-	<?php wp_footer(); ?>
+	<?php
+	if ( ! is_front_page() ) {
+		get_template_part( 'template-parts/home/whatsapp' ); // The home page prints its own.
+	}
+	wp_footer();
+	?>
 </body>
 </html>

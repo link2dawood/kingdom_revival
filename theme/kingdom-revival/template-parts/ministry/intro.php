@@ -33,7 +33,7 @@ $krm_points = $krm_m['id'] ? krm_lines( (string) get_post_meta( $krm_m['id'], '_
 			<?php endif; ?>
 		</div>
 		<?php endforeach; ?>
-		<span class="ministry-pair-badge" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#141B33" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span>
+		<span class="ministry-pair-badge" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="2" style="stroke: var(--color-text)"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span>
 	</div>
 	<?php endif; ?>
 	<div class="ministry-intro-text">

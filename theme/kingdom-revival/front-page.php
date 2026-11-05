@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 ?>
-<div class="krm-home" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--color-text); background: var(--color-white); font-size: 16px; line-height: 1.6">
+<div class="krm-home" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--color-text); background: var(--color-bg); font-size: 16px; line-height: 1.6">
 <main id="main">
 <?php
 get_template_part( 'template-parts/home/hero' );

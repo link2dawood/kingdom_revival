@@ -21,8 +21,8 @@
   function renderAmounts() {
     document.querySelectorAll("button[data-amount]").forEach(function (b) {
       paint(b, b.dataset.amount === amount,
-        { bg: "#0C1C4F", fg: "#FFFFFF", border: "#0C1C4F" },
-        { bg: "#FFFFFF", fg: "#141B33", border: "#D3D9E6" });
+        { bg: "var(--color-button-navy)", fg: "var(--color-white)", border: "var(--color-button-navy)" },
+        { bg: "var(--color-surface)", fg: "var(--color-text)", border: "var(--color-input-border)" });
     });
     var href = DONATE_URL + "?amount=" + (amount === "Other" ? "" : encodeURIComponent(amount.replace("$", ""))) + "&frequency=One-time#give";
     var hero = document.querySelector('[data-krm-donate="hero"]');
@@ -57,9 +57,9 @@
       if (!item) return;
       group.querySelectorAll("button[data-index]").forEach(function (b) {
         var on = Number(b.dataset.index) === index;
-        paint(b, on, { bg: "#0C1C4F", fg: "#FFFFFF" }, { bg: "#F4F6FB", fg: "#141B33" });
+        paint(b, on, { bg: "var(--color-band)", fg: "var(--color-white)" }, { bg: "var(--color-bg-soft)", fg: "var(--color-text)" });
         var num = b.querySelector("span");
-        if (num) num.style.color = on ? "#F5A04A" : "#D4070B";
+        if (num) num.style.color = on ? "var(--color-accent)" : "var(--color-secondary-text)";
       });
       var img = part("img");
       if (img) {

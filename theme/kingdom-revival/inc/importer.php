@@ -63,7 +63,7 @@ function krm_setup_page() {
 	$checks     = array(
 		'media'      => array( true, sprintf( /* translators: 1: done, 2: total */ __( 'Import the design’s images and video into the Media Library (%1$d of %2$d done). Files already in the library are reused, and descriptive alt text is added where missing.', 'kingdom-revival' ), $done, $total ) ),
 		'ministries' => array( true, sprintf( /* translators: %d: count */ __( 'Create the 16 ministries of the client’s sitemap and their two groups (currently %d published; “Youth Ministry / Women Empowerment” is created as a draft). Existing ministries with the same slug are left as they are.', 'kingdom-revival' ), (int) $ministries->publish ) ),
-		'posts'      => array( true, __( 'Create the 6 clearly marked sample News stories and their categories. Stories whose slug already exists are skipped. WordPress’s sample post “Hello world!” is moved to the trash if it was never edited.', 'kingdom-revival' ) ),
+		'posts'      => array( true, __( 'Create the 6 clearly marked sample News stories and their categories, and 12 dummy Testimonials (one per ministry). Entries whose slug already exists are skipped. WordPress’s sample post “Hello world!” is moved to the trash if it was never edited.', 'kingdom-revival' ) ),
 		'pages'      => array( true, __( 'Create the sitemap’s pages if they do not exist: About Us, Our Impact (with Testimonies and Photo & Video Gallery), News & Updates, Partner With Us (with Prayer Request), Contact and Donate.', 'kingdom-revival' ) ),
 		'menus'      => array( true, __( 'Create the main and footer menus and assign them to this theme’s empty menu locations.', 'kingdom-revival' ) ),
 		'reading'    => array( ! $reading_ok, $reading_ok ? __( 'Reading settings: a static front page and a posts page are already set. Tick to point the posts page at “News & Updates” anyway.', 'kingdom-revival' ) : __( 'Reading settings: show a static front page and use “News & Updates” as the posts page (required for the design).', 'kingdom-revival' ) ),
@@ -440,6 +440,34 @@ function krm_import_content( $opts ) {
 		}
 
 		krm_ensure_news_categories();
+
+		// Dummy testimonials, one per ministry (inc/data/testimonials.php). Skipped when one with the same slug exists.
+		$order = 0;
+		foreach ( include KRM_DIR . '/inc/data/testimonials.php' as $t ) {
+			$slug = sanitize_title( $t['name'] );
+			++$order;
+			if ( krm_get_by_path( $slug, 'testimonial' ) ) {
+				$log[] = sprintf( 'Testimonial exists, left unchanged: %s', $t['name'] );
+				continue;
+			}
+			$id = wp_insert_post(
+				array(
+					'post_type'    => 'testimonial',
+					'post_status'  => 'publish',
+					'post_title'   => $t['name'],
+					'post_name'    => $slug,
+					'post_content' => $t['text'],
+					'menu_order'   => $order,
+					'meta_input'   => array(
+						'_krm_role'     => $t['role'],
+						'_krm_ministry' => $t['ministry'],
+						'_krm_sample'   => 1,
+					),
+				),
+				true
+			);
+			$log[] = is_wp_error( $id ) ? sprintf( 'Could not create testimonial %s: %s', $t['name'], $id->get_error_message() ) : sprintf( 'Created testimonial: %s', $t['name'] );
+		}
 
 		// WordPress's sample post would show in News & Updates. Trashed only while it is still untouched.
 		$sample = krm_get_by_path( 'hello-world', 'post' );

@@ -99,8 +99,8 @@ return array(
 		__( 'Volunteer With Us', 'kingdom-revival' ),
 		array(
 			'title'        => 'Volunteer With Us',
-			'text'         => '[Short description — to be supplied by the client]',
-			'points'       => '[What volunteering involves — to be supplied by the client]',
+			'text'         => 'Give your time and skills to serve alongside our team — at medical camps, children’s programmes, outreach events or from home.',
+			'points'       => "Helping at medical camps and food distributions\nTeaching and mentoring at children’s programmes\nPrayer, translation, design and online support from anywhere",
 			'form_heading' => 'Volunteer with us',
 			'button'       => 'Send',
 		)

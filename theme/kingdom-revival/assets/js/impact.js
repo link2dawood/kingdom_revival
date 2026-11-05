@@ -4,7 +4,14 @@
   if (!node) return;
   var data;
   try { data = JSON.parse(node.textContent); } catch (e) { return; }
-  var colors = ["#0C1C4F", "#E18426", "#D4070B", "#CBD4E8"];
+  /* Chart colours come from the theme's CSS variables (light or dark), read again whenever the theme changes. */
+  var colors = [], grid = "";
+  function readColors() {
+    var cs = getComputedStyle(document.documentElement), v = function (n) { return cs.getPropertyValue(n).trim(); };
+    colors = [v("--color-chart-1"), v("--color-chart-2"), v("--color-chart-3"), v("--color-chart-4")];
+    grid = v("--color-chart-grid");
+  }
+  readColors();
   var esc = function (s) { return String(s).replace(/[&<>\"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
   var num = function (v) { return Number(v).toLocaleString("en-US"); };
   /* Without data: administrators see a note (data.showPending); visitors see nothing (the element is hidden). */
@@ -21,7 +28,7 @@
     var max = Math.max.apply(null, good.map(function (r) { return Number(r.value); })) || 1;
     var w = 720, h = 260, base = 220, gap = w / good.length, bw = Math.min(54, gap * .56);
     var svg = '<div class="impact-chart__visual"><svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+esc(label)+'">';
-    [0,.25,.5,.75,1].forEach(function (p) { var y=base-(p*180); svg += '<line x1="35" y1="'+y+'" x2="710" y2="'+y+'" stroke="'+(dark?'#CBD4E8':'#CBD4E8')+'" opacity=".45"/><text x="2" y="'+(y+4)+'">'+num(Math.round(max*p))+'</text>'; });
+    [0,.25,.5,.75,1].forEach(function (p) { var y=base-(p*180); svg += '<line x1="35" y1="'+y+'" x2="710" y2="'+y+'" stroke="'+grid+'" opacity=".45"/><text x="2" y="'+(y+4)+'">'+num(Math.round(max*p))+'</text>'; });
     good.forEach(function (r,i) { var bh=Number(r.value)/max*180,x=35+i*gap+(gap-bw)/2,y=base-bh; svg += '<rect data-tip="'+esc(r.year+': '+num(r.value))+'" x="'+x+'" y="'+y+'" width="'+bw+'" height="'+bh+'" rx="4" fill="'+colors[i%3]+'"><title>'+esc(r.year+': '+num(r.value))+'</title></rect><text text-anchor="middle" x="'+(x+bw/2)+'" y="242">'+esc(r.year)+'</text>'; });
     svg += '</svg></div><table><caption>'+esc(label)+' data</caption><thead><tr><th>Year</th><th>Value</th></tr></thead><tbody>' + good.map(function(r){return '<tr><th>'+esc(r.year)+'</th><td>'+num(r.value)+'</td></tr>';}).join("") + '</tbody></table>';
     el.innerHTML = svg;
@@ -41,7 +48,7 @@
   var tabs = Array.prototype.slice.call(document.querySelectorAll("[data-impact-index]"));
   var panel = document.getElementById("impact-ministry-panel");
   function select(i, focus) {
-    var m=data.ministries[i]; if(!m||!panel)return;
+    var m=data.ministries[i]; if(!m||!panel)return; current=i;
     tabs.forEach(function(t,j){t.setAttribute("aria-selected",j===i?"true":"false");t.tabIndex=j===i?0:-1;});
     panel.setAttribute("aria-labelledby","impact-tab-"+i);
     panel.querySelector("[data-impact-group]").textContent=m.group;panel.querySelector("[data-impact-name]").textContent=m.name;
@@ -51,7 +58,12 @@
     bars(panel.querySelector("[data-impact-ministry-chart]"),m.yearlyValues,m.name+" yearly impact",true);if(focus)panel.focus();
   }
   tabs.forEach(function(t,i){t.addEventListener("click",function(){select(i,false);});t.addEventListener("keydown",function(e){var n=e.key==="ArrowDown"||e.key==="ArrowRight"?i+1:e.key==="ArrowUp"||e.key==="ArrowLeft"?i-1:null;if(n===null)return;e.preventDefault();n=(n+tabs.length)%tabs.length;tabs[n].focus();select(n,false);});});select(0,false);
-  series(document.querySelector("[data-impact-growth]"),data.growth.series);
-  bars(document.querySelector("[data-impact-freedom]"),data.freedom.familiesFreedPerYear,"Families freed per year",false);
+  var current = 0;
+  function drawCharts() {
+    series(document.querySelector("[data-impact-growth]"),data.growth.series);
+    bars(document.querySelector("[data-impact-freedom]"),data.freedom.familiesFreedPerYear,"Families freed per year",false);
+  }
+  drawCharts();
+  document.addEventListener("krm:themechange", function () { readColors(); drawCharts(); select(current, false); });
   var financial=document.querySelector("[data-impact-financial]");if(financial){var valid=data.financials.filter(function(x){return x.percent !== null && x.percent !== "" && Number.isFinite(Number(x.percent));});financial.innerHTML=valid.length?valid.map(function(x){return '<div class="impact-financial__row"><div class="impact-financial__label"><span>'+esc(x.label)+'</span><span>'+esc(x.percent)+'%</span></div><div class="impact-financial__track"><div class="impact-financial__fill" style="width:'+Math.max(0,Math.min(100,Number(x.percent)))+'%"></div></div></div>';}).join(''):'<p class="impact-chart__empty">Financial allocation percentages awaiting annual accounts.</p>';}
 })();

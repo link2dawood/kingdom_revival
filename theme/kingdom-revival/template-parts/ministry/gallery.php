@@ -26,7 +26,7 @@ if ( ! $krm_photos && ! krm_show_placeholders() ) {
 	<?php if ( $krm_photos ) : ?>
 	<div class="gallery" id="ministry-gallery" data-gallery>
 		<?php foreach ( $krm_photos as $krm_photo ) : ?>
-		<figure class="photo"><img <?php krm_img_src( $krm_photo[0], '(max-width: 520px) calc(100vw - 32px), (max-width: 760px) calc(50vw - 25px), (max-width: 1100px) calc(33vw - 24px), 260px', true ); ?> alt="<?php echo esc_attr( $krm_photo[1] ); ?>" loading="lazy" decoding="async"></figure>
+		<figure class="photo"><img <?php krm_img_src( $krm_photo[0], '(max-width: 520px) calc(100vw - 32px), (max-width: 760px) calc(50vw - 25px), (max-width: 1100px) calc(33vw - 24px), 260px', true ); ?> alt="<?php echo esc_attr( krm_photo_caption( $krm_photo[0], $krm_photo[1] ) ); ?>" loading="lazy" decoding="async"></figure>
 		<?php endforeach; ?>
 	</div>
 		<?php if ( count( $args['photos'] ) > 9 ) : ?>

@@ -5,7 +5,7 @@
  *
  * Per project: title, ministry (slug from inc/data/ministries.php), status (current | upcoming), goal and raised
  * (whole dollars, '' = not set), date (planned start for upcoming projects, free text), image, text.
- * Everything in [square brackets] is a placeholder: the client has not supplied any projects yet.
+ * These are DUMMY projects (names, goals and amounts are made up): replace them with real ones before launch.
  *
  * @package Kingdom_Revival
  */
@@ -14,53 +14,53 @@ defined( 'ABSPATH' ) || exit;
 
 return array(
 	array(
-		'title'    => '[Current project 1 — name to be supplied by the client]',
+		'title'    => 'Urdu Bibles for 500 new believers',
 		'ministry' => 'bible-distribution',
 		'status'   => 'current',
-		'goal'     => '',
-		'raised'   => '',
+		'goal'     => '6000',
+		'raised'   => '2400',
 		'date'     => '',
 		'image'    => '',
-		'text'     => '[Project description — to be supplied by the client]',
+		'text'     => 'Printing and delivering Urdu Bibles to new believers and village churches around Faisalabad and Jhang.',
 	),
 	array(
-		'title'    => '[Current project 2 — name to be supplied by the client]',
+		'title'    => 'Freedom for 10 bonded kiln families',
 		'ministry' => 'slavery-freedom',
 		'status'   => 'current',
-		'goal'     => '',
-		'raised'   => '',
+		'goal'     => '15000',
+		'raised'   => '6200',
 		'date'     => '',
 		'image'    => '',
-		'text'     => '[Project description — to be supplied by the client]',
+		'text'     => 'Paying off the debts of ten brick kiln families and helping each one start again with work and a home.',
 	),
 	array(
-		'title'    => '[Current project 3 — name to be supplied by the client]',
+		'title'    => 'A safe home for 20 children',
 		'ministry' => 'children-orphan-care',
 		'status'   => 'current',
-		'goal'     => '',
-		'raised'   => '',
+		'goal'     => '12000',
+		'raised'   => '4800',
 		'date'     => '',
 		'image'    => '',
-		'text'     => '[Project description — to be supplied by the client]',
+		'text'     => 'Shelter, meals, schooling and daily care for orphaned and underprivileged children.',
 	),
 	array(
-		'title'    => '[Upcoming project 1 — name to be supplied by the client]',
+		'title'    => 'Hand pumps for five villages',
 		'ministry' => 'clean-water',
 		'status'   => 'upcoming',
-		'goal'     => '',
-		'raised'   => '',
-		'date'     => '[Planned date]',
+		'goal'     => '9000',
+		'raised'   => '0',
+		'date'     => 'January 2027',
 		'image'    => '',
-		'text'     => '[Project description — to be supplied by the client]',
+		'text'     => 'Installing five new hand pumps so families no longer walk for unsafe water.',
 	),
 	array(
-		'title'    => '[Upcoming project 2 — name to be supplied by the client]',
+		'title'    => 'A church building in a village near Jhang',
 		'ministry' => 'church-planting',
 		'status'   => 'upcoming',
-		'goal'     => '',
-		'raised'   => '',
-		'date'     => '[Planned date]',
+		'goal'     => '10000',
+		'raised'   => '0',
+		'date'     => 'March 2027',
 		'image'    => '',
-		'text'     => '[Project description — to be supplied by the client]',
+		'text'     => 'A simple, permanent meeting place for a growing house church.',
 	),
 );

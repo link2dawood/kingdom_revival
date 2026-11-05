@@ -121,7 +121,7 @@
   var PLUS = "M12 5v14M5 12h14", CROSS = "M18 6L6 18M6 6l12 12";
 
   function floatingGive() {
-    if (document.getElementById("floating-donation-panel") || document.querySelector(".float-give") || /donate\.html$/.test(location.pathname) || CONFIG.isDonatePage) return;
+    if (document.getElementById("floating-donation-panel") || document.querySelector(".float-give")) return;
     var wrap = document.createElement("div");
     wrap.className = "float-give";
     wrap.innerHTML =

@@ -313,12 +313,21 @@ function krm_render_nodes( $nodes, $depth = 0 ) {
 			krm_render_nodes( $node['children'], $depth + 1 );
 			echo '</ul>';
 		} else {
+			$label = esc_html( $node['title'] );
+			// "All ministries" in the What We Do panel is the panel's feature card on desktop (theme-global.css, "Mega
+			// menu: feature card"); on mobile only the title shows.
+			if ( 1 === $depth && in_array( 'menu-all', $classes, true ) ) {
+				$label = '<span class="mega-eyebrow">' . krm_text( krm_c( 'header.mega_eyebrow', 'site' ) ) . '</span>'
+					. '<span class="mega-title">' . $label . '</span>'
+					. '<span class="mega-text">' . krm_text( krm_c( 'header.mega_text', 'site' ) ) . '</span>'
+					. '<span class="mega-cta">' . krm_text( krm_c( 'header.mega_button', 'site' ) ) . '</span>';
+			}
 			printf(
 				'<a href="%s"%s%s>%s</a>',
 				esc_url( krm_local_url( $node['url'] ) ),
 				$node['ministry'] ? ' data-ministry="' . esc_attr( $node['ministry'] ) . '"' : '',
 				$node['current'] ? ' aria-current="page"' : '',
-				esc_html( $node['title'] )
+				$label // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
 			);
 		}
 		echo '</li>';
@@ -332,6 +341,10 @@ function krm_primary_menu() {
 	$tree = krm_menu_tree( 'primary' );
 	echo '<ul class="menu" id="site-menu">';
 	krm_render_nodes( null === $tree ? krm_default_primary_tree() : $tree );
+	// The light/dark toggle as the last row of the mobile menu (hidden on desktop, where it sits in the header).
+	echo '<li class="menu-theme"><span>' . esc_html__( 'Dark mode', 'kingdom-revival' ) . '</span>';
+	krm_theme_toggle();
+	echo '</li>';
 	echo '</ul>';
 }
 

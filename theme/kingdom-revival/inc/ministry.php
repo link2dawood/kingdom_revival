@@ -421,7 +421,7 @@ function krm_filled_rows( $rows ) {
 
 /**
  * "How your gift helps" cards of a ministry: up to 4. Visitors get only cards with a real amount (none = the section
- * is not shown); administrators get them all, padded to 3 with "[$ ]" placeholders. Each: amount, title, text, url
+ * is not shown); administrators get them all. Each: amount, title, text, url
  * (Donate with the ministry, and the amount when it is a number), real (false for a placeholder card).
  *
  * @param array $m A ministry from krm_ministries().
@@ -429,9 +429,6 @@ function krm_filled_rows( $rows ) {
  */
 function krm_ministry_gifts( $m ) {
 	$rows = array_slice( krm_visible( krm_filled_rows( $m['gifts'] ), 0 ), 0, 4 );
-	while ( krm_show_placeholders() && count( $rows ) < 3 ) {
-		$rows[] = array( '[$ ]', '[What this gift provides]', '[Short description — to be supplied by the client]' );
-	}
 	$out = array();
 	foreach ( $rows as $row ) {
 		$row    = array_pad( array_values( (array) $row ), 3, '' );
@@ -496,8 +493,26 @@ function krm_related_ministries( $m ) {
 }
 
 /**
- * The testimonial shown on a ministry page: the first published Testimonial linked to it (Testimonials → Related
- * ministry), or null.
+ * The ministry ID a Testimonial is linked to (its "Related ministry" holds a slug, older entries an ID), or 0.
+ *
+ * @param int $post_id Testimonial.
+ * @return int
+ */
+function krm_testimonial_ministry_id( $post_id ) {
+	$value = (string) get_post_meta( $post_id, '_krm_ministry', true );
+	if ( '' === $value || ctype_digit( $value ) ) {
+		return (int) $value;
+	}
+	foreach ( krm_ministries() as $m ) {
+		if ( $m['slug'] === $value ) {
+			return (int) $m['id'];
+		}
+	}
+	return 0;
+}
+
+/**
+ * The first published Testimonial linked to a ministry (by slug, as the editor saves it, or by ID), or null.
  *
  * @param array $m A ministry from krm_ministries().
  * @return WP_Post|null
@@ -511,8 +526,13 @@ function krm_ministry_testimonial( $m ) {
 			'post_type'      => 'testimonial',
 			'post_status'    => 'publish',
 			'posts_per_page' => 1,
-			'meta_key'       => '_krm_ministry', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-			'meta_value'     => (int) $m['id'], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				array(
+					'key'     => '_krm_ministry',
+					'value'   => array( (string) $m['id'], $m['slug'] ), // The editor saves the slug; older entries an ID.
+					'compare' => 'IN',
+				),
+			),
 			'orderby'        => array(
 				'menu_order' => 'ASC',
 				'date'       => 'DESC',
@@ -521,4 +541,72 @@ function krm_ministry_testimonial( $m ) {
 		)
 	);
 	return $posts ? $posts[0] : null;
+}
+
+/**
+ * The ministry's latest published story (News & Updates post whose "Related ministry" is this ministry), or null.
+ *
+ * @param array $m Ministry (krm_current_ministry()).
+ * @return WP_Post|null
+ */
+function krm_ministry_story_post( $m ) {
+	if ( empty( $m['id'] ) ) {
+		return null;
+	}
+	$posts = get_posts(
+		array(
+			'post_type'      => 'post',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'meta_key'       => '_krm_ministry', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'     => (int) $m['id'], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'no_found_rows'  => true,
+		)
+	);
+	return $posts ? $posts[0] : null;
+}
+
+/**
+ * The opening of a story in its own words: its first paragraphs of text (no images or headings), about $words long.
+ *
+ * @param WP_Post $post  Story.
+ * @param int     $words Rough length.
+ * @return string[] Plain-text paragraphs.
+ */
+function krm_story_opening( $post, $words = 90 ) {
+	$html  = strip_shortcodes( (string) $post->post_content );
+	$paras = array();
+	if ( preg_match_all( '#<p[^>]*>(.*?)</p>#is', $html, $mm ) ) {
+		$paras = $mm[1];
+	} else {
+		$paras = preg_split( "/\n\s*\n/", $html );
+	}
+	$out   = array();
+	$count = 0;
+	foreach ( $paras as $p ) {
+		$text = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $p ) ) );
+		if ( '' === $text ) {
+			continue;
+		}
+		$n = str_word_count( $text );
+		if ( $count && $count + $n > $words ) {
+			break;
+		}
+		$out[]  = $count + $n > $words ? wp_trim_words( $text, $words, '…' ) : $text;
+		$count += $n;
+	}
+	return $out;
+}
+
+/**
+ * Caption for a ministry photo: its Media Library description (alt text), which says what the photo shows, else the
+ * gallery caption.
+ *
+ * @param int|string $ref      Attachment ID or design URL.
+ * @param string     $fallback Gallery caption.
+ */
+function krm_photo_caption( $ref, $fallback ) {
+	$id  = is_numeric( $ref ) ? (int) $ref : krm_media_id( (string) $ref );
+	$alt = $id ? trim( (string) get_post_meta( $id, '_wp_attachment_image_alt', true ) ) : '';
+	return '' !== $alt ? $alt : (string) $fallback;
 }

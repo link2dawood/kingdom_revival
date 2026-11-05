@@ -439,6 +439,26 @@ add_action(
 	22
 );
 
+/*
+ * Fourth step (option krm_sitemap_version 4): the top bar button reads "Donate", where the saved Site text still holds
+ * the earlier default "Donate / Give".
+ */
+add_action(
+	'init',
+	function () {
+		if ( 3 !== (int) get_option( 'krm_sitemap_version' ) ) {
+			return;
+		}
+		update_option( 'krm_sitemap_version', 4 );
+		$site = get_option( 'krm_site_text' );
+		if ( is_array( $site ) && isset( $site['header']['donate_label'] ) && 'Donate / Give' === $site['header']['donate_label'] ) {
+			$site['header']['donate_label'] = 'Donate';
+			update_option( 'krm_site_text', $site, false );
+		}
+	},
+	23
+);
+
 /**
  * The second upgrade step. See the comment above.
  */

@@ -115,6 +115,24 @@ add_action(
  * now go to the All Ministries page ({ministries}). Only values still holding that old default are changed.
  */
 function krm_upgrade_content() {
+	// Restore the Gallery beneath Our Impact on sites that received the temporary standalone-gallery change.
+	if ( '1' !== get_option( 'krm_gallery_under_impact', '' ) ) {
+		$design_pages = krm_design_template_pages();
+		if ( ! empty( $design_pages['gallery'] ) && ! empty( $design_pages['impact'] ) ) {
+			$gallery = $design_pages['gallery'];
+			$impact  = $design_pages['impact'];
+			if ( (int) $gallery->post_parent !== (int) $impact->ID ) {
+				wp_update_post(
+					array(
+						'ID'          => $gallery->ID,
+						'post_parent' => $impact->ID,
+					)
+				);
+			}
+			update_option( 'krm_gallery_under_impact', '1', false );
+		}
+	}
+
 	$done = (string) get_option( 'krm_content_version', '' );
 	if ( '' !== $done && version_compare( $done, '1.8.0', '>=' ) ) {
 		return;

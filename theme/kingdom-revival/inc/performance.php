@@ -309,3 +309,49 @@ function krm_trim_plugin_styles() {
 }
 add_action( 'wp_enqueue_scripts', 'krm_trim_plugin_styles', 999 );
 add_action( 'wp_print_footer_scripts', 'krm_trim_plugin_styles', 1 );
+
+/**
+ * Photo bands (Phase 20): attributes for a section that shows a photo behind a see-through brand overlay
+ * (theme-global.css [data-photo-band]). The photo is not in the HTML or CSS: effects.js sets it when the band nears
+ * the screen (lazy), choosing the phone copy (768px) or the desktop copy. The desktop copy is the largest WebP/JPEG
+ * copy of 250 KB or less. An empty photo field prints nothing, so the band keeps its plain colour.
+ *
+ * @param int|string $ref     Attachment ID or design URL (an image field's value).
+ * @param string     $variant Overlay: freedom | stats | cta | partner.
+ * @return string Attribute string, starting with a space.
+ */
+function krm_photo_band_attrs( $ref, $variant ) {
+	if ( ! $ref ) {
+		return '';
+	}
+	$large = '';
+	$small = '';
+	$id    = is_numeric( $ref ) ? (int) $ref : krm_media_id( (string) $ref );
+	if ( $id && wp_attachment_is_image( $id ) ) {
+		$meta = wp_get_attachment_metadata( $id );
+		$dir  = dirname( (string) get_attached_file( $id ) );
+		foreach ( array( '1536x1536', 'large', 'medium_large' ) as $size ) {
+			if ( empty( $meta['sizes'][ $size ]['file'] ) ) {
+				continue;
+			}
+			$path = $dir . '/' . $meta['sizes'][ $size ]['file'];
+			if ( is_readable( $path ) && filesize( $path ) <= 250 * 1024 ) {
+				$large = (string) wp_get_attachment_image_url( $id, $size );
+				break;
+			}
+		}
+		$small = (string) wp_get_attachment_image_url( $id, 'medium_large' );
+	}
+	if ( '' === $large ) {
+		$large = krm_ref_url( $ref );
+	}
+	if ( '' === $large ) {
+		return '';
+	}
+	return sprintf(
+		' data-photo-band="%s" data-band-photo="%s" data-band-photo-s="%s"',
+		esc_attr( $variant ),
+		esc_url( $large ),
+		esc_url( $small ? $small : $large )
+	);
+}

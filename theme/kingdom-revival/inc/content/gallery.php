@@ -29,7 +29,7 @@ return array(
 			'tip'          => krm_f( 'text', __( 'Tip above the photos', 'kingdom-revival' ), 'Tap any photo to view it full screen and zoom in.' ),
 			'count_text'   => krm_f( 'text', __( 'Announced after filtering ({n} = number)', 'kingdom-revival' ), 'Showing {n} items' ),
 			'empty'        => krm_f( 'text', __( 'Text when the filter matches nothing', 'kingdom-revival' ), 'Nothing here yet for this ministry.' ),
-			'no_videos'    => krm_f( 'textarea', __( 'Text while there are no videos', 'kingdom-revival' ), '[Videos — to be supplied by the client. Add YouTube links under “Videos” in this page’s content box.]' ),
+			'no_videos'    => krm_f( 'textarea', __( 'Text while there are no videos', 'kingdom-revival' ), 'New videos from the field are coming soon. Follow us on social media to see the latest.' ),
 		),
 	),
 	'videos' => array(
@@ -40,10 +40,26 @@ return array(
 				__( 'Video', 'kingdom-revival' ),
 				array(
 					'title'    => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
-					'url'      => krm_f( 'url', __( 'YouTube link', 'kingdom-revival' ) ),
+					'url'      => krm_f( 'url', __( 'YouTube link or local video', 'kingdom-revival' ) ),
 					'ministry' => krm_f( 'text', __( 'Ministry (its name as on What We Do; optional)', 'kingdom-revival' ) ),
 				),
-				array()
+				array(
+					array(
+						'title'    => 'Ministry field update',
+						'url'      => 'krm-theme:video/gallery/ministry-field-update.mp4',
+						'ministry' => '',
+					),
+					array(
+						'title'    => 'Kingdom Revival ministry gathering',
+						'url'      => 'krm-theme:video/gallery/ministry-gathering.mp4',
+						'ministry' => '',
+					),
+					array(
+						'title'    => 'Ministry highlights',
+						'url'      => 'krm-theme:video/gallery/ministry-highlights.mp4',
+						'ministry' => '',
+					),
+				)
 			),
 		),
 	),

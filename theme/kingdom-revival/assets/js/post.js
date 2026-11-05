@@ -1,4 +1,4 @@
-/* Kingdom Revival Ministries — story page: copy link and reading progress (from the design) */
+/* Kingdom Revival Ministries — story page: copy link (from the design). The reading progress bar is now site-wide (effects.js). */
 (function () {
   var copy = document.getElementById("share-copy");
   if (copy) {
@@ -12,15 +12,4 @@
     });
   }
 
-  var bar = document.querySelector(".progress span");
-  var article = document.getElementById("article");
-  if (!bar || !article) return;
-  function progress() {
-    var rect = article.getBoundingClientRect();
-    var total = rect.height - window.innerHeight * 0.6;
-    var done = Math.min(1, Math.max(0, -rect.top / (total || 1)));
-    bar.style.width = (done * 100) + "%";
-  }
-  window.addEventListener("scroll", progress, { passive: true });
-  progress();
 })();

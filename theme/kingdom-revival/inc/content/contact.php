@@ -30,7 +30,7 @@ return array(
 			'whatsapp_title' => krm_f( 'text', __( 'WhatsApp card: heading', 'kingdom-revival' ), 'WhatsApp', __( 'The number is the phone number in Kingdom Revival → Settings.', 'kingdom-revival' ) ),
 			'whatsapp_text'  => krm_f( 'text', __( 'WhatsApp card: text', 'kingdom-revival' ), 'Message our ministry team' ),
 			'hours_title'    => krm_f( 'text', __( 'Office hours card: heading', 'kingdom-revival' ), 'Office hours' ),
-			'hours_text'     => krm_f( 'text', __( 'Office hours card: hours', 'kingdom-revival' ), '[Office hours — to be supplied by the client]', __( 'e.g. Mon–Sat, 9am–5pm (Pakistan time). Visitors don’t see this card until the hours are filled in.', 'kingdom-revival' ) ),
+			'hours_text'     => krm_f( 'text', __( 'Office hours card: hours', 'kingdom-revival' ), 'Mon–Sat, 9am–5pm (Pakistan time)', __( 'e.g. Mon–Sat, 9am–5pm (Pakistan time). Visitors don’t see this card until the hours are filled in.', 'kingdom-revival' ) ),
 			'hours_note'     => krm_f( 'text', __( 'Office hours card: note', 'kingdom-revival' ), 'Call or WhatsApp before visiting' ),
 		),
 	),

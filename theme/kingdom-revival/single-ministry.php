@@ -7,6 +7,7 @@
  *  1. Inner hero: first photo, breadcrumb, group eyebrow, H1, the Excerpt.
  *  2. Intro: overlapping photo pair (the home About section), "What we do", the ministry's points and focus text,
  *     then any extra sections (e.g. Sunday School inside Children & Orphan Care).
+ *  2b. The ministry in action: its latest story (opening paragraphs, link) and three photos with their descriptions.
  *  3. Impact counters (the home stats bar).  4. How your gift helps (the home "Your gift at work" cards).
  *  5. Photos with the lightbox (up to 9).    6. One testimony (the home "Stories from the field" card).
  *  7. Side donation card (the home hero card), sticky beside 2–6, giving to this ministry.
@@ -37,7 +38,7 @@ while ( have_posts() ) :
 		<div class="wrap ministry-layout">
 			<div class="ministry-main">
 				<?php
-				foreach ( array( 'intro', 'stats', 'gifts', 'gallery', 'story' ) as $krm_part ) {
+				foreach ( array( 'intro', 'impact', 'stats', 'gifts', 'gallery', 'story' ) as $krm_part ) {
 					get_template_part( 'template-parts/ministry/' . $krm_part, null, $krm_args );
 				}
 				?>

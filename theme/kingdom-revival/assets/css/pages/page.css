@@ -3,12 +3,12 @@
 .not-found { max-width: 640px; margin: 0 auto; padding: 96px 0; text-align: center; }
 .not-found h1 { font-size: clamp(32px, 5vw, 44px); }
 .not-found p { color: var(--muted); }
-.entry-content { max-width: 760px; color: #2B3349; font-size: 18px; line-height: 1.85; }
+.entry-content { max-width: 760px; color: var(--color-text-article); font-size: 18px; line-height: 1.85; }
 .entry-content h2 { margin: 44px 0 16px; font-size: clamp(24px, 2.6vw, 30px); font-weight: 800; }
 .entry-content h3 { margin: 32px 0 12px; font-size: 21px; }
-.entry-content a { color: var(--red); font-weight: 600; }
+.entry-content a { color: var(--color-secondary-text); font-weight: 600; }
 .entry-content img { height: auto; border-radius: var(--radius); }
-.entry-content blockquote { margin: 36px 0; padding: 24px 28px; border-left: 4px solid var(--red); border-radius: var(--radius); background: var(--soft); color: var(--navy); font-weight: 700; }
+.entry-content blockquote { margin: 36px 0; padding: 24px 28px; border-left: 4px solid var(--color-secondary); border-radius: var(--radius); background: var(--soft); color: var(--color-heading); font-weight: 700; }
 .entry-content ul, .entry-content ol { padding-left: 1.3em; }
 .entry-content table { width: 100%; border-collapse: collapse; }
 .entry-content th, .entry-content td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; }

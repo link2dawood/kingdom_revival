@@ -1,23 +1,21 @@
 /* Kingdom Revival Ministries — inner pages: base elements, page layout, donation card and band.
    Design tokens and the components shared with the home page are in theme-global.css. */
 :root {
-  color-scheme: light;
   font-family: var(--font-body);
   color: var(--ink);
-  background: var(--white);
+  background: var(--color-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  scrollbar-color: var(--navy) #E8ECF6;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--white); line-height: var(--line-height-body); overflow-x: hidden; }
+body { margin: 0; background: var(--color-bg); line-height: var(--line-height-body); overflow-x: hidden; }
 img { max-width: 100%; }
 a { color: inherit; }
-h1, h2, h3, h4 { color: var(--navy); font-family: var(--font-heading); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); }
+h1, h2, h3, h4 { color: var(--color-heading); font-family: var(--font-heading); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); }
 [hidden] { display: none !important; }
 
-.eyebrow { margin: 0 0 12px; color: var(--red); font-size: 13px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.eyebrow { margin: 0 0 12px; color: var(--color-secondary-text); font-size: 13px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
 .section { padding: var(--space-section) 0; }
 .section-soft { background: var(--soft); }
 .section-head { max-width: 720px; margin-bottom: clamp(32px, 4vw, 48px); }
@@ -26,49 +24,49 @@ h1, h2, h3, h4 { color: var(--navy); font-family: var(--font-heading); line-heig
 .section-head p:not(.eyebrow) { margin: 16px 0 0; color: var(--muted); font-size: 17px; line-height: 1.75; }
 
 /* Page hero */
-.page-hero { position: relative; overflow: hidden; background: var(--navy-deep) center / cover no-repeat; color: var(--white); }
+.page-hero { position: relative; overflow: hidden; background: var(--navy-deep) center / cover no-repeat; color: var(--color-white); }
 .page-hero::before { position: absolute; inset: 0; background: linear-gradient(100deg, rgba(8,16,48,.92) 0%, rgba(8,16,48,.72) 55%, rgba(8,16,48,.45) 100%); content: ""; }
-.page-hero .wrap { position: relative; padding: clamp(72px, 10vw, 128px) 0 clamp(64px, 8vw, 104px); }
+.page-hero .wrap { position: relative; padding: calc(clamp(72px, 10vw, 128px) + var(--hero-offset, 0px)) 0 clamp(64px, 8vw, 104px); }
 .page-hero .eyebrow { color: var(--orange); }
-.page-hero h1 { max-width: 820px; margin: 0; color: var(--white); font-size: var(--font-size-h1); font-weight: 800; line-height: 1.08; letter-spacing: -.03em; }
+.page-hero h1 { max-width: 820px; margin: 0; color: var(--color-white); font-size: var(--font-size-h1); font-weight: 800; line-height: 1.08; letter-spacing: -.03em; }
 .page-hero h1 em { color: var(--orange); font-style: normal; }
-.page-hero p.lead { max-width: 640px; margin: 20px 0 0; color: #E4E8F3; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.75; }
-.breadcrumb { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; color: #C8D0E6; font-size: 14px; }
+.page-hero p.lead { max-width: 640px; margin: 20px 0 0; color: var(--color-text-on-dark-2); font-size: clamp(16px, 1.6vw, 19px); line-height: 1.75; }
+.breadcrumb { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; color: var(--color-footer-text); font-size: 14px; }
 .breadcrumb li + li::before { margin-right: 8px; content: "/"; opacity: .6; }
-.breadcrumb a { color: var(--white); text-decoration: none; }
+.breadcrumb a { color: var(--color-white); text-decoration: none; }
 .breadcrumb a:hover { text-decoration: underline; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 
 /* Donation card (filled in by site.js) */
-.give-card { display: grid; gap: 16px; padding: 24px; border-radius: 10px; background: var(--white); color: var(--ink); box-shadow: 0 16px 40px rgba(12,28,79,.16); }
+.give-card { display: grid; gap: 16px; padding: 24px; border-radius: 10px; background: var(--color-surface); color: var(--ink); box-shadow: 0 16px 40px rgba(var(--shadow-rgb), calc(.16 * var(--shadow-k))); }
 .give-card h3 { margin: 0; font-size: var(--font-size-h3); }
 .give-card .give-intro { margin: -6px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
 .give-card fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 .give-frequency { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px !important; border-radius: 6px; background: var(--soft); }
 .give-frequency input, .give-amounts input { position: absolute; opacity: 0; pointer-events: none; }
 .give-frequency span { display: block; padding: 9px; border-radius: 4px; color: var(--muted); font-size: 14px; font-weight: 700; text-align: center; cursor: pointer; }
-.give-frequency input:checked + span { background: var(--navy); color: var(--white); }
+.give-frequency input:checked + span { background: var(--color-band); color: var(--color-white); }
 .give-amounts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.give-amounts legend { grid-column: 1 / -1; margin-bottom: 10px; color: var(--navy); font-size: 14px; font-weight: 800; }
-.give-amounts span { display: flex; min-height: 44px; align-items: center; justify-content: center; border: 2px solid #DDE3F0; border-radius: 4px; color: var(--navy); font-weight: 700; cursor: pointer; transition: border-color .15s ease; }
-.give-amounts span:hover { border-color: var(--navy); }
-.give-amounts input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
+.give-amounts legend { grid-column: 1 / -1; margin-bottom: 10px; color: var(--color-heading); font-size: 14px; font-weight: 800; }
+.give-amounts span { display: flex; min-height: 44px; align-items: center; justify-content: center; border: 2px solid var(--color-border-2); border-radius: 4px; color: var(--color-heading); font-weight: 700; cursor: pointer; transition: border-color .15s ease; }
+.give-amounts span:hover { border-color: var(--color-heading); }
+.give-amounts input:checked + span { border-color: var(--color-secondary); background: var(--color-secondary); color: var(--color-white); }
 .give-frequency input:focus-visible + span, .give-amounts input:focus-visible + span { outline: 3px solid var(--orange); outline-offset: 2px; }
-.give-custom { display: grid; gap: 6px; color: var(--navy); font-size: 14px; font-weight: 700; }
-.give-custom input { min-height: 44px; padding: 10px 12px; border: 2px solid #DDE3F0; border-radius: 4px; font: inherit; font-weight: 600; }
-.give-custom input:focus { border-color: var(--navy); outline: none; }
+.give-custom { display: grid; gap: 6px; color: var(--color-heading); font-size: 14px; font-weight: 700; }
+.give-custom input { min-height: 44px; padding: 10px 12px; border: 2px solid var(--color-border-2); border-radius: 4px; font: inherit; font-weight: 600; }
+.give-custom input:focus { border-color: var(--color-heading); outline: none; }
 .give-submit { width: 100%; font-weight: 800; }
 .give-note { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; text-align: center; }
 
 /* Donation band */
-.give-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: clamp(28px, 5vw, 64px); align-items: center; padding: clamp(28px, 5vw, 56px); border-radius: var(--radius); background: var(--navy) center / cover no-repeat; color: #D6DDF0; position: relative; overflow: hidden; }
+.give-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: clamp(28px, 5vw, 64px); align-items: center; padding: clamp(28px, 5vw, 56px); border-radius: var(--radius); background: var(--color-band) center / cover no-repeat; color: var(--color-text-on-dark); position: relative; overflow: hidden; }
 .give-band::before { position: absolute; inset: 0; background: linear-gradient(110deg, rgba(8,16,48,.95), rgba(12,28,79,.82)); content: ""; }
 .give-band > * { position: relative; }
-.give-band .eyebrow { color: #FF9C9E; }
-.give-band h2 { margin: 0; color: var(--white); font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; }
+.give-band .eyebrow { color: var(--color-secondary-on-dark); }
+.give-band h2 { margin: 0; color: var(--color-white); font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; }
 .give-band p:not(.eyebrow) { margin: 16px 0 0; font-size: 17px; line-height: 1.75; }
 .give-band ul { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
-.give-band li { display: flex; gap: 10px; align-items: flex-start; color: #E4E8F3; }
+.give-band li { display: flex; gap: 10px; align-items: flex-start; color: var(--color-text-on-dark-2); }
 .give-band li svg { flex: none; margin-top: 3px; color: var(--orange); }
 
 /* Responsive */

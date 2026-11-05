@@ -33,6 +33,7 @@ require KRM_DIR . '/inc/schema.php';
 require KRM_DIR . '/inc/redirects.php';
 require KRM_DIR . '/inc/performance.php';
 require KRM_DIR . '/inc/security.php';
+require KRM_DIR . '/inc/arrows.php';
 
 if ( is_admin() ) {
 	require KRM_DIR . '/inc/importer.php';

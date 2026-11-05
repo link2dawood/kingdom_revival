@@ -94,7 +94,7 @@ We pray for everyone who gives, and your gift will be used exactly where you ask
 		'fields' => array(
 			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our projects' ),
 			'heading'        => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Give to a project' ),
-			'intro'          => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), '[Introduction — to be supplied by the client]' ),
+			'intro'          => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'Every gift — large or small — goes to work in the villages: Bibles for new believers, freedom for kiln families, care for children and widows, and clean water and medical help.' ),
 			'current_tab'    => krm_f( 'text', __( 'Current tab', 'kingdom-revival' ), 'Current Projects' ),
 			'upcoming_tab'   => krm_f( 'text', __( 'Upcoming tab', 'kingdom-revival' ), 'Upcoming Projects' ),
 			'current_tag'    => krm_f( 'text', __( 'Label on current project photos', 'kingdom-revival' ), 'CURRENT' ),

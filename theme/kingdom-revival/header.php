@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="theme-color" content="#0C1C4F">
+	<?php krm_theme_head(); ?>
 	<?php if ( ! has_site_icon() ) : ?>
 	<link rel="icon" type="image/png" href="<?php echo esc_url( krm_asset( 'images/krm-logo.png' ) ); ?>">
 	<link rel="apple-touch-icon" href="<?php echo esc_url( krm_asset( 'images/krm-logo.png' ) ); ?>">
@@ -22,6 +22,7 @@ defined( 'ABSPATH' ) || exit;
 </head>
 <body <?php body_class(); ?>>
 	<?php wp_body_open(); ?>
+	<div class="krm-progress is-idle" aria-hidden="true"></div>
 	<a class="skip-link" href="#main">Skip to content</a>
 	<div class="topbar" role="region" aria-label="Contact and giving">
 	<div class="wrap topbar-inner">
@@ -52,8 +53,6 @@ defined( 'ABSPATH' ) || exit;
 		<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-toggle-bars" aria-hidden="true"></span>Menu</button>
 		<?php krm_primary_menu(); ?>
 		</nav>
+		<?php krm_theme_toggle(); ?>
 	</div>
 	</header>
-<?php if ( is_singular( 'post' ) ) : ?>
-	<div class="progress" aria-hidden="true"><span></span></div>
-<?php endif; ?>

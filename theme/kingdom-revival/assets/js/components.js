@@ -128,7 +128,13 @@
       });
     }, { threshold: 0.4 });
     // The final value stays in the markup (and for screen readers); the count-up starts from 0 only once in view.
-    counters.forEach(function (c) { seen.observe(c.el); });
+    // Numbers already on screen when the page opens keep their value (nothing above the fold animates on load); the
+    // rest start counting when they are revealed by scrolling.
+    counters.forEach(function (c) {
+      var r = c.el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) return;
+      seen.observe(c.el);
+    });
   }
 
   /* ---------- Give card (ministry pages) ---------- */
@@ -189,7 +195,7 @@
     /* Red border plus a text message under the field (not colour alone), linked with aria-describedby. */
     function mark(el, bad, message) {
       el.setAttribute("aria-invalid", bad ? "true" : "false");
-      if (el.getAttribute("data-border") !== null && el.style.borderColor !== undefined) el.style.borderColor = bad ? "#D4070B" : el.getAttribute("data-border");
+      if (el.getAttribute("data-border") !== null && el.style.borderColor !== undefined) el.style.borderColor = bad ? "var(--color-secondary)" : el.getAttribute("data-border");
       var holder = el.closest("label");
       if (!holder) return;
       var note = holder.querySelector(".krm-field-error");
