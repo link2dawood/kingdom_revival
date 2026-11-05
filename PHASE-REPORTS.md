@@ -36,6 +36,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: A real map in "Where we work"](#kingdom-revival-ministries-a-real-map-in-where-we-work)
 - [Kingdom Revival Ministries: Dummy content instead of [placeholders] (theme 1.14.1)](#kingdom-revival-ministries-dummy-content-instead-of-placeholders-theme-1141)
 - [Kingdom Revival Ministries: Phase 20 dark mode, scroll effects and photo bands (theme 1.15.0)](#kingdom-revival-ministries-phase-20-dark-mode-scroll-effects-and-photo-bands-theme-1150)
+- [Kingdom Revival Ministries: Team photos and freedom before/after photos (theme 1.15.1)](#kingdom-revival-ministries-team-photos-and-freedom-beforeafter-photos-theme-1151)
 
 ---
 
@@ -3144,3 +3145,39 @@ hmpak.org`), so the brief's fallback specification was implemented as written.
 - The toggle uses both a changing `aria-label` and `aria-pressed`, as the brief asked. Screen readers then announce, e.g.,
   "Switch to light mode, pressed". If you prefer, a fixed label "Dark mode" with `aria-pressed` alone is the more
   common pattern.
+
+## Kingdom Revival Ministries: Team photos and freedom before/after photos (theme 1.15.1)
+
+**Result: About → Our staff shows the five real team members from the client's `Team members` folder (photo, name,
+role), and the Slavery & Freedom before/after section uses the client's 7 photos from `Freedom from slavery missions`:
+one before/after pair in the compare slider and the other five in a new labelled photo row that opens in the photo
+viewer. Shown on the home page and on /what-we-do/slavery-freedom/.**
+
+### What changed
+
+| Area | Change |
+|---|---|
+| Team (`inc/content/about.php`) | Main team default = Pastor Adil Arif (Founder), Sajid Arif (Co-founder), Aber Sarwar (Administrator), Samia Arif (International Relations Coordinator), Sehrish Gill (Projects Coordinator), names/roles from the file names. Replaces the 3 dummy people (Sarah Masih, Daniel Gill, Imran Bhatti); their dummy bios removed. Pastor Adil's role was "Founder & Director", now "Founder" as in the file name |
+| Team layout (`assets/css/pages/about.css`) | Grid → centred flex: 5 across above 1100 px, 3 + 2 to 900 px, 2 + 2 + 1 (last card centred) below |
+| Slider (`inc/content/home.php`) | Before = `freedom-before-1.jpg`, After = `freedom-after-1.jpg` (were the old site's Bricks-kiln-38/39); alt texts describe what is visible |
+| New field `freedom.photos` + `freedom.photos_heading` | List of photo / label / alt, default the other 5 photos (2 Before, 3 After), heading "More families, before and after". Rendered in `template-parts/home/freedom.php` as `.krm-ba-strip` (`theme-global.css`: 5 / 3 / 2 columns, square tiles, an odd last tile spans the row on phones), `data-gallery` so the viewer opens it |
+| Media | 12 new `krm-theme:images/content/…` files with alt text in `inc/data/media.php` (Setup imports them); details in DATA-ASSET-INVENTORY.md "Added in theme 1.15.1" |
+
+### Verified (local WP, defaults, logged out)
+
+- Screenshots at 1440 / 768 / 390 of About #team, home #freedom and the Slavery & Freedom page: all 5 + 7 images load,
+  no horizontal overflow, no console errors.
+- axe-core WCAG 2 A/AA on #freedom and #team: 0 violations.
+- Clicking a strip photo opens the viewer ("3 / 5", with the alt text as caption).
+
+### Not covered
+
+- Full `npm run pages` / `final_pass.js` were not re-run; the change is limited to these two sections.
+- A site that has already saved the About or Home page content keeps its saved team / slider photos (defaults only
+  apply to unsaved fields). The local test site had nothing saved.
+
+### Decisions for you
+
+- The folder doesn't say which before and after photos show the same family. If the client can pair them, the slider
+  pair and the row order can be changed in Pages → Home → Page content → Flagship.
+- Pastor Adil's team role is now "Founder" (file name) instead of "Founder & Director".

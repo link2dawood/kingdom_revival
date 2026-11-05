@@ -1026,3 +1026,9 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
   :root:not([data-theme="light"]) ::placeholder { color: var(--color-text-muted); opacity: 1; }
   :root:not([data-theme="light"]) :is(input, textarea, select):-webkit-autofill { -webkit-text-fill-color: var(--color-text); box-shadow: 0 0 0 1000px var(--color-surface) inset; caret-color: var(--color-text); }
 }
+
+/* Slavery & Freedom: the before/after photos under the compare slider (home and the ministry page) */
+.krm-ba-strip{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.krm-ba-strip li{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:var(--color-band-3)}
+@media(max-width:900px){.krm-ba-strip{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.krm-ba-strip{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.krm-ba-strip li:last-child:nth-child(odd){grid-column:1/-1;aspect-ratio:2/1}}

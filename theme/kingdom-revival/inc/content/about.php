@@ -194,28 +194,30 @@ return array(
 				),
 				array(
 					array(
-						'photo' => $krm_up . '2026/08/file_00000000b46471f484befac1dc0ee291.png',
+						'photo' => 'krm-theme:images/content/team-adil-arif.jpg',
 						'name'  => 'Pastor Adil Arif',
-						'role'  => 'Founder & Director',
+						'role'  => 'Founder',
 						'bio'   => 'Pastor Adil leads Kingdom Revival Ministries in evangelism, discipleship and church ministry, with a heart for children and youth — and for practical care among villages, marginalised communities and brick kiln families.',
 					),
 					array(
-						'photo' => '',
-						'name'  => 'Sarah Masih',
-						'role'  => 'Projects Coordinator',
-						'bio'   => 'Sarah coordinates our projects in the field, from medical camps to school support, and keeps donors updated on how their gifts are used.',
+						'photo' => 'krm-theme:images/content/team-sajid-arif.jpg',
+						'name'  => 'Sajid Arif',
+						'role'  => 'Co-founder',
 					),
 					array(
-						'photo' => '',
-						'name'  => 'Daniel Gill',
+						'photo' => 'krm-theme:images/content/team-aber-sarwar.jpg',
+						'name'  => 'Aber Sarwar',
+						'role'  => 'Administrator',
+					),
+					array(
+						'photo' => 'krm-theme:images/content/team-samia-arif.jpg',
+						'name'  => 'Samia Arif',
 						'role'  => 'International Relations Coordinator',
-						'bio'   => 'Daniel connects Kingdom Revival with churches and partners abroad, and looks after our international supporters.',
 					),
 					array(
-						'photo' => '',
-						'name'  => 'Imran Bhatti',
-						'role'  => 'Co-Founder',
-						'bio'   => 'Imran has served alongside Pastor Adil since the ministry began, leading outreach teams and caring for the village churches.',
+						'photo' => 'krm-theme:images/content/team-sehrish-gill.jpg',
+						'name'  => 'Sehrish Gill',
+						'role'  => 'Projects Coordinator',
 					),
 				)
 			),

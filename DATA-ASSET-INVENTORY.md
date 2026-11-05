@@ -4,6 +4,26 @@
 
 Generated 2026-11-02, updated for theme 1.7.4 the same day. Method at the end. Local test site: 85 design files imported (`krm_media_map`, attachment IDs below), plus the 13 new photos (IDs 185–197). The tables below describe the folder and the site **before** 1.7.4.
 
+## Added in theme 1.15.1
+
+| Theme file | Source in data folder | Where it shows |
+|---|---|---|
+| `team-adil-arif.jpg` | `Team members/Founder- Pastor Adil Arif.png` | About → Our staff (Pastor Adil Arif, Founder) |
+| `team-sajid-arif.jpg` | `Team members/Co-founder- Sajid Arif_.png` | About → Our staff (Sajid Arif, Co-founder) |
+| `team-aber-sarwar.jpg` | `Team members/Administrator- Aber Sarwar.png` | About → Our staff (Aber Sarwar, Administrator) |
+| `team-samia-arif.jpg` | `Team members/International Relations Coordinator- Samia Arif_.png` | About → Our staff (Samia Arif, International Relations Coordinator) |
+| `team-sehrish-gill.jpg` | `Team members/Projects Coordinator- Sehrish Gill.png` | About → Our staff (Sehrish Gill, Projects Coordinator) |
+| `freedom-before-1.jpg` | `Freedom from slavery missions/Before... images/20251101_144704.jpg` | Freedom before/after slider, "Before" side (home and Slavery & Freedom page) |
+| `freedom-after-1.jpg` | `Freedom from slavery missions/After... images/20251126_143324.jpg` | Freedom slider, "After" side |
+| `freedom-before-2.jpg`, `-3.jpg` | `Before... images/20250919_113635.jpg`, `20250614_120026.jpg` (portrait) | "More families, before and after" row under the slider |
+| `freedom-after-2.jpg` … `-4.jpg` | `After... images/20251126_130035.jpg`, `20251111_162458.jpg`, `20251111_162838.jpg` | Same row |
+
+Names and roles come from the team file names. Team PNGs (1254² round portraits on white) were cropped to the circle
+(2% inset, so no white rim shows in the round frame) and saved as 600² JPEG q82 (39–54 KB each). Before/after photos:
+EXIF orientation applied, metadata stripped, 1600 px long side, JPEG q74. The folder does not say which before and
+after photos show the same family, so the slider pair is the two landscape photos; the two portrait "before" photos
+would lose most of the family in the wide slider frame, so they are in the row below.
+
 ## Added in theme 1.14.0
 
 | Theme file | Source in data folder | Where it shows |

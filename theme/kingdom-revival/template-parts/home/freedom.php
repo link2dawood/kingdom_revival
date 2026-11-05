@@ -53,5 +53,26 @@ $krm_screen = isset( $args['screen'] ) ? (string) $args['screen'] : ''; // 'home
 </label>
 <a class="k-o" href="<?php krm_u( 'freedom.button_url', $krm_screen ); ?>" style="text-decoration: none; background: var(--color-orange); color: var(--color-on-accent); font-weight: 700; padding: 14px 24px; border-radius: 999px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center"><?php echo krm_text( krm_strip_placeholders( krm_c_raw( 'freedom.button_label', $krm_screen ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- "Help free a family" until the amount is set. ?></a>
 </div>
+<?php $krm_photos = krm_visible( krm_c( 'freedom.photos', $krm_screen ), 'photo' ); ?>
+<?php if ( $krm_photos ) : ?>
+<h3 style="margin: 48px 0 0; font-size: clamp(22px, 2.4vw, 28px); font-weight: 800"><?php krm_t( 'freedom.photos_heading', $krm_screen ); ?></h3>
+<ul class="krm-ba-strip" data-gallery>
+<?php foreach ( $krm_photos as $krm_photo ) : ?>
+<?php
+if ( empty( $krm_photo['photo'] ) ) {
+	continue;
+}
+$krm_photo += array( 'stage' => '', 'alt' => '' );
+$krm_before = 0 === stripos( trim( (string) $krm_photo['stage'] ), 'before' );
+?>
+<li>
+<img loading="lazy" decoding="async" <?php krm_img_src( $krm_photo['photo'], '(max-width: 560px) 50vw, 240px' ); ?> alt="<?php echo krm_alt( $krm_photo['photo'], $krm_photo['alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" style="display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 62%">
+<?php if ( '' !== trim( (string) $krm_photo['stage'] ) ) : ?>
+<span style="position: absolute; left: 10px; bottom: 10px; pointer-events: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; <?php echo $krm_before ? 'background: var(--color-secondary); color: var(--color-white)' : 'background: var(--color-surface); color: var(--color-text)'; ?>"><?php echo krm_text( $krm_photo['stage'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+<?php endif; ?>
+</li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
 </div>
 </section>
