@@ -64,7 +64,7 @@ add_action(
  */
 function krm_project_box( $post ) {
 	wp_nonce_field( 'krm_project_save', 'krm_project_nonce' );
-	echo '<p class="description">' . esc_html__( 'The Excerpt is the card text and the Featured image its photo. Current projects show a progress bar and “Give to this project”; upcoming ones their goal, planned date and “Pledge / Get notified”.', 'kingdom-revival' ) . '</p>';
+	echo '<p class="description">' . esc_html__( 'The Excerpt is the card text and the Featured image its photo. Current projects show “Give to this project” (no raised / goal bar); upcoming ones their goal, planned date and “Pledge / Get notified”.', 'kingdom-revival' ) . '</p>';
 	foreach ( krm_project_fields() as $key => $field ) {
 		$value = (string) get_post_meta( $post->ID, $key, true );
 		$id    = 'krm' . str_replace( '_', '-', $key );

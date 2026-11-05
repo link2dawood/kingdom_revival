@@ -1,38 +1,749 @@
 {
-  "note": "Single source for /our-impact/. Replace null values with verified figures; no layout edits are required.",
-  "hero": { "eyebrow": "Our Impact", "title": "What God has done through your giving", "intro": "See what God is doing through our ministries across Pakistan - in lives served, communities reached and churches strengthened." },
+  "note": "Single source for /our-impact/. DUMMY FIGURES (2026-11-05) — replace every value with verified figures before launch; no layout edits are required.",
+  "hero": {
+    "eyebrow": "Our Impact",
+    "title": "What God has done through your giving",
+    "intro": "See what God is doing through our ministries across Pakistan - in lives served, communities reached and churches strengthened."
+  },
   "headlineCounters": [
-    { "label": "Communities reached", "value": null }, { "label": "Bibles distributed", "value": null },
-    { "label": "Children supported", "value": null }, { "label": "Families freed", "value": null },
-    { "label": "Churches planted", "value": null }, { "label": "Baptisms", "value": null },
-    { "label": "Medical camp patients", "value": null }, { "label": "Water projects", "value": null }
+    {
+      "label": "Communities reached",
+      "value": 80
+    },
+    {
+      "label": "Bibles distributed",
+      "value": 650
+    },
+    {
+      "label": "Children supported",
+      "value": 500
+    },
+    {
+      "label": "Families freed",
+      "value": 35
+    },
+    {
+      "label": "Churches planted",
+      "value": 200
+    },
+    {
+      "label": "Baptisms",
+      "value": 400
+    },
+    {
+      "label": "Medical camp patients",
+      "value": 3200
+    },
+    {
+      "label": "Water projects",
+      "value": 18
+    }
   ],
   "ministries": [
-    { "name": "Evangelism & Outreach", "slug": "evangelism-outreach", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Church Planting", "slug": "church-planting", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Bible Distribution", "slug": "bible-distribution", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Leadership Training & Equipping", "slug": "leadership-training", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Baptisms & Discipleship", "slug": "baptisms-discipleship", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Prayer & Deliverance Ministry", "slug": "prayer-deliverance", "group": "Gospel & Spiritual", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Slavery & Freedom Ministry", "slug": "slavery-freedom", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Brick Kiln Family Care", "slug": "brick-kiln-family-care", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Children & Orphan Care", "slug": "children-orphan-care", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Clean Water Projects", "slug": "clean-water-projects", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Widows Support", "slug": "widows-support", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] },
-    { "name": "Medical & Health Outreach", "slug": "medical-health-outreach", "group": "Compassion & Humanitarian", "keyMetrics": [], "yearlyValues": [], "locations": [] }
+    {
+      "name": "Evangelism & Outreach",
+      "slug": "evangelism-outreach",
+      "group": "Gospel & Spiritual",
+      "keyMetrics": [
+        {
+          "label": "Communities reached",
+          "value": 80
+        },
+        {
+          "label": "Outreach meetings a year",
+          "value": 150
+        },
+        {
+          "label": "People who heard the Gospel",
+          "value": 1200
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 10
+        },
+        {
+          "year": "2022",
+          "value": 13
+        },
+        {
+          "year": "2023",
+          "value": 16
+        },
+        {
+          "year": "2024",
+          "value": 19
+        },
+        {
+          "year": "2025",
+          "value": 22
+        }
+      ],
+      "locations": [
+        "Faisalabad",
+        "Jhang",
+        "Surrounding villages"
+      ]
+    },
+    {
+      "name": "Church Planting",
+      "slug": "church-planting",
+      "group": "Gospel & Spiritual",
+      "keyMetrics": [
+        {
+          "label": "Churches planted incl. house churches",
+          "value": 200
+        },
+        {
+          "label": "Pastors leading new churches",
+          "value": 45
+        },
+        {
+          "label": "Villages with a church",
+          "value": 30
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 24
+        },
+        {
+          "year": "2022",
+          "value": 32
+        },
+        {
+          "year": "2023",
+          "value": 40
+        },
+        {
+          "year": "2024",
+          "value": 48
+        },
+        {
+          "year": "2025",
+          "value": 56
+        }
+      ],
+      "locations": [
+        "Faisalabad",
+        "Jhang"
+      ]
+    },
+    {
+      "name": "Bible Distribution",
+      "slug": "bible-distribution",
+      "group": "Gospel & Spiritual",
+      "keyMetrics": [
+        {
+          "label": "Bibles distributed",
+          "value": 650
+        },
+        {
+          "label": "New believers given a Bible",
+          "value": 120
+        },
+        {
+          "label": "Villages reached",
+          "value": 35
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 78
+        },
+        {
+          "year": "2022",
+          "value": 104
+        },
+        {
+          "year": "2023",
+          "value": 130
+        },
+        {
+          "year": "2024",
+          "value": 156
+        },
+        {
+          "year": "2025",
+          "value": 182
+        }
+      ],
+      "locations": [
+        "Faisalabad",
+        "Jhang",
+        "Brick kiln communities"
+      ]
+    },
+    {
+      "name": "Leadership Training & Equipping",
+      "slug": "leadership-training",
+      "group": "Gospel & Spiritual",
+      "keyMetrics": [
+        {
+          "label": "Pastors and leaders trained",
+          "value": 45
+        },
+        {
+          "label": "Training seminars held",
+          "value": 12
+        },
+        {
+          "label": "Districts represented",
+          "value": 6
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 5
+        },
+        {
+          "year": "2022",
+          "value": 7
+        },
+        {
+          "year": "2023",
+          "value": 9
+        },
+        {
+          "year": "2024",
+          "value": 11
+        },
+        {
+          "year": "2025",
+          "value": 13
+        }
+      ],
+      "locations": [
+        "Faisalabad (training centre)"
+      ]
+    },
+    {
+      "name": "Baptisms & Discipleship",
+      "slug": "baptisms-discipleship",
+      "group": "Gospel & Spiritual",
+      "keyMetrics": [
+        {
+          "label": "Baptisms",
+          "value": 400
+        },
+        {
+          "label": "Discipleship groups",
+          "value": 60
+        },
+        {
+          "label": "New believers discipled",
+          "value": 300
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 48
+        },
+        {
+          "year": "2022",
+          "value": 64
+        },
+        {
+          "year": "2023",
+          "value": 80
+        },
+        {
+          "year": "2024",
+          "value": 96
+        },
+        {
+          "year": "2025",
+          "value": 112
+        }
+      ],
+      "locations": [
+        "Faisalabad",
+        "Jhang"
+      ]
+    },
+    {
+      "name": "Prayer & Deliverance Ministry",
+      "slug": "prayer-deliverance",
+      "group": "Gospel & Spiritual",
+      "keyMetrics": [
+        {
+          "label": "Prayer meetings a year",
+          "value": 100
+        },
+        {
+          "label": "Villages with weekly prayer",
+          "value": 25
+        },
+        {
+          "label": "Prayer requests answered by our team",
+          "value": 500
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 12
+        },
+        {
+          "year": "2022",
+          "value": 16
+        },
+        {
+          "year": "2023",
+          "value": 20
+        },
+        {
+          "year": "2024",
+          "value": 24
+        },
+        {
+          "year": "2025",
+          "value": 28
+        }
+      ],
+      "locations": [
+        "Faisalabad",
+        "Jhang"
+      ]
+    },
+    {
+      "name": "Slavery & Freedom Ministry",
+      "slug": "slavery-freedom",
+      "group": "Compassion & Humanitarian",
+      "keyMetrics": [
+        {
+          "label": "Families freed from bonded labour",
+          "value": 35
+        },
+        {
+          "label": "Brick kilns visited",
+          "value": 12
+        },
+        {
+          "label": "People given a new start",
+          "value": 150
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 4
+        },
+        {
+          "year": "2022",
+          "value": 6
+        },
+        {
+          "year": "2023",
+          "value": 7
+        },
+        {
+          "year": "2024",
+          "value": 8
+        },
+        {
+          "year": "2025",
+          "value": 10
+        }
+      ],
+      "locations": [
+        "Faisalabad brick kilns",
+        "Jhang brick kilns"
+      ]
+    },
+    {
+      "name": "Brick Kiln Family Care",
+      "slug": "brick-kiln-family-care",
+      "group": "Compassion & Humanitarian",
+      "keyMetrics": [
+        {
+          "label": "Kiln families supported",
+          "value": 120
+        },
+        {
+          "label": "Children in school",
+          "value": 90
+        },
+        {
+          "label": "Kilns served",
+          "value": 12
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 14
+        },
+        {
+          "year": "2022",
+          "value": 19
+        },
+        {
+          "year": "2023",
+          "value": 24
+        },
+        {
+          "year": "2024",
+          "value": 29
+        },
+        {
+          "year": "2025",
+          "value": 34
+        }
+      ],
+      "locations": [
+        "Faisalabad",
+        "Jhang"
+      ]
+    },
+    {
+      "name": "Children & Orphan Care",
+      "slug": "children-orphan-care",
+      "group": "Compassion & Humanitarian",
+      "keyMetrics": [
+        {
+          "label": "Children supported",
+          "value": 500
+        },
+        {
+          "label": "Children in daily care",
+          "value": 40
+        },
+        {
+          "label": "Care homes and centres",
+          "value": 3
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 60
+        },
+        {
+          "year": "2022",
+          "value": 80
+        },
+        {
+          "year": "2023",
+          "value": 100
+        },
+        {
+          "year": "2024",
+          "value": 120
+        },
+        {
+          "year": "2025",
+          "value": 140
+        }
+      ],
+      "locations": [
+        "Faisalabad"
+      ]
+    },
+    {
+      "name": "Clean Water Projects",
+      "slug": "clean-water",
+      "group": "Compassion & Humanitarian",
+      "keyMetrics": [
+        {
+          "label": "Hand pumps and wells installed",
+          "value": 18
+        },
+        {
+          "label": "People with clean water",
+          "value": 2500
+        },
+        {
+          "label": "Villages served",
+          "value": 15
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 2
+        },
+        {
+          "year": "2022",
+          "value": 3
+        },
+        {
+          "year": "2023",
+          "value": 4
+        },
+        {
+          "year": "2024",
+          "value": 4
+        },
+        {
+          "year": "2025",
+          "value": 5
+        }
+      ],
+      "locations": [
+        "Faisalabad villages",
+        "Jhang villages"
+      ]
+    },
+    {
+      "name": "Widows Support",
+      "slug": "widows-support",
+      "group": "Compassion & Humanitarian",
+      "keyMetrics": [
+        {
+          "label": "Widows supported",
+          "value": 85
+        },
+        {
+          "label": "Widows in skills training",
+          "value": 30
+        },
+        {
+          "label": "Villages reached",
+          "value": 20
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 10
+        },
+        {
+          "year": "2022",
+          "value": 14
+        },
+        {
+          "year": "2023",
+          "value": 17
+        },
+        {
+          "year": "2024",
+          "value": 20
+        },
+        {
+          "year": "2025",
+          "value": 24
+        }
+      ],
+      "locations": [
+        "Faisalabad",
+        "Jhang"
+      ]
+    },
+    {
+      "name": "Medical & Health Outreach",
+      "slug": "medical-health",
+      "group": "Compassion & Humanitarian",
+      "keyMetrics": [
+        {
+          "label": "Patients treated",
+          "value": 3200
+        },
+        {
+          "label": "Medical camps held",
+          "value": 14
+        },
+        {
+          "label": "Villages reached",
+          "value": 20
+        }
+      ],
+      "yearlyValues": [
+        {
+          "year": "2021",
+          "value": 384
+        },
+        {
+          "year": "2022",
+          "value": 512
+        },
+        {
+          "year": "2023",
+          "value": 640
+        },
+        {
+          "year": "2024",
+          "value": 768
+        },
+        {
+          "year": "2025",
+          "value": 896
+        }
+      ],
+      "locations": [
+        "Faisalabad",
+        "Jhang",
+        "Rural villages"
+      ]
+    }
   ],
-  "growth": { "series": [] },
+  "growth": {
+    "series": [
+      {
+        "label": "Children supported",
+        "values": [
+          {
+            "year": "2021",
+            "value": 60
+          },
+          {
+            "year": "2022",
+            "value": 140
+          },
+          {
+            "year": "2023",
+            "value": 240
+          },
+          {
+            "year": "2024",
+            "value": 360
+          },
+          {
+            "year": "2025",
+            "value": 500
+          }
+        ]
+      },
+      {
+        "label": "Baptisms",
+        "values": [
+          {
+            "year": "2021",
+            "value": 48
+          },
+          {
+            "year": "2022",
+            "value": 112
+          },
+          {
+            "year": "2023",
+            "value": 192
+          },
+          {
+            "year": "2024",
+            "value": 288
+          },
+          {
+            "year": "2025",
+            "value": 400
+          }
+        ]
+      },
+      {
+        "label": "Churches planted",
+        "values": [
+          {
+            "year": "2021",
+            "value": 24
+          },
+          {
+            "year": "2022",
+            "value": 56
+          },
+          {
+            "year": "2023",
+            "value": 96
+          },
+          {
+            "year": "2024",
+            "value": 144
+          },
+          {
+            "year": "2025",
+            "value": 200
+          }
+        ]
+      }
+    ]
+  },
   "districts": [
-    { "name": "Faisalabad (HQ)", "villages": null, "kilns": null, "churches": null, "pin": { "left": 55, "top": 47 } },
-    { "name": "Jhang", "villages": null, "kilns": null, "churches": null, "pin": { "left": 39, "top": 48 } }
+    {
+      "name": "Faisalabad (HQ)",
+      "villages": 50,
+      "kilns": 8,
+      "churches": 140,
+      "pin": {
+        "left": 55,
+        "top": 47
+      }
+    },
+    {
+      "name": "Jhang",
+      "villages": 30,
+      "kilns": 4,
+      "churches": 60,
+      "pin": {
+        "left": 39,
+        "top": 48
+      }
+    }
   ],
-  "freedom": { "familiesFreedPerYear": [] },
-  "financials": [ { "label": "Programs", "percent": null }, { "label": "Administration", "percent": null } ],
+  "freedom": {
+    "familiesFreedPerYear": [
+      {
+        "year": "2021",
+        "value": 4
+      },
+      {
+        "year": "2022",
+        "value": 6
+      },
+      {
+        "year": "2023",
+        "value": 7
+      },
+      {
+        "year": "2024",
+        "value": 8
+      },
+      {
+        "year": "2025",
+        "value": 10
+      }
+    ]
+  },
+  "financials": [
+    {
+      "label": "Programs",
+      "percent": null
+    },
+    {
+      "label": "Administration",
+      "percent": null
+    }
+  ],
   "stories": [
-    { "title": "Hope beside the brick kilns", "text": "Practical care and the hope of Jesus reach families working beside Punjab's brick kilns.", "image": "krm-theme:images/content/bricks-kiln-slaves-children-2-1-crop.jpg", "alt": "Children and families at a brick kiln" },
-    { "title": "Scripture in every hand", "text": "Urdu Bibles help families and new believers read and understand God's Word.", "image": "krm-theme:images/content/urdu-bible-distribution-10-crop.jpg", "alt": "Urdu Bible distribution" },
-    { "title": "Leaders equipped to serve", "text": "Pastors and leaders are trained to shepherd local congregations and house churches.", "image": "krm-theme:images/content/leadership-and-discipleship-9-crop.jpg", "alt": "Leadership and discipleship gathering" }
+    {
+      "title": "Hope beside the brick kilns",
+      "text": "Practical care and the hope of Jesus reach families working beside Punjab's brick kilns.",
+      "image": "krm-theme:images/content/bricks-kiln-slaves-children-2-1-crop.jpg",
+      "alt": "Children and families at a brick kiln"
+    },
+    {
+      "title": "Scripture in every hand",
+      "text": "Urdu Bibles help families and new believers read and understand God's Word.",
+      "image": "krm-theme:images/content/urdu-bible-distribution-10-crop.jpg",
+      "alt": "Urdu Bible distribution"
+    },
+    {
+      "title": "Leaders equipped to serve",
+      "text": "Pastors and leaders are trained to shepherd local congregations and house churches.",
+      "image": "krm-theme:images/content/leadership-and-discipleship-9-crop.jpg",
+      "alt": "Leadership and discipleship gathering"
+    }
   ],
-  "annualReport": { "label": "Download the annual report", "url": "" },
-  "cta": { "title": "Your generosity becomes Gospel hope in action.", "text": "Stand with a ministry and help the next story of transformation begin.", "buttonLabel": "Give with purpose" }
+  "annualReport": {
+    "label": "Download the annual report",
+    "url": ""
+  },
+  "cta": {
+    "title": "Your generosity becomes Gospel hope in action.",
+    "text": "Stand with a ministry and help the next story of transformation begin.",
+    "buttonLabel": "Give with purpose"
+  }
 }

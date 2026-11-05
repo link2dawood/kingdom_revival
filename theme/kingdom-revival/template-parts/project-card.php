@@ -1,7 +1,7 @@
 <?php
 /**
  * One project card: the giving card (.cause-card) for a project from krm_projects().
- * Current: photo, ministry, title, text, raised/goal bar, "Give to this project" (Donate, ministry preselected).
+ * Current: photo, ministry, title, text, "Give to this project" (no raised/goal bar) (Donate, ministry preselected).
  * Upcoming: photo with an "Upcoming" label, target amount, planned date, "Pledge / Get notified" (the Financial
  * Partner pledge form on Partner With Us, with the project filled in).
  *
@@ -19,7 +19,6 @@ if ( ! $krm_p ) {
 $krm_h        = isset( $args['heading'] ) && in_array( $args['heading'], array( 'h2', 'h3', 'h4' ), true ) ? $args['heading'] : 'h3';
 $krm_upcoming = 'upcoming' === $krm_p['status'];
 $krm_title    = krm_fill( $krm_p['title'] );
-$krm_pct      = krm_raised_pct( $krm_p );
 if ( $krm_upcoming ) {
 	$krm_link = add_query_arg( 'project', rawurlencode( wp_strip_all_tags( $krm_title ) ), krm_page_url( 'partner' ) ) . '#financial-partner';
 } else {
@@ -51,13 +50,8 @@ $krm_alt = $krm_p['image'] ? trim( (string) krm_ref_alt( $krm_p['image'] ) ) : '
 		<p class="cause-card-goal"><?php if ( $krm_goal_on ) : ?><?php krm_t( 'projects.target_label', 'donate' ); ?> <strong><?php echo esc_html( krm_card_amount( $krm_p['goal'] ) ); ?></strong><?php endif; ?><?php if ( $krm_goal_on && '' !== $krm_date ) : ?> · <?php endif; ?><?php if ( '' !== $krm_date ) : ?><?php krm_t( 'projects.date_label', 'donate' ); ?> <strong><?php echo esc_html( krm_fill( $krm_date ) ); ?></strong><?php endif; ?></p>
 				<?php
 			endif;
-		elseif ( krm_show_progress( $krm_p['goal'] ) ) :
-			?>
-		<div class="cause-card-progress">
-			<div class="cause-card-amounts"><span><?php krm_t( 'ministries.raised_label', 'site' ); ?> <strong><?php echo esc_html( krm_card_amount( $krm_p['raised'] ) ); ?></strong></span><span><?php krm_t( 'ministries.goal_label', 'site' ); ?> <?php echo esc_html( krm_card_amount( $krm_p['goal'] ) ); ?></span></div>
-			<div class="cause-card-bar" role="progressbar" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: project name */ __( '%s: share of the goal raised', 'kingdom-revival' ), wp_strip_all_tags( $krm_title ) ) ); ?>" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo esc_attr( $krm_pct ); ?>"><span style="width: <?php echo esc_attr( $krm_pct ); ?>%"></span></div>
-		</div>
-		<?php endif; ?>
+		endif;
+		?>
 		<div class="cause-card-actions">
 			<?php if ( $krm_upcoming ) : ?>
 			<a class="cause-card-more is-button" href="<?php echo esc_url( $krm_link ); ?>"><?php krm_t( 'projects.pledge_label', 'donate' ); ?><span class="visually-hidden">: <?php echo esc_html( $krm_title ); ?></span></a>

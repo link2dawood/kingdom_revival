@@ -224,3 +224,27 @@
   win.addEventListener("beforeprint", flush);
   win.krmReveal = { flush: flush };
 })();
+/* Mega menu (desktop): the panel is centred under its menu item (theme-global.css); when that would cross the
+   screen edge, --mega-shift moves it back to a 16px margin. Measured each time it opens. */
+(function () {
+  "use strict";
+  var items = document.querySelectorAll(".menu > li.is-mega");
+  if (!items.length) return;
+  function fit(li) {
+    var panel = li.querySelector(":scope > .submenu");
+    if (!panel || window.innerWidth <= 900) return;
+    panel.style.removeProperty("--mega-shift");
+    var r = panel.getBoundingClientRect();
+    if (!r.width) return;
+    var vw = document.documentElement.clientWidth, gap = 16, shift = 0;
+    if (r.left < gap) shift = gap - r.left;
+    else if (r.right > vw - gap) shift = vw - gap - r.right;
+    if (shift) panel.style.setProperty("--mega-shift", Math.round(shift) + "px");
+  }
+  Array.prototype.forEach.call(items, function (li) {
+    var run = function () { fit(li); window.requestAnimationFrame(function () { fit(li); }); };
+    li.addEventListener("mouseenter", run);
+    li.addEventListener("focusin", run);
+    li.addEventListener("click", run);
+  });
+})();

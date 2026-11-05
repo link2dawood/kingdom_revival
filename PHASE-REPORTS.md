@@ -38,6 +38,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Phase 20 dark mode, scroll effects and photo bands (theme 1.15.0)](#kingdom-revival-ministries-phase-20-dark-mode-scroll-effects-and-photo-bands-theme-1150)
 - [Kingdom Revival Ministries: Team photos and freedom before/after photos (theme 1.15.1)](#kingdom-revival-ministries-team-photos-and-freedom-beforeafter-photos-theme-1151)
 - [Kingdom Revival Ministries: Smaller theme zip for upload (theme 1.15.2)](#kingdom-revival-ministries-smaller-theme-zip-for-upload-theme-1152)
+- [Kingdom Revival Ministries: No raised / goal bar on project cards (theme 1.15.3)](#kingdom-revival-ministries-no-raised--goal-bar-on-project-cards-theme-1153)
 
 ---
 
@@ -3199,3 +3200,13 @@ viewer. Shown on the home page and on /what-we-do/slavery-freedom/.**
 - The host's actual upload limit is unknown. If it is below 35 MB, raise it (hosting panel → PHP settings:
   `upload_max_filesize` and `post_max_size` 64M) or upload the unzipped `kingdom-revival` folder to
   `wp-content/themes/` by FTP / File Manager.
+
+## Kingdom Revival Ministries: No raised / goal bar on project cards (theme 1.15.3)
+
+**Result: current project cards (Donate → Our Projects and the home page's projects) no longer show "Raised $… / Goal
+$…" and the progress bar, at the user's request. The card goes straight from its text to "Give to this project".**
+
+- `template-parts/project-card.php`: the progress block removed. Goal / raised fields stay in "Project details" (still
+  stored, not shown on current cards); upcoming cards keep "Target · Planned". Ministry pages' side donation card keeps
+  its bar (not a project card).
+- Verified on local WP: Donate 5 cards, home 3 cards, 0 bars and no "Raised" text; screenshot at 1440 checked.

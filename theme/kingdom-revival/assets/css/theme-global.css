@@ -1032,3 +1032,15 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
 .krm-ba-strip li{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:var(--color-band-3)}
 @media(max-width:900px){.krm-ba-strip{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:560px){.krm-ba-strip{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.krm-ba-strip li:last-child:nth-child(odd){grid-column:1/-1;aspect-ratio:2/1}}
+/* Mega menu sized to its content (2026-11-05, user request): instead of spanning the full header width, the panel is
+   a card only as wide as its columns, centred under its menu item. effects.js nudges it back inside the viewport
+   (--mega-shift) when the item sits near an edge. Uses `translate`, not `transform`, so krm-mega-in still animates. */
+@media (min-width: 901px) {
+  .menu > li.is-mega { position: relative; }
+  .menu > li.is-mega > .submenu { left: 50%; right: auto; width: max-content; max-width: calc(100vw - 32px); margin-top: 20px; padding: 18px; border: 1px solid var(--color-border); border-radius: 16px; translate: calc(-50% + var(--mega-shift, 0px)) 0; grid-template-columns: 240px auto auto; }
+  .menu > li.is-mega > .submenu::before { height: 20px; }
+  .is-mega > .submenu > li.has-sub { min-width: 230px; }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .menu > li.is-mega > .submenu { grid-template-columns: auto auto; }
+}
