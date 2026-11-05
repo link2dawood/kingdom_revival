@@ -3312,3 +3312,34 @@ motion, so many visitors never saw it. A pause / play button was added (WCAG 2.2
 - Phones now download the hero video (WebM 3.1 MB or MP4 2.2 MB) after the page has loaded. Mobile PageSpeed (Phase 15
   step 6) was not re-run; first paint / LCP should be unchanged because nothing starts before `load`, but total bytes
   grow. Real iPhone / iOS Safari not tested.
+
+## Kingdom Revival Ministries: No "#" in the address bar on any page (theme 1.15.8)
+
+**Result: section links such as /about/#beliefs and /donate/?amount=50…#give still open the page at that section,
+but the address bar then shows /about/ and /donate/?amount=50… — no "#…". Before, only the home page did this.**
+
+- `assets/js/effects.js` (every page, last block): on arrival with an anchor whose section exists, the anchor is
+  removed from the address (`history.replaceState`, query string kept) and the section is scrolled to when the
+  content is ready and again after load; same-page section links scroll without adding "#" (and close the menu).
+  Skip links keep their normal behaviour (keyboard focus). Links themselves still carry "#section", so they work
+  without JavaScript. The home page's own code in `front.js` is unchanged.
+- Verified on local WP at 1440: /about/#beliefs → /about/, Beliefs at the top of the window; the Donate URL above →
+  same URL without #give, form at the top, $50 preselected; /#all-ministries → /; Donate hero "#give" button →
+  scrolls, no "#". No JavaScript errors.
+
+## Kingdom Revival Ministries: No raised / goal bar on ministry pages; dummy "Where we work" counts (theme 1.15.9)
+
+**Result: the "Support this ministry" card on every ministry page no longer shows "Raised $… / Goal $…" and its
+progress bar (project cards lost theirs in 1.15.3), so no giving card on the site has one. The home page's "Where we
+work" list shows dummy counts instead of "[00] villages · [00] kilns".**
+
+- `template-parts/ministry/give-card.php`: the progress block is removed. The Raised / Goal fields stay in the
+  ministry editor for the ministry's own records; their help text now says they are not shown.
+- `inc/content/home.php` → `where.places`: **dummy — replace before launch** (Pages → Home → Page content → Where we
+  work): Faisalabad 40 villages · 8 kilns, Jhang 25 villages · 4 kilns, Toba Tek Singh 9 villages, Chiniot 6 villages
+  (80 villages and 12 kilns in all, matching the dummy 80 communities and the ministries' 12 kilns).
+  `inc/data/impact.json` district villages follow (Faisalabad 40, Jhang 25).
+- `inc/upgrade.php` step 5 (`krm_sitemap_version` 5): a home page saved with the old "[00]" counts gets these values
+  (exact old values only; anything typed in is kept).
+- Verified on local WP: ministry page 0 progress bars at 1440 light / 390 dark, card spacing fine; home "Where we
+  work" shows the counts; `placeholder_check.js`: 0 pages with placeholders.

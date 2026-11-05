@@ -664,7 +664,7 @@
   "districts": [
     {
       "name": "Faisalabad (HQ)",
-      "villages": 50,
+      "villages": 40,
       "kilns": 8,
       "churches": 140,
       "pin": {
@@ -674,7 +674,7 @@
     },
     {
       "name": "Jhang",
-      "villages": 30,
+      "villages": 25,
       "kilns": 4,
       "churches": 60,
       "pin": {

@@ -211,7 +211,7 @@ function krm_ministry_box( $post ) {
 		<input type="number" min="0" step="1" class="small-text" style="width:110px" id="krm-raised" name="krm_raised" value="<?php echo esc_attr( $card['raised'] ); ?>">
 		<label for="krm-goal" style="margin-left:16px"><?php esc_html_e( 'Goal ($)', 'kingdom-revival' ); ?></label>
 		<input type="number" min="0" step="1" class="small-text" style="width:110px" id="krm-goal" name="krm_goal" value="<?php echo esc_attr( $card['goal'] ); ?>">
-		<br><span class="description"><?php esc_html_e( 'Left empty, the card shows “[Amount]” as in the design and an empty progress bar.', 'kingdom-revival' ); ?></span></p>
+		<br><span class="description"><?php esc_html_e( 'Not shown on the site (the raised / goal progress bar was removed in 1.15.9); kept for your own records.', 'kingdom-revival' ); ?></span></p>
 	<p><label for="krm-stats"><?php esc_html_e( 'Impact stats (one per line: value | label, e.g. “1,200 | Bibles placed”; 3–4 are shown as counters on the ministry page and on Our Impact)', 'kingdom-revival' ); ?></label>
 		<textarea class="widefat" rows="3" id="krm-stats" name="krm_stats"><?php echo esc_textarea( $card['stats'] ); ?></textarea></p>
 

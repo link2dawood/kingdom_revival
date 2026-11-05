@@ -271,19 +271,19 @@ return array(
 				array(
 					array(
 						'name'  => 'Faisalabad',
-						'count' => '[00] villages · [00] kilns',
+						'count' => '40 villages · 8 kilns',
 					),
 					array(
 						'name'  => 'Jhang',
-						'count' => '[00] villages · [00] kilns',
+						'count' => '25 villages · 4 kilns',
 					),
 					array(
 						'name'  => 'Toba Tek Singh',
-						'count' => '[00] villages',
+						'count' => '9 villages',
 					),
 					array(
 						'name'  => 'Chiniot',
-						'count' => '[00] villages',
+						'count' => '6 villages',
 					),
 				)
 			),

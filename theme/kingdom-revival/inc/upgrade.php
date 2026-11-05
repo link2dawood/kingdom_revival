@@ -459,6 +459,52 @@ add_action(
 	23
 );
 
+/*
+ * Fifth step (theme 1.15.9, option krm_sitemap_version 5): the home page's "Where we work" counts get dummy figures
+ * where a saved home page still holds the earlier "[00] villages" defaults (exact values only).
+ */
+add_action(
+	'init',
+	function () {
+		if ( 4 !== (int) get_option( 'krm_sitemap_version' ) ) {
+			return;
+		}
+		update_option( 'krm_sitemap_version', 5 );
+		$counts = array(
+			'Faisalabad'     => '40 villages · 8 kilns',
+			'Jhang'          => '25 villages · 4 kilns',
+			'Toba Tek Singh' => '9 villages',
+			'Chiniot'        => '6 villages',
+		);
+		foreach ( get_posts(
+			array(
+				'post_type'      => 'page',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_krm_content_home', // phpcs:ignore WordPress.DB.SlowDBQuery -- runs once.
+			)
+		) as $post_id ) {
+			$values = get_post_meta( $post_id, '_krm_content_home', true );
+			if ( ! is_array( $values ) || empty( $values['where']['places'] ) || ! is_array( $values['where']['places'] ) ) {
+				continue;
+			}
+			$changed = false;
+			foreach ( $values['where']['places'] as $i => $place ) {
+				$name = isset( $place['name'] ) ? $place['name'] : '';
+				if ( isset( $counts[ $name ], $place['count'] ) && in_array( $place['count'], array( '[00] villages · [00] kilns', '[00] villages' ), true ) ) {
+					$values['where']['places'][ $i ]['count'] = $counts[ $name ];
+					$changed                                  = true;
+				}
+			}
+			if ( $changed ) {
+				update_post_meta( $post_id, '_krm_content_home', $values );
+			}
+		}
+	},
+	24
+);
+
 /**
  * The second upgrade step. See the comment above.
  */

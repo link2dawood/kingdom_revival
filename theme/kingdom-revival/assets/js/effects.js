@@ -248,3 +248,39 @@
     li.addEventListener("click", run);
   });
 })();
+/* Section links without "#" in the address bar (every page; front.js does the same on the home page). Links keep their
+   "#section" href, so they still work without script. Arriving with an anchor (/about/#beliefs, /donate/?…#give), the
+   anchor is taken out of the address at once and the section is scrolled to after the content is ready and again
+   after load (photos above it can move it). Same-page section links scroll without adding "#". Skip links are left
+   alone so keyboard focus moves as usual. */
+(function () {
+  "use strict";
+  if (!window.history || !history.replaceState) return;
+  function sectionFor(hash) {
+    if (!hash || hash.length < 2) return null;
+    try { return document.getElementById(decodeURIComponent(hash.slice(1))); } catch (e) { return null; }
+  }
+  function cleanAddress() { history.replaceState(history.state, "", location.pathname + location.search); }
+  var hash = location.hash;
+  if (hash && hash.length > 1) {
+    var jump = function () {
+      setTimeout(function () { var s = sectionFor(hash); if (s) { s.scrollIntoView(); if (location.hash) cleanAddress(); } }, 60);
+    };
+    if (sectionFor(hash)) cleanAddress();
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", jump); else jump();
+    if (document.readyState !== "complete") window.addEventListener("load", jump);
+  }
+  document.addEventListener("click", function (event) {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    var link = event.target.closest && event.target.closest("a[href]");
+    if (!link || link.target || link.classList.contains("skip-link") || link.origin !== location.origin || link.pathname !== location.pathname || link.search !== location.search) return;
+    var section = sectionFor(link.hash);
+    if (!section) return;
+    event.preventDefault();
+    if (link.closest(".site-nav")) {
+      document.querySelectorAll('.site-nav [aria-expanded="true"]').forEach(function (b) { b.setAttribute("aria-expanded", "false"); });
+    }
+    section.scrollIntoView();
+    cleanAddress();
+  });
+})();

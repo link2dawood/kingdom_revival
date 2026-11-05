@@ -16,7 +16,6 @@ $krm_m       = $args['ministry'];
 $krm_band    = krm_site_give_band_args( 'ministry_give', $krm_m['title'] );
 $krm_amounts = krm_home_amounts();
 $krm_sel     = krm_home_selected_amount();
-$krm_pct     = krm_raised_pct( $krm_m );
 ?>
 <div class="give-card" id="support" data-krm-give-card data-for="<?php echo esc_attr( $krm_m['title'] ); ?>" data-ministry="<?php echo esc_attr( $krm_m['slug'] ); ?>" data-donate="<?php echo esc_url( krm_donate_url() ); ?>">
 	<?php if ( '' !== $krm_band['eyebrow'] ) : ?>
@@ -25,12 +24,6 @@ $krm_pct     = krm_raised_pct( $krm_m );
 	<h2 id="support-heading"><?php echo esc_html( $krm_band['heading'] ); ?></h2>
 	<?php if ( '' !== $krm_band['text'] ) : ?>
 	<p class="give-card-text"><?php echo esc_html( $krm_band['text'] ); ?></p>
-	<?php endif; ?>
-	<?php if ( krm_show_progress( $krm_m['goal'] ) ) : ?>
-	<div class="cause-card-progress give-card-progress">
-		<div class="cause-card-amounts"><span><?php krm_t( 'ministries.raised_label', 'site' ); ?> <strong><?php echo esc_html( krm_card_amount( $krm_m['raised'] ) ); ?></strong></span><span><?php krm_t( 'ministries.goal_label', 'site' ); ?> <?php echo esc_html( krm_card_amount( $krm_m['goal'] ) ); ?></span></div>
-		<div class="cause-card-bar" role="progressbar" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: ministry name */ __( '%s: share of the goal raised', 'kingdom-revival' ), $krm_m['title'] ) ); ?>" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo esc_attr( $krm_pct ); ?>"><span style="width: <?php echo esc_attr( $krm_pct ); ?>%"></span></div>
-	</div>
 	<?php endif; ?>
 	<div class="give-card-amounts" role="group" aria-label="<?php esc_attr_e( 'Donation amount', 'kingdom-revival' ); ?>" style="grid-template-columns: repeat(<?php echo (int) count( $krm_amounts ); ?>, minmax(0, 1fr))">
 		<?php foreach ( $krm_amounts as $krm_a => $krm_on ) : ?>
