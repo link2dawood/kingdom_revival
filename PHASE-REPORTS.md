@@ -37,6 +37,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Dummy content instead of [placeholders] (theme 1.14.1)](#kingdom-revival-ministries-dummy-content-instead-of-placeholders-theme-1141)
 - [Kingdom Revival Ministries: Phase 20 dark mode, scroll effects and photo bands (theme 1.15.0)](#kingdom-revival-ministries-phase-20-dark-mode-scroll-effects-and-photo-bands-theme-1150)
 - [Kingdom Revival Ministries: Team photos and freedom before/after photos (theme 1.15.1)](#kingdom-revival-ministries-team-photos-and-freedom-beforeafter-photos-theme-1151)
+- [Kingdom Revival Ministries: Smaller theme zip for upload (theme 1.15.2)](#kingdom-revival-ministries-smaller-theme-zip-for-upload-theme-1152)
 
 ---
 
@@ -3181,3 +3182,20 @@ viewer. Shown on the home page and on /what-we-do/slavery-freedom/.**
 - The folder doesn't say which before and after photos show the same family. If the client can pair them, the slider
   pair and the row order can be changed in Pages → Home → Page content → Flagship.
 - Pastor Adil's team role is now "Founder" (file name) instead of "Founder & Director".
+
+## Kingdom Revival Ministries: Smaller theme zip for upload (theme 1.15.2)
+
+**Result: kingdom-revival.zip is 35 MB (was 81 MB). Uploading the 81 MB zip in Appearance → Themes → Add New failed with
+"The link you followed has expired", WordPress's message when an upload is bigger than PHP's `upload_max_filesize` /
+`post_max_size`.**
+
+- The three Gallery videos (`assets/video/gallery/`, 64 MB, up to 7.6 Mbps) were re-encoded at their own resolution
+  (1280×720 / 720×1280): H.264 High, CRF 28, max 1.3 Mbps, AAC 96 kbps, faststart, metadata stripped → 4.5 + 7.1 + 8.2 MB
+  (19.8 MB). Frames checked by eye; all three load and play on the local Gallery page (25 s, 47 s, 50 s).
+- No code changes.
+
+### Not covered
+
+- The host's actual upload limit is unknown. If it is below 35 MB, raise it (hosting panel → PHP settings:
+  `upload_max_filesize` and `post_max_size` 64M) or upload the unzipped `kingdom-revival` folder to
+  `wp-content/themes/` by FTP / File Manager.
