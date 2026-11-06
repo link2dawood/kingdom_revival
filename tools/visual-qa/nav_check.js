@@ -10,6 +10,9 @@
 //   behaviour  — desktop: hover opens What We Do; click / Enter set aria-expanded; Esc closes and returns focus;
 //                a click outside closes; aria-current on the page, its group heading and the top-level item.
 //                mobile 390: menu → What We Do → both groups (chevrons, aria-expanded) and Our Impact open
+//   sameHeader — the same navbar on 8 pages as a visitor gets them; cache — no page served from a page cache built
+//                with another theme version (a private window showed the old header on live, theme 1.17.1);
+//                testimonials — cards, no form, heading "Testimonials"
 //   soon       — Persecuted Christian Support, Food Relief, Disaster Relief: 200, "Details about this ministry are
 //                coming soon.", Donate / Give with ?ministry=slug, Contact us, the other-ministries row, no stats /
 //                gifts / story / gallery sections, no [brackets]
@@ -42,7 +45,7 @@ const GROUPS = [
     ['Disaster Relief & Recovery Ministry', 'disaster-relief'],
   ]],
 ];
-const IMPACT = [['Our Impact', '/our-impact/'], ['Testimonies', '/our-impact/testimonies/'], ['Photo & Video Gallery', '/our-impact/gallery/']];
+const IMPACT = [['Our Impact', '/our-impact/'], ['Testimonials', '/our-impact/testimonies/'], ['Photo & Video Gallery', '/our-impact/gallery/']];
 const QUICK = ['Home', 'About Us', 'What We Do', 'Our Impact', 'News & Updates', 'Partner With Us', 'Contact', 'Donate / Give'];
 const SOON = ['persecuted-christians', 'food-relief', 'disaster-relief'];
 const SOON_LINE = 'Details about this ministry are coming soon.';
@@ -225,7 +228,7 @@ async function shot(p, name) {
   bh.ariaCurrent = { ministry: c1, group: c2, testimonies: c3 };
   if (JSON.stringify(c1.current) !== '["Food Relief"]' || c1.top[0] !== 'What We Do') fail('behaviour', 'aria-current on Food Relief: ' + JSON.stringify(c1));
   if (JSON.stringify(c2.current) !== '["Gospel & Spiritual Ministries"]' || c2.top[0] !== 'What We Do') fail('behaviour', 'aria-current on the group page: ' + JSON.stringify(c2));
-  if (JSON.stringify(c3.current) !== '["Testimonies"]' || c3.top[0] !== 'Our Impact') fail('behaviour', 'aria-current on Testimonies: ' + JSON.stringify(c3));
+  if (JSON.stringify(c3.current) !== '["Testimonials"]' || c3.top[0] !== 'Our Impact') fail('behaviour', 'aria-current on Testimonials: ' + JSON.stringify(c3));
   } catch (e) { fail('behaviour', 'desktop check stopped: ' + String(e.message || e).split('\n')[0]); }
   await ctx.close();
 
@@ -290,6 +293,42 @@ async function shot(p, name) {
     }
     await m.close();
   }
+
+  // ---------- the same header on every page, and no page served stale from a page cache (theme 1.17.1)
+  // A visitor in a private window gets what the cache holds; the admin (logged in) never does. A page whose cached
+  // copy was built with another theme version is reported, as is a page whose navbar differs from the home page's.
+  results.sameHeader = {};
+  results.cache = {};
+  const PAGES = ['/', '/about/', '/what-we-do/', '/our-impact/', '/our-impact/testimonies/', '/news/', '/contact/', '/donate/'];
+  const ver = (html) => ((html.match(/assets\/js\/site\.js\?ver=([0-9.]+)/) || [])[1] || '');
+  const hctx = await context(b, 'light', 1440);
+  const hp = await hctx.newPage();
+  let homeTop = null;
+  for (const u of PAGES) {
+    const fresh = await get(withBust(B + u));
+    const asVisitor = await get(B + u);
+    results.cache[u] = { fresh: ver(fresh.body), visitor: ver(asVisitor.body), status: asVisitor.status };
+    if (asVisitor.status !== 200) fail('cache', `${u} → ${asVisitor.status} for a visitor`);
+    else if (ver(fresh.body) !== ver(asVisitor.body)) fail('cache', `${u} is served from a stale page cache (theme ${ver(asVisitor.body) || '?'}, current ${ver(fresh.body)}): purge the page cache`);
+    // The menu as a visitor sees it (no cache-busting query).
+    await hp.goto(B + u, { waitUntil: 'domcontentloaded' });
+    const top = await hp.evaluate(() => Array.from(document.querySelectorAll('#site-menu > li:not(.menu-theme)')).map((li) => {
+      const h = li.querySelector(':scope > a, :scope > .sub-toggle');
+      return (h ? h.textContent : '').replace(/\s+/g, ' ').trim() + ':' + li.querySelectorAll('a').length;
+    }).join(' · '));
+    results.sameHeader[u] = top;
+    if (homeTop === null) homeTop = top;
+    else if (top !== homeTop) fail('sameHeader', `${u} navbar differs from the home page's: [${top}]`);
+  }
+  // Testimonials: the dummy (or real) testimonials, no form (client's request, theme 1.17.1).
+  await hp.goto(withBust(B + '/our-impact/testimonies/'), { waitUntil: 'domcontentloaded' });
+  results.testimonials = await hp.evaluate(() => ({
+    h1: (document.querySelector('main h1') || {}).textContent,
+    cards: document.querySelectorAll('main figure.testimony').length,
+    forms: document.querySelectorAll('main form').length,
+  }));
+  if (!results.testimonials.cards || results.testimonials.forms || (results.testimonials.h1 || '').trim() !== 'Testimonials') fail('testimonials', JSON.stringify(results.testimonials));
+  await hctx.close();
 
   // ---------- "coming soon" ministries
   const sctx = await context(b, 'light', 1440);

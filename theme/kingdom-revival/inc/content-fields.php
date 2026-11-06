@@ -25,7 +25,7 @@ function krm_content_screens() {
 		'home'        => __( 'Home page', 'kingdom-revival' ),
 		'about'       => __( 'About page', 'kingdom-revival' ),
 		'impact'      => __( 'Our Impact page', 'kingdom-revival' ),
-		'testimonies' => __( 'Testimonies page', 'kingdom-revival' ),
+		'testimonies' => __( 'Testimonials page', 'kingdom-revival' ),
 		'gallery'     => __( 'Photo & Video Gallery page', 'kingdom-revival' ),
 		'blog'        => __( 'News & Updates page', 'kingdom-revival' ),
 		'partner'     => __( 'Partner With Us page', 'kingdom-revival' ),

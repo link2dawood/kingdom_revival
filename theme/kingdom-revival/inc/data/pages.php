@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 return array(
 	'about'           => array( 'About Us', 'about', '' ),
 	'our-impact'      => array( 'Our Impact', 'impact', '' ),
-	'testimonies'     => array( 'Testimonies', 'testimonies', 'our-impact' ),
+	'testimonies'     => array( 'Testimonials', 'testimonies', 'our-impact' ),
 	'gallery'         => array( 'Photo & Video Gallery', 'gallery', 'our-impact' ),
 	'news'            => array( 'News & Updates', '', '' ),
 	'partner-with-us' => array( 'Partner With Us', 'partner', '' ),

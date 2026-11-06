@@ -296,7 +296,7 @@ add_action(
 
 /*
  * Testimonials are shown in lists only: a single testimonial address, and the /testimonials/ list, lead to the
- * Testimonies page (Our Impact → Testimonies) when it is published, else to the /testimonials/ list.
+ * Testimonials page (Our Impact → Testimonials) when it is published, else to the /testimonials/ list.
  */
 add_action(
 	'template_redirect',

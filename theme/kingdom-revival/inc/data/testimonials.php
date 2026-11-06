@@ -1,7 +1,7 @@
 <?php
 /**
  * DUMMY testimonials created by Setup (step "News stories and testimonials"), one per published ministry, so the
- * Testimonies page and each ministry's "Stories from the field" card have content. The names, places and words are
+ * Testimonials page and each ministry's "Stories from the field" card have content. The names, places and words are
  * made up: replace or delete them (Testimonials) before launch. Each is marked with the post meta _krm_sample.
  *
  * Per testimonial: name (the title), role (role or place), ministry (slug from inc/data/ministries.php), text.

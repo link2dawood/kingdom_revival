@@ -207,7 +207,7 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 					'url'      => '#',
 					'children' => array(
 						$page_item( 'our-impact', 'Our Impact' ),
-						$page_item( 'testimonies', 'Testimonies' ),
+						$page_item( 'testimonies', 'Testimonials' ),
 						$page_item( 'gallery', 'Photo & Video Gallery' ),
 					),
 				),
@@ -731,6 +731,207 @@ function krm_upgrade_nav_menus() {
 	}
 	set_theme_mod( 'nav_menu_locations', $locations );
 	return $log;
+}
+
+/*
+ * Ninth step (theme 1.17.1, option krm_sitemap_version 9): "Testimonies" becomes "Testimonials" and the page shows the
+ * dummy testimonials (the "Share your testimony" form is gone, at the client's request).
+ *  - The page title, menu items and saved page text still holding the earlier default (exact value) get the new one.
+ *  - A site with no published testimonial and no sample testimonial (in any status, the trash included, so deleted
+ *    samples stay deleted) gets the 12 dummy testimonials of inc/data/testimonials.php (marked _krm_sample).
+ */
+add_action(
+	'init',
+	function () {
+		if ( 8 !== (int) get_option( 'krm_sitemap_version' ) ) {
+			return;
+		}
+		update_option( 'krm_sitemap_version', 9 );
+		krm_upgrade_testimonials();
+	},
+	29
+);
+
+/**
+ * The ninth upgrade step. See the comment above.
+ */
+function krm_upgrade_testimonials() {
+	$page = krm_testimonies_page_id();
+	if ( $page && 'Testimonies' === get_post_field( 'post_title', $page ) ) {
+		wp_update_post(
+			array(
+				'ID'         => $page,
+				'post_title' => 'Testimonials',
+			)
+		);
+	}
+	foreach ( wp_get_nav_menus() as $menu ) {
+		foreach ( (array) wp_get_nav_menu_items( $menu->term_id, array( 'post_status' => 'any' ) ) as $item ) {
+			if ( 'Testimonies' === $item->title ) {
+				wp_update_post(
+					array(
+						'ID'         => $item->ID,
+						'post_title' => 'Testimonials',
+					)
+				);
+			}
+		}
+	}
+	$renames = array(
+		'_krm_content_testimonies' => array(
+			'hero.title'        => array( 'Testimonies', 'Testimonials' ),
+			'list.filter_label' => array( 'Filter testimonies by ministry', 'Filter testimonials by ministry' ),
+			'list.count_text'   => array( 'Showing {n} testimonies', 'Showing {n} testimonials' ),
+			'list.empty'        => array( 'Testimonies from the families and churches we serve will appear here.', 'Testimonials from the families and churches we serve will appear here.' ),
+		),
+		'_krm_content_impact'      => array(
+			'more.heading'           => array( 'Testimonies & Gallery', 'Testimonials & Gallery' ),
+			'more.testimonies_title' => array( 'Testimonies', 'Testimonials' ),
+		),
+	);
+	foreach ( $renames as $key => $map ) {
+		foreach ( get_posts(
+			array(
+				'post_type'      => 'page',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => $key, // phpcs:ignore WordPress.DB.SlowDBQuery -- runs once.
+			)
+		) as $post_id ) {
+			$values  = get_post_meta( $post_id, $key, true );
+			$changed = false;
+			foreach ( $map as $path => $pair ) {
+				list( $section, $field ) = explode( '.', $path );
+				if ( is_array( $values ) && isset( $values[ $section ][ $field ] ) && $pair[0] === $values[ $section ][ $field ] ) {
+					$values[ $section ][ $field ] = $pair[1];
+					$changed                      = true;
+				}
+			}
+			if ( $changed ) {
+				update_post_meta( $post_id, $key, $values );
+			}
+		}
+	}
+	$site = get_option( 'krm_site_text' );
+	if ( is_array( $site ) && isset( $site['ministry']['story_more'] ) && 'More testimonies →' === $site['ministry']['story_more'] ) {
+		$site['ministry']['story_more'] = 'More testimonials →';
+		update_option( 'krm_site_text', $site, false );
+	}
+
+	$published = get_posts(
+		array(
+			'post_type'   => 'testimonial',
+			'post_status' => 'publish',
+			'numberposts' => 1,
+			'fields'      => 'ids',
+		)
+	);
+	$samples   = get_posts(
+		array(
+			'post_type'   => 'testimonial',
+			'post_status' => array( 'publish', 'draft', 'pending', 'private', 'trash' ),
+			'numberposts' => 1,
+			'fields'      => 'ids',
+			'meta_key'    => '_krm_sample', // phpcs:ignore WordPress.DB.SlowDBQuery -- runs once.
+		)
+	);
+	if ( ! $published && ! $samples ) {
+		krm_create_sample_testimonials();
+	}
+}
+
+/**
+ * Create the dummy testimonials of inc/data/testimonials.php (Setup and upgrade step 9). One whose slug exists is
+ * skipped. Returns a log.
+ *
+ * @return string[]
+ */
+function krm_create_sample_testimonials() {
+	$log   = array();
+	$order = 0;
+	foreach ( include KRM_DIR . '/inc/data/testimonials.php' as $t ) {
+		$slug = sanitize_title( $t['name'] );
+		++$order;
+		if ( krm_get_by_path( $slug, 'testimonial' ) ) {
+			$log[] = sprintf( 'Testimonial exists, left unchanged: %s', $t['name'] );
+			continue;
+		}
+		$id    = wp_insert_post(
+			array(
+				'post_type'    => 'testimonial',
+				'post_status'  => 'publish',
+				'post_title'   => $t['name'],
+				'post_name'    => $slug,
+				'post_content' => $t['text'],
+				'menu_order'   => $order,
+				'meta_input'   => array(
+					'_krm_role'     => $t['role'],
+					'_krm_ministry' => $t['ministry'],
+					'_krm_sample'   => 1,
+				),
+			),
+			true
+		);
+		$log[] = is_wp_error( $id ) ? sprintf( 'Could not create testimonial %s: %s', $t['name'], $id->get_error_message() ) : sprintf( 'Created testimonial: %s', $t['name'] );
+	}
+	return $log;
+}
+
+/*
+ * Page caches are emptied once per theme version (theme 1.17.1). Uploading a new version of the same theme is not a
+ * theme switch, so cache plugins keep serving pages built with the old version to visitors (logged-out, so a private
+ * window shows the old header while the logged-in admin sees the new one). Runs on the first request that reaches
+ * WordPress after the update — the upload itself, or any admin page.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'krm_cache_purged_version' ) === KRM_VERSION ) {
+			return;
+		}
+		update_option( 'krm_cache_purged_version', KRM_VERSION );
+		krm_purge_page_caches();
+	},
+	101
+);
+
+/**
+ * Empty the page cache of the common cache plugins that are active. Returns the names of those purged.
+ *
+ * @return string[]
+ */
+function krm_purge_page_caches() {
+	$done = array();
+	if ( class_exists( '\SpeedyCache\Delete' ) && method_exists( '\SpeedyCache\Delete', 'run' ) ) {
+		\SpeedyCache\Delete::run( array() ); // All pages, Varnish and SpeedyCache's CDN (the live site's cache).
+		$done[] = 'SpeedyCache';
+	}
+	if ( has_action( 'litespeed_purge_all' ) ) {
+		do_action( 'litespeed_purge_all' );
+		$done[] = 'LiteSpeed Cache';
+	}
+	if ( function_exists( 'rocket_clean_domain' ) ) {
+		rocket_clean_domain();
+		$done[] = 'WP Rocket';
+	}
+	if ( function_exists( 'w3tc_flush_all' ) ) {
+		w3tc_flush_all();
+		$done[] = 'W3 Total Cache';
+	}
+	if ( function_exists( 'wp_cache_clear_cache' ) ) {
+		wp_cache_clear_cache();
+		$done[] = 'WP Super Cache';
+	}
+	if ( function_exists( 'sg_cachepress_purge_cache' ) ) {
+		sg_cachepress_purge_cache();
+		$done[] = 'SiteGround Optimizer';
+	}
+	if ( has_action( 'wpfc_clear_all_cache' ) ) {
+		do_action( 'wpfc_clear_all_cache', true );
+		$done[] = 'WP Fastest Cache';
+	}
+	return $done;
 }
 
 /**

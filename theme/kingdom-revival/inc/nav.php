@@ -32,7 +32,7 @@ function krm_menu_tree( $location ) {
 	$skipped = array();
 	foreach ( $items as $item ) {
 		// Left out, with their sub-items: links to an unpublished ministry or page (e.g. a ministry waiting for its
-		// description). The Testimonies page is always listed since Phase 21 (it has a "Share your testimony" form).
+		// description). The Testimonials page is always listed since Phase 21.
 		$gone = 'post_type' === $item->type && 'publish' !== get_post_status( (int) $item->object_id );
 		if ( $gone || isset( $skipped[ (int) $item->menu_item_parent ] ) ) {
 			$skipped[ $item->ID ] = true;
@@ -138,7 +138,7 @@ function krm_default_primary_tree() {
 	$groups[] = krm_node( __( 'View all of What We Do →', 'kingdom-revival' ), krm_ministries_url(), array( 'menu-all' ), '', is_post_type_archive( 'ministry' ) && ! krm_current_group() );
 	$impact   = array(
 		krm_node( __( 'Our Impact', 'kingdom-revival' ), krm_page_url( 'impact' ), array(), '', 'impact' === krm_design_template() ),
-		krm_node( __( 'Testimonies', 'kingdom-revival' ), krm_page_url( 'testimonies' ), array(), '', 'testimonies' === krm_design_template() ),
+		krm_node( __( 'Testimonials', 'kingdom-revival' ), krm_page_url( 'testimonies' ), array(), '', 'testimonies' === krm_design_template() ),
 		krm_node( __( 'Photo & Video Gallery', 'kingdom-revival' ), krm_page_url( 'gallery' ), array(), '', 'gallery' === krm_design_template() ),
 	);
 

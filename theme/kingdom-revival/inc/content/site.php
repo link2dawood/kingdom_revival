@@ -95,7 +95,7 @@ return array(
 			'impact_photos'   => krm_f( 'text', __( 'Ministry in action: photos label', 'kingdom-revival' ), 'In pictures' ),
 			'story_eyebrow'   => krm_f( 'text', __( 'Story card: small heading', 'kingdom-revival' ), 'Lives changed' ),
 			'story_heading'   => krm_f( 'text', __( 'Story card: heading', 'kingdom-revival' ), 'A story from the field' ),
-			'story_more'      => krm_f( 'text', __( 'Story card: link to all testimonies', 'kingdom-revival' ), 'More testimonies →' ),
+			'story_more'      => krm_f( 'text', __( 'Story card: link to all testimonials', 'kingdom-revival' ), 'More testimonials →' ),
 			'card_button'     => krm_f( 'text', __( 'Side donation card: button text (the amount follows)', 'kingdom-revival' ), 'Donate' ),
 			'camps_heading'   => krm_f( 'text', __( 'Camps / projects timeline heading (shown only when a ministry has rows)', 'kingdom-revival' ), 'Camps / projects completed' ),
 			'camps_people'    => krm_f( 'text', __( 'Camps / projects timeline: label before the number of people', 'kingdom-revival' ), 'People served:' ),

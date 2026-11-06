@@ -48,6 +48,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Chiniot and Toba Tek Singh on the Our Impact map (theme 1.16.2)](#kingdom-revival-ministries-chiniot-and-toba-tek-singh-on-the-our-impact-map-theme-1162)
 - [Kingdom Revival Ministries: Mobile PageSpeed 90+ (theme 1.16.3)](#kingdom-revival-ministries-mobile-pagespeed-90-theme-1163)
 - [Kingdom Revival Ministries: Phase 22: the client's navbar on the live site (theme 1.17.0)](#kingdom-revival-ministries-phase-22-the-clients-navbar-on-the-live-site-theme-1170)
+- [Kingdom Revival Ministries: Testimonials, and the same header for visitors (theme 1.17.1)](#kingdom-revival-ministries-testimonials-and-the-same-header-for-visitors-theme-1171)
 
 ---
 
@@ -3777,3 +3778,62 @@ Screenshots (committed as WebP in `qa-screenshots/phase-22/`; `nav_check.js` wri
    above). The alternative is switching to the "Menu" button below 1024 px instead of 900 px; say if you prefer that.
 4. The home hero's "Explore What We Do" scrolls to the home page's What We Do section (design). Say if it should open
    /what-we-do/ instead (Pages → Home → Page content → Hero → Button link: `{ministries}`).
+
+## Kingdom Revival Ministries: Testimonials, and the same header for visitors (theme 1.17.1)
+
+**Result: "Testimonies" is now "Testimonials" everywhere (menu, page, Our Impact card, links). The page lists the 12
+dummy testimonials with no form. The different navbar in a private window came from the live site's page cache
+(SpeedyCache): visitors were still served pages built with theme 1.16.3 and the old "Ministries" menu. The theme now
+empties the page cache itself whenever a new version is installed.**
+
+### What was wrong on live (checked 2026-11-06, theme 1.17.0)
+
+- Logged in, every page showed the new navbar; logged out (a private window), /about/, /what-we-do/, /our-impact/,
+  /our-impact/testimonies/, /contact/ and /donate/ were still the 1.16.3 pages with Home · About · Ministries ▾ · Latest
+  News & Blogs · Contact (`<!-- Cache by SpeedyCache -->`, `x-speedycache-source: Server`, `cdn-cache-control:
+  max-age=1296000`, i.e. 15 days). Only the home page and /news/ had been rebuilt. SpeedyCache empties its cache on a
+  theme *switch* (`after_switch_theme`), not when a new version of the same theme is uploaded.
+- The Testimonies page had no published testimonial (the dummy ones exist only where Setup imported them), so it
+  showed the empty line and the "Share your testimony" form.
+
+### What changed
+
+- **Cache purge** (`inc/upgrade.php`, `krm_purge_page_caches()`): once per theme version (option
+  `krm_cache_purged_version`), on the first request that reaches WordPress after the update (the upload itself or any
+  admin page), the theme empties the page cache of whichever is active: SpeedyCache (`\SpeedyCache\Delete::run()`:
+  all pages, Varnish and its CDN; API read from the plugin's public source), LiteSpeed Cache, WP Rocket, W3 Total
+  Cache, WP Super Cache, SiteGround Optimizer, WP Fastest Cache.
+- **Testimonials**: the page template no longer prints the form (`template-parts/testimony-form.php` and the "Share
+  your testimony form" fields are removed; the form handler in `inc/forms.php` stays, unused). Labels and defaults:
+  page heading, template name, menu item, the theme's default menu, SEO title and description, the Our Impact card
+  ("Testimonials & Gallery", "Testimonials"), the ministry pages' "More testimonials →", filter texts.
+- **Upgrade step 9** (`krm_sitemap_version` 9): renames the page title, menu items and saved page text still holding
+  the old default (exact value only); creates the 12 dummy testimonials (`krm_create_sample_testimonials()`, shared with
+  Setup) when the site has no published testimonial and no sample testimonial in any status, the trash included (so
+  deleted samples are not recreated). The address stays /our-impact/testimonies/ (links and the sitemap keep working).
+- `nav_check.js`: new checks **sameHeader** (the navbar of 8 pages, loaded as a visitor without cache-busting, equals
+  the home page's), **cache** (each page as a visitor gets it carries the same theme version as a freshly built copy;
+  otherwise "served from a stale page cache: purge") and **testimonials** (heading, cards, no form).
+
+### How it was verified
+
+- Local site set up like live (all testimonials deleted, page and menu item "Testimonies", step 8 done), then theme
+  1.17.1 and one request: version 9, 12 testimonials published, page and menu item "Testimonials", purge marker set.
+- `nav_check.js` local: 0 failures (27 links 200, same navbar on all 8 pages, no stale page, Testimonials: 12 cards,
+  no form). On the live site (1.17.0, read-only): 17 failures, exactly the reported problem: 6 pages stale (1.16.3) with
+  the old navbar, Testimonies with 0 cards and the form, and the old "Testimonies" label.
+- `placeholder_check.js`: 59 pages, all 200, 0 placeholders. `final_pass.js`: 40 pages, overflow 0, JS errors 0, axe 0,
+  contrast 0 in light and dark, no duplicate titles or descriptions; the two header variants differ only by the Our
+  Impact highlight on its three pages.
+- Screenshots: `qa-screenshots/phase-22/testimonials-1440-light.webp`, `testimonials-390-dark.webp`.
+
+### Not covered
+
+- The live site is not updated: upload `kingdom-revival.zip` (1.17.1). The purge runs during the upload's request; if
+  the old header still shows in a private window, use SpeedyCache → Delete Cache once.
+- A CDN or host cache that is not managed by one of the plugins above is not purged by the theme.
+
+### Decisions for you
+
+1. The 12 testimonials are **dummy** (made-up names and words): replace them with real ones before launch.
+2. The page address stays /our-impact/testimonies/. Say if it should become /our-impact/testimonials/ (with a 301).

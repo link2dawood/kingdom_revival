@@ -1,10 +1,10 @@
 <?php
 /**
- * Template Name: Testimonies
- * Testimonies (/our-impact/testimonies/): every published Testimonial as a card in the home page's "Stories from
- * the field" style, with filter tabs by ministry (only ministries that have testimonies get a tab), then the "Share
- * your testimony" form (template-parts/testimony-form.php). While none is published (Phase 21): a short line instead
- * of the list; the page is always in the menu and the sitemap.
+ * Template Name: Testimonials
+ * Testimonials (/our-impact/testimonies/): every published Testimonial as a card in the home page's "Stories from
+ * the field" style, with filter tabs by ministry (only ministries that have testimonials get a tab). While none is
+ * published: a short line instead of the list. The "Share your testimony" form was removed at the client's request
+ * (theme 1.17.1); upgrade step 9 creates the dummy testimonials on sites that have none.
  *
  * @package Kingdom_Revival
  */
@@ -101,7 +101,6 @@ uasort(
 		<?php endif; ?>
 		</div>
 	</section>
-	<?php get_template_part( 'template-parts/testimony-form' ); ?>
 	</main>
 <?php
 get_footer();

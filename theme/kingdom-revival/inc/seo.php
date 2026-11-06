@@ -82,8 +82,8 @@ function krm_page_seo() {
 		'contact'     => array( 'Contact Us', 'Get in touch with Kingdom Revival Ministries in Faisalabad, Pakistan — for partnership, giving, prayer requests or visits.' ),
 		'donate'      => array( 'Donate', 'Give to Kingdom Revival Ministries by PayPal, bank transfer, Western Union or MoneyGram and bring the hope of Jesus to Pakistan’s forgotten.' ),
 		'partner'     => array( 'Partner With Us', 'Partner with Kingdom Revival Ministries — as a prayer partner, a financial partner, a church or ministry partner or a volunteer — to carry the Gospel to Pakistan’s forgotten.' ),
-		'impact'      => array( 'Our Impact', 'The impact of Kingdom Revival Ministries across Pakistan: numbers for each ministry, testimonies and a photo and video gallery.' ),
-		'testimonies' => array( 'Testimonies', 'Testimonies of lives changed through the Gospel and practical care of Kingdom Revival Ministries in Pakistan.' ),
+		'impact'      => array( 'Our Impact', 'The impact of Kingdom Revival Ministries across Pakistan: numbers for each ministry, testimonials and a photo and video gallery.' ),
+		'testimonies' => array( 'Testimonials', 'Testimonials of lives changed through the Gospel and practical care of Kingdom Revival Ministries in Pakistan.' ),
 		'gallery'     => array( 'Photo & Video Gallery', 'Photos and videos from every ministry of Kingdom Revival Ministries in Pakistan.' ),
 		'prayer'      => array( 'Prayer Request', 'Send a prayer request to Kingdom Revival Ministries. Our pastors and prayer team pray over every request we receive.' ),
 	);
@@ -567,7 +567,7 @@ add_action(
 					$pages = krm_design_template_pages();
 					foreach ( array( 'ministry', 'sermon', 'event', 'testimonial' ) as $type ) {
 						if ( 'testimonial' === $type && isset( $pages['testimonies'] ) ) {
-							continue; // /testimonials/ redirects to the Testimonies page, which is in the pages sitemap.
+							continue; // /testimonials/ redirects to the Testimonials page, which is in the pages sitemap.
 						}
 						$link = post_type_exists( $type ) ? get_post_type_archive_link( $type ) : false;
 						if ( $link && (int) wp_count_posts( $type )->publish > 0 ) {

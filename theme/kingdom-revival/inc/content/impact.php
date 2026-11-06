@@ -37,12 +37,12 @@ return array(
 		),
 	),
 	'more'       => array(
-		'label'  => __( 'Testimonies and gallery links', 'kingdom-revival' ),
+		'label'  => __( 'Testimonials and gallery links', 'kingdom-revival' ),
 		'fields' => array(
 			'eyebrow'           => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Explore more' ),
-			'heading'           => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Testimonies & Gallery' ),
-			'testimonies_title' => krm_f( 'text', __( 'Testimonies card: title', 'kingdom-revival' ), 'Testimonies' ),
-			'testimonies_text'  => krm_f( 'textarea', __( 'Testimonies card: text', 'kingdom-revival' ), 'Lives changed through the Gospel and practical care, in their own words.', __( 'DRAFT — CLIENT TO APPROVE: proposed wording, written only from text already on the site or in the client’s sitemap.', 'kingdom-revival' ) ),
+			'heading'           => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Testimonials & Gallery' ),
+			'testimonies_title' => krm_f( 'text', __( 'Testimonials card: title', 'kingdom-revival' ), 'Testimonials' ),
+			'testimonies_text'  => krm_f( 'textarea', __( 'Testimonials card: text', 'kingdom-revival' ), 'Lives changed through the Gospel and practical care, in their own words.', __( 'DRAFT — CLIENT TO APPROVE: proposed wording, written only from text already on the site or in the client’s sitemap.', 'kingdom-revival' ) ),
 			'gallery_title'     => krm_f( 'text', __( 'Gallery card: title', 'kingdom-revival' ), 'Photo & Video Gallery' ),
 			'gallery_text'      => krm_f( 'textarea', __( 'Gallery card: text', 'kingdom-revival' ), 'Moments from our ministry, in photos and videos.', __( 'DRAFT — CLIENT TO APPROVE: proposed wording, written only from text already on the site or in the client’s sitemap.', 'kingdom-revival' ) ),
 			'link'              => krm_f( 'text', __( 'Card link text', 'kingdom-revival' ), 'Find out more →' ),
