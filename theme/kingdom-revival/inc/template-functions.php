@@ -55,7 +55,7 @@ Kingdom Revival Ministries",
 		'bank_phone'          => '+92 302 0692993',
 		'form_recipient'      => 'Info@kingdomrevivalministries.com',
 		// Web3Forms access key (public by design: it only lets forms send to the inbox it was created for).
-		'web3forms_key'       => 'df5b0a03-783c-4607-a037-17855f320d71',
+		'web3forms_key'       => '4b1ed194-65df-4d6e-907b-f4e473b11f70',
 		'newsletter_endpoint' => '',
 		'newsletter_delay'    => 3,
 		'redirects'           => krm_default_redirects(),

@@ -57,7 +57,7 @@ const FORMS = {
 
 const W3 = []; // bodies the browser sent to Web3Forms
 let W3_MODE = 'ok';
-const W3_KEY = 'df5b0a03-783c-4607-a037-17855f320d71';
+const W3_KEY = '4b1ed194-65df-4d6e-907b-f4e473b11f70';
 const SERVER_LOG = path.join(MAIL, 'w3-server.log');
 function serverW3() { return fs.existsSync(SERVER_LOG) ? fs.readFileSync(SERVER_LOG, 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l)) : []; }
 const results = [];

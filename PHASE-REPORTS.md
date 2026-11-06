@@ -52,6 +52,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Phase 23: testimonial avatars and sample launch control (theme 1.17.2)](#kingdom-revival-ministries-phase-23-testimonial-avatars-and-sample-launch-control-theme-1172)
 - [Kingdom Revival Ministries: Phase 24: form emails with a loading state (theme 1.18.0)](#kingdom-revival-ministries-phase-24-form-emails-with-a-loading-state-theme-1180)
 - [Kingdom Revival Ministries: Web3Forms for the form emails, social links in a new tab (theme 1.18.2)](#kingdom-revival-ministries-web3forms-for-the-form-emails-social-links-in-a-new-tab-theme-1182)
+- [Kingdom Revival Ministries: New Web3Forms access key (theme 1.18.3)](#kingdom-revival-ministries-new-web3forms-access-key-theme-1183)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4159,3 +4160,15 @@ on the host, and PHPMailer then throws an error that `wp_mail()` doesn't catch. 
 - The live site's PHP mail problem itself is not fixed (WordPress's own emails, such as password resets, may still
   fail there). The host's error log or support can confirm whether `mail()` is disabled.
 
+## Kingdom Revival Ministries: New Web3Forms access key (theme 1.18.3)
+
+**Result: all form emails now use the Web3Forms access key 4b1ed194-65df-4d6e-907b-f4e473b11f70, which replaces
+df5b0a03-… from 1.18.2. Web3Forms delivers to the inbox this new key was created with.**
+
+- The default in `inc/template-functions.php` (`web3forms_key`) is the new key. A one-time step in
+  `inc/upgrade.php` replaces the old key if a site has it saved in Kingdom Revival → Settings; any other key typed
+  there by hand is kept.
+- Verified locally: pages carry the new key in `KRM_CONFIG.web3formsKey`. `phase24_check.js` asserts the key on
+  every Web3Forms request: **54 tests, 0 failures**. Web3Forms was mocked, so no real email was sent.
+- Not covered: a real send. After uploading 1.18.3, send one test from the Contact page and one from Partner With
+  Us, and confirm they arrive at Info@kingdomrevivalministries.com.

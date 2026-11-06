@@ -366,20 +366,20 @@
       "test": "wp-down-fallback",
       "key": "volunteer",
       "ok": true,
-      "subject": "[Website] volunteer — Direct Fallback"
+      "subject": "[Website] Volunteer — Direct Fallback"
     },
     {
       "test": "wp-down-fallback",
       "key": "donation",
       "ok": true,
-      "subject": "[Website] donation — Direct Fallback"
+      "subject": "[Website] Donation — Direct Fallback"
     },
     {
       "test": "server-error",
       "key": "volunteer",
       "ok": true,
       "msg": "Sorry, your message couldn’t be sent. Please try again or WhatsApp us at +92 302 0692993.",
-      "took": 3272,
+      "took": 3271,
       "kept": "Kept Value"
     },
     {
@@ -387,7 +387,7 @@
       "key": "donation",
       "ok": true,
       "msg": "Sorry, your message couldn’t be sent. Please try again or WhatsApp us at +92 302 0692993.",
-      "took": 3024,
+      "took": 2812,
       "kept": "Kept Value"
     },
     {
@@ -395,7 +395,7 @@
       "key": "prayer_request",
       "ok": true,
       "msg": "Sorry, your message couldn’t be sent. Please try again or WhatsApp us at +92 302 0692993.",
-      "took": 3214,
+      "took": 2988,
       "kept": "Kept Value"
     },
     {
@@ -403,7 +403,7 @@
       "key": "volunteer",
       "ok": true,
       "msg": "Sorry, your message couldn’t be sent. Please try again or WhatsApp us at +92 302 0692993.",
-      "took": 23237,
+      "took": 23254,
       "kept": "Kept Value"
     },
     {
@@ -445,7 +445,7 @@
       "key": "volunteer",
       "ok": true,
       "error": {
-        "url": "http://127.0.0.1:8899/partner-with-us/?krm_sent=iEd2uoX0yIS2CiWIl1Io#volunteer-form",
+        "url": "http://127.0.0.1:8899/partner-with-us/?krm_sent=Q1O79EUr5wNNDL7uZy7l#volunteer-form",
         "msg": "Please check the highlighted fields.",
         "kept": "nojs@example.com",
         "nameInvalid": "true",
@@ -462,7 +462,7 @@
       "key": "prayer_request",
       "ok": true,
       "error": {
-        "url": "http://127.0.0.1:8899/partner-with-us/prayer-request/?krm_sent=O5RbFKPg6Lva6zEsNBu0#request-form",
+        "url": "http://127.0.0.1:8899/partner-with-us/prayer-request/?krm_sent=6vO5uFX1UHWcPPZjScYj#request-form",
         "msg": "Please check the highlighted fields.",
         "kept": "nojs@example.com",
         "nameInvalid": "true",
@@ -479,7 +479,7 @@
       "key": "donation",
       "ok": true,
       "error": {
-        "url": "http://127.0.0.1:8899/donate/?krm_sent=RXsjZLReQh8I24vmaNk1#gift",
+        "url": "http://127.0.0.1:8899/donate/?krm_sent=Leg3f8EwfvW5E97Zsj2h#gift",
         "msg": "Please check the highlighted fields.",
         "kept": "nojs@example.com",
         "nameInvalid": "true",

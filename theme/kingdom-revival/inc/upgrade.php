@@ -1548,3 +1548,18 @@ add_action(
 	},
 	31
 );
+
+/*
+ * Theme 1.18.3: the ministry's new Web3Forms access key. A Settings value still holding the previous key
+ * (df5b0a03-…) is replaced; any other key typed by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		$settings = get_option( 'krm_settings' );
+		if ( is_array( $settings ) && isset( $settings['web3forms_key'] ) && 'df5b0a03-783c-4607-a037-17855f320d71' === trim( (string) $settings['web3forms_key'] ) ) {
+			$settings['web3forms_key'] = '4b1ed194-65df-4d6e-907b-f4e473b11f70';
+			update_option( 'krm_settings', $settings );
+		}
+	}
+);
