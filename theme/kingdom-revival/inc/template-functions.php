@@ -1241,6 +1241,82 @@ function krm_admin_only_note( $hidden = true ) {
 	}
 }
 
+/* ---------- Testimonial samples and avatars ---------- */
+
+/**
+ * Whether a named dummy testimonial is enabled for public display in inc/data/testimonials.php.
+ * Administrators always see samples so they can review and replace them.
+ *
+ * @param string $name Testimonial name.
+ * @return bool
+ */
+function krm_sample_testimonial_enabled( $name ) {
+	if ( krm_show_placeholders() ) {
+		return true;
+	}
+	static $enabled = null;
+	if ( null === $enabled ) {
+		$enabled = array();
+		foreach ( include KRM_DIR . '/inc/data/testimonials.php' as $item ) {
+			$enabled[ sanitize_title( $item['name'] ) ] = ! empty( $item['is_sample'] );
+		}
+	}
+	$key = sanitize_title( $name );
+	return ! array_key_exists( $key, $enabled ) || $enabled[ $key ];
+}
+
+/**
+ * Remove disabled sample testimonials from a list for public visitors.
+ *
+ * @param WP_Post[] $posts Testimonials.
+ * @return WP_Post[]
+ */
+function krm_public_testimonials( $posts ) {
+	return array_values(
+		array_filter(
+			(array) $posts,
+			function ( $post ) {
+				return ! get_post_meta( $post->ID, '_krm_sample', true ) || krm_sample_testimonial_enabled( get_the_title( $post ) );
+			}
+		)
+	);
+}
+
+/**
+ * A testimonial avatar: photo when supplied, otherwise the first grapheme of the person's name.
+ * Titles are ignored. The deterministic colour class keeps the same person on the same brand pair everywhere.
+ *
+ * @param string     $name  Person's name.
+ * @param int|string $photo Attachment ID or image URL.
+ */
+function krm_avatar( $name, $photo = null ) {
+	$name = trim( wp_strip_all_tags( krm_fill( (string) $name ) ) );
+	if ( $photo ) {
+		$url = is_numeric( $photo ) ? wp_get_attachment_image_url( (int) $photo, 'thumbnail' ) : krm_ref_url( (string) $photo, 'thumbnail' );
+		if ( $url ) {
+			echo '<img class="krm-avatar" src="' . esc_url( $url ) . '" alt="" width="48" height="48" loading="lazy" decoding="async" aria-hidden="true">';
+			return;
+		}
+	}
+	$untitled = trim( preg_replace( '/^(?:(?:Pastor|Ps\.|Rev\.|Dr\.|Mr\.|Mrs\.|Miss|Bro\.|Sis\.|Brother|Sister)\s+)+/iu', '', $name ) );
+	if ( function_exists( 'grapheme_extract' ) ) {
+		$letter = grapheme_extract( $untitled, 1, GRAPHEME_EXTR_COUNT );
+	} elseif ( function_exists( 'mb_substr' ) ) {
+		$letter = mb_substr( $untitled, 0, 1, 'UTF-8' );
+	} else {
+		$letter = substr( $untitled, 0, 1 );
+	}
+	$letter = function_exists( 'mb_strtoupper' ) ? mb_strtoupper( (string) $letter, 'UTF-8' ) : strtoupper( (string) $letter );
+	$tone   = (int) sprintf( '%u', crc32( function_exists( 'mb_strtolower' ) ? mb_strtolower( $name, 'UTF-8' ) : strtolower( $name ) ) ) % 4;
+	echo '<span class="krm-avatar krm-avatar--' . esc_attr( (string) $tone ) . '" aria-hidden="true">';
+	if ( '' !== $letter ) {
+		echo esc_html( $letter );
+	} else {
+		echo '<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z"/></svg>';
+	}
+	echo '</span>';
+}
+
 /**
  * Whether the Testimonies page is hidden. Never since Phase 21 (the client wants it visible): while no Testimonial is
  * published it shows a short line and the "Share your testimony" form, and the list appears above the form once one

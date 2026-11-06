@@ -11,18 +11,18 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$krm_quote = get_posts(
+$krm_quote = krm_public_testimonials( get_posts(
 	array(
 		'post_type'      => 'testimonial',
 		'post_status'    => 'publish',
-		'posts_per_page' => 1,
+		'posts_per_page' => 200,
 		'orderby'        => array(
 			'menu_order' => 'ASC',
 			'date'       => 'DESC',
 		),
 		'no_found_rows'  => true,
 	)
-);
+) );
 $krm_quote = $krm_quote ? $krm_quote[0] : null;
 $krm_cards = array(
 	array(
@@ -55,7 +55,7 @@ $krm_cards = array(
 				<div class="impact-link-card__body">
 					<h3><a href="<?php echo esc_url( $krm_card['url'] ); ?>"><?php echo esc_html( krm_fill( $krm_card['title'] ) ); ?></a></h3>
 					<?php if ( 'testimonies' === $krm_card['id'] && $krm_quote ) : ?>
-					<blockquote class="impact-link-card__quote"><p><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $krm_quote->post_content ), 26, '…' ) ); ?></p><cite><?php echo esc_html( get_the_title( $krm_quote ) ); ?></cite></blockquote>
+					<blockquote class="impact-link-card__quote"><p><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $krm_quote->post_content ), 26, '…' ) ); ?></p><footer><?php krm_avatar( get_the_title( $krm_quote ), get_post_thumbnail_id( $krm_quote ) ); ?><cite><?php echo esc_html( get_the_title( $krm_quote ) ); ?></cite></footer></blockquote>
 					<?php elseif ( '' !== trim( (string) $krm_card['text'] ) ) : ?>
 					<p><?php echo esc_html( krm_fill( $krm_card['text'] ) ); ?></p>
 					<?php endif; ?>

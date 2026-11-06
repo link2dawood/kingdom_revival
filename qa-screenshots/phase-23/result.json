@@ -1,0 +1,67 @@
+{
+  "crawled": 35,
+  "avatarPages": [
+    {
+      "pathname": "/",
+      "avatarCount": 3
+    },
+    {
+      "pathname": "/what-we-do/gospel-spiritual-ministries/evangelism-outreach/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/gospel-spiritual-ministries/church-planting/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/gospel-spiritual-ministries/bible-distribution/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/gospel-spiritual-ministries/leadership-training/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/gospel-spiritual-ministries/baptisms-discipleship/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/gospel-spiritual-ministries/prayer-deliverance/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/compassion-humanitarian-ministries/slavery-freedom/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/compassion-humanitarian-ministries/brick-kiln-family-care/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/compassion-humanitarian-ministries/children-orphan-care/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/compassion-humanitarian-ministries/clean-water/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/compassion-humanitarian-ministries/widows-support/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/what-we-do/compassion-humanitarian-ministries/medical-health/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/our-impact/",
+      "avatarCount": 1
+    },
+    {
+      "pathname": "/our-impact/testimonies/",
+      "avatarCount": 12
+    }
+  ],
+  "screenshots": 60,
+  "failures": []
+}

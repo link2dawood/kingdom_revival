@@ -656,7 +656,7 @@ function krm_ministry_testimonial( $m ) {
 		array(
 			'post_type'      => 'testimonial',
 			'post_status'    => 'publish',
-			'posts_per_page' => 1,
+			'posts_per_page' => 200,
 			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				array(
 					'key'     => '_krm_ministry',
@@ -671,6 +671,7 @@ function krm_ministry_testimonial( $m ) {
 			'no_found_rows'  => true,
 		)
 	);
+	$posts = krm_public_testimonials( $posts );
 	return $posts ? $posts[0] : null;
 }
 

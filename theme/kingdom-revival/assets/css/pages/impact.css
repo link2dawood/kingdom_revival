@@ -54,7 +54,8 @@
 .impact-link-card__body > p { margin: 10px 0 0; color: var(--color-text-muted); line-height: 1.65; }
 .impact-link-card__quote { margin: 12px 0 0; padding-left: 14px; border-left: 3px solid var(--color-secondary); color: var(--color-text); font-style: italic; line-height: 1.6; }
 .impact-link-card__quote p { margin: 0; }
-.impact-link-card__quote cite { display: block; margin-top: 8px; color: var(--color-text-muted); font-size: 14px; font-style: normal; font-weight: 700; }
+.impact-link-card__quote footer { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+.impact-link-card__quote cite { display: block; color: var(--color-text-muted); font-size: 14px; font-style: normal; font-weight: 700; }
 .impact-link-card__more { margin-top: auto; padding-top: 16px; color: var(--color-secondary-text); font-weight: 700; }
 @media (max-width: 760px) { .impact-links__grid { grid-template-columns: minmax(0, 1fr); } }
 

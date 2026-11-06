@@ -8,6 +8,14 @@
 defined( 'ABSPATH' ) || exit;
 
 $krm_items = krm_visible( krm_c( 'stories.items' ), 'quote' ); // Visitors: only stories with real words.
+$krm_items = array_values(
+	array_filter(
+		$krm_items,
+		function ( $story ) {
+			return krm_sample_testimonial_enabled( isset( $story['name'] ) ? $story['name'] : '' );
+		}
+	)
+);
 if ( ! $krm_items ) {
 	return;
 }
@@ -31,11 +39,7 @@ $krm_none = ! array_filter(
 <svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true" style="fill: var(--color-orange)"><path d="M7 7h4v4c0 3-1.5 5-4 6l-.7-1.2C8 15 8.6 13.8 8.7 12H7zM14 7h4v4c0 3-1.5 5-4 6l-.7-1.2C15 15 15.6 13.8 15.7 12H14z"></path></svg>
 <blockquote style="margin: 0; font-size: 17px; line-height: 1.6; color: var(--color-text)"><?php echo krm_text( $krm_story['quote'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></blockquote>
 <figcaption style="margin-top: auto; display: flex; gap: 12px; align-items: center">
-	<?php if ( $krm_story['photo'] ) : ?>
-<img loading="lazy" decoding="async" src="<?php echo esc_url( krm_ref_url( $krm_story['photo'], 'thumbnail' ) ); ?>" alt="" width="48" height="48" style="flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; object-fit: cover">
-	<?php else : ?>
-<span aria-hidden="true" style="flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(180deg, var(--color-secondary) 0%, var(--color-orange) 100%); color: var(--color-white); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800"><?php echo esc_html( mb_substr( (string) preg_replace( '/^Pastor\s+/i', '', trim( wp_strip_all_tags( krm_fill( (string) $krm_story['name'] ) ) ) ), 0, 1 ) ); ?></span>
-	<?php endif; ?>
+	<?php krm_avatar( $krm_story['name'], $krm_story['photo'] ); ?>
 <span style="display: flex; flex-direction: column; line-height: 1.3"><strong><?php echo krm_text( $krm_story['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong><span style="font-size: 14px; color: var(--color-text-muted)"><?php echo krm_text( $krm_story['place'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></span>
 </figcaption>
 </figure>

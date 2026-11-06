@@ -3837,3 +3837,66 @@ empties the page cache itself whenever a new version is installed.**
 
 1. The 12 testimonials are **dummy** (made-up names and words): replace them with real ones before launch.
 2. The page address stays /our-impact/testimonies/. Say if it should become /our-impact/testimonials/ (with a 301).
+
+
+## Kingdom Revival Ministries: Phase 23: testimonial avatars and sample launch control (theme 1.17.2)
+
+**Result: every person-attributed testimonial card now uses one shared 48 px avatar renderer: a real circular photo
+when supplied, otherwise the name's title-free first Unicode grapheme on a deterministic WCAG-AA brand colour. The
+same renderer appears on Home, Our Impact, Testimonials, all 12 ministry detail stories, the testimonial archive and
+the `[krm_testimonials]` shortcode. There are no grey empty testimonial circles. Every existing dummy testimonial is
+unchanged and carries `is_sample: true`; changing an entry to `false` hides it from public visitors everywhere while
+administrators retain it, and the existing empty message plus "Share your testimony" form returns when none remain.**
+
+### What changed
+
+- `krm_avatar( $name, $photo = null )` is the only testimonial avatar renderer. It skips Pastor, Ps., Rev., Dr., Mr.,
+  Mrs., Miss, Bro., Sis., Brother and Sister; uses `grapheme_extract()` (with UTF-8 fallbacks); uppercases the grapheme;
+  shows a user icon for no name; and hashes the full name into the four requested navy, orange, red and light pairs.
+  Photos use the same 48 px circle with `object-fit: cover`. Every output is decorative (`aria-hidden="true"`, empty
+  image alt). Dark-mode overrides use navy #18234F with the #26336A ring and light #26336A / #E8ECF6.
+- Public sample filtering is shared by the main page, ministry lookup, Our Impact preview, archive, shortcode and the
+  editable Home cards. It reads the `is_sample` value by name from `inc/data/testimonials.php`; admins bypass it.
+- The Our Impact testimonial preview now includes the same avatar beside the cited name. Partner With Us and the two
+  group overview pages were crawled but contain no person-attributed testimonial/review card; their Scripture/verse
+  citations were correctly left unchanged.
+- `tools/visual-qa/phase23_check.js` crawls logged out for legacy `.avatar` circles, detects every page containing the
+  shared avatar, checks its 48 px size, font, weight, `aria-hidden`, theme colour and non-placeholder background, flushes
+  scroll reveal, and captures the four requested viewport/theme states.
+
+### Sample testimonials to replace with real, consented stories
+
+- **Yousaf Masih** — Home "Stories from the field"; Our Impact testimonial preview; Testimonials page; Slavery &
+  Freedom ministry detail story; testimonial archive/shortcode when queried.
+- **Saima Bibi** — Home "Stories from the field"; Testimonials page; Medical & Health Outreach ministry detail story;
+  testimonial archive/shortcode when queried.
+- **Pastor Javed Masih** — Home "Stories from the field"; Testimonials page; Church Planting ministry detail story;
+  testimonial archive/shortcode when queried.
+- **Rubina Pervaiz** — Testimonials page; Bible Distribution ministry detail story; testimonial archive/shortcode.
+- **Asif Gill** — Testimonials page; Evangelism & Outreach ministry detail story; testimonial archive/shortcode.
+- **Pastor Arshad Gill** — Testimonials page; Leadership Training & Equipping ministry detail story; testimonial
+  archive/shortcode.
+- **Naveed Sadiq** — Testimonials page; Baptisms & Discipleship ministry detail story; testimonial archive/shortcode.
+- **Shamim Akhtar** — Testimonials page; Prayer & Deliverance ministry detail story; testimonial archive/shortcode.
+- **Rashid Masih** — Testimonials page; Brick Kiln Family Care ministry detail story; testimonial archive/shortcode.
+- **Ayesha** — Testimonials page; Children & Orphan Care ministry detail story; testimonial archive/shortcode.
+- **Iqbal Masih** — Testimonials page; Clean Water Projects ministry detail story; testimonial archive/shortcode.
+- **Nasreen Bibi** — Testimonials page; Widows Support ministry detail story; testimonial archive/shortcode.
+
+### How it was verified
+
+- `phase23_check.js`: logged-out crawl of 35 linked pages, **15 avatar-bearing locations**, **60 screenshots** (390 and
+  1440, light and dark), **0 failures**. It found Home (3 avatars), Our Impact (1), Testimonials (12), and each of the
+  12 ministry detail pages (1 each). Captures are in `qa-screenshots/phase-23/shots/`; machine results are in
+  `qa-screenshots/phase-23/result.json`.
+- `final_pass.js`: 40 pages; horizontal overflow 0 at 360/768/1024/1440, JS errors 0, axe violations 0, light contrast
+  failures 0, dark contrast failures 0, missing pages 0, duplicate titles/descriptions 0.
+- `placeholder_check.js`: 59 pages logged out, all 200, 0 placeholders, 0 links to hidden ministries.
+- All theme PHP files pass `php -l`; `git diff --check` passes. A live one-entry flag test changed Yousaf Masih to
+  `is_sample: false`: Home and Slavery & Freedom no longer rendered him/the card, and Testimonials fell from 12 to 11;
+  the flag was restored to `true` after the test.
+
+### Not covered
+
+- The live site was not updated. Upload `kingdom-revival.zip` (1.17.2); the existing version-change cache purge runs
+  automatically. The browser checks and screenshots are from the local WordPress copy.

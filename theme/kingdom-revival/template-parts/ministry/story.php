@@ -16,7 +16,7 @@ $krm_post = krm_ministry_testimonial( $krm_m );
 $krm_sample = null;
 if ( ! $krm_post ) {
 	foreach ( include KRM_DIR . '/inc/data/testimonials.php' as $krm_testimonial ) {
-		if ( $krm_m['slug'] === $krm_testimonial['ministry'] ) {
+		if ( $krm_m['slug'] === $krm_testimonial['ministry'] && krm_sample_testimonial_enabled( $krm_testimonial['name'] ) ) {
 			$krm_sample = $krm_testimonial;
 			break;
 		}
@@ -45,16 +45,12 @@ if ( ! $krm_post && ! $krm_sample ) {
 			?>
 		<blockquote><?php echo wp_kses_post( wpautop( $krm_post->post_content ) ); ?></blockquote>
 		<figcaption>
-			<?php if ( $krm_img ) : ?>
-			<img src="<?php echo esc_url( (string) wp_get_attachment_image_url( $krm_img, 'thumbnail' ) ); ?>" alt="" width="48" height="48" loading="lazy" decoding="async">
-			<?php else : ?>
-			<span class="avatar" aria-hidden="true"></span>
-			<?php endif; ?>
+			<?php krm_avatar( get_the_title( $krm_post ), $krm_img ); ?>
 			<span><strong><?php echo esc_html( get_the_title( $krm_post ) ); ?></strong><?php if ( '' !== $krm_role ) : ?><small><?php echo esc_html( $krm_role ); ?></small><?php endif; ?></span>
 		</figcaption>
 		<?php else : ?>
 		<blockquote><p><?php echo esc_html( $krm_sample['text'] ); ?></p></blockquote>
-		<figcaption><span class="avatar" aria-hidden="true"></span><span><strong><?php echo esc_html( $krm_sample['name'] ); ?></strong><small><?php echo esc_html( $krm_sample['role'] ); ?></small></span></figcaption>
+		<figcaption><?php krm_avatar( $krm_sample['name'] ); ?><span><strong><?php echo esc_html( $krm_sample['name'] ); ?></strong><small><?php echo esc_html( $krm_sample['role'] ); ?></small></span></figcaption>
 		<?php endif; ?>
 	</figure>
 </section>

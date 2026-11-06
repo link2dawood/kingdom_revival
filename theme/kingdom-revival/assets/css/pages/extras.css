@@ -16,7 +16,7 @@
 .testimonial blockquote p { margin: 0 0 10px; }
 .testimonial blockquote p:last-child { margin: 0; }
 .testimonial figcaption { display: flex; gap: 12px; align-items: center; }
-.testimonial figcaption img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.testimonial figcaption .krm-avatar { flex: 0 0 48px; }
 .testimonial figcaption span { display: flex; flex-direction: column; }
 .testimonial figcaption strong { color: var(--color-heading); }
 .testimonial figcaption small { color: var(--muted); }

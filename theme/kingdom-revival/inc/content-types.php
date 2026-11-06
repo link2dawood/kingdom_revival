@@ -430,22 +430,13 @@ function krm_type_card( $post ) {
  * @param WP_Post[] $posts Testimonials.
  */
 function krm_testimonial_cards( $posts ) {
+	$posts = krm_public_testimonials( $posts );
 	echo '<div class="testimonial-grid">';
 	foreach ( $posts as $post ) {
 		$photo = get_post_thumbnail_id( $post );
 		$role  = (string) get_post_meta( $post->ID, '_krm_role', true );
 		echo '<figure class="testimonial"><blockquote>' . wp_kses_post( wpautop( $post->post_content ) ) . '</blockquote><figcaption>';
-		if ( $photo ) {
-			echo wp_get_attachment_image(
-				$photo,
-				'thumbnail',
-				false,
-				array(
-					'alt'     => '',
-					'loading' => 'lazy',
-				)
-			);
-		}
+		krm_avatar( get_the_title( $post ), $photo );
 		echo '<span><strong>' . esc_html( get_the_title( $post ) ) . '</strong>' . ( $role ? '<small>' . esc_html( $role ) . '</small>' : '' ) . '</span></figcaption></figure>';
 	}
 	echo '</div>';
@@ -478,7 +469,7 @@ add_shortcode(
 			$query['meta_key']   = '_krm_ministry'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 			$query['meta_value'] = sanitize_title( $atts['ministry'] ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 		}
-		$posts = get_posts( $query );
+		$posts = krm_public_testimonials( get_posts( $query ) );
 		if ( ! $posts ) {
 			return '';
 		}

@@ -8,6 +8,8 @@
 defined( 'ABSPATH' ) || exit;
 
 get_header();
+global $wp_query;
+$krm_testimonials = krm_public_testimonials( $wp_query->posts );
 ?>
 	<main id="main">
 	<?php
@@ -23,10 +25,9 @@ get_header();
 	?>
 	<section class="section" style="padding-top: clamp(48px, 6vw, 72px)">
 		<div class="wrap">
-		<?php if ( have_posts() ) : ?>
+		<?php if ( $krm_testimonials ) : ?>
 			<?php
-			global $wp_query;
-			krm_testimonial_cards( $wp_query->posts );
+			krm_testimonial_cards( $krm_testimonials );
 			krm_pagination();
 			?>
 		<?php else : ?>

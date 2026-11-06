@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$krm_items = get_posts(
+$krm_items = krm_public_testimonials( get_posts(
 	array(
 		'post_type'      => 'testimonial',
 		'post_status'    => 'publish',
@@ -24,7 +24,7 @@ $krm_items = get_posts(
 		),
 		'no_found_rows'  => true,
 	)
-);
+) );
 $krm_by_id = array();
 foreach ( krm_ministries() as $krm_m ) {
 	if ( $krm_m['id'] ) {
@@ -87,11 +87,7 @@ uasort(
 				<svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true" style="fill: var(--color-orange)"><path d="M7 7h4v4c0 3-1.5 5-4 6l-.7-1.2C8 15 8.6 13.8 8.7 12H7zM14 7h4v4c0 3-1.5 5-4 6l-.7-1.2C15 15 15.6 13.8 15.7 12H14z"></path></svg>
 				<blockquote><?php echo wp_kses_post( wpautop( $krm_p->post_content ) ); ?></blockquote>
 				<figcaption>
-					<?php if ( $krm_img ) : ?>
-					<img src="<?php echo esc_url( (string) wp_get_attachment_image_url( $krm_img, 'thumbnail' ) ); ?>" alt="" width="48" height="48" loading="lazy" decoding="async">
-					<?php else : ?>
-					<span class="avatar" aria-hidden="true"></span>
-					<?php endif; ?>
+					<?php krm_avatar( get_the_title( $krm_p ), $krm_img ); ?>
 					<span><strong><?php echo esc_html( get_the_title( $krm_p ) ); ?></strong><?php if ( '' !== $krm_role ) : ?><small><?php echo esc_html( $krm_role ); ?></small><?php endif; ?></span>
 				</figcaption>
 				</figure>
@@ -101,6 +97,7 @@ uasort(
 		<?php endif; ?>
 		</div>
 	</section>
+	<?php if ( ! $krm_items ) { get_template_part( 'template-parts/testimony-form' ); } ?>
 	</main>
 <?php
 get_footer();
