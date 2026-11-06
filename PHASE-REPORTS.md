@@ -46,6 +46,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Phase 21: What We Do groups, Our Impact subpages, Testimonies form (theme 1.16.0)](#kingdom-revival-ministries-phase-21-what-we-do-groups-our-impact-subpages-testimonies-form-theme-1160)
 - [Kingdom Revival Ministries: "Show more" on the Our Impact subpages (theme 1.16.1)](#kingdom-revival-ministries-show-more-on-the-our-impact-subpages-theme-1161)
 - [Kingdom Revival Ministries: Chiniot and Toba Tek Singh on the Our Impact map (theme 1.16.2)](#kingdom-revival-ministries-chiniot-and-toba-tek-singh-on-the-our-impact-map-theme-1162)
+- [Kingdom Revival Ministries: Mobile PageSpeed 90+ (theme 1.16.3)](#kingdom-revival-ministries-mobile-pagespeed-90-theme-1163)
 
 ---
 
@@ -3551,4 +3552,81 @@ navy chips, so they read on the light map shape (before, white text on the light
 
 - The kilns and churches for Chiniot and Toba Tek Singh are 0 only to keep the dummy totals consistent; send the real
   figures (or the share of the totals each district has) and the table, and the totals, can be updated together.
+
+## Kingdom Revival Ministries: Mobile PageSpeed 90+ (theme 1.16.3)
+
+**Result: with Elementor installed and active (as on the live site), every page tested scores 95–100 on mobile
+Lighthouse (median of 3 runs, 12 pages), CLS 0 everywhere. The live site (theme 1.15.9) scored 68–80 in the same test.
+Most of the remaining gap on live is the server (no page cache) and the unused plugins, which need action in the
+WordPress admin (below).**
+
+### What was slowing the live site
+
+Measured from here with the same Lighthouse mobile settings (Moto G Power, slow 4G, 4× CPU) on
+https://kingdomrevivalministries.com (theme 1.15.9): home 68, About 80, Donate 79; first paint 3.0–3.2 s,
+LCP 4.0–5.7 s, 45–71 requests (locally the same pages make 12–22).
+
+- **Unused plugin files on every page:** Elementor, Elementor Pro, Header Footer Elementor, Astra Sites, FormLayer and
+  SureForms add about 25 stylesheets (Elementor and Elementor Pro frontend CSS, Font Awesome, widget CSS, two Google
+  Fonts requests for Roboto / Roboto Slab), jQuery + jQuery Migrate and Elementor's scripts. No page uses them: every
+  page is drawn by the theme's own templates (the old Elementor pages redirect).
+- **Server response about 1 s** (0.9–1.8 s measured): the server is LiteSpeed but no page cache is active (no
+  LiteSpeed cache header).
+- **Photos are the old site's JPG sizes** (e.g. the About hero, a 121 KB JPG; the theme makes a 70 KB WebP of the
+  same photo locally).
+- In the theme itself: Testimonies scored 86–88 locally because of a layout shift (CLS 0.186).
+
+### What changed in the theme
+
+- `inc/performance.php` ("Page-builder and form-plugin files the theme's pages never use"): on the front end the
+  queued styles and scripts of Elementor, Elementor Pro, Header Footer Elementor, Astra Sites (also Ultimate Elementor
+  and Essential Addons, if installed), Elementor's generated CSS (uploads/elementor/) and its Roboto Google Fonts are
+  left out, at the enqueue stage and again just before the head and footer are printed (for files queued while the
+  page is drawn). SureForms / FormLayer are left out except on a page whose content has one of their forms. jQuery
+  and jQuery Migrate are left out when no remaining script needs them (the theme's scripts never use jQuery; anything
+  that does, e.g. a cookie or form plugin, keeps it). Nothing is removed on a page or post actually built with
+  Elementor (`_elementor_edit_mode` = builder, printed by page.php / single.php), in the Elementor editor and preview,
+  the Customizer or the admin. Filter `krm_strip_builder_assets` (return false) turns it off. CookieAdmin is not
+  touched (consent banner).
+- **Layout shift**: the filter bars (Testimonies, Gallery) were printed with `hidden` and shown by components.js
+  after the page had painted, pushing the content down. `site.css` has `[hidden] { display: none !important }`, so
+  they now use the class `krm-needs-js` instead (hidden only when there is no "js" class on `<html>`, which the head
+  script sets before the CSS applies): they show from the first paint. A "Show more" list hides its items past 18 in
+  CSS until components.js marks it ready (`data-krm-more-ready`), so it doesn't collapse after paint either.
+
+### How it was verified (local WP, production-like proxy: page cache + Brotli)
+
+- Elementor and Header Footer Elementor (free) were installed on the local site for the test: before the change 14
+  of their files on every page; after, 0 on the home page, About, Testimonies, What We Do and a story, and no jQuery on
+  any page. A page given Elementor content (builder mode) kept its 11 Elementor files and showed its heading. Test page
+  deleted and both plugins removed again afterwards.
+- Lighthouse mobile, 3 runs each, median (Elementor active): home 95, About 99, What We Do 99, Brick Kiln Family Care
+  96, Our Impact 99, Testimonies 97 (was 88, CLS 0.186 → 0), Gallery 98, News 97, a story 96, Partner With Us 99,
+  Contact 100, Donate 98. The Testimonies shift was traced in a Lighthouse trace (the 380 × 266 px filter bar).
+- `final_pass.js` (37 pages): JS errors 0, overflow 0, axe 0, contrast failures 0 in light and dark. Menus (keyboard,
+  27/28: the arrow-text check only), "Show more" and the ministry filter still work; without JavaScript the filter bars
+  are hidden and every item is listed.
+
+### Not covered
+
+- The live site could not be measured after the change: it still runs theme 1.15.9. Google's PageSpeed API quota was
+  used up for the day, so live scores here come from the same Lighthouse run locally; PageSpeed Insights (Google's
+  servers, a different location) will differ by a few points.
+- Elementor Pro, SureForms, FormLayer and Astra Sites were not installed locally (Pro is paid); they are matched by
+  their file paths, which were read from the live site's pages.
+
+### Decisions / steps for you (in the WordPress admin of the live site)
+
+1. **Upload theme 1.16.3** (`kingdom-revival.zip`). This alone removes the plugin files from every page.
+2. **Turn on the page cache**: the server is LiteSpeed, so install the free **LiteSpeed Cache** plugin and enable
+   its page cache (leave its CSS/JS "combine" options off; the theme already keeps its files small). This takes the
+   ~1 s server response down to ~0.1 s and is the largest single gain left.
+3. **Deactivate the unused plugins** (Elementor, Elementor Pro, Header Footer Elementor, Astra Sites / Starter
+   Templates, FormLayer, SureForms) once you have checked nothing else uses them; the theme's forms do not. This
+   saves server time on every page, even with the theme skipping their files.
+4. **Regenerate thumbnails** (e.g. the free "Regenerate Thumbnails" plugin, all images) so the old site's photos get
+   the theme's WebP sizes.
+5. The "Needs Improvement" / "Optimized" badges in the pages list are from **SureRank** (the live site's SEO plugin):
+   they are its SEO checks (focus keyword, title and description length, etc.), not page speed. Open one page's
+   SureRank panel to see which checks it lists.
 
