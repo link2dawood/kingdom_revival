@@ -3,6 +3,9 @@
      [data-krm-filter-list="name"] whose data-group contains the choice; a [data-krm-filter-empty] note right after a
      list shows when nothing in it matches. The bar is printed hidden and shown here, so
      without JavaScript everything is listed. data-param keeps the choice in the address (?group=…).
+   - Show more: a list with data-krm-more="18" shows its first 18 items (of those its filter leaves) and a "Show 18
+     more" button after it that reveals the next 18 each time; changing the filter starts again at 18. The button text
+     is data-more-text ({n} = how many the next press shows). Without JavaScript every item is listed.
    - Tabs: [data-krm-tabs] with role="tab" buttons and role="tabpanel" panels; arrow keys move between tabs.
    - Videos: button[data-krm-video] loads the YouTube player only when pressed (no YouTube request before).
    - Forms: form[data-krm-form="prayer|signup|testimony"] post to WordPress with KRM.sendForm (site.js), as the contact
@@ -12,6 +15,40 @@
    - Give card: [data-krm-give-card] amount buttons (data-give-amount) set its Donate link (ministry pages). */
 (function () {
   function all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  /* ---------- Show more ---------- */
+  all("[data-krm-more]").forEach(function (list) {
+    var step = parseInt(list.getAttribute("data-krm-more"), 10) || 18;
+    var limit = step;
+    var wrap = document.createElement("div");
+    var button = document.createElement("button");
+    wrap.className = "krm-more";
+    button.type = "button";
+    button.className = "button button-secondary krm-more-button";
+    wrap.appendChild(button);
+    // After the list's "nothing here" note, so the filter still finds the note right after the list.
+    var after = list.nextElementSibling && list.nextElementSibling.hasAttribute("data-krm-filter-empty") ? list.nextElementSibling : list;
+    after.parentNode.insertBefore(wrap, after.nextSibling);
+    function render(focusAt) {
+      var on = Array.prototype.filter.call(list.children, function (el) { return !el.hidden; });
+      Array.prototype.forEach.call(list.children, function (el) { el.classList.remove("krm-more-hidden"); });
+      on.forEach(function (el, i) { if (i >= limit) el.classList.add("krm-more-hidden"); });
+      var left = Math.max(0, on.length - limit);
+      wrap.hidden = left === 0;
+      button.textContent = (list.getAttribute("data-more-text") || "Show {n} more").replace("{n}", Math.min(step, left));
+      if (focusAt !== undefined && on[focusAt]) {
+        // Keyboard and screen-reader users continue at the first newly shown item.
+        var first = on[focusAt];
+        var target = first.querySelector("a[href], button, [tabindex]") || first;
+        if (target === first) first.tabIndex = -1;
+        target.focus();
+      }
+      if (window.krmReveal) window.krmReveal.flush();
+    }
+    button.addEventListener("click", function () { var from = limit; limit += step; render(from); });
+    list.krmMore = { reset: function () { limit = step; render(); } };
+    render();
+  });
 
   /* ---------- Filters ---------- */
   all("[data-krm-filter]").forEach(function (bar) {
@@ -39,6 +76,7 @@
         // The "nothing here" note right after a list.
         var note = list.nextElementSibling;
         if (note && note.hasAttribute("data-krm-filter-empty")) note.hidden = listShown > 0;
+        if (list.krmMore) list.krmMore.reset();
       });
       if (announce && status) status.textContent = (status.getAttribute("data-text") || "").replace("{n}", shown);
     }

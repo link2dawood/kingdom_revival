@@ -29,6 +29,7 @@ return array(
 			'tip'          => krm_f( 'text', __( 'Tip above the photos', 'kingdom-revival' ), 'Tap any photo to view it full screen and zoom in.' ),
 			'count_text'   => krm_f( 'text', __( 'Announced after filtering ({n} = number)', 'kingdom-revival' ), 'Showing {n} items' ),
 			'empty'        => krm_f( 'text', __( 'Text when the filter matches nothing', 'kingdom-revival' ), 'Nothing here yet for this ministry.' ),
+			'more'         => krm_f( 'text', __( '“Show more” button under the photos and videos (18 at a time; {n} = how many it shows next)', 'kingdom-revival' ), 'Show {n} more' ),
 			'no_videos'    => krm_f( 'textarea', __( 'Text while there are no videos', 'kingdom-revival' ), 'New videos from the field are coming soon. Follow us on social media to see the latest.' ),
 		),
 	),

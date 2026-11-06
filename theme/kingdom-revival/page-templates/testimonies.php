@@ -71,7 +71,7 @@ uasort(
 		</div>
 		<p class="visually-hidden" aria-live="polite" data-krm-filter-status="testimonies" data-text="<?php echo esc_attr( krm_fill( krm_c( 'list.count_text' ) ) ); ?>"></p>
 			<?php endif; ?>
-		<ul class="testimony-grid" data-krm-filter-list="testimonies">
+		<ul class="testimony-grid" data-krm-filter-list="testimonies" data-krm-more="18" data-more-text="<?php echo esc_attr( krm_fill( krm_c( 'list.more' ) ) ); ?>">
 			<?php
 			foreach ( $krm_items as $krm_p ) :
 				$krm_mid  = krm_testimonial_ministry_id( $krm_p->ID );

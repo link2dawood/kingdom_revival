@@ -103,7 +103,7 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 		<div<?php echo $krm_has_videos ? ' role="tabpanel" aria-labelledby="tab-photos"' : ''; ?> id="panel-photos">
 			<?php if ( $krm_photos ) : ?>
 			<p class="gallery-tip" style="display: flex; align-items: center; gap: 8px; margin: 0 0 18px; color: var(--color-text-muted); font-size: 14px"><?php echo krm_icon( 'zoom' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php krm_t( 'labels.tip' ); ?></p>
-			<div class="gallery" data-gallery data-krm-filter-list="gallery">
+			<div class="gallery" data-gallery data-krm-filter-list="gallery" data-krm-more="18" data-more-text="<?php echo esc_attr( krm_fill( krm_c( 'labels.more' ) ) ); ?>">
 				<?php foreach ( $krm_photos as $krm_p ) : ?>
 				<figure class="photo" data-group="<?php echo esc_attr( $krm_p[2] ); ?>"><img <?php krm_img_src( $krm_p[0], '(max-width: 520px) calc(100vw - 32px), (max-width: 760px) calc(50vw - 25px), (max-width: 1240px) calc(33vw - 24px), 400px', true ); ?> alt="<?php echo esc_attr( $krm_p[1] ); ?>" loading="lazy" decoding="async"><figcaption><?php echo esc_html( $krm_p[3] ); ?></figcaption></figure>
 				<?php endforeach; ?>
@@ -117,7 +117,7 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 		<?php if ( $krm_has_videos ) : ?>
 		<div role="tabpanel" id="panel-videos" aria-labelledby="tab-videos">
 			<?php if ( $krm_videos ) : ?>
-			<ul class="video-grid" data-krm-filter-list="gallery">
+			<ul class="video-grid" data-krm-filter-list="gallery" data-krm-more="18" data-more-text="<?php echo esc_attr( krm_fill( krm_c( 'labels.more' ) ) ); ?>">
 				<?php foreach ( $krm_videos as $krm_v ) : ?>
 				<li data-group="<?php echo esc_attr( $krm_v['ministry'] ); ?>">
 				<figure class="video-card">

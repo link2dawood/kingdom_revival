@@ -44,6 +44,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Dummy stories on the home page (theme 1.15.6)](#kingdom-revival-ministries-dummy-stories-on-the-home-page-theme-1156)
 - [Kingdom Revival Ministries: Hero video autoplays everywhere and loops (theme 1.15.7)](#kingdom-revival-ministries-hero-video-autoplays-everywhere-and-loops-theme-1157)
 - [Kingdom Revival Ministries: Phase 21: What We Do groups, Our Impact subpages, Testimonies form (theme 1.16.0)](#kingdom-revival-ministries-phase-21-what-we-do-groups-our-impact-subpages-testimonies-form-theme-1160)
+- [Kingdom Revival Ministries: "Show more" on the Our Impact subpages (theme 1.16.1)](#kingdom-revival-ministries-show-more-on-the-our-impact-subpages-theme-1161)
 
 ---
 
@@ -3503,3 +3504,28 @@ Source: the client's handwritten sitemap, page 1 (the user's Phase 21 brief, 202
    should stay visible; if not, they can be removed from the theme to shrink the zip.
 3. **Hidden ministry addresses** redirect with 302 (temporary), so they work by themselves once published. Say if you
    want 301.
+
+## Kingdom Revival Ministries: "Show more" on the Our Impact subpages (theme 1.16.1)
+
+**Result: the Photo & Video Gallery (photos and videos) and Testimonies show 18 items at first; a "Show 18 more"
+button under the list reveals the next 18 each time, and disappears when everything is shown. Without JavaScript the
+whole list shows, as before.**
+
+- `assets/js/components.js` ("Show more"): a list with `data-krm-more="18"` hides the items past the limit (class
+  `krm-more-hidden`) among those its ministry filter leaves; the button text is "Show {n} more", `{n}` being how many
+  the next press shows (e.g. "Show 9 more" at the end). Choosing another filter starts again at 18. After a press,
+  keyboard focus moves to the first newly shown item. The photo viewer still browses every photo of the current filter.
+- `page-templates/gallery.php` (photo grid and video grid), `page-templates/testimonies.php` (testimony grid).
+- Button text: Pages → Photo & Video Gallery → Page content → Tabs and filter → "Show more" button; Pages →
+  Testimonies → Page content → Testimonies → "Show more" button. Styles: `theme-global.css` last block (the outline
+  `button-secondary`, centred).
+- Verified on local WP (Playwright, 1440 and 390): Gallery has 117 photos → 18 visible, then 36, 54, 72, 90, 108,
+  117 with the button reading "Show 18 more" … "Show 9 more", then gone; each press with Enter keeps focus in the list;
+  filter Evangelism & Outreach → its 12 photos, no button; back to all → 18 again. No JavaScript errors. Button checked
+  in light (1440) and dark (390).
+
+### Not covered
+
+- Testimonies has 12 published (dummy) testimonies, so its button does not show yet; it uses the same code as the
+  Gallery. Videos: the tab is hidden until a YouTube link exists (Phase 21).
+

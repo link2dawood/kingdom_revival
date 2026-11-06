@@ -24,6 +24,7 @@ return array(
 			'filter_label' => krm_f( 'text', __( 'Filter: name for screen readers', 'kingdom-revival' ), 'Filter testimonies by ministry' ),
 			'all_label'    => krm_f( 'text', __( 'Filter: first tab', 'kingdom-revival' ), 'All' ),
 			'count_text'   => krm_f( 'text', __( 'Filter: announced after filtering ({n} = number)', 'kingdom-revival' ), 'Showing {n} testimonies' ),
+			'more'         => krm_f( 'text', __( '“Show more” button under the testimonies (18 at a time; {n} = how many it shows next)', 'kingdom-revival' ), 'Show {n} more' ),
 			'empty'        => krm_f( 'textarea', __( 'Text while there are no testimonies', 'kingdom-revival' ), 'Testimonies from the families and churches we serve will appear here.' ),
 		),
 	),
