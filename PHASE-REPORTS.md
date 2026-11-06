@@ -51,6 +51,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Testimonials, and the same header for visitors (theme 1.17.1)](#kingdom-revival-ministries-testimonials-and-the-same-header-for-visitors-theme-1171)
 - [Kingdom Revival Ministries: Phase 23: testimonial avatars and sample launch control (theme 1.17.2)](#kingdom-revival-ministries-phase-23-testimonial-avatars-and-sample-launch-control-theme-1172)
 - [Kingdom Revival Ministries: Phase 24: form emails with a loading state (theme 1.18.0)](#kingdom-revival-ministries-phase-24-form-emails-with-a-loading-state-theme-1180)
+- [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 
 ---
 
@@ -4039,3 +4040,31 @@ check Form Submissions → Email status says "Sent".
 - The default success and error texts changed to the brief's wording. If the client had already saved their own
   text in "Page content", their text is kept.
 
+
+## Kingdom Revival Ministries: new phone / WhatsApp number and social links (theme 1.18.1)
+
+**Result:** every page now shows +92 302 0692993 (top bar, footer, Contact cards, Donate bank details, `{phone}` text),
+tap-to-call dials +923020692993, and every WhatsApp link, including the floating message button, opens
+wa.me/923020692993. The top bar, the Contact page's "Follow the ministry" block and the Organization schema (`sameAs`)
+now link the ministry's Facebook and Instagram pages.
+
+### What changed
+
+- [inc/template-functions.php](theme/kingdom-revival/inc/template-functions.php): defaults for `phone`, `phone_tel`,
+  `whatsapp`, `bank_phone`, `facebook` (https://www.facebook.com/share/19W1bbmX9F/?mibextid=wwXIfr) and `instagram`
+  (https://www.instagram.com/kingdomrevivalministries7/, the link given without its QR-code tracking parameters).
+- [inc/upgrade.php](theme/kingdom-revival/inc/upgrade.php): one-time step (option `krm_contact_version` 1). Saved
+  Settings still holding the old number +92 341 5418733, in any spelling, get the new one. Empty Facebook/Instagram
+  fields get the new links. Values someone changed by hand to anything else are kept.
+- [inc/settings.php](theme/kingdom-revival/inc/settings.php): help-text examples use the new number.
+
+### Verification
+
+- Local WP, with the old number and empty social fields saved in Settings to match the live site: after one request,
+  all six settings held the new values. Home, Contact, Donate, About, Partner With Us and News had 0 occurrences of
+  the old number, and every page had the new number, `tel:` link, wa.me link and both social links. Screenshots of
+  the top bar at 1440 and 390 show the number and the Facebook/Instagram icons next to Donate.
+
+### Not covered
+
+- Not uploaded to the live site. After upload, the page cache is purged automatically (new version).

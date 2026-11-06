@@ -1478,3 +1478,40 @@ function krm_upgrade_saved_names() {
 		}
 	}
 }
+
+/*
+ * Theme 1.18.1 (option krm_contact_version 1): the ministry's new phone / WhatsApp number (+92 302 0692993) and its
+ * Facebook and Instagram pages. Saved Settings still holding the old number (+92 341 5418733, any spelling) get the
+ * new one; an empty Facebook or Instagram URL gets the new link. Values changed by hand to anything else are kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_contact_version' ) >= 1 ) {
+			return;
+		}
+		update_option( 'krm_contact_version', 1 );
+		$saved = get_option( 'krm_settings', array() );
+		if ( ! is_array( $saved ) || ! $saved ) {
+			return; // Nothing saved: the new defaults apply.
+		}
+		$defaults = krm_defaults();
+		$changed  = false;
+		foreach ( array( 'phone', 'phone_tel', 'whatsapp', 'bank_phone' ) as $key ) {
+			if ( isset( $saved[ $key ] ) && in_array( preg_replace( '/\D/', '', (string) $saved[ $key ] ), array( '923415418733', '03415418733', '3415418733', '00923415418733' ), true ) ) {
+				$saved[ $key ] = $defaults[ $key ];
+				$changed       = true;
+			}
+		}
+		foreach ( array( 'facebook', 'instagram' ) as $key ) {
+			if ( isset( $saved[ $key ] ) && '' === trim( (string) $saved[ $key ] ) ) {
+				$saved[ $key ] = $defaults[ $key ];
+				$changed       = true;
+			}
+		}
+		if ( $changed ) {
+			update_option( 'krm_settings', $saved );
+		}
+	},
+	30
+);

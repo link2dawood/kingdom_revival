@@ -15,10 +15,10 @@ function krm_settings_schema() {
 	return array(
 		__( 'Contact details', 'kingdom-revival' )    => array(
 			'phone'     => array( __( 'Phone (as displayed)', 'kingdom-revival' ), 'text', '' ),
-			'phone_tel' => array( __( 'Phone (for tap-to-call)', 'kingdom-revival' ), 'text', __( 'Digits with country code, e.g. +923415418733', 'kingdom-revival' ) ),
+			'phone_tel' => array( __( 'Phone (for tap-to-call)', 'kingdom-revival' ), 'text', __( 'Digits with country code, e.g. +923020692993', 'kingdom-revival' ) ),
 			'email'     => array( __( 'Email', 'kingdom-revival' ), 'email', '' ),
 			'address'   => array( __( 'Address', 'kingdom-revival' ), 'textarea', '' ),
-			'whatsapp'  => array( __( 'WhatsApp number', 'kingdom-revival' ), 'text', __( 'Digits with country code, no +, e.g. 923415418733', 'kingdom-revival' ) ),
+			'whatsapp'  => array( __( 'WhatsApp number', 'kingdom-revival' ), 'text', __( 'Digits with country code, no +, e.g. 923020692993', 'kingdom-revival' ) ),
 		),
 		__( 'Social media (top bar)', 'kingdom-revival' ) => array(
 			'facebook'  => array( __( 'Facebook URL', 'kingdom-revival' ), 'url', __( 'Each network with a saved URL gets an icon in the top bar of every page, next to the Donate button. With no URL saved, no icon is shown.', 'kingdom-revival' ) ),
