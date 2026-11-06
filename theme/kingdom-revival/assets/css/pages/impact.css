@@ -57,3 +57,10 @@
 .impact-link-card__quote cite { display: block; margin-top: 8px; color: var(--color-text-muted); font-size: 14px; font-style: normal; font-weight: 700; }
 .impact-link-card__more { margin-top: auto; padding-top: 16px; color: var(--color-secondary-text); font-weight: 700; }
 @media (max-width: 760px) { .impact-links__grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Map pins (theme 1.16.2, four districts): the dot sits exactly on the pin's left / top %, the name on a navy chip so
+   it reads on the light map; "label": "left" in impact.json puts the name to the left of the dot (Jhang, the westmost). */
+.impact-map__pin{gap:6px;padding:3px 9px 3px 3px;border-radius:999px;background:var(--color-band);font-size:12.5px;line-height:18px;white-space:nowrap;transform:translate(-10px,-12px);box-shadow:0 2px 8px rgba(var(--shadow-rgb),calc(.12 * var(--shadow-k)))}
+.impact-map__pin i{flex:none}
+.impact-map__pin.is-left{flex-direction:row-reverse;padding:3px 3px 3px 9px;transform:translate(calc(-100% + 10px),-12px)}
+@media(max-width:600px){.impact-map__pin{max-width:none;white-space:nowrap;font-size:12px}}

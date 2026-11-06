@@ -45,6 +45,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Hero video autoplays everywhere and loops (theme 1.15.7)](#kingdom-revival-ministries-hero-video-autoplays-everywhere-and-loops-theme-1157)
 - [Kingdom Revival Ministries: Phase 21: What We Do groups, Our Impact subpages, Testimonies form (theme 1.16.0)](#kingdom-revival-ministries-phase-21-what-we-do-groups-our-impact-subpages-testimonies-form-theme-1160)
 - [Kingdom Revival Ministries: "Show more" on the Our Impact subpages (theme 1.16.1)](#kingdom-revival-ministries-show-more-on-the-our-impact-subpages-theme-1161)
+- [Kingdom Revival Ministries: Chiniot and Toba Tek Singh on the Our Impact map (theme 1.16.2)](#kingdom-revival-ministries-chiniot-and-toba-tek-singh-on-the-our-impact-map-theme-1162)
 
 ---
 
@@ -3528,4 +3529,26 @@ whole list shows, as before.**
 
 - Testimonies has 12 published (dummy) testimonies, so its button does not show yet; it uses the same code as the
   Gallery. Videos: the tab is hidden until a YouTube link exists (Phase 21).
+
+## Kingdom Revival Ministries: Chiniot and Toba Tek Singh on the Our Impact map (theme 1.16.2)
+
+**Result: the "Where we work" map on /our-impact/ shows four districts (Faisalabad (HQ), Jhang, Chiniot, Toba Tek
+Singh) instead of two, and the "District ministry footprint" table beside it has their rows. The pin names are now on
+navy chips, so they read on the light map shape (before, white text on the light shape was hard to read).**
+
+- `inc/data/impact.json` → `districts`: Chiniot (pin 53 % / 40 %, north of Faisalabad) and Toba Tek Singh (42 % / 56 %,
+  south, between Jhang and Faisalabad), placed from their real latitude / longitude relative to the existing two pins.
+  **Dummy figures — replace before launch:** Chiniot 6 villages, Toba Tek Singh 9 villages (the same as the home page's
+  "Where we work" list), 0 kilns and 0 churches for both, so the dummy totals across the site still agree (80
+  villages, 12 kilns, 200 churches). Jhang's pin has `"label": "left"`.
+- `page-templates/impact.php`: a pin with `"label": "left"` gets the class `is-left` (name left of the dot).
+- `assets/css/pages/impact.css` (last block): the dot is centred on the pin's position; the name sits on a navy chip;
+  `is-left` reverses it. On phones the names stay on one line (before, "Faisalabad (HQ)" wrapped).
+- Verified on local WP: four pins at 1440 (light) and 390 (dark), no labels overlapping (Jhang's chip at 390 had run
+  into the Faisalabad pin before it was moved to the left), table shows four rows, no horizontal overflow.
+
+### Decisions for you
+
+- The kilns and churches for Chiniot and Toba Tek Singh are 0 only to keep the dummy totals consistent; send the real
+  figures (or the share of the totals each district has) and the table, and the totals, can be updated together.
 

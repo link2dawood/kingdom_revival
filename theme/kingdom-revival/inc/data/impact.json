@@ -679,7 +679,28 @@
       "churches": 60,
       "pin": {
         "left": 39,
-        "top": 48
+        "top": 48,
+        "label": "left"
+      }
+    },
+    {
+      "name": "Chiniot",
+      "villages": 6,
+      "kilns": 0,
+      "churches": 0,
+      "pin": {
+        "left": 53,
+        "top": 40
+      }
+    },
+    {
+      "name": "Toba Tek Singh",
+      "villages": 9,
+      "kilns": 0,
+      "churches": 0,
+      "pin": {
+        "left": 42,
+        "top": 56
       }
     }
   ],
