@@ -3626,7 +3626,7 @@ LCP 4.0–5.7 s, 45–71 requests (locally the same pages make 12–22).
    saves server time on every page, even with the theme skipping their files.
 4. **Regenerate thumbnails** (e.g. the free "Regenerate Thumbnails" plugin, all images) so the old site's photos get
    the theme's WebP sizes.
-5. The "Needs Improvement" / "Optimized" badges in the pages list are from **SureRank** (the live site's SEO plugin):
+5. The "Needs Improvement" / "Optimized" badges in the pages list are most likely from **SureRank** (the live site's SEO plugin, active on its pages):
    they are its SEO checks (focus keyword, title and description length, etc.), not page speed. Open one page's
    SureRank panel to see which checks it lists.
 
