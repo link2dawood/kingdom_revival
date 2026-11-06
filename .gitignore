@@ -3,3 +3,6 @@ Kingdom Revival ministries-Data*.zip
 Kingdom Revival ministries-Data_/
 # The client data folder also appears with a trailing space instead of "_" (721 MB, listed in DATA-ASSET-INVENTORY.md).
 Kingdom Revival ministries-Data\ /
+# Database dumps (site data, may hold personal details): never committed.
+*.sql
+*.sql.gz
