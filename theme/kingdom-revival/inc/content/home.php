@@ -450,7 +450,7 @@ return array(
 			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Founder & Pastor' ),
 			'heading'        => krm_f( 'html', __( 'Name', 'kingdom-revival' ), 'Pastor Adil Arif' ),
 			'text'           => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Pastor Adil leads Kingdom Revival Ministries in evangelism, discipleship and church ministry, with a heart for children and youth — and for practical care among villages, marginalised communities and brick kiln families.' ),
-			'quote'          => krm_f( 'textarea', __( 'Quote', 'kingdom-revival' ), '“[A short quote from Pastor Adil on why this work matters.]”', __( 'Leave empty to hide the quote.', 'kingdom-revival' ) ),
+			'quote'          => krm_f( 'textarea', __( 'Quote', 'kingdom-revival' ), '“Every child taught, every family set free from the kilns, every village that hears the Gospel — that is God’s Kingdom breaking in. That is why we keep going.”', __( 'Leave empty to hide the quote.', 'kingdom-revival' ) ),
 			'button_label'   => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Contact Pastor Adil' ),
 			'button_url'     => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '#prayer' ),
 			'whatsapp_label' => krm_f( 'text', __( 'WhatsApp button text', 'kingdom-revival' ), 'WhatsApp', __( 'Links to the WhatsApp number in Settings. Leave empty to hide the button.', 'kingdom-revival' ) ),

@@ -505,6 +505,36 @@ add_action(
 	24
 );
 
+/*
+ * Sixth step (theme 1.15.10, option krm_sitemap_version 6): a saved home page that still holds the founder quote
+ * placeholder gets the dummy quote (exact value only).
+ */
+add_action(
+	'init',
+	function () {
+		if ( 5 !== (int) get_option( 'krm_sitemap_version' ) ) {
+			return;
+		}
+		update_option( 'krm_sitemap_version', 6 );
+		foreach ( get_posts(
+			array(
+				'post_type'      => 'page',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_krm_content_home', // phpcs:ignore WordPress.DB.SlowDBQuery -- runs once.
+			)
+		) as $post_id ) {
+			$values = get_post_meta( $post_id, '_krm_content_home', true );
+			if ( is_array( $values ) && isset( $values['founder']['quote'] ) && '“[A short quote from Pastor Adil on why this work matters.]”' === $values['founder']['quote'] ) {
+				$values['founder']['quote'] = '“Every child taught, every family set free from the kilns, every village that hears the Gospel — that is God’s Kingdom breaking in. That is why we keep going.”';
+				update_post_meta( $post_id, '_krm_content_home', $values );
+			}
+		}
+	},
+	25
+);
+
 /**
  * The second upgrade step. See the comment above.
  */

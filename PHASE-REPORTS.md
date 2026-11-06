@@ -3343,3 +3343,17 @@ work" list shows dummy counts instead of "[00] villages · [00] kilns".**
   (exact old values only; anything typed in is kept).
 - Verified on local WP: ministry page 0 progress bars at 1440 light / 390 dark, card spacing fine; home "Where we
   work" shows the counts; `placeholder_check.js`: 0 pages with placeholders.
+
+## Kingdom Revival Ministries: Dummy founder quote on the home page (theme 1.15.10)
+
+**Result: the home page's Founder section shows a dummy quote instead of "“[A short quote from Pastor Adil on why
+this work matters.]”".**
+
+- `inc/content/home.php` → `founder.quote`: **dummy — replace before launch** (Pages → Home → Page content → Founder
+  → Quote): "“Every child taught, every family set free from the kilns, every village that hears the Gospel — that is
+  God’s Kingdom breaking in. That is why we keep going.”" It is presented as Pastor Adil's words, so he should
+  approve or supply his own.
+- `inc/upgrade.php` step 6 (`krm_sitemap_version` 6): a home page saved with the old placeholder quote gets the dummy
+  quote (exact old value only; anything typed in is kept).
+- Verified on local WP: step 6 ran (option = 6), home page shows the quote; `placeholder_check.js`: 0 pages with
+  placeholders.
