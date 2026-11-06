@@ -18,6 +18,9 @@
  *    card text, amount raised and goal (whole dollars) and impact stats ("value | label" lines). Fields left unset
  *    use the ministry's entry in inc/data/ministries.php (see krm_ministries()).
  *  - menu_order         → order in menus, the donate and partner forms.
+ *  - _krm_coming_soon   → "Details coming soon" box (Phase 22): the page shows only the hero (name, group, "Details
+ *    about this ministry are coming soon.", Donate / Give, Contact us) and the group's other ministries. Unset = the
+ *    data file's coming_soon flag.
  *
  * @package Kingdom_Revival
  */
@@ -280,6 +283,8 @@ function krm_ministry_box( $post ) {
 		<?php
 	endif;
 	?>
+	<p><label><input type="checkbox" name="krm_coming_soon" value="1"<?php checked( krm_ministry_soon( $post->ID, $post->post_name ) ); ?>> <strong><?php esc_html_e( 'Details coming soon', 'kingdom-revival' ); ?></strong></label><br>
+		<span class="description"><?php esc_html_e( 'While ticked, the ministry page shows only its name, group, “Details about this ministry are coming soon.”, the Donate / Give and Contact us buttons and the group’s other ministries (no figures, gift cards or stories). Untick it once the ministry’s text is written.', 'kingdom-revival' ); ?></span></p>
 	<p class="description"><?php esc_html_e( 'The short description (shown in the page hero and on the home page) is the Excerpt field below the editor.', 'kingdom-revival' ); ?></p>
 	<p><label for="krm-focus"><strong><?php esc_html_e( 'Ministry focus', 'kingdom-revival' ); ?></strong></label>
 		<textarea class="widefat" rows="2" id="krm-focus" name="krm_focus"><?php echo esc_textarea( $focus ); ?></textarea></p>
@@ -353,6 +358,7 @@ add_action(
 		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
+		update_post_meta( $post_id, '_krm_coming_soon', empty( $_POST['krm_coming_soon'] ) ? '0' : '1' );
 		update_post_meta( $post_id, '_krm_focus', sanitize_textarea_field( wp_unslash( $_POST['krm_focus'] ?? '' ) ) );
 		update_post_meta( $post_id, '_krm_points', sanitize_textarea_field( wp_unslash( $_POST['krm_points'] ?? '' ) ) );
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- krm_clean_refs() keeps only attachment IDs and http(s) URLs.
@@ -492,7 +498,7 @@ function krm_current_ministry() {
 	$d    = isset( $data['items'][ $post->post_name ] ) ? $data['items'][ $post->post_name ] : array();
 	$card = krm_ministry_card_values( $post );
 	$grp  = isset( $d['group'], $data['groups'][ $d['group'] ] ) ? $data['groups'][ $d['group'] ] : array();
-	return array(
+	$m    = array(
 		'id'          => $post->ID,
 		'slug'        => $post->post_name,
 		'group'       => isset( $grp['name'] ) ? $grp['name'] : '',
@@ -514,7 +520,9 @@ function krm_current_ministry() {
 		'image'       => get_post_meta( $post->ID, '_krm_explorer_image', true ),
 		'menu_order'  => (int) $post->menu_order,
 		'home_order'  => 0,
+		'soon'        => krm_ministry_soon( $post->ID, $post->post_name ),
 	);
+	return $m['soon'] ? krm_ministry_soon_strip( $m ) : $m;
 }
 
 /**
@@ -604,7 +612,15 @@ function krm_related_ministries( $m ) {
 			$others[] = $item;
 		}
 	}
-	return array_slice( array_merge( $after, $same, $others ), 0, 3 );
+	// Ministries with a full page first; "coming soon" ones (Phase 22) after them.
+	$list = array_merge( $after, $same, $others );
+	$full = array_filter(
+		$list,
+		function ( $item ) {
+			return empty( $item['soon'] );
+		}
+	);
+	return array_slice( array_merge( $full, array_diff_key( $list, $full ) ), 0, 3 );
 }
 
 /**

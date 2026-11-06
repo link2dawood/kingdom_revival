@@ -2,6 +2,7 @@
 // following every internal link, and lists any "[…]" placeholder left in visible text, alt/title/aria-label/
 // placeholder attributes, the <title> or meta tags. Also reports links to the Testimonies page and to hidden
 // ministries, and whether the sitemap lists them. Every list should be empty for visitors.
+// Hidden since Phase 22: only Youth Ministry / Women Empowerment (the other three are live "coming soon" pages).
 // usage: node placeholder_check.js     env: WP_URL (default http://127.0.0.1:8899), CHROME_PATH
 const { chromium } = require('playwright-core');
 const B = (process.env.WP_URL || 'http://127.0.0.1:8899').replace(/\/$/, '');
@@ -39,7 +40,7 @@ const B = (process.env.WP_URL || 'http://127.0.0.1:8899').replace(/\/$/, '');
     if (r.hits.length) found.push([u, [...new Set(r.hits)]]);
     for (const l of r.links) {
       if (/\/our-impact\/testimonies/.test(l)) testiLinks.push(u + ' -> ' + l);
-      if (/\/what-we-do\/(food-relief|persecuted-christians|disaster-relief|youth-or-women)/.test(l)) hiddenLinks.push(u + ' -> ' + l);
+      if (/\/what-we-do\/(?:[a-z-]+\/)?youth-or-women/.test(l)) hiddenLinks.push(u + ' -> ' + l);
       if (!l.startsWith(B)) continue;
       const url = new URL(l); if (/^\/wp-(admin|login|json|content|includes)|\/feed\/?$|xmlrpc|\.(jpg|png|webp|pdf|mp4|xml)$/.test(url.pathname)) continue;
       const key = url.pathname + (url.search && !/replytocom/.test(url.search) ? url.search : '');
@@ -48,7 +49,7 @@ const B = (process.env.WP_URL || 'http://127.0.0.1:8899').replace(/\/$/, '');
   }
   console.log('pages crawled', seen.size, 'non-200:', JSON.stringify(Object.entries(codes).filter(([u, c]) => c !== 200)));
   // Phase 21: Testimonies is always public (menu, links, sitemap); only hidden ministries must be absent.
-  console.log('sitemap has hidden ministries:', sitemapAll.filter(u => /food-relief|persecuted|disaster-relief|youth-or-women/.test(u)));
+  console.log('sitemap has hidden ministries:', sitemapAll.filter(u => /youth-or-women/.test(u)));
   console.log('links to testimonies (expected since Phase 21):', testiLinks.length);
   console.log('links to hidden ministries:', hiddenLinks.length, hiddenLinks.slice(0, 5));
   console.log('PAGES WITH PLACEHOLDERS:', found.length);

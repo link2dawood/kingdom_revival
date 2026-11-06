@@ -42,6 +42,12 @@
       return;
     }
     var open = button.getAttribute("aria-expanded") !== "true";
+    /* A ministry group's chevron (mobile menu, beside the group link) opens or closes only its own list, so both
+       groups can be open together. */
+    if (button.parentElement.classList.contains("has-link")) {
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+      return;
+    }
     if (button.classList.contains("sub-toggle")) {
       closeMenus(button);
       if (open) placeSubmenu(button.parentElement);

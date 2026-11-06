@@ -141,8 +141,8 @@ function krm_ensure_news_categories() {
 function krm_menu_definitions( $ministry_ids, $page_ids ) {
 	$data = krm_ministry_data();
 
-	$page_item     = function ( $slug, $title ) use ( $page_ids ) {
-		return isset( $page_ids[ $slug ] ) ? array(
+	$page_item     = function ( $slug, $title, $classes = '' ) use ( $page_ids ) {
+		return ( isset( $page_ids[ $slug ] ) ? array(
 			'title'  => $title,
 			'type'   => 'post_type',
 			'object' => 'page',
@@ -150,7 +150,7 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 		) : array(
 			'title' => $title,
 			'url'   => home_url( user_trailingslashit( $slug ) ),
-		);
+		) ) + array( 'classes' => $classes );
 	};
 	$ministry_item = function ( $slug ) use ( $ministry_ids, $data ) {
 		$title = $data['items'][ $slug ]['title'];
@@ -169,7 +169,9 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 	foreach ( $data['groups'] as $gslug => $group ) {
 		$children = array();
 		foreach ( $data['items'] as $slug => $m ) {
-			if ( $m['group'] === $gslug && 'live' === $m['status'] ) {
+			// A hidden ministry that exists as a draft gets its menu item too: menus leave out links to unpublished
+			// posts (krm_menu_tree()), so it appears in its place once it is published (Phase 22).
+			if ( $m['group'] === $gslug && ( 'live' === $m['status'] || isset( $ministry_ids[ $slug ] ) ) ) {
 				$children[ $m['order'] ] = $ministry_item( $slug );
 			}
 		}
@@ -181,7 +183,7 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 		);
 	}
 	$groups[] = array(
-		'title'   => 'View all →',
+		'title'   => 'View all of What We Do →',
 		'archive' => 'ministry',
 		'classes' => 'menu-all',
 	);
@@ -212,6 +214,8 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 				$page_item( 'news', 'News & Updates' ),
 				$page_item( 'partner-with-us', 'Partner With Us' ),
 				$page_item( 'contact', 'Contact' ),
+				// The red button at the end of the navbar (Phase 22; class menu-donate, theme-global.css).
+				$page_item( 'donate', 'Donate / Give', 'menu-donate' ),
 			),
 		),
 		'footer_quick'      => array(
@@ -347,6 +351,9 @@ function krm_create_ministry( $slug, $m, $group_ids, $import ) {
 	);
 	if ( is_wp_error( $id ) ) {
 		return $id;
+	}
+	if ( 'live' !== $m['status'] ) {
+		update_post_meta( $id, '_krm_theme_hidden', 1 ); // Published by krm_sync_ministry_status() once the data file says live.
 	}
 	if ( isset( $group_ids[ $m['group'] ] ) ) {
 		wp_set_object_terms( $id, array( $group_ids[ $m['group'] ] ), 'ministry_group' );
@@ -562,6 +569,169 @@ add_action(
 	},
 	26
 );
+
+/*
+ * Eighth step (Phase 22, theme 1.17.0, option krm_sitemap_version 8): the client's navbar on every site.
+ *  - Main menu and Footer Quick Links: when the menu assigned to the location is not already the sitemap's menu
+ *    (same items, labels and nesting), a new menu is built from krm_menu_definitions() and assigned; the menu that
+ *    was there is kept, renamed "… (before 1.17)" and unassigned (Appearance → Menus). This also replaces menus made
+ *    by hand — e.g. the previous site's "Ministries" menu still assigned on the live site, which steps 1 and 7 left
+ *    alone — as the client asked for exactly this navbar.
+ *  - Persecuted Christian Support, Food Relief and Disaster Relief & Recovery Ministry: drafts made by the theme are
+ *    published (their pages are "coming soon"); Youth Ministry / Women Empowerment stays a draft.
+ */
+add_action(
+	'init',
+	function () {
+		if ( 7 !== (int) get_option( 'krm_sitemap_version' ) ) {
+			return;
+		}
+		update_option( 'krm_sitemap_version', 8 );
+		foreach ( krm_ministry_data()['items'] as $slug => $m ) {
+			$post = get_page_by_path( $slug, OBJECT, 'ministry' );
+			// The theme made these drafts (Setup, step 1 or step 3); mark them so the status sync may publish them.
+			if ( $post && 'draft' === $post->post_status && ( 'live' !== $m['status'] || ! empty( $m['coming_soon'] ) ) ) {
+				update_post_meta( $post->ID, '_krm_theme_hidden', 1 );
+			}
+		}
+		krm_sync_ministry_status();
+		krm_upgrade_nav_menus();
+	},
+	27
+);
+
+/*
+ * The data file's status wins for ministries the theme itself hid: on each new theme version, a ministry marked
+ * "live" in inc/data/ministries.php whose post is a draft the theme made (_krm_theme_hidden) is published. So
+ * enabling Youth Ministry / Women Empowerment is one line: 'status' => 'live' (and a version bump). A ministry
+ * someone drafted by hand is never published.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'krm_ministry_status_version' ) === KRM_VERSION || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_ministry_status_version', KRM_VERSION );
+		krm_sync_ministry_status();
+	},
+	28
+);
+
+/**
+ * Publish the theme-hidden drafts whose data entry is now "live". See above.
+ */
+function krm_sync_ministry_status() {
+	foreach ( krm_ministry_data()['items'] as $slug => $m ) {
+		if ( 'live' !== $m['status'] ) {
+			continue;
+		}
+		$post = get_page_by_path( $slug, OBJECT, 'ministry' );
+		if ( $post && 'draft' === $post->post_status && get_post_meta( $post->ID, '_krm_theme_hidden', true ) ) {
+			wp_update_post(
+				array(
+					'ID'          => $post->ID,
+					'post_status' => 'publish',
+				)
+			);
+			delete_post_meta( $post->ID, '_krm_theme_hidden' );
+		}
+	}
+}
+
+/**
+ * A menu's items as "depth|title" lines (titles decoded), the shape compared by krm_upgrade_nav_menus().
+ *
+ * @param array $items Definition items (krm_menu_definitions()) or null to read the menu $menu_id.
+ * @param int   $menu_id Menu term ID.
+ * @return string[]
+ */
+function krm_menu_signature( $items, $menu_id = 0 ) {
+	$out = array();
+	if ( null === $items ) {
+		$posts = wp_get_nav_menu_items( $menu_id, array( 'post_status' => 'publish' ) );
+		$depth = array();
+		foreach ( (array) $posts as $item ) {
+			$d                = isset( $depth[ (int) $item->menu_item_parent ] ) ? $depth[ (int) $item->menu_item_parent ] + 1 : 0;
+			$depth[ $item->ID ] = $d;
+			$out[]            = $d . '|' . trim( wp_specialchars_decode( $item->title, ENT_QUOTES ) );
+		}
+		return $out;
+	}
+	$walk = function ( $list, $d ) use ( &$walk, &$out ) {
+		foreach ( $list as $item ) {
+			$out[] = $d . '|' . $item['title'];
+			if ( ! empty( $item['children'] ) ) {
+				$walk( $item['children'], $d + 1 );
+			}
+		}
+	};
+	$walk( $items, 0 );
+	return $out;
+}
+
+/**
+ * The menu with exactly this name, or null.
+ *
+ * @param string $name Menu name.
+ * @return WP_Term|null
+ */
+function krm_menu_by_name( $name ) {
+	foreach ( wp_get_nav_menus() as $menu ) {
+		if ( $menu->name === $name ) {
+			return $menu;
+		}
+	}
+	return null;
+}
+
+/**
+ * Give the Main menu and Footer Quick Links locations the sitemap's menus (step 8). Returns what was done.
+ *
+ * @return string[]
+ */
+function krm_upgrade_nav_menus() {
+	$log       = array();
+	$pages     = krm_ensure_pages( false );
+	$defs      = krm_menu_definitions( krm_ministry_ids(), $pages['ids'] );
+	$locations = get_theme_mod( 'nav_menu_locations', array() );
+	$locations = is_array( $locations ) ? $locations : array();
+	foreach ( array( 'primary', 'footer_quick' ) as $location ) {
+		list( $name, $items ) = $defs[ $location ];
+		$current              = ! empty( $locations[ $location ] ) ? wp_get_nav_menu_object( $locations[ $location ] ) : null;
+		// Drafts (e.g. Youth / Women) are left out of the comparison, as they are left out of the menu.
+		if ( $current && krm_menu_signature( null, $current->term_id ) === krm_menu_signature( $items ) ) {
+			$log[] = sprintf( '%s: already the sitemap menu.', $location );
+			continue;
+		}
+		// Free the name: the assigned menu and any other menu called $name are kept as "… (before 1.17)".
+		// (Looked up by exact name: wp_get_nav_menu_object() tries the slug first, and "Main navigation (before 1.10)"
+		// still has the slug main-navigation.)
+		$olds = array();
+		foreach ( array_filter( array( $current, krm_menu_by_name( $name ) ) ) as $old ) {
+			$olds[ $old->term_id ] = $old;
+		}
+		foreach ( $olds as $old ) {
+			$base = $old->name . ' (before 1.17)';
+			$new  = $base;
+			for ( $n = 2; krm_menu_by_name( $new ) && (int) krm_menu_by_name( $new )->term_id !== (int) $old->term_id; $n++ ) {
+				$new = $base . ' ' . $n;
+			}
+			wp_update_term( $old->term_id, 'nav_menu', array( 'name' => $new ) );
+			$log[] = sprintf( '%s: kept the old menu as "%s".', $location, $new );
+		}
+		$menu_id = wp_create_nav_menu( $name );
+		if ( is_wp_error( $menu_id ) ) {
+			$log[] = sprintf( '%s: could not create %s (%s).', $location, $name, $menu_id->get_error_message() );
+			continue;
+		}
+		krm_add_menu_items( $menu_id, $items, 0 );
+		$locations[ $location ] = $menu_id;
+		$log[]                  = sprintf( '%s: new menu "%s" assigned.', $location, $name );
+	}
+	set_theme_mod( 'nav_menu_locations', $locations );
+	return $log;
+}
 
 /**
  * The seventh upgrade step. See the comment above.

@@ -6,7 +6,10 @@
  * any field a ministry post has not set, and krm_upgrade_to_sitemap() (inc/upgrade.php) moves older sites to it.
  *
  * Per ministry: title, status (live | hidden: a hidden ministry is created as a draft and shown nowhere until it is
- * published), group, tag (label on the card photo), excerpt (short description), summary (card text; empty = the
+ * published; switching it to live publishes the draft on the next theme version, krm_sync_ministry_status()),
+ * coming_soon (optional, Phase 22: its page shows only the hero with "Details about this ministry are coming soon.",
+ * Donate / Give and Contact us, and the group's other ministries; untick "Details coming soon" in the editor once the
+ * client's text is in), group, tag (label on the card photo), excerpt (short description), summary (card text; empty = the
  * excerpt), focus, points ("How this ministry serves"), sections (extra panels: heading, text, points), photos
  * ([ URL, alt text ]), explorer_image, raised / goal (whole dollars, '' = not set), stats ([ value, label ]),
  * was (the slugs this ministry had before theme 1.10.0, redirected here), order (position on the site — menus, group
@@ -512,7 +515,10 @@ return array(
 		),
 		'youth-or-women' => array(
 			'title' => 'Youth Ministry / Women Empowerment',
+			// The client has not chosen yet. To show it: change 'hidden' to 'live' (then bump the theme version), or publish
+			// the ministry in Ministries. It opens as a "coming soon" page until its text is written.
 			'status' => 'hidden',
+			'coming_soon' => true,
 			'group' => 'gospel-spiritual',
 			'tag' => 'YOUTH / WOMEN',
 			'excerpt' => 'Bible studies, camps and mentoring for young people, and skills training and fellowship for women in the villages.',
@@ -898,7 +904,8 @@ return array(
 		),
 		'persecuted-christians' => array(
 			'title' => 'Persecuted Christian Support',
-			'status' => 'hidden', // Hidden until the client supplies the description (Phase 19 follow-up).
+			'status' => 'live', // Listed since Phase 22 (client's request); its page says "coming soon" until the client sends text.
+			'coming_soon' => true,
 			'group' => 'compassion-humanitarian',
 			'tag' => 'PERSECUTED CHURCH',
 			'excerpt' => 'Practical, legal and prayer support for Christians facing pressure or violence for their faith.',
@@ -1030,7 +1037,8 @@ return array(
 		),
 		'food-relief' => array(
 			'title' => 'Food Relief',
-			'status' => 'hidden', // Hidden until the client supplies the description (Phase 19 follow-up).
+			'status' => 'live', // Listed since Phase 22 (client's request); its page says "coming soon" until the client sends text.
+			'coming_soon' => true,
 			'group' => 'compassion-humanitarian',
 			'tag' => 'FOOD',
 			'excerpt' => 'Monthly food parcels for widows, kiln families and households in need.',
@@ -1061,7 +1069,8 @@ return array(
 		),
 		'disaster-relief' => array(
 			'title' => 'Disaster Relief & Recovery Ministry',
-			'status' => 'hidden', // Hidden until the client supplies the description (Phase 19 follow-up).
+			'status' => 'live', // Listed since Phase 22 (client's request); its page says "coming soon" until the client sends text.
+			'coming_soon' => true,
 			'group' => 'compassion-humanitarian',
 			'tag' => 'RELIEF',
 			'excerpt' => 'Emergency help and rebuilding for families hit by floods and other disasters.',

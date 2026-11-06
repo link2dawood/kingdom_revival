@@ -92,3 +92,14 @@ under the admin bar when logged in — needs a user, else skipped); scroll revea
 on the first screen and after scrolling to the bottom; the header transparent → frosted, with the nav text contrast
 measured on the pixels behind it; photo bands (lazy, ≤ 250 KB); and per page/width/theme: horizontal scroll, console
 errors and CLS. Every failure is printed as `FAIL …` and listed in `failures`.
+
+`node nav_check.js [out.json]` (Phase 22) checks the navbar **as rendered** (logged out, with a never-seen query string and
+`Cache-Control: no-cache`, so page caches build the page fresh) against the client's sitemap, which is written into the
+script: the top level in order, ending with the red Donate / Give button; the two What We Do columns (heading links and
+ministries in the client's order) and "View all of What We Do →"; the Our Impact items; no "Ministries" menu item and no
+`>Ministries<` in the home page HTML; Footer Quick Links; every menu and Quick Links link answering 200 itself (no
+redirect); hover / click / Enter / Space / Esc / outside click and `aria-current` on desktop; the nested accordions at
+390 (both groups open together, 44 px chevrons); and the three "coming soon" ministry pages. Screenshots: desktop 1440
+closed / What We Do / Our Impact and mobile 390 What We Do / Our Impact, light and dark, in `out/nav/`. It only reads,
+so it also runs against the live site: `WP_URL=https://kingdomrevivalministries.com node nav_check.js`. Exit code 1 on
+any failure.

@@ -1082,6 +1082,37 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
   .submenu li.has-link > .sub-toggle[aria-expanded="true"] { background: var(--color-bg-soft); }
 }
 
+/* Navbar "Donate / Give" (Phase 22): the last main-menu item (class menu-donate, set in the menu editor or by the
+   theme's menu) is the red button. Desktop: a pill after Contact; mobile menu: a full-width button. It keeps its
+   colours over the transparent header and in dark mode (white on the theme red: 5.6:1 light, 4.7:1 dark). */
+@media (min-width: 901px) { .menu > li > a, .menu > li > .sub-toggle { white-space: nowrap; } }
+.menu > li.menu-donate > a { justify-content: center; padding: 0 20px; border-radius: var(--radius-button); background: var(--color-secondary); color: var(--color-white) !important; font-weight: var(--font-weight-bold); box-shadow: none !important; transition: background-color .2s ease; }
+/* Hover darkens the red with a shade (in dark mode --color-secondary-dark is a lighter red, under 4.5:1 with white); the
+   current page keeps the button's own red. */
+.menu > li.menu-donate > a:hover, .menu > li.menu-donate > a:focus-visible { background-image: linear-gradient(rgba(0, 0, 0, .14), rgba(0, 0, 0, .14)); color: var(--color-white) !important; }
+.menu > li.menu-donate > a:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+/* Narrow desktops: eight items, the brand and the theme toggle share one row. Measured (nav_check / header widths):
+   from 1280px everything fits at full size (18px between items); 1200–1279 the gaps shrink; 1024–1199 the gaps and text shrink and the brand shows its logo only (the
+   name stays for screen readers); 901–1023 the navbar Donate item also steps aside for the topbar's red Donate button
+   right above it (always visible). */
+@media (min-width: 901px) {
+  .header-inner > .brand { flex-shrink: 0; }
+  .menu { gap: 4px 18px; }
+}
+@media (min-width: 1200px) and (max-width: 1279px) { .menu { gap: 4px 14px; font-size: 14.5px; } }
+@media (min-width: 901px) and (max-width: 1199px) {
+  .menu { gap: 4px 14px; font-size: 14px; }
+  .menu > li.menu-donate > a { padding: 0 12px; }
+  .header-inner > .brand .brand-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+@media (min-width: 901px) and (max-width: 1023px) {
+  .menu > li.menu-donate { display: none; }
+}
+@media (max-width: 900px) {
+  .menu > li.menu-donate { margin: 12px 0 4px; border-bottom: 0; }
+  .menu > li.menu-donate > a { width: 100%; min-height: 48px; }
+}
+
 /* "Show more" under long lists (Gallery photos and videos, Testimonies): 18 items at a time (components.js). */
 .krm-more-hidden { display: none !important; }
 .krm-more { display: flex; justify-content: center; margin-top: clamp(28px, 4vw, 40px); }

@@ -41,6 +41,7 @@ python3 seo_check.py [site URL]   # exactly one title/description/canonical/OG/T
 node a11y_check.js                # axe-core accessibility audit, HTML vs WP, + skip link / focus checks
 node final_pass.js                # whole-site crawl: overflow, axe, contrast in light AND dark, SEO, scripts
 node phase20_check.js             # dark mode, no-flash, progress bar, scroll reveal, header over hero (WP_USER/WP_PASS for admin bar)
+node nav_check.js                 # navbar/footer links as RENDERED vs the client's sitemap, dropdown behaviour, screenshots (also on the live site via WP_URL)
 ```
 
 Env vars: `HTML_URL`, `WP_URL`, `CHROME_PATH` (default `/usr/bin/google-chrome` — set it on Windows).

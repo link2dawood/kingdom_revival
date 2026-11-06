@@ -135,7 +135,7 @@ function krm_default_primary_tree() {
 			$groups[] = krm_node( $group['name'], krm_group_url( $gslug ), array(), '', false, array_values( $children ) );
 		}
 	}
-	$groups[] = krm_node( __( 'View all →', 'kingdom-revival' ), krm_ministries_url(), array( 'menu-all' ), '', is_post_type_archive( 'ministry' ) && ! krm_current_group() );
+	$groups[] = krm_node( __( 'View all of What We Do →', 'kingdom-revival' ), krm_ministries_url(), array( 'menu-all' ), '', is_post_type_archive( 'ministry' ) && ! krm_current_group() );
 	$impact   = array(
 		krm_node( __( 'Our Impact', 'kingdom-revival' ), krm_page_url( 'impact' ), array(), '', 'impact' === krm_design_template() ),
 		krm_node( __( 'Testimonies', 'kingdom-revival' ), krm_page_url( 'testimonies' ), array(), '', 'testimonies' === krm_design_template() ),
@@ -150,6 +150,7 @@ function krm_default_primary_tree() {
 		krm_node( __( 'News & Updates', 'kingdom-revival' ), krm_blog_url(), array(), '', is_home() || is_singular( 'post' ) ),
 		krm_node( __( 'Partner With Us', 'kingdom-revival' ), krm_page_url( 'partner' ), array(), '', in_array( krm_design_template(), array( 'partner', 'prayer' ), true ) ),
 		krm_node( __( 'Contact', 'kingdom-revival' ), krm_page_url( 'contact' ), array(), '', 'contact' === krm_design_template() ),
+		krm_node( __( 'Donate / Give', 'kingdom-revival' ), krm_donate_url(), array( 'menu-donate' ), '', 'donate' === krm_design_template() ),
 	);
 }
 

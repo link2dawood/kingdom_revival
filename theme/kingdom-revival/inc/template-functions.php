@@ -635,6 +635,7 @@ function krm_ministries( $order = 'menu' ) {
 				'image'      => $image,
 				'menu_order' => (int) $post->menu_order,
 				'home_order' => '0' === (string) $home ? 0 : ( (int) $home ? (int) $home : 999 ),
+				'soon'       => krm_ministry_soon( $post->ID, $post->post_name ),
 			);
 		}
 	} else {
@@ -663,10 +664,15 @@ function krm_ministries( $order = 'menu' ) {
 				'image'      => $m['explorer_image'],
 				'menu_order' => $m['order'],
 				'home_order' => $m['home_order'],
+				'soon'       => ! empty( $m['coming_soon'] ),
 			);
 		}
 	}
 	foreach ( $items as $i => $m ) {
+		if ( $m['soon'] ) {
+			$items[ $i ] = krm_ministry_soon_strip( $m );
+			$m           = $items[ $i ];
+		}
 		if ( '' === trim( $m['summary'] ) ) {
 			$items[ $i ]['summary'] = $m['desc'];
 		}
@@ -691,6 +697,46 @@ function krm_ministries( $order = 'menu' ) {
 	);
 	$cache[ $order ] = $items;
 	return $items;
+}
+
+/**
+ * Is a ministry's page still "coming soon" (Phase 22)? The editor's "Details coming soon" box once saved, else the
+ * data file's coming_soon flag.
+ *
+ * @param int    $post_id Ministry post ID (0 before Setup).
+ * @param string $slug    Ministry slug.
+ */
+function krm_ministry_soon( $post_id, $slug ) {
+	if ( $post_id && metadata_exists( 'post', $post_id, '_krm_coming_soon' ) ) {
+		return '1' === (string) get_post_meta( $post_id, '_krm_coming_soon', true );
+	}
+	$data = krm_ministry_data();
+	return ! empty( $data['items'][ $slug ]['coming_soon'] );
+}
+
+/**
+ * A "coming soon" ministry shows no figures it doesn't have yet: no stats, gift cards, extra sections, timelines or
+ * fundraising figures, and it stays out of the home page explorer.
+ *
+ * @param array $m A ministry from krm_ministries().
+ * @return array
+ */
+function krm_ministry_soon_strip( $m ) {
+	foreach ( array( 'stats', 'sections', 'camps', 'churches', 'gifts' ) as $key ) {
+		$m[ $key ] = array();
+	}
+	$m['raised']     = '';
+	$m['goal']       = '';
+	$m['home_order'] = 0;
+	$m['layout']     = '';
+	// Its card: the coming-soon line while it has no text of its own, its group's photo while it has none.
+	if ( '' === trim( (string) $m['summary'] ) || krm_is_placeholder( $m['summary'] ) ) {
+		$m['summary'] = __( 'Details about this ministry are coming soon.', 'kingdom-revival' );
+	}
+	if ( ! $m['image'] && '' !== $m['group_slug'] ) {
+		$m['image'] = krm_c( 'groups.' . $m['group_slug'] . '_image', 'site' );
+	}
+	return $m;
 }
 
 /**

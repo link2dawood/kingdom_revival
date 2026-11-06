@@ -135,6 +135,14 @@ function krm_meta_description() {
 		if ( $design && isset( $map[ $design ] ) ) {
 			return $map[ $design ][1];
 		}
+		// A ministry whose short description is still a [placeholder] (e.g. one listed as "coming soon", Phase 22):
+		// its name and group, so the page never shows the placeholder and every ministry keeps its own description.
+		if ( is_singular( 'ministry' ) && ( ! has_excerpt( $post ) || krm_is_placeholder( $post->post_excerpt ) ) ) {
+			$m = krm_current_ministry();
+			/* translators: 1: ministry name, 2: its group, e.g. "Compassion & Humanitarian Ministries" */
+			$desc = sprintf( __( '%1$s: part of the %2$s of Kingdom Revival Ministries in Pakistan.', 'kingdom-revival' ), $m['title'], $m['group'] );
+			return $desc . ( ! empty( $m['soon'] ) ? ' ' . __( 'Details about this ministry are coming soon.', 'kingdom-revival' ) : '' );
+		}
 		if ( has_excerpt( $post ) ) {
 			return wp_strip_all_tags( get_the_excerpt( $post ) );
 		}

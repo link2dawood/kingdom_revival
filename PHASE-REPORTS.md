@@ -47,6 +47,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: "Show more" on the Our Impact subpages (theme 1.16.1)](#kingdom-revival-ministries-show-more-on-the-our-impact-subpages-theme-1161)
 - [Kingdom Revival Ministries: Chiniot and Toba Tek Singh on the Our Impact map (theme 1.16.2)](#kingdom-revival-ministries-chiniot-and-toba-tek-singh-on-the-our-impact-map-theme-1162)
 - [Kingdom Revival Ministries: Mobile PageSpeed 90+ (theme 1.16.3)](#kingdom-revival-ministries-mobile-pagespeed-90-theme-1163)
+- [Kingdom Revival Ministries: Phase 22: the client's navbar on the live site (theme 1.17.0)](#kingdom-revival-ministries-phase-22-the-clients-navbar-on-the-live-site-theme-1170)
 
 ---
 
@@ -3630,3 +3631,149 @@ LCP 4.0–5.7 s, 45–71 requests (locally the same pages make 12–22).
    they are its SEO checks (focus keyword, title and description length, etc.), not page speed. Open one page's
    SureRank panel to see which checks it lists.
 
+
+## Kingdom Revival Ministries: Phase 22: the client's navbar on the live site (theme 1.17.0)
+
+**Result: the header is now exactly the client's navbar on every site, the live site included: Home · About Us ·
+What We Do ▾ · Our Impact ▾ · News & Updates · Partner With Us · Contact · Donate / Give (red button). Phase 21 changed
+the theme but not the live site's menu: the header prints the menu stored in the database, and the live site's
+Main navigation is a menu kept from the previous site (Home · About · Ministries ▾ with 13 old pages · Latest News &
+Blogs · Contact), which the earlier upgrade steps left alone as "made by hand". Theme 1.17.0 replaces it (and the old
+Footer Quick Links) once, on the first page load after the update, keeping the old menus. Persecuted Christian Support,
+Food Relief and Disaster Relief & Recovery Ministry are listed as "coming soon" ministries. A new check,
+`tools/visual-qa/nav_check.js`, tests the rendered navbar and also runs read-only against the live site: today it
+reports 32 failures there, 0 on the local copy of the live site after the upgrade.**
+
+### Where the navbar comes from (step 1)
+
+- `header.php` → `krm_primary_menu()` (`inc/nav.php`): the menu assigned to the **Primary** location (Appearance →
+  Menus, stored in the database) through `krm_menu_tree()`; only when no menu is assigned does it fall back to
+  `krm_default_primary_tree()`, built from the pages and `inc/data/ministries.php`. The desktop and mobile menus are
+  the same `<ul id="site-menu">` (the mobile menu is that list behind the "Menu" button), so one menu feeds both.
+  The footer's Quick Links are the **Footer: Quick Links** location (`krm_footer_links()`), with its own fallback.
+  Not a block theme; no navigation post; no hard-coded menu.
+- The live site (fetched 2026-11-06, theme 1.16.3) prints Home · About · **Ministries** ▾ (Children Ministry,
+  Orphanages Care, … Clean Water Project, 13 links to old Elementor pages, each a 301) · Latest News & Blogs · Contact,
+  and the Quick Links Home · About · Latest News & Blogs · Donate us · Contact. Its old site's database (2026-10 dump)
+  names these menus "about us" and "Footer Menu". Upgrade step 1 (1.10.0) replaced only menus named like Setup's
+  ("Main navigation") and step 7 (1.16.0) edited menus in place, so a menu kept from the old site was never touched.
+  That is why theme files alone changed nothing on live.
+
+### What changed
+
+- **Upgrade step 8** (`inc/upgrade.php`, `krm_sitemap_version` 8, runs once on the first request after the update,
+  priority 27 on `init`): for the Primary and Footer: Quick Links locations, the assigned menu is compared with the
+  sitemap's (labels and nesting, `krm_menu_signature()`); if it differs, a new "Main navigation" / "Footer — Quick
+  Links" is built from `krm_menu_definitions()` and assigned. The menu that was there, and any other menu with that
+  name, is kept, renamed "… (before 1.17)" and unassigned, so assigning it back in Appearance → Menus undoes the change.
+  Menus are looked up by exact name (`krm_menu_by_name()`): `wp_get_nav_menu_object()` tries the slug first and matched
+  "Main navigation (before 1.10)", whose slug is still `main-navigation` (found in testing, fixed).
+- **Menu definition** (`krm_menu_definitions()`, also used by Setup) and the theme's fallback (`krm_default_primary_tree()`):
+  Donate / Give is the last item, class `menu-donate`; "View all →" is now "View all of What We Do →"; a hidden ministry
+  that exists as a draft (Youth Ministry / Women Empowerment) gets its item in its place, left out by `krm_menu_tree()`
+  until it is published. Quick Links already matched the brief (Home, About Us, What We Do, Our Impact, News & Updates,
+  Partner With Us, Contact, Donate / Give).
+- **Red button** (`theme-global.css`, "Navbar Donate / Give"): pill on desktop, full-width in the mobile menu, white text
+  over the transparent header and in dark mode; hover darkens with a shade rather than `--color-secondary-dark` (a
+  lighter red in dark mode, 3.8:1 with white; caught by final_pass on /donate/, where the button is the current page).
+  Fitting eight items on one row: labels no longer wrap (they did at 1440: "About / Us", "Donate / / Give"), the brand
+  keeps the design's 238 px instead of being squeezed, 18 px between items. Measured at 13 widths (901–1920): one row,
+  no overflow. 1200–1279: tighter gaps; 1024–1199: logo only (the name stays for screen readers); 901–1023: the navbar's
+  Donate / Give is hidden, the top bar's red Donate button is right above it at every width.
+- **Mobile groups** (`assets/js/site.js`): a group's chevron now opens or closes only its own list, so Gospel & Spiritual
+  and Compassion & Humanitarian can be open together (opening one used to close the other).
+- **Coming-soon ministries** (`inc/data/ministries.php`, `single-ministry.php`, `template-parts/ministry/hero.php`):
+  Persecuted Christian Support, Food Relief and Disaster Relief & Recovery Ministry are `'status' => 'live'` with
+  `'coming_soon' => true`. Their page: hero with the name, the group eyebrow, "Details about this ministry are coming
+  soon.", **Donate / Give** (`/donate/?ministry=slug#give`, the ministry preselected in the fund list) and **Contact us**,
+  then "Other ministries" (full pages first). No stats, gift cards, story, photos, timeline, give card or [brackets].
+  Their cards (group page, What We Do, other-ministries rows) read "Details about this ministry are coming soon." and use
+  the group's photo; they stay out of the home page explorer. The editor has a "Details coming soon" box
+  (`_krm_coming_soon`; unset = the data file's flag). Their meta description (also in the schema) was the excerpt
+  "[Short description — to be supplied by the client]", visible to search engines; a ministry with a placeholder excerpt
+  now gets "[Name]: part of the [Group] of Kingdom Revival Ministries in Pakistan." (+ "Details about this ministry are
+  coming soon." while it is), unique per ministry (`inc/seo.php`).
+- **Publishing and redirects**: step 8 publishes the three drafts. Hidden ministries were sent to their group page by
+  a 302 because they were drafts; published, they answer 200 (there were no other redirects for them).
+- **Youth Ministry / Women Empowerment** stays a draft. Enabling it is one line: `'status' => 'live'` in
+  `inc/data/ministries.php` (plus the usual version bump), or Publish in Ministries. `krm_sync_ministry_status()` runs
+  once per theme version and publishes drafts the theme itself hid (`_krm_theme_hidden`) whose data entry is now live;
+  a ministry someone drafted by hand is never published. It is also flagged coming soon.
+- **CTAs**: no Home or About link points at the old ministries page (crawled: 0 links to /ministries/, all-ministries,
+  latest-news-blogs or donate-us). The home hero's "Explore What We Do" still scrolls to the home page's own What We Do
+  section (`#ministries`), as in the design; the buttons in and under that section go to /what-we-do/.
+- Docs: theme `readme.md` (navbar, coming-soon ministries, how to enable Youth / Women, undoing the menu swap),
+  `tools/visual-qa/README.md`, `CLAUDE.md` (the new check). `placeholder_check.js`: only Youth / Women counts as hidden
+  now, and its pattern also matches the nested /what-we-do/{group}/{slug}/ addresses (it only matched flat ones).
+
+### How it was verified
+
+The live state was reproduced locally first: the local site was given the live site's two hand-made menus ("about us"
+with Ministries ▾ and the 13 old links, "Footer Menu") on the Primary and Quick Links locations, the three ministries
+as drafts and `krm_sitemap_version` 7. The local site then printed the same old navbar as live. Then theme 1.17.0 and
+one page load (logged out):
+
+- Menus: new "Main navigation" (30 items, incl. the hidden Youth / Women item) and "Footer — Quick Links" assigned;
+  "about us (before 1.17)", "Footer Menu (before 1.17)" and the Phase 21 menus kept, unassigned. The three ministries
+  published, Youth / Women still a draft. The "one line" switch was tested on the local copy (status → live, new
+  version): published, its page 200, then put back.
+- `nav_check.js` (logged out, cache-busting query + `Cache-Control: no-cache`): **0 failures**. 27 links (both dropdowns,
+  the top level, Quick Links) all **200 with no redirect**; `>Ministries<` in the home page HTML: **0**; top level,
+  both columns, "View all of What We Do →", Our Impact, Donate / Give red (computed background = `--color-secondary`)
+  and Quick Links exactly as briefed; desktop hover opens / leaving closes, click, Enter and Space set
+  `aria-expanded="true"`, Tab moves into the panel, Esc closes and returns focus, a click outside closes;
+  `aria-current`: Food Relief page → "Food Relief" (+ What We Do highlighted), group page → its heading only,
+  Testimonies → "Testimonies" (+ Our Impact highlighted); mobile 390 light and dark: menu → What We Do → both groups
+  open together (all 15 ministries visible), group links present, chevrons 44 × 44, Our Impact 3 items, Esc closes, no
+  horizontal scroll; the three coming-soon pages: 200, the line, Donate / Give with `?ministry=`, Contact us, other
+  ministries, no other sections, no brackets; /what-we-do/ and the Compassion page list them and not Youth / Women.
+- `placeholder_check.js`: 59 pages, all 200, 0 placeholders for visitors, 0 links to hidden ministries, sitemap without
+  hidden ministries.
+- `final_pass.js` (40 pages, crawled): overflow 0 at 360 / 768 / 1024 / 1440, JS errors 0, axe violations 0, contrast
+  failures 0 in light and 0 in dark (1 in dark before the hover fix above), no duplicate titles or descriptions, no
+  missing pages. Its two "header variants" differ only by the Our Impact highlight (`is-current`) on the three Our
+  Impact pages.
+- Header widths (Playwright, 13 widths 901–1920): one row, toggle inside the container, no page overflow.
+- **Live site, read-only** (`WP_URL=https://kingdomrevivalministries.com node nav_check.js out/nav-live-before.json`,
+  before the update): **32 failures**: the Ministries item, ">Ministries<" in the HTML, no What We Do / Our Impact / red
+  Donate / Give, the old Quick Links, 14 old menu links that each answer 301, the three coming-soon pages redirecting to
+  the group page. This is the "before"; run the same command after uploading 1.17.0 for the "after".
+
+Screenshots (committed as WebP in `qa-screenshots/phase-22/`; `nav_check.js` writes the PNGs to
+`tools/visual-qa/out/nav/`):
+
+- Desktop 1440, light: `desktop-1440-light-closed.webp`, `desktop-1440-light-what-we-do.webp`,
+  `desktop-1440-light-our-impact.webp`; dark: `desktop-1440-dark-closed.webp`, `desktop-1440-dark-what-we-do.webp`,
+  `desktop-1440-dark-our-impact.webp`.
+- Mobile 390 (menu open, What We Do with both groups expanded / Our Impact expanded): `mobile-390-light-what-we-do.webp`,
+  `mobile-390-light-our-impact.webp`, `mobile-390-dark-what-we-do.webp`, `mobile-390-dark-our-impact.webp`.
+- Coming-soon page and group grid: `soon-food-relief-1440-light.webp`, `soon-food-relief-390-dark.webp`,
+  `group-compassion-1440-light.webp`, `group-compassion-390-dark.webp`.
+- The live site before the update: `live-before/desktop-1440-light-closed.webp`, `live-before/desktop-1440-dark-closed.webp`,
+  `live-before/mobile-390-light-menu.webp`, `live-before/mobile-390-dark-menu.webp`.
+
+### Not covered
+
+- **The live site itself is not updated yet**: I have no access to its admin or database. The screenshots of the new
+  navbar are from the local copy of the live state described above, not from kingdomrevivalministries.com. The upgrade
+  runs by itself on the first request after `kingdom-revival.zip` (1.17.0) is uploaded; nothing needs running by hand.
+- Caches on live: the server is LiteSpeed; no LiteSpeed page cache header was seen in the earlier phase. If LiteSpeed
+  Cache (or a CDN) is turned on, purge it after the upload. `nav_check.js` bypasses page caches with a fresh query
+  string, so a pass there with a stale cached home page for visitors is possible until the purge.
+- The pixel comparison with the original HTML (`npm run pages`) was not re-run: the header has differed from the HTML
+  design since Phase 16 (mega menu) and Phase 21, by request.
+- Arrow-key navigation inside the dropdowns (optional in the brief) is not added; Tab / Shift+Tab move through them.
+
+### Decisions for you
+
+1. **Upload `kingdom-revival.zip` (1.17.0)** to the live site, purge any cache, then run
+   `WP_URL=https://kingdomrevivalministries.com node nav_check.js out/nav-live-after.json` (from `tools/visual-qa/`). It
+   should report 0 failures; its screenshots land in `tools/visual-qa/out/nav-live-after/`. If someone had edited the
+   live "about us" menu on purpose, it is still there as "about us (before 1.17)".
+2. **Photos and text for the three coming-soon ministries**: their cards use the Compassion & Humanitarian group photo,
+   which is also the Children & Orphan Care card photo. Once the client sends text, fill the Excerpt and fields and untick
+   "Details coming soon".
+3. **Narrow desktops**: between 901 and 1023 px the navbar's Donate / Give is hidden (the top bar's Donate is right
+   above). The alternative is switching to the "Menu" button below 1024 px instead of 900 px; say if you prefer that.
+4. The home hero's "Explore What We Do" scrolls to the home page's What We Do section (design). Say if it should open
+   /what-we-do/ instead (Pages → Home → Page content → Hero → Button link: `{ministries}`).
