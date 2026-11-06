@@ -84,7 +84,7 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 			<button type="button" role="tab" id="tab-videos" aria-controls="panel-videos" aria-selected="false" data-tab="videos" tabindex="-1"><?php krm_t( 'labels.videos' ); ?></button>
 			</div>
 			<?php endif; ?>
-			<label class="krm-select" data-krm-filter="gallery" data-param="ministry" hidden><?php krm_t( 'labels.filter_label' ); ?>
+			<label class="krm-select krm-needs-js" data-krm-filter="gallery" data-param="ministry"><?php krm_t( 'labels.filter_label' ); ?>
 			<select>
 				<option value=""><?php krm_t( 'labels.all_label' ); ?></option>
 				<?php foreach ( $krm_list as $krm_m ) : ?>

@@ -355,3 +355,141 @@ function krm_photo_band_attrs( $ref, $variant ) {
 		esc_url( $small ? $small : $large )
 	);
 }
+
+/* ---------- Page-builder and form-plugin files the theme's pages never use (theme 1.16.3) ---------- */
+
+/*
+ * The live site still has Elementor, Elementor Pro, Header Footer Elementor, Astra Sites, FormLayer and SureForms
+ * active from the previous site. Every page here is drawn by the theme's own templates, so their 25+ stylesheets and
+ * scripts (plus Elementor's Google Fonts and Font Awesome) were downloaded on every page for nothing and cost about 10
+ * points of mobile PageSpeed. They are left out, except where they can matter:
+ *  - a page or post whose content was built with Elementor and is printed by page.php / single.php (not the home page
+ *    or a design page, which never print their content);
+ *  - SureForms / FormLayer on a page whose content has one of their forms;
+ *  - the Elementor editor and its preview, customizer previews and the admin.
+ * Developers: return false from the 'krm_strip_builder_assets' filter to load everything again.
+ */
+
+/**
+ * Whether the plugin files of the current view can be left out: [ builder (Elementor family), forms ].
+ *
+ * @return bool[]
+ */
+function krm_strip_builder_assets() {
+	static $out = null;
+	if ( null !== $out ) {
+		return $out;
+	}
+	$out = array( false, false );
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only checks of the editor's preview flags.
+	if ( is_admin() || is_customize_preview() || isset( $_GET['elementor-preview'] ) || isset( $_GET['elementor_library'] ) || ! apply_filters( 'krm_strip_builder_assets', true ) ) {
+		return $out;
+	}
+	$builder = true;
+	$forms   = true;
+	if ( is_singular() && ! is_front_page() && '' === krm_design_template() ) {
+		$post = get_queried_object();
+		if ( $post instanceof WP_Post ) {
+			if ( 'builder' === get_post_meta( $post->ID, '_elementor_edit_mode', true ) ) {
+				$builder = false;
+			}
+			if ( preg_match( '/sureforms|srfm|formlayer/i', (string) $post->post_content ) ) {
+				$forms = false;
+			}
+		}
+	}
+	$out = array( $builder, $forms );
+	return $out;
+}
+
+/**
+ * Leave out the queued styles or scripts that belong to the plugins above.
+ *
+ * @param WP_Dependencies $deps wp_styles() or wp_scripts().
+ */
+function krm_dequeue_builder_assets( $deps ) {
+	list( $builder, $forms ) = krm_strip_builder_assets();
+	if ( ! $builder && ! $forms ) {
+		return;
+	}
+	$builder_re = '#/(?:plugins/(?:elementor|elementor-pro|header-footer-elementor|astra-sites|ultimate-elementor|essential-addons-for-elementor-lite)/|uploads/elementor/)|fonts\.googleapis\.com/css\?family=Roboto#';
+	$forms_re   = '#/plugins/(?:sureforms|formlayer)/#';
+	foreach ( (array) $deps->queue as $handle ) {
+		$src = isset( $deps->registered[ $handle ] ) ? (string) $deps->registered[ $handle ]->src : '';
+		if ( ( $builder && ( preg_match( $builder_re, $src ) || 0 === strpos( $handle, 'elementor' ) || 0 === strpos( $handle, 'hfe-' ) || in_array( $handle, array( 'font-awesome', 'e-animations', 'swiper' ), true ) ) )
+			|| ( $forms && preg_match( $forms_re, $src ) ) ) {
+			wp_dequeue_style( $handle );
+			wp_dequeue_script( $handle );
+		}
+	}
+	// jQuery (+ migrate, 34 KB in the head) was only there for those plugins: the theme's scripts do not use it. It is
+	// kept whenever a script still queued needs it (CookieAdmin, a form plugin on its page, anything else).
+	if ( $builder && $deps instanceof WP_Scripts && in_array( 'jquery', (array) $deps->queue, true ) && ! krm_jquery_needed( $deps ) ) {
+		wp_dequeue_script( 'jquery' );
+	}
+}
+
+/**
+ * Whether a queued script other than jQuery itself depends on jQuery (directly or through its own dependencies).
+ *
+ * @param WP_Scripts $deps wp_scripts().
+ */
+function krm_jquery_needed( $deps ) {
+	$seen  = array();
+	$needs = function ( $handle ) use ( &$needs, &$seen, $deps ) {
+		if ( isset( $seen[ $handle ] ) || ! isset( $deps->registered[ $handle ] ) ) {
+			return false;
+		}
+		$seen[ $handle ] = true;
+		foreach ( (array) $deps->registered[ $handle ]->deps as $dep ) {
+			if ( in_array( $dep, array( 'jquery', 'jquery-core', 'jquery-migrate' ), true ) || $needs( $dep ) ) {
+				return true;
+			}
+		}
+		return false;
+	};
+	foreach ( (array) $deps->queue as $handle ) {
+		if ( ! in_array( $handle, array( 'jquery', 'jquery-core', 'jquery-migrate' ), true ) && $needs( $handle ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+add_action(
+	'wp_enqueue_scripts',
+	function () {
+		krm_dequeue_builder_assets( wp_styles() );
+		krm_dequeue_builder_assets( wp_scripts() );
+	},
+	9999
+);
+// Plugins that queue files while the page is being printed (widgets, kits) are caught just before each print.
+add_action(
+	'wp_print_styles',
+	function () {
+		krm_dequeue_builder_assets( wp_styles() );
+	},
+	9999
+);
+add_action(
+	'wp_print_scripts',
+	function () {
+		krm_dequeue_builder_assets( wp_scripts() );
+	},
+	9999
+);
+add_action(
+	'wp_print_footer_scripts',
+	function () {
+		krm_dequeue_builder_assets( wp_styles() );
+		krm_dequeue_builder_assets( wp_scripts() );
+	},
+	1
+);
+// Elementor's Google Fonts (Roboto, Roboto Slab) and its icon fonts are requested by Elementor itself.
+add_filter(
+	'elementor/frontend/print_google_fonts',
+	function ( $print ) {
+		return krm_strip_builder_assets()[0] ? false : $print;
+	}
+);

@@ -1087,3 +1087,10 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
 .krm-more { display: flex; justify-content: center; margin-top: clamp(28px, 4vw, 40px); }
 .krm-more[hidden] { display: none; }
 .krm-more-button { min-height: 48px; }
+
+/* No layout shift when the scripts start (theme 1.16.3): filter bars (class krm-needs-js) are hidden only for visitors
+   without JavaScript (no "js" class on <html>, set in the head before the CSS applies), so with it they show from the
+   first paint instead of appearing after components.js; and a "Show more" list shows only its first 18 items until
+   components.js takes over. */
+html:not(.js) .krm-needs-js { display: none !important; }
+html.js [data-krm-more="18"]:not([data-krm-more-ready]) > :nth-child(n+19) { display: none; }

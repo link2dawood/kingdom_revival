@@ -48,6 +48,7 @@
     button.addEventListener("click", function () { var from = limit; limit += step; render(from); });
     list.krmMore = { reset: function () { limit = step; render(); } };
     render();
+    list.setAttribute("data-krm-more-ready", "");
   });
 
   /* ---------- Filters ---------- */

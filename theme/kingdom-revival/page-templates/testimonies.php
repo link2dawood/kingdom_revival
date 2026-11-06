@@ -63,7 +63,7 @@ uasort(
 		<p class="testimony-empty"><?php krm_t( 'list.empty' ); ?></p>
 		<?php else : ?>
 			<?php if ( count( $krm_tabs ) > 1 ) : ?>
-		<div class="ministry-filter" role="group" aria-label="<?php echo esc_attr( krm_fill( krm_c( 'list.filter_label' ) ) ); ?>" data-krm-filter="testimonies" data-param="ministry" hidden>
+		<div class="ministry-filter krm-needs-js" role="group" aria-label="<?php echo esc_attr( krm_fill( krm_c( 'list.filter_label' ) ) ); ?>" data-krm-filter="testimonies" data-param="ministry">
 			<button type="button" data-group="" aria-pressed="true"><?php krm_t( 'list.all_label' ); ?></button>
 				<?php foreach ( $krm_tabs as $krm_slug => $krm_m ) : ?>
 			<button type="button" data-group="<?php echo esc_attr( $krm_slug ); ?>" aria-pressed="false"><?php echo esc_html( $krm_m['title'] ); ?></button>
