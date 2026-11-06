@@ -294,6 +294,46 @@
 
   /* ---------- Form posts to WordPress (contact, partner) ---------- */
   KRM.formStarted = Date.now();
+  /* Web3Forms (Settings → Web3Forms access key): the server saves the submission and answers with the message to send
+     ({ payload, entry, receipt }); the browser sends it to Web3Forms and reports the result back to the entry.
+     Resolves true when Web3Forms accepted it. */
+  KRM.web3forms = function (envelope, timeoutMs) {
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, timeoutMs || 20000);
+    return fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(envelope.payload),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (json) { return { ok: json.success === true, error: json.message || "" }; },
+        function (e) { return { ok: false, error: String((e && e.name) || "network") }; })
+      .then(function (res) {
+        clearTimeout(timer);
+        if (envelope.entry && CONFIG.ajaxUrl) {
+          var report = new FormData();
+          report.append("action", "krm_form_mailed");
+          report.append("entry", envelope.entry);
+          report.append("receipt", envelope.receipt || "");
+          report.append("ok", res.ok ? "1" : "0");
+          report.append("error", res.error);
+          fetch(CONFIG.ajaxUrl, { method: "POST", body: report, credentials: "same-origin", keepalive: true }).catch(function () {});
+        }
+        return res.ok;
+      });
+  };
+  /* Last resort when WordPress itself can't be reached or fails: send the fields straight to Web3Forms. */
+  KRM.web3formsDirect = function (formName, fields) {
+    if (!CONFIG.web3formsKey) return Promise.resolve(false);
+    var label = String(formName).replace(/_/g, " ").replace(/^./, function (c) { return c.toUpperCase(); });
+    var payload = { access_key: CONFIG.web3formsKey, subject: "[Website] " + label + (fields.name ? " — " + fields.name : ""), from_name: "Kingdom Revival Website", Note: "Sent directly by the visitor's browser because the website could not save it. It is NOT in Form Submissions." };
+    Object.keys(fields).forEach(function (k) { if (typeof fields[k] === "string" && k !== "website") payload[k] = fields[k] || "—"; });
+    if (fields.email && /@/.test(fields.email)) payload.replyto = fields.email;
+    else if (fields.contact && /@/.test(fields.contact)) payload.replyto = fields.contact;
+    payload["Sent from"] = location.href.split("#")[0];
+    return KRM.web3forms({ payload: payload });
+  };
+
   KRM.sendForm = function (form, name, fields) {
     var data = new FormData();
     data.append("action", "krm_form");
@@ -309,10 +349,18 @@
           if (!response.ok || !json.success) {
             var error = new Error((json.data && json.data.message) || "Request failed");
             error.fields = json.data && json.data.fields;
+            error.status = response.status;
             throw error;
           }
+          // Saved; with Web3Forms the browser sends the email now (the entry keeps the result).
+          if (json.data && json.data.w3) return KRM.web3forms(json.data.w3).then(function () { return json; });
           return json;
         });
+      }, function () { var e = new Error("network"); e.status = 0; throw e; })
+      .catch(function (error) {
+        // WordPress failed (server error / no connection), not the visitor's input: email the fields directly.
+        if (error.fields || (error.status >= 400 && error.status < 500)) throw error;
+        return KRM.web3formsDirect(name, fields).then(function (ok) { if (!ok) throw error; return { success: true }; });
       });
   };
 

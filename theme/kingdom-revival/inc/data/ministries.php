@@ -8,7 +8,7 @@
  * Per ministry: title, status (live | hidden: a hidden ministry is created as a draft and shown nowhere until it is
  * published; switching it to live publishes the draft on the next theme version, krm_sync_ministry_status()),
  * coming_soon (optional, Phase 22: its page shows only the hero with "Details about this ministry are coming soon.",
- * Donate / Give and Contact us, and the group's other ministries; untick "Details coming soon" in the editor once the
+ * Donate and Contact us, and the group's other ministries; untick "Details coming soon" in the editor once the
  * client's text is in), group, tag (label on the card photo), excerpt (short description), summary (card text; empty = the
  * excerpt), focus, points ("How this ministry serves"), sections (extra panels: heading, text, points), photos
  * ([ URL, alt text ]), explorer_image, raised / goal (whole dollars, '' = not set), stats ([ value, label ]),

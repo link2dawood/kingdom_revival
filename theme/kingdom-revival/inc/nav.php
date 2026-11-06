@@ -150,7 +150,7 @@ function krm_default_primary_tree() {
 		krm_node( __( 'News & Updates', 'kingdom-revival' ), krm_blog_url(), array(), '', is_home() || is_singular( 'post' ) ),
 		krm_node( __( 'Partner With Us', 'kingdom-revival' ), krm_page_url( 'partner' ), array(), '', in_array( krm_design_template(), array( 'partner', 'prayer' ), true ) ),
 		krm_node( __( 'Contact', 'kingdom-revival' ), krm_page_url( 'contact' ), array(), '', 'contact' === krm_design_template() ),
-		krm_node( __( 'Donate / Give', 'kingdom-revival' ), krm_donate_url(), array( 'menu-donate' ), '', 'donate' === krm_design_template() ),
+		krm_node( __( 'Donate', 'kingdom-revival' ), krm_donate_url(), array( 'menu-donate' ), '', 'donate' === krm_design_template() ),
 	);
 }
 
@@ -420,7 +420,7 @@ function krm_footer_links( $location ) {
 					'url'   => krm_page_url( 'contact' ),
 				),
 				array(
-					'title' => __( 'Donate / Give', 'kingdom-revival' ),
+					'title' => __( 'Donate', 'kingdom-revival' ),
 					'url'   => krm_donate_url(),
 				),
 			);

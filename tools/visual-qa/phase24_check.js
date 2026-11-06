@@ -1,9 +1,11 @@
-// Phase 24 forms check: Partner With Us (4 sign-ups), Prayer Request (+ the home prayer form) and Donate → donor
+// Phase 24 forms check (updated for Web3Forms, theme 1.18.2): Partner With Us (4 sign-ups), Prayer Request (+ the home prayer form) and Donate → donor
 // details, all sent by assets/js/forms.js to krm_form_submit() (inc/form-handler.php).
 //
-// Runs against a LOCAL WordPress whose wp-config.php defines KRM_MAIL_CAPTURE (emails are written to
-// wp-content/krm-mail/ instead of being sent) and uses wp-cli to read the saved Form Submissions and to clear the
-// rate-limit counter between tests. Never point it at the live site: it submits forms.
+// Emails go through Web3Forms (Settings → Web3Forms access key). Requests to api.web3forms.com are INTERCEPTED here
+// (nothing reaches Web3Forms, so no real email is sent): each body is recorded and answered with success, or with a
+// failure where a test needs one. The no-JavaScript path forwards from the server; on the local site the mu-plugin
+// krm-w3-mock.php answers those and logs them to wp-content/krm-mail/w3-server.log (W3FAIL there = failure).
+// Uses wp-cli to read the saved Form Submissions and to clear the rate-limit counter. Never point it at the live site.
 //
 // Checks, at 1440 and 390 px:
 //   success       — each form type: loading state (button disabled + spinner + "Sending…", aria-busy, read-only
@@ -53,6 +55,11 @@ const FORMS = {
   home_prayer: { url: '/', form: '#prayer-form', type: 'prayer_request', subject: '[Website] Prayer Request — ' },
 };
 
+const W3 = []; // bodies the browser sent to Web3Forms
+let W3_MODE = 'ok';
+const W3_KEY = 'df5b0a03-783c-4607-a037-17855f320d71';
+const SERVER_LOG = path.join(MAIL, 'w3-server.log');
+function serverW3() { return fs.existsSync(SERVER_LOG) ? fs.readFileSync(SERVER_LOG, 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l)) : []; }
 const results = [];
 let failures = 0;
 function log(row) {
@@ -80,6 +87,13 @@ async function context(browser, width, { dark = false, js = true } = {}) {
   const ctx = await browser.newContext({ viewport: { width, height: 900 }, javaScriptEnabled: js, reducedMotion: 'reduce' });
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, async (route) => {
     const url = route.request().url();
+    if (url.startsWith('https://api.web3forms.com/')) {
+      let body = {};
+      try { body = JSON.parse(route.request().postData() || '{}'); } catch (e) {}
+      W3.push(body);
+      const ok = W3_MODE === 'ok';
+      return route.fulfill({ status: ok ? 200 : 400, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify({ success: ok, message: ok ? 'Email sent successfully!' : 'Mock failure' }) });
+    }
     if (/\.(mp4|webm)(\?|$)|paypal\.com/.test(url)) return route.abort();
     const { meta, body } = await cached(url, route.request().headers());
     return route.fulfill({ status: meta.status, contentType: meta.type, body });
@@ -97,7 +111,7 @@ async function open(ctx, url) {
   page.errors = [];
   page.on('pageerror', (e) => page.errors.push(String(e.message || e).slice(0, 200)));
   page.posts = 0;
-  page.on('request', (r) => { if (r.method() === 'POST' && r.url().includes('admin-ajax.php')) page.posts++; });
+  page.on('request', (r) => { if (r.method() === 'POST' && r.url().includes('admin-ajax.php') && /krm_form_submit/.test(r.postData() || '')) page.posts++; });
   await page.goto(WP + url, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(300);
   return page;
@@ -199,6 +213,7 @@ async function msgContrast(page, key) {
       const name = `Test ${key.replace(/_/g, ' ')} ${width}`;
       await fill(page, key, name);
       const before = mailFiles();
+      const w3Before = W3.length;
       // Hold the answer 4 s so the loading state can be seen and photographed (slow network).
       let release;
       const held = new Promise((r) => { release = r; });
@@ -219,49 +234,33 @@ async function msgContrast(page, key) {
       const s = await state(page, key);
       await shot(page, key, `success-${width}`);
       const mails = newMail(before);
-      const eml = mails.length ? fs.readFileSync(path.join(MAIL, mails[0]), 'utf8') : '';
+      await page.waitForTimeout(700); // the browser reports Web3Forms' answer to the entry
       const sub = lastSubmission();
       const expectSubject = FORMS[key].subject + name;
-      const txt = mails.length ? fs.readFileSync(path.join(MAIL, mails[0].replace(/\.eml$/, '.txt')), 'utf8') : '';
-      // The capture's .txt starts with the decoded To / From / Reply-To / Subject lines.
-      const decoded = ((txt.match(/^Subject: (.*)$/m) || [])[1] || '').trim();
+      const sentW3 = W3.slice(w3Before);
+      const w3 = sentW3[0] || {};
+      const decoded = w3.subject || '';
+      const txt = JSON.stringify(w3);
       const checks = {
         loadingBusy: loading.busy === 'true', loadingDisabled: loading.disabled === true, loadingSpinner: loading.spinner,
         loadingText: /Sending/.test(loading.buttonText), loadingReadonly: loading.readonly === true,
         success: s.msgShown && /is-success/.test(s.msgClass), firstName: s.msgText.includes('Test') || key === 'donation',
         replaced: s.formHidden || key === 'donation', live: s.liveAttr === 'polite' && s.liveText.length > 0,
-        oneEmail: mails.length === 1, subject: decoded.includes(expectSubject),
-        multipart: /multipart\/alternative/.test(eml) && /text\/plain/.test(eml) && /text\/html/.test(eml),
-        pkt: / PKT/.test(txt), saved: !!sub && sub.form === (FORMS[key].type || key) && sub.status === 'sent',
-        replyTo: key === 'donation' ? /^Reply-To: \s*$/m.test(txt) : /^Reply-To: Test .*<tester@example\.com>$/m.test(txt),
-        whatsapp: key === 'donation' ? /wa\.me\/923001234567/.test(txt) : true,
+        oneWeb3Forms: sentW3.length === 1, noWpMail: mails.length === 0, accessKey: w3.access_key === W3_KEY,
+        subject: decoded === expectSubject, fromName: w3.from_name === 'Kingdom Revival Website',
+        pkt: / PKT/.test(w3.Received || ''), saved: !!sub && sub.form === (FORMS[key].type || key) && sub.status === 'sent',
+        replyTo: key === 'donation' ? !w3.replyto : w3.replyto === 'tester@example.com',
+        whatsapp: key === 'donation' ? /wa\.me\/923001234567/.test(w3.WhatsApp || '') : true,
+        fields: w3.Name === name && !!w3['Sent from'] && /post\.php/.test(w3['Saved in WordPress'] || ''),
         noOverflow: !s.overflow, noJsErrors: page.errors.length === 0,
       };
       if (key === 'financial_partner') checks.projectPrefill = !!sub && sub.fields.project === 'New well in Kasur';
       const ok = Object.values(checks).every(Boolean);
       log({ test: 'success', key, width, ok, failed: Object.keys(checks).filter((k) => !checks[k]), subject: decoded, msg: s.msgText, errors: page.errors });
-      // Keep one sample email per form type (desktop run).
-      if (width === 1440 && mails.length) {
-        const base = path.join(MAIL, mails[0].replace(/\.eml$/, ''));
-        fs.copyFileSync(base + '.html', path.join(OUT, 'emails', `${key}.html`));
-        fs.copyFileSync(base + '.txt', path.join(OUT, 'emails', `${key}.txt`));
-        fs.copyFileSync(base + '.eml', path.join(OUT, 'emails', `${key}.eml`));
-      }
+      // Keep the Web3Forms body per form type (desktop run): what Web3Forms emails as "label: value" lines.
+      if (width === 1440 && sentW3.length) fs.writeFileSync(path.join(OUT, 'emails', `${key}.web3forms.json`), JSON.stringify(Object.assign({}, w3, { access_key: '(key)' }), null, 2));
       await ctx.close();
     }
-  }
-
-  /* ---------- render the sample emails ---------- */
-  {
-    const ctx = await browser.newContext({ viewport: { width: 720, height: 900 } });
-    const page = await ctx.newPage();
-    for (const key of Object.keys(FORMS)) {
-      const file = path.join(OUT, 'emails', `${key}.html`);
-      if (!fs.existsSync(file)) continue;
-      await page.goto('file://' + file);
-      await page.screenshot({ path: path.join(OUT, 'emails', `${key}.png`), fullPage: true });
-    }
-    await ctx.close();
   }
 
   /* ---------- validation (client side), every form, + axe in the error state ---------- */
@@ -343,7 +342,24 @@ async function msgContrast(page, key) {
     await ctx.close();
   }
 
-  /* ---------- server error (500) and timeout: red message, values kept, button back ---------- */
+  /* ---------- WordPress fails (500) but Web3Forms works: the fields are emailed directly, visitor sees success ---------- */
+  for (const key of ['volunteer', 'donation']) {
+    clearRate();
+    const ctx = await context(browser, 1440);
+    const page = await open(ctx, FORMS[key].url);
+    await fill(page, key, 'Direct Fallback');
+    await page.route('**/admin-ajax.php', (route) => (route.request().method() === 'POST' ? route.fulfill({ status: 500, contentType: 'text/html', body: 'critical error' }) : route.continue()));
+    const n = W3.length;
+    await page.click(submitSel(key));
+    await waitDone(page, key);
+    const s = await state(page, key);
+    const w3 = W3[n] || {};
+    log({ test: 'wp-down-fallback', key, ok: /is-success/.test(s.msgClass) && W3.length === n + 1 && w3.access_key === W3_KEY && /Direct Fallback/.test(w3.subject || '') && /NOT in Form Submissions/.test(w3.Note || '') && w3.name === 'Direct Fallback', subject: w3.subject });
+    await ctx.close();
+  }
+
+  /* ---------- server error (500) and timeout, with Web3Forms also failing: red message, values kept, button back ---------- */
+  W3_MODE = 'fail';
   for (const [label, handler, wait] of [
     ['server-error', (route) => route.fulfill({ status: 500, contentType: 'text/html', body: '<h1>Internal Server Error</h1>' }), 3000],
     ['timeout', () => {}, 26000],
@@ -360,12 +376,13 @@ async function msgContrast(page, key) {
       const took = Date.now() - t0;
       const s = await state(page, key);
       await shot(page, key, `${label}-390`);
-      const ok = /is-error/.test(s.msgClass) && /\+92-341-5418733/.test(s.msgText) && s.disabled === false && s.readonly === false &&
+      const ok = /is-error/.test(s.msgClass) && /\+92 302 0692993/.test(s.msgText) && s.disabled === false && s.readonly === false &&
         s.nameValue === 'Kept Value' && s.busy === 'false' && !s.done && (label !== 'timeout' || (took >= 19000 && took < 26000));
       log({ test: label, key, ok, msg: s.msgText, took, kept: s.nameValue });
       await ctx.close();
     }
   }
+  W3_MODE = 'ok';
 
   /* ---------- double click ---------- */
   {
@@ -389,12 +406,12 @@ async function msgContrast(page, key) {
     const page = await open(ctx, FORMS.volunteer.url);
     await fill(page, 'volunteer', 'Honey Bot');
     await page.evaluate(() => { document.querySelector('#volunteer-form [name="website"]').value = 'http://spam.example'; });
-    const before = mailFiles();
+    const n = W3.length;
     const count = submissionCount();
     await page.click(submitSel('volunteer'));
     await waitDone(page, 'volunteer');
     const s = await state(page, 'volunteer');
-    log({ test: 'honeypot', ok: /is-success/.test(s.msgClass) && newMail(before).length === 0 && submissionCount() === count, saved: submissionCount() - count, mails: newMail(before).length });
+    log({ test: 'honeypot', ok: /is-success/.test(s.msgClass) && W3.length === n && submissionCount() === count, saved: submissionCount() - count, emails: W3.length - n });
     await ctx.close();
   }
 
@@ -424,18 +441,19 @@ async function msgContrast(page, key) {
     clearRate();
   }
 
-  /* ---------- email failure: saved with status "failed", visitor sees success ---------- */
+  /* ---------- Web3Forms refuses: saved with status "failed", visitor sees success ---------- */
   {
     clearRate();
-    fs.writeFileSync(path.join(MAIL, 'FAIL'), 'simulate');
+    W3_MODE = 'fail';
     const ctx = await context(browser, 1440);
     const page = await open(ctx, FORMS.volunteer.url);
     await fill(page, 'volunteer', 'Mail Fails');
     await page.click(submitSel('volunteer'));
     await waitDone(page, 'volunteer');
     const s = await state(page, 'volunteer');
+    await page.waitForTimeout(700);
     const sub = lastSubmission();
-    fs.unlinkSync(path.join(MAIL, 'FAIL'));
+    W3_MODE = 'ok';
     log({ test: 'mail-failure', ok: /is-success/.test(s.msgClass) && sub && sub.title.includes('Mail Fails') && sub.status === 'failed', status: sub && sub.status });
     await ctx.close();
   }
@@ -446,14 +464,13 @@ async function msgContrast(page, key) {
     const ctx = await context(browser, 1440);
     const page = await open(ctx, FORMS.donation.url);
     await fill(page, 'donation', 'Card Typer', { contact: 'card@example.com', message: 'My card is 4111 1111 1111 1111, cvv 123. Reference 2026-11-06.' });
-    const before = mailFiles();
+    const n = W3.length;
     await page.click(submitSel('donation'));
     await waitDone(page, 'donation');
-    const mails = newMail(before);
-    const eml = mails.length ? fs.readFileSync(path.join(MAIL, mails[0].replace(/\.eml$/, '.txt')), 'utf8') : '';
+    const eml = JSON.stringify(W3.slice(n));
     const sub = lastSubmission();
     const stored = JSON.stringify(sub && sub.fields);
-    log({ test: 'card-data', ok: mails.length === 1 && !/4111/.test(eml) && !/4111/.test(stored) && /\[card number removed\]/.test(eml) && !/cvv 123/i.test(stored) && /2026-11-06/.test(stored), message: sub && sub.fields.message });
+    log({ test: 'card-data', ok: W3.length === n + 1 && !/4111/.test(eml) && !/4111/.test(stored) && /\[card number removed\]/.test(eml) && !/cvv 123/i.test(stored) && /2026-11-06/.test(stored), message: sub && sub.fields.message });
     await ctx.close();
   }
 
@@ -479,7 +496,10 @@ async function msgContrast(page, key) {
     await page.locator(`${sel} [name="name"]`).fill('No Script');
     await page.waitForTimeout(3200);
     const count = submissionCount();
+    const serverBefore = serverW3().length;
     await Promise.all([page.waitForNavigation(), page.click(submitSel(key))]);
+    const forwarded = serverW3().slice(serverBefore);
+    const nojsSub = lastSubmission();
     const okState = await page.evaluate((sel) => {
       const form = document.querySelector(sel);
       const scope = document.querySelector(`[data-krm-for="${form.id}"]`) || form;
@@ -488,7 +508,8 @@ async function msgContrast(page, key) {
     }, sel);
     await shot(page, key, 'nojs-success-390');
     const ok = /krm_sent=/.test(err.url) && /highlighted/.test(err.msg) && err.kept === 'nojs@example.com' && err.nameInvalid === 'true' && !!err.note &&
-      /is-success/.test(okState.cls) && okState.msg.length > 10 && okState.fieldsHidden && submissionCount() === count + 1;
+      /is-success/.test(okState.cls) && okState.msg.length > 10 && okState.fieldsHidden && submissionCount() === count + 1 &&
+      forwarded.length === 1 && forwarded[0].access_key === W3_KEY && /No Script/.test(forwarded[0].subject || '') && nojsSub.status === 'sent';
     log({ test: 'no-js', key, ok, error: err, success: okState });
     await ctx.close();
   }
@@ -502,8 +523,10 @@ async function msgContrast(page, key) {
       await fill(page, key, `Theme ${theme}`);
       // error box first
       await page.route('**/admin-ajax.php', (route) => (route.request().method() === 'POST' ? route.fulfill({ status: 500, body: '' }) : route.continue()));
+      W3_MODE = 'fail';
       await page.click(submitSel(key));
       await waitDone(page, key);
+      W3_MODE = 'ok';
       const errC = await msgContrast(page, key);
       await shot(page, key, `error-${theme}-390`);
       await page.unroute('**/admin-ajax.php');
@@ -530,6 +553,51 @@ async function msgContrast(page, key) {
     }
   }
   clearRate();
+
+  /* ---------- Contact form (older handler): saved, then emailed through Web3Forms ---------- */
+  for (const width of [1440, 390]) {
+    clearRate();
+    const ctx = await context(browser, width);
+    const page = await open(ctx, '/contact/');
+    await page.locator('#contact-form').scrollIntoViewIfNeeded();
+    await page.fill('#contact-form [name="name"]', 'Contact Tester');
+    await page.fill('#contact-form [name="email"]', 'contact@example.com');
+    await page.fill('#contact-form [name="message"]', 'Hello from the contact form.');
+    await page.waitForTimeout(2800); // the older handler's minimum time on the form
+    const n = W3.length;
+    await page.click('#contact-form button[type="submit"]');
+    await page.waitForFunction(() => !document.getElementById('form-status').hidden || !document.getElementById('form-error').hidden, null, { timeout: 25000 });
+    await page.waitForTimeout(700);
+    const shown = await page.evaluate(() => ({ ok: !document.getElementById('form-status').hidden, text: document.getElementById('form-status').textContent.trim() }));
+    const w3 = W3[n] || {};
+    const sub = lastSubmission();
+    await page.locator('#contact-form').screenshot({ path: path.join(OUT, 'shots', `contact-success-${width}`.concat('.png')) });
+    log({ test: 'contact', width, ok: shown.ok && W3.length === n + 1 && w3.access_key === W3_KEY && /Contact Tester/.test(w3.subject || '') && w3.replyto === 'contact@example.com' && sub && sub.form === 'contact' && sub.status === 'sent', subject: w3.subject, status: sub && sub.status, errors: page.errors });
+    if (width === 1440) fs.writeFileSync(path.join(OUT, 'emails', 'contact.web3forms.json'), JSON.stringify(Object.assign({}, w3, { access_key: '(key)' }), null, 2));
+    await ctx.close();
+  }
+
+  /* ---------- Social icons open in a new tab (top bar of every page + Contact page buttons) ---------- */
+  {
+    const ctx = await context(browser, 1440);
+    const rows = [];
+    for (const url of ['/', '/partner-with-us/', '/donate/', '/contact/', '/about/']) {
+      const page = await open(ctx, url);
+      rows.push(await page.evaluate(() => Array.from(document.querySelectorAll('a[href*="facebook.com"], a[href*="instagram.com"], a[href*="youtube.com/@"], a[href*="youtube.com/c"], a.topbar-social'))
+        .filter((a) => !/sharer/.test(a.href)).map((a) => ({ href: a.href.slice(0, 50), target: a.target, rel: a.rel }))));
+      // A real click opens a new tab and leaves this page where it is.
+      if (url === '/') {
+        const [popup] = await Promise.all([ctx.waitForEvent('page', { timeout: 5000 }).catch(() => null), page.click('a.topbar-social')]);
+        rows.push({ clickOpenedNewTab: !!popup, stayed: page.url() === WP + '/' });
+        if (popup) await popup.close();
+      }
+      await page.close();
+    }
+    const links = rows.flat().filter((x) => x.href);
+    const click = rows.find((x) => 'clickOpenedNewTab' in x) || {};
+    log({ test: 'social-new-tab', ok: links.length > 0 && links.every((l) => l.target === '_blank' && /noopener/.test(l.rel)) && click.clickOpenedNewTab && click.stayed, links: links.length, bad: links.filter((l) => l.target !== '_blank') });
+    await ctx.close();
+  }
 
   await browser.close();
   fs.writeFileSync(path.join(OUT, 'result.json'), JSON.stringify({ failures, results }, null, 2));

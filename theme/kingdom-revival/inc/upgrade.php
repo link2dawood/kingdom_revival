@@ -215,7 +215,7 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 				$page_item( 'partner-with-us', 'Partner With Us' ),
 				$page_item( 'contact', 'Contact' ),
 				// The red button at the end of the navbar (Phase 22; class menu-donate, theme-global.css).
-				$page_item( 'donate', 'Donate / Give', 'menu-donate' ),
+				$page_item( 'donate', 'Donate', 'menu-donate' ),
 			),
 		),
 		'footer_quick'      => array(
@@ -234,7 +234,7 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 				$page_item( 'news', 'News & Updates' ),
 				$page_item( 'partner-with-us', 'Partner With Us' ),
 				$page_item( 'contact', 'Contact' ),
-				$page_item( 'donate', 'Donate / Give' ),
+				$page_item( 'donate', 'Donate' ),
 			),
 		),
 		'footer_ministries' => array(
@@ -406,7 +406,7 @@ add_action(
 
 /*
  * Second step (Phase 18 decisions, option krm_sitemap_version 2), also on sites that ran the first step:
- *  - page titles "About" → "About Us" and "Donate" → "Donate / Give" (slugs unchanged), when still the old title;
+ *  - page titles "About" → "About Us" and "Donate" kept (it was "Donate / Give" until 1.18.2; slugs unchanged), when still the old title;
  *  - stories move to /news/{story}/: a permalink structure still set to Setup's /%postname%/ becomes
  *    /news/%postname%/ (old story addresses redirect, inc/redirects.php);
  *  - proposed wording (DRAFT — CLIENT TO APPROVE) replaces the earlier defaults it was written for, where a ministry
@@ -1144,7 +1144,6 @@ function krm_renumber_menu( $menu_id ) {
 function krm_upgrade_sitemap_2() {
 	foreach ( array(
 		'about'  => array( 'About', 'About Us' ),
-		'donate' => array( 'Donate', 'Donate / Give' ),
 	) as $template => $titles ) {
 		$pages = get_posts(
 			array(
@@ -1421,7 +1420,7 @@ function krm_renamed_text() {
 		'Deliverance & Healing'                        => 'Prayer & Deliverance Ministry',
 		'Freedom from Slavery'                         => 'Slavery & Freedom Ministry',
 		'Brick Kiln Children'                          => 'Brick Kiln Family Care',
-		'Donate Now'                                   => 'Donate / Give',
+		'Donate Now'                                   => 'Donate',
 		'News & Blogs'                                 => 'News & Updates',
 		'Gifts given “where it is needed most” are used across all twelve ministries.' => 'Gifts given “where it is needed most” are used across all our ministries.',
 		'Supports all 12 ministries'                   => 'Supports all our ministries',
@@ -1514,4 +1513,38 @@ add_action(
 		}
 	},
 	30
+);
+
+/*
+ * Theme 1.18.2 (option krm_contact_version 2): the red navbar button reads "Donate" instead of "Donate / Give", at the
+ * client's request. Menu items and the Donate page still titled exactly "Donate / Give" become "Donate" (menu items
+ * with no title of their own show the page title). Other titles set by hand are kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_contact_version' ) >= 2 ) {
+			return;
+		}
+		update_option( 'krm_contact_version', 2 );
+		$posts = get_posts(
+			array(
+				'post_type'      => array( 'nav_menu_item', 'page' ),
+				'post_status'    => 'any',
+				'posts_per_page' => 50,
+				'title'          => 'Donate / Give',
+			)
+		);
+		foreach ( $posts as $post ) {
+			if ( 'Donate / Give' === wp_specialchars_decode( $post->post_title, ENT_QUOTES ) ) {
+				wp_update_post(
+					array(
+						'ID'         => $post->ID,
+						'post_title' => 'Donate',
+					)
+				);
+			}
+		}
+	},
+	31
 );

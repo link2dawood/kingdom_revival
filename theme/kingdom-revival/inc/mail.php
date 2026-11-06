@@ -235,7 +235,14 @@ function krm_send_form_mail( array $mail ) {
 	};
 	add_action( 'wp_mail_failed', $failed );
 	$GLOBALS['krm_mail_alt'] = $text;
-	$sent                    = wp_mail( krm_forms_to(), $subject, $html, $headers );
+	// A host with PHP mail() disabled makes PHPMailer throw an Error that wp_mail() doesn't catch (a "critical error"
+	// for the visitor). Catch everything: the submission is already saved.
+	try {
+		$sent = wp_mail( krm_forms_to(), $subject, $html, $headers );
+	} catch ( \Throwable $e ) {
+		$sent  = false;
+		$error = 'Mail error: ' . $e->getMessage();
+	}
 	$GLOBALS['krm_mail_alt'] = '';
 	remove_action( 'wp_mail_failed', $failed );
 	return array( (bool) $sent, $sent ? '' : ( '' !== $error ? $error : 'wp_mail() returned false' ) );

@@ -10,7 +10,10 @@
    - While sending: button disabled with a spinner and "Sending…", form aria-busy="true", fields read-only, no double
      sends. Success replaces the form with the green-tick message; failure shows the red message and keeps every value.
    - Status text is also announced in a polite live region.
-   - Without JavaScript (or fetch) the form posts normally to admin-post.php and the page shows the same messages. */
+   - Without JavaScript (or fetch) the form posts normally to admin-post.php and the page shows the same messages.
+   - Web3Forms (Settings → Web3Forms access key): WordPress saves the entry and answers with the email to send; this
+     script sends it to Web3Forms (KRM.web3forms, site.js). If WordPress fails or can't be reached, the fields are
+     sent to Web3Forms directly so the message still arrives. */
 (function () {
   var C = window.KRM_FORMS || {};
   if (!C.ajaxUrl || !window.fetch || !window.FormData) return;
@@ -227,8 +230,26 @@
       var data = new FormData(form);
       data.set("action", "krm_form_submit");
       setBusy(true);
+      var fields = {};
+      inputs().forEach(function (el) {
+        if (el.type === "radio" && !el.checked) return;
+        if (el.type === "checkbox") { fields[el.name] = el.checked ? "Yes" : "No"; return; }
+        fields[el.name] = String(el.value || "").trim();
+      });
+      if (form.elements.method) fields.method = form.elements.method.value;
+      var direct = function () {
+        if (!window.KRM || !KRM.web3formsDirect) return fail(null);
+        return KRM.web3formsDirect(form.getAttribute("data-krm-send"), fields).then(function (ok) {
+          if (ok) done(fields.name); else fail(null);
+        });
+      };
       post(data, false).then(function (res) {
+        if (res.ok && res.data.w3 && window.KRM && KRM.web3forms) {
+          // Saved: send the email (the entry records whether Web3Forms accepted it).
+          return KRM.web3forms(res.data.w3, C.timeout).then(function () { done(res.data.name || data.get("name")); });
+        }
         if (res.ok) { done(res.data.name || data.get("name")); return; }
+        if (res.status >= 500 || res.status === 0) return direct();
         if (res.status === 422 && res.data.fields) {
           var firstBad = null;
           Object.keys(res.data.fields).forEach(function (key) {
@@ -240,7 +261,7 @@
           return;
         }
         fail(res.status === 429 && res.data.message ? res.data.message : null);
-      }).catch(function () { fail(null); });
+      }).catch(direct);
     });
   });
 })();

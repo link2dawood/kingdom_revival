@@ -2,7 +2,7 @@
 /**
  * Ministry page 1: inner hero — the first photo (else Site text → Ministry pages → hero image), breadcrumb
  * (Home / What We Do / name), the group as the eyebrow, the title and the Excerpt. A "coming soon" ministry (Phase 22)
- * shows "Details about this ministry are coming soon." with Donate / Give (this ministry chosen) and Contact us.
+ * shows "Details about this ministry are coming soon." with Donate (this ministry chosen) and Contact us.
  *
  * @param array $args { ministry, photos }
  *
@@ -23,7 +23,7 @@ krm_hero_preload( $krm_hero );
 	<?php if ( ! empty( $krm_m['soon'] ) ) : ?>
 	<p class="lead" id="ministry-description"><?php esc_html_e( 'Details about this ministry are coming soon.', 'kingdom-revival' ); ?></p>
 	<div class="hero-actions">
-	<a class="button button-primary" href="<?php echo esc_url( krm_ministry_donate_url( $krm_m['slug'] ) ); ?>"><?php echo krm_icon( 'heart18' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php esc_html_e( 'Donate / Give', 'kingdom-revival' ); ?></a>
+	<a class="button button-primary" href="<?php echo esc_url( krm_ministry_donate_url( $krm_m['slug'] ) ); ?>"><?php echo krm_icon( 'heart18' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php esc_html_e( 'Donate', 'kingdom-revival' ); ?></a>
 	<a class="button button-light" href="<?php echo esc_url( krm_page_url( 'contact' ) ); ?>"><?php esc_html_e( 'Contact us', 'kingdom-revival' ); ?></a>
 	</div>
 	<?php else : ?>

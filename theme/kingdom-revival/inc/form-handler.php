@@ -342,7 +342,28 @@ function krm_form_submit( array $post, $ajax ) {
 	}
 
 	$sent = false;
-	if ( ! $is_spam ) {
+	$w3   = null;
+	if ( ! $is_spam && krm_w3_key() ) {
+		// Web3Forms: the visitor's browser sends the email (forms.js), then reports the result (krm_form_mailed).
+		// Without JavaScript the server forwards it itself.
+		$w3 = krm_w3_payload( krm_form_mail( $type, $data, $page, $saved ? (int) $post_id : 0 ) );
+		if ( $saved ) {
+			update_post_meta( $post_id, '_krm_mail_via', 'web3forms' );
+		}
+		if ( ! $ajax ) {
+			list( $sent, $error ) = krm_w3_send_server( $w3 );
+			if ( $saved ) {
+				update_post_meta( $post_id, '_krm_mail_status', $sent ? 'sent' : 'failed' );
+				update_post_meta( $post_id, '_krm_emailed', $sent ? 1 : 0 );
+				if ( ! $sent ) {
+					update_post_meta( $post_id, '_krm_mail_error', mb_substr( $error, 0, 500 ) );
+				}
+			}
+			$w3 = null;
+		} else {
+			$sent = true; // Sent by the browser; a failure there is reported back and shown on the entry.
+		}
+	} elseif ( ! $is_spam ) {
 		list( $sent, $error ) = krm_send_form_mail( krm_form_mail( $type, $data, $page, $saved ? (int) $post_id : 0 ) );
 		if ( $saved ) {
 			update_post_meta( $post_id, '_krm_mail_status', $sent ? 'sent' : 'failed' );
@@ -360,7 +381,11 @@ function krm_form_submit( array $post, $ajax ) {
 		$result['message'] = '';
 		return $result;
 	}
-	return array_merge( $result, array( 'ok' => true, 'status' => 200, 'code' => 'sent', 'message' => '' ) ); // phpcs:ignore WordPress.Arrays.ArrayDeclarationSpacing
+	$done = array_merge( $result, array( 'ok' => true, 'status' => 200, 'code' => 'sent', 'message' => '' ) ); // phpcs:ignore WordPress.Arrays.ArrayDeclarationSpacing
+	if ( $w3 ) {
+		$done['w3'] = krm_w3_envelope( $w3, $saved ? (int) $post_id : 0 );
+	}
+	return $done;
 }
 
 /**
@@ -431,6 +456,9 @@ function krm_form_ajax_route() {
 		'fields'  => $result['fields'],
 		'name'    => $result['name'],
 	);
+	if ( ! empty( $result['w3'] ) ) {
+		$body['w3'] = $result['w3'];
+	}
 	if ( $result['ok'] ) {
 		wp_send_json_success( $body );
 	}
@@ -598,3 +626,114 @@ function krm_field_error( $form_id, $key ) {
 		'<span class="krm-field-error" id="' . esc_attr( $id ) . '">' . esc_html( $state['fields'][ $key ] ) . '</span>',
 	);
 }
+
+/* ---------- Web3Forms ---------- */
+
+/**
+ * The Web3Forms access key (Kingdom Revival → Settings), or '' when form emails are sent by WordPress.
+ */
+function krm_w3_key() {
+	$key = trim( (string) krm_opt( 'web3forms_key' ) );
+	return preg_match( '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $key ) ? $key : '';
+}
+
+/**
+ * Web3Forms request body for an email built for krm_send_form_mail() (subject, rows, reply_to, whatsapp, page, admin).
+ * Web3Forms emails every other key as "label: value"; access_key, subject, from_name and replyto are its own fields.
+ *
+ * @param array $mail Email parts.
+ */
+function krm_w3_payload( array $mail ) {
+	$body = array(
+		'access_key' => krm_w3_key(),
+		'subject'    => krm_mail_line( $mail['subject'] ),
+		'from_name'  => 'Kingdom Revival Website',
+	);
+	if ( ! empty( $mail['reply_to'] ) && is_email( $mail['reply_to'] ) ) {
+		$body['replyto'] = $mail['reply_to'];
+	}
+	if ( ! empty( $mail['notice'] ) ) {
+		$body['Note'] = $mail['notice'];
+	}
+	foreach ( $mail['rows'] as $label => $value ) {
+		$body[ $label ] = '' === trim( (string) $value ) ? '—' : (string) $value;
+	}
+	if ( ! empty( $mail['whatsapp'] ) ) {
+		$body['WhatsApp'] = $mail['whatsapp'];
+	}
+	$body['Sent from'] = $mail['page'];
+	$body['Received']  = wp_date( 'l, j F Y, g:i a', time(), new DateTimeZone( 'Asia/Karachi' ) ) . ' PKT';
+	if ( ! empty( $mail['admin'] ) ) {
+		$body['Saved in WordPress'] = $mail['admin'];
+	}
+	return $body;
+}
+
+/**
+ * What the browser gets: the Web3Forms body, plus the entry and a signed receipt to report the result with.
+ *
+ * @param array $payload Web3Forms body.
+ * @param int   $post_id Saved submission (0: none).
+ */
+function krm_w3_envelope( array $payload, $post_id ) {
+	return array(
+		'payload' => $payload,
+		'entry'   => $post_id,
+		'receipt' => $post_id ? hash_hmac( 'sha256', 'krm_w3|' . $post_id, wp_salt( 'nonce' ) ) : '',
+	);
+}
+
+/**
+ * Send a Web3Forms body from the server (no-JavaScript posts). Web3Forms' free plan may refuse server-side requests;
+ * the result is recorded on the entry either way.
+ *
+ * @param array $payload Web3Forms body.
+ * @return array{0: bool, 1: string}
+ */
+function krm_w3_send_server( array $payload ) {
+	$response = wp_remote_post(
+		'https://api.web3forms.com/submit',
+		array(
+			'timeout' => 15,
+			'headers' => array(
+				'Content-Type' => 'application/json',
+				'Accept'       => 'application/json',
+			),
+			'body'    => wp_json_encode( $payload ),
+		)
+	);
+	if ( is_wp_error( $response ) ) {
+		return array( false, 'Web3Forms: ' . $response->get_error_message() );
+	}
+	$json = json_decode( wp_remote_retrieve_body( $response ), true );
+	if ( is_array( $json ) && ! empty( $json['success'] ) ) {
+		return array( true, '' );
+	}
+	return array( false, 'Web3Forms: HTTP ' . wp_remote_retrieve_response_code( $response ) . ( is_array( $json ) && ! empty( $json['message'] ) ? ' — ' . sanitize_text_field( $json['message'] ) : '' ) );
+}
+
+/**
+ * The browser reports whether Web3Forms accepted the email (POST entry, receipt, ok, error). Only an entry still
+ * waiting for its result can be updated, and only with the receipt signed for it.
+ */
+function krm_form_mailed_route() {
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- the signed receipt authorises this one update.
+	$id      = isset( $_POST['entry'] ) ? absint( $_POST['entry'] ) : 0;
+	$receipt = isset( $_POST['receipt'] ) ? sanitize_text_field( wp_unslash( $_POST['receipt'] ) ) : '';
+	$ok      = isset( $_POST['ok'] ) && '1' === $_POST['ok'];
+	$error   = isset( $_POST['error'] ) ? sanitize_text_field( wp_unslash( $_POST['error'] ) ) : '';
+	// phpcs:enable
+	if ( ! $id || ! hash_equals( hash_hmac( 'sha256', 'krm_w3|' . $id, wp_salt( 'nonce' ) ), $receipt ) || ! in_array( get_post_type( $id ), array( 'krm_submission', 'testimonial' ), true ) ) {
+		wp_send_json_error( null, 400 );
+	}
+	if ( 'pending' === get_post_meta( $id, '_krm_mail_status', true ) ) {
+		update_post_meta( $id, '_krm_mail_status', $ok ? 'sent' : 'failed' );
+		update_post_meta( $id, '_krm_emailed', $ok ? 1 : 0 );
+		if ( ! $ok ) {
+			update_post_meta( $id, '_krm_mail_error', 'Web3Forms: ' . mb_substr( '' !== $error ? $error : 'no answer', 0, 300 ) );
+		}
+	}
+	wp_send_json_success();
+}
+add_action( 'wp_ajax_krm_form_mailed', 'krm_form_mailed_route' );
+add_action( 'wp_ajax_nopriv_krm_form_mailed', 'krm_form_mailed_route' );

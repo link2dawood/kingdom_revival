@@ -1,0 +1,17 @@
+{
+  "access_key": "(key)",
+  "subject": "[Website] PRIVATE Prayer Request — Test prayer request 1440",
+  "from_name": "Kingdom Revival Website",
+  "replyto": "tester@example.com",
+  "Note": "PRIVATE: the visitor asked that only the ministry’s designated prayer team sees this request.",
+  "Form": "Prayer Request",
+  "Name": "Test prayer request 1440",
+  "Email or WhatsApp": "tester@example.com",
+  "Country": "Pakistan",
+  "Request type": "Healing",
+  "Prayer request": "Please pray for my mother's health.\r\nShe is in hospital in Faisalabad.",
+  "Keep request private": "Yes",
+  "Sent from": "http://127.0.0.1:8899/partner-with-us/prayer-request/",
+  "Received": "Friday, 6 November 2026, 11:14 pm PKT",
+  "Saved in WordPress": "http://127.0.0.1:8899/wp-admin/post.php?action=edit&post=418"
+}

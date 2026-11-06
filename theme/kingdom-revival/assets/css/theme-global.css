@@ -1111,7 +1111,7 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
   .submenu li.has-link > .sub-toggle[aria-expanded="true"] { background: var(--color-bg-soft); }
 }
 
-/* Navbar "Donate / Give" (Phase 22): the last main-menu item (class menu-donate, set in the menu editor or by the
+/* Navbar "Donate" (Phase 22): the last main-menu item (class menu-donate, set in the menu editor or by the
    theme's menu) is the red button. Desktop: a pill after Contact; mobile menu: a full-width button. It keeps its
    colours over the transparent header and in dark mode (white on the theme red: 5.6:1 light, 4.7:1 dark). */
 @media (min-width: 901px) { .menu > li > a, .menu > li > .sub-toggle { white-space: nowrap; } }

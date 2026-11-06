@@ -84,6 +84,7 @@ add_action(
 				'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
 				'nonce'           => is_user_logged_in() ? wp_create_nonce( 'krm_form' ) : '',
 				'formToken'       => krm_form_token(),
+				'web3formsKey'    => krm_w3_key(),
 				'email'           => krm_opt( 'email' ),
 				'newsletterDelay' => (int) krm_opt( 'newsletter_delay' ) * 1000,
 				// No newsletter popup over the thank-you view right after a gift.
@@ -106,7 +107,7 @@ add_action(
 
 		// Phase 24 forms (Partner With Us, Prayer Request, Donate, home prayer form): registered here, queued by
 		// krm_form_hidden() only on pages that print one of these forms.
-		wp_register_script( 'krm-forms', krm_asset( 'js/forms.js' ), array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		wp_register_script( 'krm-forms', krm_asset( 'js/forms.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 		wp_localize_script(
 			'krm-forms',
 			'KRM_FORMS',

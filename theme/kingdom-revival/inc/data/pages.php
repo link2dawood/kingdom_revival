@@ -19,5 +19,5 @@ return array(
 	'partner-with-us' => array( 'Partner With Us', 'partner', '' ),
 	'prayer-request'  => array( 'Prayer Request', 'prayer', '' ),
 	'contact'         => array( 'Contact', 'contact', '' ),
-	'donate'          => array( 'Donate / Give', 'donate', '' ),
+	'donate'          => array( 'Donate', 'donate', '' ),
 );

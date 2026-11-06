@@ -51,7 +51,9 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Testimonials, and the same header for visitors (theme 1.17.1)](#kingdom-revival-ministries-testimonials-and-the-same-header-for-visitors-theme-1171)
 - [Kingdom Revival Ministries: Phase 23: testimonial avatars and sample launch control (theme 1.17.2)](#kingdom-revival-ministries-phase-23-testimonial-avatars-and-sample-launch-control-theme-1172)
 - [Kingdom Revival Ministries: Phase 24: form emails with a loading state (theme 1.18.0)](#kingdom-revival-ministries-phase-24-form-emails-with-a-loading-state-theme-1180)
+- [Kingdom Revival Ministries: Web3Forms for the form emails, social links in a new tab (theme 1.18.2)](#kingdom-revival-ministries-web3forms-for-the-form-emails-social-links-in-a-new-tab-theme-1182)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
+- [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
 ---
 
@@ -4068,3 +4070,92 @@ now link the ministry's Facebook and Instagram pages.
 ### Not covered
 
 - Not uploaded to the live site. After upload, the page cache is purged automatically (new version).
+
+## Kingdom Revival Ministries: navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)
+
+**Result:** the red navbar button, the Quick Links item, the Donate page title and the "coming soon" ministry button
+read **Donate**. The old label is no longer produced anywhere: nav fallback and menu definitions in
+[inc/nav.php](theme/kingdom-revival/inc/nav.php) / [inc/upgrade.php](theme/kingdom-revival/inc/upgrade.php), the page
+list in [inc/data/pages.php](theme/kingdom-revival/inc/data/pages.php), the ministry hero. Upgrade step 2 no longer
+renames the Donate page to "Donate / Give".
+
+A one-time step (option `krm_contact_version` 2) renames menu items and pages still titled exactly "Donate / Give"
+to "Donate", so the live site's menu changes on upload. Titles changed by hand to anything else are kept.
+
+**Verified** on the local WP with a menu item and the Donate page set to "Donate / Give": after one request both read
+"Donate", and Home/Contact/Donate contain no "Donate / Give". Screenshot at 1440 shows the red "Donate" button.
+`tools/visual-qa/nav_check.js` now expects "Donate".
+
+## Kingdom Revival Ministries: Web3Forms for the form emails, social links in a new tab (theme 1.18.2)
+
+**Result: the Contact form, the Partner With Us forms, Prayer Request and Donate now send their emails through
+Web3Forms (access key df5b0a03-…, inbox Info@kingdomrevivalministries.com), not through the web host. That route is
+what failed on the live site: with theme 1.18.1 every real submission there ended in WordPress's "critical error"
+(HTTP 500, 0.9 s) and the visitor saw "Sorry, your message couldn't be sent". The Facebook and Instagram icons in the
+top bar now open in a new tab.**
+
+### Why the live forms failed
+
+Read-only checks on kingdomrevivalministries.com (theme 1.18.1) showed:
+- The nonce endpoint worked, and posts with missing fields got the expected 422 from validation.
+- A link-stuffed post was saved as a "possible spam" draft. That proves saving works; this test entry is on the
+  live site and can be deleted.
+- One real test submission ("Website test (please ignore)") crashed with HTTP 500 the moment WordPress tried to send
+  the email.
+
+The same code doesn't crash locally, where the email simply fails. The likely cause is that PHP `mail()` is disabled
+on the host, and PHPMailer then throws an error that `wp_mail()` doesn't catch. The host's error log would confirm it.
+
+### What changed
+
+- **Settings**: Kingdom Revival → Settings → Forms & newsletter → "Web3Forms access key", defaulting to the key above.
+  The key is public by design: it only lets forms send to the inbox it was created for.
+- **Flow**: WordPress validates the submission and saves it under Form Submissions as before, with the same nonce,
+  honeypot, 3 s minimum and rate-limit checks. Instead of calling `wp_mail()`, it answers with the message to send.
+  The visitor's browser posts that to `api.web3forms.com/submit` (the free plan only accepts browser submissions)
+  and reports the result back with a signed receipt (`krm_form_mailed`). The entry's Email status then shows
+  "Sent (Web3Forms)" or "Failed (Web3Forms)".
+- **The email** has subject `[Website] New Volunteer — {Name}` and the same subjects as Phase 24 (PRIVATE prayer
+  requests, Donation Intent with amount and ministry). From name: Kingdom Revival Website; Reply-To: the visitor's
+  email. Then every field, the WhatsApp link, the page, the time in PKT and a link to the saved entry. Web3Forms uses
+  its own layout, so the branded HTML email from Phase 24 is only used when the key is emptied.
+- **Fallback**: if WordPress fails (500, no connection, 20 s timeout), the browser emails the fields directly to
+  Web3Forms, so the message still arrives. Such an email says it is not in Form Submissions. The red error only
+  appears when both WordPress and Web3Forms fail.
+- **No JavaScript**: the server forwards the email to Web3Forms itself. Web3Forms' free plan may refuse server-side
+  requests; the entry then shows "Failed".
+- **Also via Web3Forms**: the Contact, newsletter and testimony forms (older handler, `KRM.sendForm` in site.js).
+- **Crash guard**: every remaining `wp_mail()` call made by the theme is wrapped in `try/catch (\Throwable)`. If the
+  key is emptied and the host's mail is broken, the visitor sees the normal result and the entry shows "Failed",
+  never a critical error.
+- **Social links**: the top-bar icons (header.php) get `target="_blank" rel="noopener noreferrer"` and an
+  "(opens in a new tab)" label for screen readers. The Contact page's social buttons already opened in a new tab.
+
+### How it was verified
+
+- `tools/visual-qa/phase24_check.js`, updated: **54 tests, 0 failures**. Web3Forms is intercepted in the browser, and
+  for the no-JS path by a local-only mu-plugin, so no real email was sent.
+  - All 7 Phase 24 forms at 1440 and 390: exactly one Web3Forms request, no `wp_mail`, the right key, subject,
+    from name, Reply-To, PKT time, WhatsApp link and fields; the entry saved with status "sent".
+  - Contact form at 1440 and 390.
+  - WordPress down, Web3Forms up: success, with the direct email (volunteer, donation).
+  - WordPress down and Web3Forms down: the red message with the new number +92 302 0692993; values kept (500 and 20 s
+    timeout).
+  - Web3Forms refusing: success for the visitor, entry "failed".
+  - No JavaScript: server forward, entry "sent".
+  - Validation, honeypot, rate limit, double click, card-number removal, dark mode contrast.
+  - Social links: 12 links on 5 pages all `target="_blank"` with `noopener`; a real click opened a new tab and the
+    page stayed put.
+- Payloads exactly as Web3Forms receives them: `qa-screenshots/phase-24/emails/*.web3forms.json`.
+
+### Not covered
+
+- No real email went through Web3Forms from here; all tests were mocked so the client's inbox got no test mail.
+  After uploading 1.18.2, send one test from the live Contact page and one from Partner With Us, and check
+  Info@kingdomrevivalministries.com (and its spam folder) and Form Submissions → Email status.
+- The key must belong to a Web3Forms account whose email is Info@kingdomrevivalministries.com. The email goes to
+  whatever inbox the key was created with.
+- Web3Forms free plan: 250 submissions a month.
+- The live site's PHP mail problem itself is not fixed (WordPress's own emails, such as password resets, may still
+  fail there). The host's error log or support can confirm whether `mail()` is disabled.
+

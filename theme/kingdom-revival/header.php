@@ -34,7 +34,7 @@ defined( 'ABSPATH' ) || exit;
 		<?php if ( $krm_social ) : ?>
 		<div class="topbar-actions">
 			<?php foreach ( $krm_social as $krm_network => $krm_link ) : ?>
-			<a class="topbar-social" href="<?php echo esc_url( $krm_link[1] ); ?>" rel="noopener" aria-label="<?php echo esc_attr( $krm_link[0] ); ?>"><?php echo krm_icon( $krm_network ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+			<a class="topbar-social" href="<?php echo esc_url( $krm_link[1] ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( $krm_link[0] . " (opens in a new tab)" ); ?>"><?php echo krm_icon( $krm_network ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
 			<?php endforeach; ?>
 			<a class="donate-link" href="<?php echo esc_url( krm_donate_url() ); ?>"><?php krm_t( 'header.donate_label', 'site' ); ?></a>
 		</div>

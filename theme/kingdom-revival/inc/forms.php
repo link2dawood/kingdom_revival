@@ -224,7 +224,7 @@ function krm_handle_form() {
 
 	if ( 'testimony' === $form ) {
 		krm_save_testimony( $data, $is_spam );
-		wp_send_json_success();
+		wp_send_json_success( krm_w3_out() );
 	}
 
 	$labels = krm_form_labels();
@@ -256,7 +256,8 @@ function krm_handle_form() {
 		}
 	}
 
-	wp_send_json_success();
+	// With Web3Forms the browser sends the email (KRM.sendForm in site.js): it gets the message to send.
+	wp_send_json_success( krm_w3_out() );
 }
 add_action( 'wp_ajax_krm_form', 'krm_handle_form' );
 add_action( 'wp_ajax_nopriv_krm_form', 'krm_handle_form' );
@@ -289,16 +290,56 @@ function krm_notify( $form, $data, $title, $post_id ) {
 	$headers = array();
 	// The prayer form has one "Email or WhatsApp" field; reply to it when it is an email address.
 	$reply = isset( $data['email'] ) ? $data['email'] : ( isset( $data['contact'] ) ? $data['contact'] : '' );
+
+	// Web3Forms (Settings → Web3Forms access key): hand the message to the browser instead of wp_mail().
+	if ( krm_w3_key() ) {
+		$rows = array();
+		foreach ( $data as $key => $value ) {
+			$rows[ isset( $fields[ $key ][0] ) ? $fields[ $key ][0] : $key ] = $value;
+		}
+		$page = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : home_url( '/' );
+		$GLOBALS['krm_w3_out'] = array(
+			'w3' => krm_w3_envelope(
+				krm_w3_payload(
+					array(
+						'subject'  => '[Website] ' . $title,
+						'rows'     => $rows,
+						'reply_to' => is_email( $reply ) ? $reply : '',
+						'whatsapp' => 'phone' === krm_contact_kind( $reply ) ? krm_whatsapp_link( $reply ) : '',
+						'page'     => $page,
+						'admin'    => $post_id ? admin_url( 'post.php?action=edit&post=' . (int) $post_id ) : '',
+					)
+				),
+				(int) $post_id
+			),
+		);
+		if ( $post_id ) {
+			update_post_meta( $post_id, '_krm_mail_status', 'pending' );
+			update_post_meta( $post_id, '_krm_mail_via', 'web3forms' );
+		}
+		return;
+	}
 	if ( is_email( $reply ) ) {
 		$name      = isset( $data['name'] ) && '' !== $data['name'] ? str_replace( array( "\r", "\n", '"' ), '', $data['name'] ) : '';
 		$headers[] = 'Reply-To: ' . ( $name ? '"' . $name . '" ' : '' ) . '<' . $reply . '>';
 	}
 	/* translators: %s: submission title */
 	$subject = sprintf( __( '[Website] %s', 'kingdom-revival' ), $title );
-	$sent    = wp_mail( $to, $subject, $body, $headers );
+	try {
+		$sent = wp_mail( $to, $subject, $body, $headers );
+	} catch ( \Throwable $e ) { // e.g. PHP mail() disabled on the host: never a "critical error" for the visitor.
+		$sent = false;
+	}
 	if ( $post_id ) {
 		update_post_meta( $post_id, '_krm_emailed', $sent ? 1 : 0 );
 	}
+}
+
+/**
+ * The Web3Forms message prepared by krm_notify() for this request (null when WordPress sent the email itself).
+ */
+function krm_w3_out() {
+	return isset( $GLOBALS['krm_w3_out'] ) ? $GLOBALS['krm_w3_out'] : null;
 }
 
 /**
@@ -507,10 +548,13 @@ function krm_mail_status_html( $post_id, $detail = false ) {
 		'sent'    => array( __( 'Sent', 'kingdom-revival' ), '#1E5B3A' ),
 		'failed'  => array( __( 'Failed', 'kingdom-revival' ), '#B3261E' ),
 		'held'    => array( __( 'Not sent (possible spam)', 'kingdom-revival' ), '#7A5A00' ),
-		'pending' => array( __( 'Not sent', 'kingdom-revival' ), '#7A5A00' ),
+		'pending' => array( __( 'Not confirmed', 'kingdom-revival' ), '#7A5A00' ),
 	);
 	$label  = isset( $labels[ $status ] ) ? $labels[ $status ] : $labels['pending'];
 	$html   = '<strong style="color:' . esc_attr( $label[1] ) . '">' . esc_html( $label[0] ) . '</strong>';
+	if ( 'web3forms' === get_post_meta( $post_id, '_krm_mail_via', true ) ) {
+		$html .= ' <small>(Web3Forms)</small>';
+	}
 	$error  = get_post_meta( $post_id, '_krm_mail_error', true );
 	if ( $detail && 'failed' === $status && $error ) {
 		$html .= ' — ' . esc_html( $error ) . '<br><small>' . esc_html__( 'The submission is saved here; reply to the visitor directly, and check the SMTP settings in wp-config.php (theme readme, "Form emails").', 'kingdom-revival' ) . '</small>';

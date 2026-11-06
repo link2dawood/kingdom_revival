@@ -1,0 +1,19 @@
+{
+  "access_key": "(key)",
+  "subject": "[Website] Donation Intent — $100/month for Widows Support — Test donation 1440",
+  "from_name": "Kingdom Revival Website",
+  "Note": "Donation intent only: this is NOT a payment confirmation. Check PayPal / the bank / the transfer receipt before thanking the donor for a received gift.",
+  "Form": "Donation Intent",
+  "Name": "Test donation 1440",
+  "Email or WhatsApp": "+92 300 1234567",
+  "Country": "Pakistan",
+  "Amount": "$100",
+  "Frequency": "Monthly",
+  "Ministry / project": "Widows Support",
+  "Payment method chosen": "Bank transfer",
+  "Message": "I will send it by bank transfer on Friday.",
+  "WhatsApp": "https://wa.me/923001234567",
+  "Sent from": "http://127.0.0.1:8899/donate/",
+  "Received": "Friday, 6 November 2026, 11:14 pm PKT",
+  "Saved in WordPress": "http://127.0.0.1:8899/wp-admin/post.php?action=edit&post=419"
+}

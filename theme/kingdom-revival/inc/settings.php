@@ -60,7 +60,8 @@ function krm_settings_schema() {
 			'bank_phone'          => array( __( 'Phone', 'kingdom-revival' ), 'text', '' ),
 		),
 		__( 'Forms & newsletter', 'kingdom-revival' ) => array(
-			'form_recipient'      => array( __( 'Send form notifications to', 'kingdom-revival' ), 'text', __( 'One or more emails, comma separated.', 'kingdom-revival' ) ),
+			'web3forms_key'       => array( __( 'Web3Forms access key', 'kingdom-revival' ), 'text', __( 'Form emails are sent by Web3Forms (web3forms.com) to the inbox this key was created for (Info@kingdomrevivalministries.com). Every submission is still saved under Form Submissions. Empty: WordPress sends the emails itself (needs working mail / SMTP on the host).', 'kingdom-revival' ) ),
+			'form_recipient'      => array( __( 'Send form notifications to', 'kingdom-revival' ), 'text', __( 'One or more emails, comma separated. Used only when the Web3Forms key is empty (contact, newsletter and testimony forms).', 'kingdom-revival' ) ),
 			'newsletter_endpoint' => array( __( 'Newsletter service form URL (optional)', 'kingdom-revival' ), 'url', __( 'Sign-ups are always saved under Submissions. If you add a Mailchimp/Brevo/Formspree form URL, each sign-up is also forwarded there.', 'kingdom-revival' ) ),
 			'newsletter_delay'    => array( __( 'Newsletter popup delay (seconds)', 'kingdom-revival' ), 'number', '' ),
 		),
