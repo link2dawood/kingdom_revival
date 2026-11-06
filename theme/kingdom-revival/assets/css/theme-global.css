@@ -703,6 +703,22 @@
 /* Field error text added by components.js under an invalid field of a form[data-krm-form] (prayer, sign-up). */
 .krm-field-error { font-size: 13px; font-weight: 600; line-height: 1.4; color: var(--color-secondary-text); }
 .krm-field-error[hidden] { display: none; }
+/* Phase 24 forms (assets/js/forms.js): hidden parts stay hidden even with an inline display; invalid fields get a red
+   border (with the text note above, not colour alone); the loading spinner and the success / error box. */
+[data-krm-send] [hidden], [data-krm-for] [hidden] { display: none !important; }
+[data-krm-send] [aria-invalid="true"] { border-color: var(--color-secondary) !important; }
+[data-krm-send][aria-busy="true"] input:read-only, [data-krm-send][aria-busy="true"] textarea:read-only, [data-krm-send][aria-busy="true"] [aria-disabled="true"] { opacity: .7; cursor: progress; }
+[data-krm-send] button[type="submit"]:disabled, button[form][type="submit"]:disabled { cursor: progress; opacity: .85; }
+.krm-spinner { display: inline-block; flex: none; width: 1em; height: 1em; margin-right: .55em; vertical-align: -.15em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: krm-spin .7s linear infinite; }
+@keyframes krm-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .krm-spinner { animation-duration: 1.6s; } }
+.krm-form-msg { display: flex; gap: 12px; align-items: flex-start; margin: 16px 0 0; padding: 14px 16px; border-radius: 10px; font-weight: 600; line-height: 1.5; text-align: left; outline: none; }
+.krm-form-msg:focus-visible { outline: 3px solid var(--color-focus, var(--color-heading)); outline-offset: 2px; }
+.krm-form-msg.is-success { background: var(--color-success-soft); color: var(--color-success); }
+.krm-form-msg.is-error { background: var(--color-danger-soft); color: var(--color-secondary-text); }
+.krm-form-msg__icon { display: grid; flex: none; width: 36px; height: 36px; place-items: center; border-radius: 50%; background: var(--color-surface); }
+.krm-form-msg__text { margin: 0 !important; padding-top: 6px; color: inherit !important; }
+[data-krm-done] > .krm-form-msg, [data-krm-for] > .krm-form-msg { margin-top: 0; }
 
 /* ---------- New components of the sitemap pages (built from the tokens and patterns above) ---------- */
 /* Hero subheading (What We Do): white, the accent colour for <em>, as the hero title. */

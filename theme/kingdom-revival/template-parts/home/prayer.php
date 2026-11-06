@@ -1,7 +1,8 @@
 <?php
 /**
- * Prayer request form (home page, and the Prayer Request page with screen => 'home'). Posts to WordPress like the
- * contact form (inc/forms.php, form "prayer"); assets/js/components.js sends it.
+ * Prayer request form (home page, and the Prayer Request page with screen => 'home'). Phase 24: form_type
+ * "prayer_request", sent by assets/js/forms.js to krm_form_submit() (inc/form-handler.php); without JavaScript it posts
+ * to admin-post.php and the page shows the outcome.
  *
  * @param array $args { screen: content screen to read; id: section id (default "prayer"). }
  *
@@ -13,6 +14,14 @@ defined( 'ABSPATH' ) || exit;
 $krm_screen = isset( $args['screen'] ) ? (string) $args['screen'] : '';
 $krm_id     = isset( $args['id'] ) ? (string) $args['id'] : 'prayer';
 $krm_full   = 'request' === $krm_id;
+$krm_form   = $krm_id . '-form';
+$krm_state  = krm_form_state( $krm_form );
+$krm_done   = $krm_state && $krm_state['ok'];
+$krm_hide   = $krm_done ? ' hidden' : '';
+/* Error attributes + note after a failed post without JavaScript. */
+$krm_err = function ( $key ) use ( $krm_form ) {
+	return krm_field_error( $krm_form, $key );
+};
 
 $krm_input = "font: 400 16px 'Plus Jakarta Sans', sans-serif; padding: 12px 14px; border: 1px solid var(--color-input-border); border-radius: 8px; background: var(--color-surface); color: var(--color-text); min-height: 46px; box-sizing: border-box";
 ?>
@@ -27,19 +36,21 @@ $krm_input = "font: 400 16px 'Plus Jakarta Sans', sans-serif; padding: 12px 14px
 <a href="<?php echo esc_url( krm_whatsapp_url() ); ?>" target="_blank" rel="noopener" style="margin-top: 16px; display: inline-flex; gap: 8px; align-items: center; font-weight: 700; min-height: 44px"><?php krm_t( 'prayer.whatsapp_label', $krm_screen ); ?></a>
 <?php endif; ?>
 </div>
-<form data-krm-prayer data-krm-form="prayer" novalidate style="flex: 1.3 1 380px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
-<p class="krm-hp" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden"><label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label></p>
-<label class="krm-prayer__half" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Your name<input type="text" name="name" autocomplete="name" required maxlength="200" style="<?php echo esc_attr( $krm_input ); ?>"></label>
-<label class="krm-prayer__half" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Email or WhatsApp<input type="text" name="contact" autocomplete="email" required maxlength="200" data-validate="email-or-phone" style="<?php echo esc_attr( $krm_input ); ?>"></label>
+<form data-krm-prayer <?php krm_form_attrs( 'prayer_request', $krm_form ); ?> style="flex: 1.3 1 380px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<?php krm_form_hidden( 'prayer_request', $krm_form ); ?>
+<?php list( $krm_ea, $krm_en ) = $krm_err( 'name' ); ?>
+<label class="krm-prayer__half" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600"<?php echo $krm_hide; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>Your name<input type="text" name="name" autocomplete="name" required maxlength="100" value="<?php echo esc_attr( krm_fv( $krm_form, 'name' ) ); ?>" style="<?php echo esc_attr( $krm_input ); ?>"<?php echo $krm_ea; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo $krm_en; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></label>
+<?php list( $krm_ea, $krm_en ) = $krm_err( 'contact' ); ?>
+<label class="krm-prayer__half" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600"<?php echo $krm_hide; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>Email or WhatsApp<input type="text" name="contact" autocomplete="email" required maxlength="200" data-validate="email-or-phone" value="<?php echo esc_attr( krm_fv( $krm_form, 'contact' ) ); ?>" style="<?php echo esc_attr( $krm_input ); ?>"<?php echo $krm_ea; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo $krm_en; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></label>
 <?php if ( $krm_full ) : ?>
-<label class="krm-prayer__half" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Country<input type="text" name="country" autocomplete="country-name" maxlength="200" style="<?php echo esc_attr( $krm_input ); ?>"></label>
-<label class="krm-prayer__half" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Request type<select name="type" style="<?php echo esc_attr( $krm_input ); ?>"><option>Healing</option><option>Family</option><option>Salvation</option><option>Other</option></select></label>
+<label class="krm-prayer__half" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600"<?php echo $krm_hide; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>Country<input type="text" name="country" autocomplete="country-name" maxlength="200" value="<?php echo esc_attr( krm_fv( $krm_form, 'country' ) ); ?>" style="<?php echo esc_attr( $krm_input ); ?>"></label>
+<label class="krm-prayer__half" style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600"<?php echo $krm_hide; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>Request type<select name="type" style="<?php echo esc_attr( $krm_input ); ?>"><?php foreach ( krm_prayer_types() as $krm_pt ) : ?><option<?php selected( krm_fv( $krm_form, 'type' ), $krm_pt ); ?>><?php echo esc_html( $krm_pt ); ?></option><?php endforeach; ?></select></label>
 <?php endif; ?>
-<label style="grid-column: span 2; display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Message<textarea name="request" rows="<?php echo $krm_full ? '7' : '4'; ?>" required maxlength="5000" style="font: 400 16px 'Plus Jakarta Sans', sans-serif; padding: 12px 14px; border: 1px solid var(--color-input-border); border-radius: 8px; background: var(--color-surface); resize: vertical"></textarea></label>
-<?php if ( $krm_full ) : ?><label class="krm-prayer-private" style="grid-column:span 2;display:flex;gap:10px;align-items:flex-start;font-size:14px"><input type="checkbox" name="private" value="Yes" style="width:20px;height:20px;accent-color:var(--color-heading)"><span><strong>Keep my request private</strong><br><small style="color:var(--color-text-muted)">Only the ministry's designated prayer team will see it.</small></span></label><?php endif; ?>
-<button type="submit" class="k-g" style="grid-column: span 2; justify-self: start; font: 700 15px 'Plus Jakarta Sans', sans-serif; background: var(--color-button-navy); color: var(--color-white); border: 0; border-radius: 8px; padding: 0 26px; min-height: 48px; cursor: pointer"><?php krm_t( 'prayer.button', $krm_screen ); ?></button>
-<p data-krm-form-status role="status" hidden style="grid-column: span 2; margin: 0; font-weight: 600; color: var(--color-success)"><?php krm_t( 'prayer.success', $krm_screen ); ?></p>
-<p data-krm-form-error role="alert" hidden style="grid-column: span 2; margin: 0; font-weight: 600; color: var(--color-secondary-text)"><?php krm_t( 'prayer.error', $krm_screen ); ?></p>
+<?php list( $krm_ea, $krm_en ) = $krm_err( 'request' ); ?>
+<label style="grid-column: span 2; display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600"<?php echo $krm_hide; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>Message<textarea name="request" rows="<?php echo $krm_full ? '7' : '4'; ?>" required maxlength="5000" style="font: 400 16px 'Plus Jakarta Sans', sans-serif; padding: 12px 14px; border: 1px solid var(--color-input-border); border-radius: 8px; background: var(--color-surface); resize: vertical"<?php echo $krm_ea; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_textarea( krm_fv( $krm_form, 'request' ) ); ?></textarea><?php echo $krm_en; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></label>
+<?php if ( $krm_full ) : ?><label class="krm-prayer-private" style="grid-column:span 2;display:flex;gap:10px;align-items:flex-start;font-size:14px"<?php echo $krm_hide; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><input type="checkbox" name="private" value="Yes"<?php checked( krm_fv( $krm_form, 'private' ), 'Yes' ); ?> style="width:20px;height:20px;accent-color:var(--color-heading)"><span><strong>Keep my request private</strong><br><small style="color:var(--color-text-muted)">Only the ministry's designated prayer team will see it.</small></span></label><?php endif; ?>
+<button type="submit" class="k-g" style="grid-column: span 2; justify-self: start; font: 700 15px 'Plus Jakarta Sans', sans-serif; background: var(--color-button-navy); color: var(--color-white); border: 0; border-radius: 8px; padding: 0 26px; min-height: 48px; cursor: pointer"<?php echo $krm_hide; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php krm_t( 'prayer.button', $krm_screen ); ?></button>
+<?php krm_form_messages( $krm_form, krm_fill( krm_c( 'prayer.success', $krm_screen ) ), krm_fill( krm_c( 'prayer.error', $krm_screen ) ), 'grid-column: 1 / -1' ); ?>
 </form>
 </div>
 </section>

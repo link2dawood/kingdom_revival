@@ -67,8 +67,10 @@ return array(
 		'label'  => __( 'Step 3: let us know', 'kingdom-revival' ),
 		'fields' => array(
 			'step'            => krm_f( 'text', __( 'Step heading', 'kingdom-revival' ), 'Let us know' ),
-			'text'            => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'After you give, send us a quick email so we can thank you, confirm your gift and use it exactly where you asked. Your gift details are filled in for you.' ),
-			'email_button'    => krm_f( 'text', __( 'Email button text', 'kingdom-revival' ), 'Let us know about your gift', __( 'This button opens an email to the ministry with the gift details filled in.', 'kingdom-revival' ) ),
+			'text'            => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'After you give, send us your gift details so we can thank you, confirm your gift and use it exactly where you asked. Your gift details are filled in for you.' ),
+			'email_button'    => krm_f( 'text', __( 'Send button text', 'kingdom-revival' ), 'Let us know about your gift', __( 'This button sends the donor details, amount, ministry and payment method to the ministry (KRM_FORMS_TO_EMAIL) as a “Donation Intent” and saves it under Form Submissions. It is not a payment: card details are never asked for.', 'kingdom-revival' ) ),
+			'success'         => krm_f( 'textarea', __( 'Message after sending', 'kingdom-revival' ), 'Thank you for your gift intention. Our team will contact you with the next steps.' ),
+			'error'           => krm_f( 'textarea', __( 'Message if sending fails', 'kingdom-revival' ), 'Sorry, your message couldn’t be sent. Please try again or WhatsApp us at {phone}.' ),
 			'whatsapp_button' => krm_f( 'text', __( 'WhatsApp button text', 'kingdom-revival' ), 'WhatsApp us' ),
 		),
 	),

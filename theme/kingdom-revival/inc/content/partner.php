@@ -107,10 +107,10 @@ return array(
 	),
 	'form'      => array(
 		'label'  => __( 'Sign-up forms', 'kingdom-revival' ),
-		'help'   => __( 'Sign-ups are saved under Kingdom Revival → Submissions (“Partner With Us sign-up”) and emailed like the contact form. The fields are fixed.', 'kingdom-revival' ),
+		'help'   => __( 'Sign-ups are emailed to the address in KRM_FORMS_TO_EMAIL and saved under Kingdom Revival → Form Submissions (Prayer Partner, Financial Partner, Church & Ministry Partner, Volunteer). The fields are fixed. {name} in the messages becomes the visitor’s first name.', 'kingdom-revival' ),
 		'fields' => array(
-			'success' => krm_f( 'textarea', __( 'Message after sending', 'kingdom-revival' ), 'Thank you! Our team will be in touch to welcome you.' ),
-			'error'   => krm_f( 'textarea', __( 'Message if sending fails', 'kingdom-revival' ), 'Sorry, something went wrong. Please try again, or email us at {email}.' ),
+			'success' => krm_f( 'textarea', __( 'Message after sending', 'kingdom-revival' ), 'Thank you, {name}! Your message has reached our team. We’ll get back to you soon.' ),
+			'error'   => krm_f( 'textarea', __( 'Message if sending fails', 'kingdom-revival' ), 'Sorry, your message couldn’t be sent. Please try again or WhatsApp us at {phone}.' ),
 			'foot'    => krm_f( 'text', __( 'Note under the forms', 'kingdom-revival' ), 'We will never share your details with anyone.' ),
 		),
 	),

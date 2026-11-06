@@ -8,6 +8,10 @@
  * A donor returning from PayPal (?thanks=1) sees the thank-you view in place of the hero and giving steps
  * (template-parts/donate-thanks.php, inc/donations.php).
  *
+ * Phase 24: the gift card is the "donation" form (inc/form-handler.php). Step 3's button sends the donor details,
+ * amount, frequency, ministry and chosen payment method as a Donation Intent email; it is not a payment and never asks
+ * for card or bank-login details (PayPal / Stripe take those on their own pages).
+ *
  * @package Kingdom_Revival
  */
 
@@ -15,6 +19,12 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 $krm_gift = krm_gift_return();
+$krm_gs   = krm_form_state( 'gift' );
+$krm_gok  = $krm_gs && $krm_gs['ok'];
+/* A field's value after a failed post without JavaScript, its error attributes and note. */
+$krm_dv = function ( $key ) {
+	return esc_attr( krm_fv( 'gift', $key ) );
+};
 ?>
 	<main id="main">
 	<?php if ( $krm_gift ) : ?>
@@ -38,24 +48,33 @@ $krm_gift = krm_gift_return();
 		<div class="wrap give-layout">
 		<div>
 			<p class="step-label"><span>1</span><?php krm_t( 'gift.step' ); ?></p>
-			<form class="card gift-card" id="gift" onsubmit="return false">
+			<form class="card gift-card" <?php krm_form_attrs( 'donation', 'gift' ); ?>>
+			<?php krm_form_hidden( 'donation', 'gift' ); ?>
+			<input type="hidden" name="method" value="<?php echo $krm_dv( 'method' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" data-krm-method>
 			<fieldset>
 				<legend><?php krm_t( 'gift.frequency' ); ?></legend>
 				<div class="seg">
-				<label><input type="radio" name="frequency" value="One-time" checked><span>One-time</span></label>
-				<label><input type="radio" name="frequency" value="Monthly"><span>Monthly</span></label>
+				<?php $krm_mon = 'Monthly' === krm_fv( 'gift', 'frequency' ); // After a failed post without JavaScript. ?>
+				<label><input type="radio" name="frequency" value="One-time"<?php echo $krm_mon ? '' : ' checked'; ?>><span>One-time</span></label>
+				<label><input type="radio" name="frequency" value="Monthly"<?php echo $krm_mon ? ' checked' : ''; ?>><span>Monthly</span></label>
 				</div>
 			</fieldset>
 			<fieldset>
 				<legend><?php krm_t( 'gift.amount_label' ); ?></legend>
 				<div class="amts">
 				<?php
-				foreach ( array( '$25' => false, '$50' => true, '$100' => false, '$250' => false, 'Other' => false ) as $krm_a => $krm_on ) :
+				$krm_amts = array( '$25' => false, '$50' => true, '$100' => false, '$250' => false, 'Other' => false );
+				$krm_back = krm_fv( 'gift', 'amount' ); // After a failed post without JavaScript.
+				if ( '' !== $krm_back ) {
+					$krm_amts = array_fill_keys( array_keys( $krm_amts ), false );
+					$krm_amts[ isset( $krm_amts[ $krm_back ] ) ? $krm_back : 'Other' ] = true;
+				}
+				foreach ( $krm_amts as $krm_a => $krm_on ) :
 					?>
 					<label><input type="radio" name="amount" value="<?php echo esc_attr( $krm_a ); ?>"<?php echo $krm_on ? ' checked' : ''; ?>><span><?php echo esc_html( $krm_a ); ?></span></label><?php endforeach; ?></div>
 				<div class="custom" id="custom-wrap" hidden>
 				<label class="visually-hidden" for="custom">Other amount in US dollars</label>
-				<input id="custom" name="custom" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter amount">
+				<input id="custom" name="custom" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter amount"<?php echo '' !== $krm_back && $krm_amts['Other'] ? ' value="' . esc_attr( ltrim( $krm_back, '$' ) ) . '"' : ''; ?>>
 				</div>
 			</fieldset>
 			<fieldset>
@@ -65,6 +84,10 @@ $krm_gift = krm_gift_return();
 				// phpcs:disable WordPress.Security.NonceVerification.Recommended
 				$krm_pre_slug = isset( $_GET['ministry'] ) ? sanitize_title( wp_unslash( $_GET['ministry'] ) ) : '';
 				$krm_pre_for  = isset( $_GET['for'] ) ? sanitize_text_field( wp_unslash( $_GET['for'] ) ) : '';
+				if ( '' !== krm_fv( 'gift', 'fund' ) ) {
+					$krm_pre_slug = '';
+					$krm_pre_for  = krm_fv( 'gift', 'fund' );
+				}
 				// phpcs:enable
 				$krm_funds = array( array( 'Where it is needed most', 'where-most-needed', 'Where most needed' ) );
 				foreach ( krm_ministries() as $krm_m ) {
@@ -85,7 +108,19 @@ $krm_gift = krm_gift_return();
 				<?php endforeach; ?>
 				</select>
 			</fieldset>
-			<fieldset class="donor-details"><legend>Donor details</legend><div class="donor-grid"><label>Full name<input type="text" name="donor_name" autocomplete="name" maxlength="200"></label><label>Email<input type="email" name="donor_email" autocomplete="email" maxlength="200"></label><label>Country<input type="text" name="donor_country" autocomplete="country-name" maxlength="200"></label></div></fieldset>
+			<fieldset class="donor-details"><legend>Donor details</legend><div class="donor-grid">
+				<?php
+				foreach ( array(
+					'name'    => array( 'Full name', 'type="text" autocomplete="name" required maxlength="100"' ),
+					'contact' => array( 'Email or WhatsApp', 'type="text" autocomplete="email" required maxlength="200" data-validate="email-or-phone"' ),
+					'country' => array( 'Country', 'type="text" autocomplete="country-name" maxlength="200"' ),
+					'message' => array( 'Message (optional)', '' ),
+				) as $krm_k => $krm_d ) :
+					list( $krm_ea, $krm_en ) = krm_field_error( 'gift', $krm_k );
+					?>
+				<label><?php echo esc_html( $krm_d[0] ); ?><?php if ( 'message' === $krm_k ) : ?><textarea name="message" rows="3" maxlength="2000"<?php echo $krm_ea; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php echo esc_textarea( krm_fv( 'gift', 'message' ) ); ?></textarea><?php else : ?><input <?php echo $krm_d[1]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed attributes. ?> name="<?php echo esc_attr( $krm_k ); ?>" value="<?php echo $krm_dv( $krm_k ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"<?php echo $krm_ea; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><?php endif; ?><?php echo $krm_en; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></label>
+				<?php endforeach; ?>
+				</div><p class="donor-note"><?php esc_html_e( 'Never type card numbers, CVV codes or bank passwords here. Payments are made only on PayPal’s (or your bank’s) own secure pages.', 'kingdom-revival' ); ?></p></fieldset>
 			<div class="summary" aria-live="polite">
 				<span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg></span>
 				<div><small>Your gift</small><strong id="summary-amount"></strong><small id="summary-fund"></small></div>
@@ -190,10 +225,13 @@ $krm_gift = krm_gift_return();
 			<div class="notify">
 			<p class="step-label"><span>3</span><?php krm_t( 'notify.step' ); ?></p>
 			<div class="card">
-				<p style="margin: 0"><?php krm_t( 'notify.text' ); ?></p>
-				<div class="hero-actions">
-				<a class="button button-primary" id="notify-link" href="<?php echo esc_url( krm_mailto() ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg><?php krm_t( 'notify.email_button' ); ?></a>
+				<div data-krm-for="gift">
+				<p style="margin: 0"<?php echo $krm_gok ? ' hidden' : ''; ?>><?php krm_t( 'notify.text' ); ?></p>
+				<div class="hero-actions"<?php echo $krm_gok ? ' hidden' : ''; ?>>
+				<button type="submit" form="gift" class="button button-primary" id="notify-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg><?php krm_t( 'notify.email_button' ); ?></button>
 				<a class="button button-secondary" href="<?php echo esc_url( krm_whatsapp_url() ); ?>" target="_blank" rel="noopener"><?php krm_t( 'notify.whatsapp_button' ); ?></a>
+				</div>
+				<?php krm_form_messages( 'gift', krm_fill( krm_c( 'notify.success' ) ), krm_fill( krm_c( 'notify.error' ) ) ); ?>
 				</div>
 			</div>
 			</div>

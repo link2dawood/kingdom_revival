@@ -16,21 +16,25 @@ get_header();
 
 $krm_types = array(
 	'prayer'    => array(
+		'form'   => 'prayer_partner',
 		'id'     => 'prayer-partners',
 		'icon'   => 'pray24',
 		'church' => false,
 	),
 	'financial' => array(
+		'form'   => 'financial_partner',
 		'id'     => 'financial-partner',
 		'icon'   => 'heart24',
 		'church' => false,
 	),
 	'church'    => array(
+		'form'   => 'church_partner',
 		'id'     => 'church-ministry-partners',
 		'icon'   => 'church24',
 		'church' => true,
 	),
 	'volunteer' => array(
+		'form'   => 'volunteer',
 		'id'     => 'volunteer',
 		'icon'   => 'people24',
 		'church' => false,
@@ -100,12 +104,12 @@ $krm_types = array(
 				'template-parts/signup-form',
 				null,
 				array(
-					'id'      => $krm_type['id'] . '-form',
-					'type'    => wp_strip_all_tags( krm_fill( krm_c( $krm_key . '.title' ) ) ) . ( 'financial' === $krm_key ? ' (pledge)' : '' ),
-					'heading' => krm_fill( krm_c( $krm_key . '.form_heading' ) ),
-					'button'  => krm_fill( krm_c( $krm_key . '.button' ) ),
-					'church'  => $krm_type['church'],
-					'project' => 'financial' === $krm_key,
+					'id'        => $krm_type['id'] . '-form',
+					'form_type' => $krm_type['form'],
+					'heading'   => krm_fill( krm_c( $krm_key . '.form_heading' ) ),
+					'button'    => krm_fill( krm_c( $krm_key . '.button' ) ),
+					'church'    => $krm_type['church'],
+					'project'   => 'financial' === $krm_key,
 				)
 			);
 			?>

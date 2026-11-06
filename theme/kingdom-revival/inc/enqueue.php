@@ -104,6 +104,26 @@ add_action(
 		// Filters, tabs, click-to-play videos and the prayer / partner sign-up forms, on every page.
 		wp_enqueue_script( 'krm-components', krm_asset( 'js/components.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
 
+		// Phase 24 forms (Partner With Us, Prayer Request, Donate, home prayer form): registered here, queued by
+		// krm_form_hidden() only on pages that print one of these forms.
+		wp_register_script( 'krm-forms', krm_asset( 'js/forms.js' ), array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		wp_localize_script(
+			'krm-forms',
+			'KRM_FORMS',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'minMs'   => KRM_FORM_MIN_SECONDS * 1000 + 250,
+				'timeout' => 20000,
+				'sending' => __( 'Sending…', 'kingdom-revival' ),
+				'check'   => __( 'Please check the highlighted fields.', 'kingdom-revival' ),
+				'msgs'    => array(
+					'required' => __( 'Please fill in this field.', 'kingdom-revival' ),
+					'contact'  => __( 'Please enter a valid email address or WhatsApp number.', 'kingdom-revival' ),
+					'amount'   => __( 'Please choose or enter an amount.', 'kingdom-revival' ),
+				),
+			)
+		);
+
 		$scripts = array( 'front', 'blog', 'post', 'contact', 'donate', 'impact' );
 		if ( in_array( $view, $scripts, true ) ) {
 			wp_enqueue_script( 'krm-' . $view, krm_asset( 'js/' . $view . '.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );

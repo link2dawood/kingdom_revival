@@ -1,0 +1,537 @@
+{
+  "failures": 0,
+  "results": [
+    {
+      "test": "success",
+      "key": "prayer_partner",
+      "width": 1440,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] New Prayer Partner — Test prayer partner 1440",
+      "msg": "Thank you, Test! Your message has reached our team. We’ll get back to you soon.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "financial_partner",
+      "width": 1440,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] New Financial Partner — Test financial partner 1440",
+      "msg": "Thank you, Test! Your message has reached our team. We’ll get back to you soon.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "church_partner",
+      "width": 1440,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] New Church & Ministry Partner — Test church partner 1440",
+      "msg": "Thank you, Test! Your message has reached our team. We’ll get back to you soon.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "volunteer",
+      "width": 1440,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] New Volunteer — Test volunteer 1440",
+      "msg": "Thank you, Test! Your message has reached our team. We’ll get back to you soon.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "prayer_request",
+      "width": 1440,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] PRIVATE Prayer Request — Test prayer request 1440",
+      "msg": "Thank you, Test! Your prayer request has reached our team, and we will pray with you.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "donation",
+      "width": 1440,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] Donation Intent — $100/month for Widows Support — Test donation 1440",
+      "msg": "Thank you for your gift intention. Our team will contact you with the next steps.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "home_prayer",
+      "width": 1440,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] Prayer Request — Test home prayer 1440",
+      "msg": "Thank you, Test! Your prayer request has reached our team, and we will pray with you.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "prayer_partner",
+      "width": 390,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] New Prayer Partner — Test prayer partner 390",
+      "msg": "Thank you, Test! Your message has reached our team. We’ll get back to you soon.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "financial_partner",
+      "width": 390,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] New Financial Partner — Test financial partner 390",
+      "msg": "Thank you, Test! Your message has reached our team. We’ll get back to you soon.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "church_partner",
+      "width": 390,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] New Church & Ministry Partner — Test church partner 390",
+      "msg": "Thank you, Test! Your message has reached our team. We’ll get back to you soon.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "volunteer",
+      "width": 390,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] New Volunteer — Test volunteer 390",
+      "msg": "Thank you, Test! Your message has reached our team. We’ll get back to you soon.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "prayer_request",
+      "width": 390,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] PRIVATE Prayer Request — Test prayer request 390",
+      "msg": "Thank you, Test! Your prayer request has reached our team, and we will pray with you.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "donation",
+      "width": 390,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] Donation Intent — $100/month for Widows Support — Test donation 390",
+      "msg": "Thank you for your gift intention. Our team will contact you with the next steps.",
+      "errors": []
+    },
+    {
+      "test": "success",
+      "key": "home_prayer",
+      "width": 390,
+      "ok": true,
+      "failed": [],
+      "subject": "[Website] Prayer Request — Test home prayer 390",
+      "msg": "Thank you, Test! Your prayer request has reached our team, and we will pray with you.",
+      "errors": []
+    },
+    {
+      "test": "validation",
+      "key": "volunteer",
+      "width": 1440,
+      "ok": true,
+      "invalid": [
+        "name",
+        "contact",
+        "country"
+      ],
+      "described": true,
+      "focus": "name",
+      "messages": [
+        "Please fill in this field.",
+        "Please enter a valid email address or WhatsApp number.",
+        "Please fill in this field."
+      ],
+      "posts": 0,
+      "axe": []
+    },
+    {
+      "test": "validation-clears",
+      "key": "volunteer",
+      "width": 1440,
+      "ok": true
+    },
+    {
+      "test": "validation",
+      "key": "volunteer",
+      "width": 390,
+      "ok": true,
+      "invalid": [
+        "name",
+        "contact",
+        "country"
+      ],
+      "described": true,
+      "focus": "name",
+      "messages": [
+        "Please fill in this field.",
+        "Please enter a valid email address or WhatsApp number.",
+        "Please fill in this field."
+      ],
+      "posts": 0,
+      "axe": null
+    },
+    {
+      "test": "validation-clears",
+      "key": "volunteer",
+      "width": 390,
+      "ok": true
+    },
+    {
+      "test": "validation",
+      "key": "prayer_request",
+      "width": 1440,
+      "ok": true,
+      "invalid": [
+        "name",
+        "contact",
+        "request"
+      ],
+      "described": true,
+      "focus": "name",
+      "messages": [
+        "Please fill in this field.",
+        "Please enter a valid email address or WhatsApp number.",
+        "Please fill in this field."
+      ],
+      "posts": 0,
+      "axe": []
+    },
+    {
+      "test": "validation-clears",
+      "key": "prayer_request",
+      "width": 1440,
+      "ok": true
+    },
+    {
+      "test": "validation",
+      "key": "prayer_request",
+      "width": 390,
+      "ok": true,
+      "invalid": [
+        "name",
+        "contact",
+        "request"
+      ],
+      "described": true,
+      "focus": "name",
+      "messages": [
+        "Please fill in this field.",
+        "Please enter a valid email address or WhatsApp number.",
+        "Please fill in this field."
+      ],
+      "posts": 0,
+      "axe": null
+    },
+    {
+      "test": "validation-clears",
+      "key": "prayer_request",
+      "width": 390,
+      "ok": true
+    },
+    {
+      "test": "validation",
+      "key": "donation",
+      "width": 1440,
+      "ok": true,
+      "invalid": [
+        "custom",
+        "name",
+        "contact"
+      ],
+      "described": true,
+      "focus": "custom",
+      "messages": [
+        "Please choose or enter an amount.",
+        "Please fill in this field.",
+        "Please enter a valid email address or WhatsApp number."
+      ],
+      "posts": 0,
+      "axe": []
+    },
+    {
+      "test": "validation-clears",
+      "key": "donation",
+      "width": 1440,
+      "ok": true
+    },
+    {
+      "test": "validation",
+      "key": "donation",
+      "width": 390,
+      "ok": true,
+      "invalid": [
+        "custom",
+        "name",
+        "contact"
+      ],
+      "described": true,
+      "focus": "custom",
+      "messages": [
+        "Please choose or enter an amount.",
+        "Please fill in this field.",
+        "Please enter a valid email address or WhatsApp number."
+      ],
+      "posts": 0,
+      "axe": null
+    },
+    {
+      "test": "validation-clears",
+      "key": "donation",
+      "width": 390,
+      "ok": true
+    },
+    {
+      "test": "validation",
+      "key": "home_prayer",
+      "width": 1440,
+      "ok": true,
+      "invalid": [
+        "name",
+        "contact",
+        "request"
+      ],
+      "described": true,
+      "focus": "name",
+      "messages": [
+        "Please fill in this field.",
+        "Please enter a valid email address or WhatsApp number.",
+        "Please fill in this field."
+      ],
+      "posts": 0,
+      "axe": []
+    },
+    {
+      "test": "validation-clears",
+      "key": "home_prayer",
+      "width": 1440,
+      "ok": true
+    },
+    {
+      "test": "validation",
+      "key": "home_prayer",
+      "width": 390,
+      "ok": true,
+      "invalid": [
+        "name",
+        "contact",
+        "request"
+      ],
+      "described": true,
+      "focus": "name",
+      "messages": [
+        "Please fill in this field.",
+        "Please enter a valid email address or WhatsApp number.",
+        "Please fill in this field."
+      ],
+      "posts": 0,
+      "axe": null
+    },
+    {
+      "test": "validation-clears",
+      "key": "home_prayer",
+      "width": 390,
+      "ok": true
+    },
+    {
+      "test": "server-validation",
+      "ok": true,
+      "failed": [],
+      "statuses": {
+        "empty": 422,
+        "badContact": 422,
+        "badChoice": 422,
+        "unknownType": 400,
+        "badNonce": 403,
+        "injection": 422
+      }
+    },
+    {
+      "test": "server-error",
+      "key": "volunteer",
+      "ok": true,
+      "msg": "Sorry, your message couldn’t be sent. Please try again or WhatsApp us at +92-341-5418733.",
+      "took": 3254,
+      "kept": "Kept Value"
+    },
+    {
+      "test": "server-error",
+      "key": "donation",
+      "ok": true,
+      "msg": "Sorry, your message couldn’t be sent. Please try again or WhatsApp us at +92-341-5418733.",
+      "took": 3055,
+      "kept": "Kept Value"
+    },
+    {
+      "test": "server-error",
+      "key": "prayer_request",
+      "ok": true,
+      "msg": "Sorry, your message couldn’t be sent. Please try again or WhatsApp us at +92-341-5418733.",
+      "took": 3212,
+      "kept": "Kept Value"
+    },
+    {
+      "test": "timeout",
+      "key": "volunteer",
+      "ok": true,
+      "msg": "Sorry, your message couldn’t be sent. Please try again or WhatsApp us at +92-341-5418733.",
+      "took": 23229,
+      "kept": "Kept Value"
+    },
+    {
+      "test": "double-click",
+      "ok": true,
+      "posts": 1,
+      "saved": 1
+    },
+    {
+      "test": "honeypot",
+      "ok": true,
+      "saved": 0,
+      "mails": 0
+    },
+    {
+      "test": "rate-limit",
+      "ok": true,
+      "statuses": [
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "msg": "You have sent several messages in a short time. Please wait a few minutes and try again, or WhatsApp us at +92-341-5418733."
+    },
+    {
+      "test": "mail-failure",
+      "ok": true,
+      "status": "failed"
+    },
+    {
+      "test": "card-data",
+      "ok": true,
+      "message": "My card is [card number removed], cvv [removed]. Reference 2026-11-06."
+    },
+    {
+      "test": "no-js",
+      "key": "volunteer",
+      "ok": true,
+      "error": {
+        "url": "http://127.0.0.1:8899/partner-with-us/?krm_sent=0DiwUVGb1YNKU9EYhCg4#volunteer-form",
+        "msg": "Please check the highlighted fields.",
+        "kept": "nojs@example.com",
+        "nameInvalid": "true",
+        "note": "Please fill in this field."
+      },
+      "success": {
+        "msg": "Thank you, No! Your message has reached our team. We’ll get back to you soon.",
+        "cls": "krm-form-msg is-success",
+        "fieldsHidden": true
+      }
+    },
+    {
+      "test": "no-js",
+      "key": "prayer_request",
+      "ok": true,
+      "error": {
+        "url": "http://127.0.0.1:8899/partner-with-us/prayer-request/?krm_sent=sPMzMeA5ueMPHan0eSTV#request-form",
+        "msg": "Please check the highlighted fields.",
+        "kept": "nojs@example.com",
+        "nameInvalid": "true",
+        "note": "Please fill in this field."
+      },
+      "success": {
+        "msg": "Thank you, No! Your prayer request has reached our team, and we will pray with you.",
+        "cls": "krm-form-msg is-success",
+        "fieldsHidden": true
+      }
+    },
+    {
+      "test": "no-js",
+      "key": "donation",
+      "ok": true,
+      "error": {
+        "url": "http://127.0.0.1:8899/donate/?krm_sent=QJlic5UAkXkT2KCNpwRp#gift",
+        "msg": "Please check the highlighted fields.",
+        "kept": "nojs@example.com",
+        "nameInvalid": "true",
+        "note": "Please fill in this field."
+      },
+      "success": {
+        "msg": "Thank you for your gift intention. Our team will contact you with the next steps.",
+        "cls": "krm-form-msg is-success",
+        "fieldsHidden": true
+      }
+    },
+    {
+      "test": "theme",
+      "theme": "light",
+      "key": "volunteer",
+      "ok": true,
+      "errorContrast": 4.63,
+      "successContrast": 7.15,
+      "spinner": "rgb(255, 255, 255)"
+    },
+    {
+      "test": "theme",
+      "theme": "light",
+      "key": "donation",
+      "ok": true,
+      "errorContrast": 4.63,
+      "successContrast": 7.15,
+      "spinner": "rgb(255, 255, 255)"
+    },
+    {
+      "test": "theme",
+      "theme": "light",
+      "key": "home_prayer",
+      "ok": true,
+      "errorContrast": 4.63,
+      "successContrast": 7.15,
+      "spinner": "rgb(255, 255, 255)"
+    },
+    {
+      "test": "theme",
+      "theme": "dark",
+      "key": "volunteer",
+      "ok": true,
+      "errorContrast": 5.54,
+      "successContrast": 6.88,
+      "spinner": "rgb(255, 255, 255)"
+    },
+    {
+      "test": "theme",
+      "theme": "dark",
+      "key": "donation",
+      "ok": true,
+      "errorContrast": 5.54,
+      "successContrast": 6.88,
+      "spinner": "rgb(255, 255, 255)"
+    },
+    {
+      "test": "theme",
+      "theme": "dark",
+      "key": "home_prayer",
+      "ok": true,
+      "errorContrast": 5.54,
+      "successContrast": 6.88,
+      "spinner": "rgb(255, 255, 255)"
+    }
+  ]
+}

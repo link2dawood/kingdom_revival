@@ -431,15 +431,15 @@ return array(
 	),
 	'prayer'   => array(
 		'label'  => __( 'Prayer request', 'kingdom-revival' ),
-		'help'   => __( 'Requests are saved under Kingdom Revival → Submissions and emailed like the contact form. The form fields are fixed.', 'kingdom-revival' ),
+		'help'   => __( 'Requests are emailed to the address in KRM_FORMS_TO_EMAIL and saved under Kingdom Revival → Form Submissions (Prayer Request; “PRIVATE” when the visitor ticks “Keep my request private”). The form fields are fixed. {name} in the messages becomes the visitor’s first name.', 'kingdom-revival' ),
 		'fields' => array(
 			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Prayer request' ),
 			'heading'        => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Let us pray with you.' ),
 			'text'           => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Our pastors and prayer team pray over every request we receive. You can also message us on WhatsApp.' ),
 			'whatsapp_label' => krm_f( 'text', __( 'WhatsApp link text', 'kingdom-revival' ), 'Pray with us on WhatsApp →', __( 'Links to the WhatsApp number in Settings.', 'kingdom-revival' ) ),
 			'button'         => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Send prayer request' ),
-			'success'        => krm_f( 'text', __( 'Message after sending', 'kingdom-revival' ), 'Thank you. Your prayer request has been sent and our team will pray with you.' ),
-			'error'          => krm_f( 'text', __( 'Message if sending fails', 'kingdom-revival' ), 'Sorry, your request could not be sent. Please try again or message us on WhatsApp.' ),
+			'success'        => krm_f( 'text', __( 'Message after sending', 'kingdom-revival' ), 'Thank you, {name}! Your prayer request has reached our team, and we will pray with you.' ),
+			'error'          => krm_f( 'text', __( 'Message if sending fails', 'kingdom-revival' ), 'Sorry, your message couldn’t be sent. Please try again or WhatsApp us at {phone}.' ),
 		),
 	),
 	'founder'  => array(

@@ -1,0 +1,25 @@
+To: Info@kingdomrevivalministries.com
+From: Kingdom Revival Website <no-reply@kingdomrevivalministries.com>
+Reply-To: 
+Subject: [Website] Donation Intent — $100/month for Widows Support — Test donation 1440
+
+Kingdom Revival Ministries
+Donation Intent
+========================================
+
+DONATION INTENT ONLY: THIS IS NOT A PAYMENT CONFIRMATION. CHECK PAYPAL / THE BANK / THE TRANSFER RECEIPT BEFORE THANKING THE DONOR FOR A RECEIVED GIFT.
+
+Form: Donation Intent
+Name: Test donation 1440
+Email or WhatsApp: +92 300 1234567
+Country: Pakistan
+Amount: $100
+Frequency: Monthly
+Ministry / project: Widows Support
+Payment method chosen: Bank transfer
+Message: I will send it by bank transfer on Friday.
+
+WhatsApp: https://wa.me/923001234567
+Sent from: http://127.0.0.1:8899/donate/
+Received: Friday, 6 November 2026, 10:34 pm PKT
+Saved in WordPress: http://127.0.0.1:8899/wp-admin/post.php?action=edit&post=377

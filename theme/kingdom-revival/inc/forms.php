@@ -74,7 +74,8 @@ function krm_form_fields( $form ) {
 			'consent'  => array( 'May be published', true, 'consent' ),
 		),
 	);
-	return isset( $fields[ $form ] ) ? $fields[ $form ] : array();
+	// Phase 24 types (inc/form-handler.php): for the Form Submissions screens and the CSV export.
+	return isset( $fields[ $form ] ) ? $fields[ $form ] : krm_form24_fields( $form );
 }
 
 /**
@@ -88,7 +89,7 @@ function krm_form_labels() {
 		'prayer'     => __( 'Prayer request', 'kingdom-revival' ),
 		'signup'     => __( 'Partner With Us sign-up', 'kingdom-revival' ),
 		'testimony'  => __( 'Testimony', 'kingdom-revival' ),
-	);
+	) + wp_list_pluck( krm_form_types(), 'label' );
 }
 
 /* ---------- Saved submissions (private) ---------- */
@@ -100,10 +101,10 @@ add_action(
 			'krm_submission',
 			array(
 				'labels'          => array(
-					'name'          => __( 'Submissions', 'kingdom-revival' ),
-					'singular_name' => __( 'Submission', 'kingdom-revival' ),
-					'all_items'     => __( 'Submissions', 'kingdom-revival' ),
-					'edit_item'     => __( 'Submission', 'kingdom-revival' ),
+					'name'          => __( 'Form Submissions', 'kingdom-revival' ),
+					'singular_name' => __( 'Form Submission', 'kingdom-revival' ),
+					'all_items'     => __( 'Form Submissions', 'kingdom-revival' ),
+					'edit_item'     => __( 'Form Submission', 'kingdom-revival' ),
 					'search_items'  => __( 'Search submissions', 'kingdom-revival' ),
 					'not_found'     => __( 'No submissions yet.', 'kingdom-revival' ),
 				),
@@ -113,10 +114,19 @@ add_action(
 				'show_in_rest'    => false,
 				'supports'        => array( 'title' ),
 				'capability_type' => 'post',
-				// Visitors' personal details: Editors and Administrators only (not Authors or Contributors).
+				// Visitors' personal details (prayer requests, donor details): Administrators only (Phase 24).
 				'capabilities'    => array(
-					'create_posts' => 'do_not_allow',
-					'edit_posts'   => 'edit_others_posts',
+					'create_posts'           => 'do_not_allow',
+					'edit_posts'             => 'manage_options',
+					'edit_others_posts'      => 'manage_options',
+					'edit_private_posts'     => 'manage_options',
+					'edit_published_posts'   => 'manage_options',
+					'read_private_posts'     => 'manage_options',
+					'publish_posts'          => 'manage_options',
+					'delete_posts'           => 'manage_options',
+					'delete_others_posts'    => 'manage_options',
+					'delete_private_posts'   => 'manage_options',
+					'delete_published_posts' => 'manage_options',
 				),
 				'map_meta_cap'    => true,
 				'rewrite'         => false,
@@ -132,7 +142,8 @@ add_action(
 function krm_handle_form() {
 	$form   = isset( $_POST['form'] ) ? sanitize_key( wp_unslash( $_POST['form'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- see spam/nonce checks below.
 	$fields = krm_form_fields( $form );
-	if ( ! $fields ) {
+	// Phase 24 types only go through krm_form_submit() (inc/form-handler.php).
+	if ( ! $fields || isset( krm_form_types()[ $form ] ) ) {
 		wp_send_json_error( array( 'message' => 'Unknown form.' ), 400 );
 	}
 
@@ -329,7 +340,7 @@ add_filter(
 			'title'     => __( 'Submission', 'kingdom-revival' ),
 			'krm_form'  => __( 'Form', 'kingdom-revival' ),
 			'krm_email' => __( 'Email', 'kingdom-revival' ),
-			'krm_mail'  => __( 'Notified', 'kingdom-revival' ),
+			'krm_mail'  => __( 'Email status', 'kingdom-revival' ),
 			'date'      => __( 'Date', 'kingdom-revival' ),
 		);
 	}
@@ -345,10 +356,15 @@ add_action(
 			if ( get_post_meta( $post_id, '_krm_spam', true ) ) {
 				echo ' — <strong>' . esc_html__( 'possible spam', 'kingdom-revival' ) . '</strong>';
 			}
-		} elseif ( 'krm_email' === $col && ! empty( $data['email'] ) ) {
-			echo '<a href="' . esc_url( 'mailto:' . $data['email'] ) . '">' . esc_html( $data['email'] ) . '</a>';
+		} elseif ( 'krm_email' === $col ) {
+			$reply = ! empty( $data['email'] ) ? $data['email'] : ( ! empty( $data['contact'] ) ? $data['contact'] : '' );
+			if ( is_email( $reply ) ) {
+				echo '<a href="' . esc_url( 'mailto:' . $reply ) . '">' . esc_html( $reply ) . '</a>';
+			} elseif ( '' !== $reply ) {
+				echo '<a href="' . esc_url( krm_whatsapp_link( $reply ) ) . '" target="_blank" rel="noopener">' . esc_html( $reply ) . '</a>';
+			}
 		} elseif ( 'krm_mail' === $col ) {
-			echo get_post_meta( $post_id, '_krm_emailed', true ) ? esc_html__( 'Yes', 'kingdom-revival' ) : esc_html__( 'No', 'kingdom-revival' );
+			echo krm_mail_status_html( $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the function.
 		}
 	},
 	10,
@@ -403,18 +419,23 @@ add_action(
 				echo '<table class="widefat striped"><tbody>';
 				foreach ( $data as $key => $value ) {
 					$label = isset( $fields[ $key ] ) ? $fields[ $key ][0] : $key;
-					echo '<tr><th style="width:200px">' . esc_html( $label ) . '</th><td>' . nl2br( esc_html( '' !== $value ? $value : '—' ) ) . '</td></tr>';
+					echo '<tr><th style="width:200px">' . esc_html( $label ) . '</th><td>' . nl2br( esc_html( '' !== (string) $value ? $value : '—' ) ) . '</td></tr>';
 				}
-				echo '<tr><th>' . esc_html__( 'Received', 'kingdom-revival' ) . '</th><td>' . esc_html( get_the_date( 'F j, Y g:i a', $post ) ) . '</td></tr>';
+				echo '<tr><th>' . esc_html__( 'Received', 'kingdom-revival' ) . '</th><td>' . esc_html( get_the_date( 'F j, Y g:i a', $post ) ) . ' (' . esc_html( wp_date( 'j M Y, g:i a', get_post_timestamp( $post ), new DateTimeZone( 'Asia/Karachi' ) ) ) . ' PKT)</td></tr>';
+				echo '<tr><th>' . esc_html__( 'Email status', 'kingdom-revival' ) . '</th><td>' . krm_mail_status_html( $post->ID, true ) . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in the function.
 				$page = get_post_meta( $post->ID, '_krm_page', true );
 				if ( $page ) {
 					echo '<tr><th>' . esc_html__( 'Sent from', 'kingdom-revival' ) . '</th><td><a href="' . esc_url( $page ) . '">' . esc_html( $page ) . '</a></td></tr>';
 				}
 				echo '</tbody></table>';
-				if ( ! empty( $data['email'] ) ) {
-					echo '<p><a class="button button-primary" href="' . esc_url( 'mailto:' . $data['email'] ) . '">' . esc_html__( 'Reply by email', 'kingdom-revival' ) . '</a> ';
-					echo '<a class="button" href="' . esc_url( get_delete_post_link( $post->ID ) ) . '">' . esc_html__( 'Move to Trash', 'kingdom-revival' ) . '</a></p>';
+				$reply = ! empty( $data['email'] ) ? $data['email'] : ( ! empty( $data['contact'] ) ? $data['contact'] : '' );
+				echo '<p>';
+				if ( is_email( $reply ) ) {
+					echo '<a class="button button-primary" href="' . esc_url( 'mailto:' . $reply ) . '">' . esc_html__( 'Reply by email', 'kingdom-revival' ) . '</a> ';
+				} elseif ( 'phone' === krm_contact_kind( $reply ) ) {
+					echo '<a class="button button-primary" href="' . esc_url( krm_whatsapp_link( $reply ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'Message on WhatsApp', 'kingdom-revival' ) . '</a> ';
 				}
+				echo '<a class="button" href="' . esc_url( get_delete_post_link( $post->ID ) ) . '">' . esc_html__( 'Move to Trash', 'kingdom-revival' ) . '</a></p>';
 			},
 			'krm_submission',
 			'normal',
@@ -427,7 +448,7 @@ add_action(
 add_action(
 	'admin_post_krm_export',
 	function () {
-		if ( ! current_user_can( 'edit_others_posts' ) || ! check_admin_referer( 'krm_export' ) ) {
+		if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'krm_export' ) ) {
 			wp_die( esc_html__( 'Not allowed.', 'kingdom-revival' ) );
 		}
 		$form  = isset( $_GET['krm_form'] ) ? sanitize_key( wp_unslash( $_GET['krm_form'] ) ) : '';
@@ -444,7 +465,7 @@ add_action(
 		}
 		$posts = get_posts( $query );
 		$keys  = array();
-		foreach ( array( 'contact', 'partner', 'newsletter' ) as $f ) {
+		foreach ( array_merge( array( 'contact', 'partner', 'newsletter' ), array_keys( krm_form_types() ) ) as $f ) {
 			if ( ! $form || $form === $f ) {
 				$keys = array_unique( array_merge( $keys, array_keys( krm_form_fields( $f ) ) ) );
 			}
@@ -468,6 +489,34 @@ add_action(
 		exit;
 	}
 );
+
+/**
+ * Email status of a submission for the admin screens: Sent, Failed (with the reason on the entry), Not sent (possible
+ * spam). Entries from before Phase 24 only recorded whether the email went out.
+ *
+ * @param int  $post_id Submission.
+ * @param bool $detail  Include the failure reason.
+ */
+function krm_mail_status_html( $post_id, $detail = false ) {
+	$status = get_post_meta( $post_id, '_krm_mail_status', true );
+	if ( '' === $status ) {
+		$status = get_post_meta( $post_id, '_krm_emailed', true ) ? 'sent' : ( get_post_meta( $post_id, '_krm_spam', true ) ? 'held' : 'failed' );
+	}
+	// Admin screen only (the front end's colours are tokens).
+	$labels = array(
+		'sent'    => array( __( 'Sent', 'kingdom-revival' ), '#1E5B3A' ),
+		'failed'  => array( __( 'Failed', 'kingdom-revival' ), '#B3261E' ),
+		'held'    => array( __( 'Not sent (possible spam)', 'kingdom-revival' ), '#7A5A00' ),
+		'pending' => array( __( 'Not sent', 'kingdom-revival' ), '#7A5A00' ),
+	);
+	$label  = isset( $labels[ $status ] ) ? $labels[ $status ] : $labels['pending'];
+	$html   = '<strong style="color:' . esc_attr( $label[1] ) . '">' . esc_html( $label[0] ) . '</strong>';
+	$error  = get_post_meta( $post_id, '_krm_mail_error', true );
+	if ( $detail && 'failed' === $status && $error ) {
+		$html .= ' — ' . esc_html( $error ) . '<br><small>' . esc_html__( 'The submission is saved here; reply to the visitor directly, and check the SMTP settings in wp-config.php (theme readme, "Form emails").', 'kingdom-revival' ) . '</small>';
+	}
+	return $html;
+}
 
 /* ---------- Testimonies → "Share your testimony" (Phase 21) ---------- */
 

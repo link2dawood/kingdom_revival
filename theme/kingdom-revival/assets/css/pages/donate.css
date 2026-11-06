@@ -30,7 +30,10 @@
 .trust svg { flex: none; color: var(--color-success); }
 .donor-grid { display: grid; gap: 10px; }
 .donor-grid label { display: grid; gap: 6px; color: var(--color-heading); font-size: 13px; font-weight: 700; }
-.donor-grid input { width: 100%; min-height: 46px; padding: 10px 12px; border: 2px solid var(--color-border-2); border-radius: 6px; font: inherit; box-sizing: border-box; }
+.donor-grid input, .donor-grid textarea { width: 100%; min-height: 46px; padding: 10px 12px; border: 2px solid var(--color-border-2); border-radius: 6px; font: inherit; box-sizing: border-box; }
+.donor-grid textarea { font-weight: 400; }
+.donor-grid textarea { resize: vertical; }
+.donor-note { margin: 10px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .donate-trust-row { display: grid; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
 .donate-trust-row a { color: var(--color-secondary-text); font-weight: 800; }
 .panel button[disabled] { opacity: .55; cursor: not-allowed; }

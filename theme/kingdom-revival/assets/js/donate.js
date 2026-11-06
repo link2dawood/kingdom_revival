@@ -8,7 +8,6 @@
      Otherwise the PayPal.me link is used (one-time). */
   var PAYPAL_EMAIL = SETTINGS.paypalEmail || '';
   var PAYPAL_HOST = SETTINGS.paypalHost || 'https://www.paypal.com';
-  var EMAIL = SETTINGS.email || 'Info@kingdomrevivalministries.com';
   var form = document.getElementById("gift");
   if (!form) return;
 
@@ -71,12 +70,10 @@
     /* PayPal's checkout returns to this site, so it opens in the same tab. */
     if (PAYPAL_EMAIL) document.getElementById("paypal-link").target = "_self";
     document.getElementById("paypal-monthly").hidden = !g.monthly || !!PAYPAL_EMAIL;
-    var body = "Hello Kingdom Revival Ministries,\n\nI have just sent a gift.\n\nAmount: " + (g.amount ? "$" + g.amount : "-") +
-      "\nFrequency: " + (g.monthly ? "Monthly" : "One-time") + "\nFor: " + g.fund +
-      "\nPayment method: " + document.querySelector('.tab[aria-selected="true"]').dataset.method +
-      "\nReference / tracking number: \n\nName: " + form.elements.donor_name.value.trim() +
-      "\nEmail: " + form.elements.donor_email.value.trim() + "\nCountry: " + form.elements.donor_country.value.trim() + "\n\nGod bless,";
-    document.getElementById("notify-link").href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("My gift to Kingdom Revival Ministries") + "&body=" + encodeURIComponent(body);
+    /* Step 3 sends the gift card as the "donation" form (assets/js/forms.js); it records the chosen payment tab. */
+    var method = form.querySelector("[data-krm-method]");
+    var chosen = document.querySelector('.tab[aria-selected="true"]');
+    if (method && chosen) method.value = chosen.dataset.method;
     var url = new URL(location.href);
     url.searchParams.set("amount", g.amount || "");
     url.searchParams.set("frequency", g.monthly ? "Monthly" : "One-time");

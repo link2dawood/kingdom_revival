@@ -108,8 +108,13 @@ self-hosted (no Google Fonts request). `theme.json` mirrors the palette/font for
 
 **Forms** (`inc/forms.php`): contact/partner/newsletter post to WordPress (nonce + honeypot), are saved as
 Submissions and emailed via `wp_mail`. Every post must carry `KRM_CONFIG.formToken`, a non-expiring HMAC page
-token from `inc/security.php` (Phase 11); new forms must send it too. Submissions/Donations are Editor+ only
-(`edit_posts` mapped to `edit_others_posts`).
+token from `inc/security.php` (Phase 11); new forms must send it too. Donations are Editor+ only; Form Submissions
+are Administrator-only (Phase 24).
+Phase 24 forms (Partner With Us sign-ups, prayer request, Donate donor details) go through ONE handler,
+`krm_form_submit()` in `inc/form-handler.php` (form_type field; admin-ajax for `assets/js/forms.js`, admin-post for
+no-JS), use `krm_form_attrs()/krm_form_hidden()/krm_form_messages()` in templates, and email via `inc/mail.php`
+(KRM_FORMS_TO_EMAIL, SMTP constants from wp-config.php, `KRM_MAIL_CAPTURE` for local testing). Test with
+`node tools/visual-qa/phase24_check.js` (local only: it submits forms and uses wp-cli).
 
 **Donations** (`inc/donations.php`, Phase 9): PayPal's hosted checkout only (no card data or API keys in WordPress).
 `assets/js/donate.js` builds the checkout link with `notify_url`; PayPal IPN posts to

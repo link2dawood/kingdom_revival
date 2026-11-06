@@ -49,6 +49,8 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Mobile PageSpeed 90+ (theme 1.16.3)](#kingdom-revival-ministries-mobile-pagespeed-90-theme-1163)
 - [Kingdom Revival Ministries: Phase 22: the client's navbar on the live site (theme 1.17.0)](#kingdom-revival-ministries-phase-22-the-clients-navbar-on-the-live-site-theme-1170)
 - [Kingdom Revival Ministries: Testimonials, and the same header for visitors (theme 1.17.1)](#kingdom-revival-ministries-testimonials-and-the-same-header-for-visitors-theme-1171)
+- [Kingdom Revival Ministries: Phase 23: testimonial avatars and sample launch control (theme 1.17.2)](#kingdom-revival-ministries-phase-23-testimonial-avatars-and-sample-launch-control-theme-1172)
+- [Kingdom Revival Ministries: Phase 24: form emails with a loading state (theme 1.18.0)](#kingdom-revival-ministries-phase-24-form-emails-with-a-loading-state-theme-1180)
 
 ---
 
@@ -3900,3 +3902,140 @@ administrators retain it, and the existing empty message plus "Share your testim
 
 - The live site was not updated. Upload `kingdom-revival.zip` (1.17.2); the existing version-change cache purge runs
   automatically. The browser checks and screenshots are from the local WordPress copy.
+
+## Kingdom Revival Ministries: Phase 24: form emails with a loading state (theme 1.18.0)
+
+**Result: every form on Partner With Us (Prayer Partners, Financial Partner, Church & Ministry Partners, Volunteer
+With Us), Prayer Request (and the same prayer form on the home page) and Donate (donor details) now goes through one
+handler, is saved under Kingdom Revival → Form Submissions and is emailed to `KRM_FORMS_TO_EMAIL`
+(Info@kingdomrevivalministries.com) as a branded HTML + plain-text email. The forms send without a page reload, show a
+spinner and "Sending…", then a green-tick thank-you or a red error that keeps what the visitor typed. They still work
+without JavaScript. Partner With Us and Prayer Request look pixel-identical to before; Donate gained the fields it
+needed. Emails will only arrive reliably on the live site once the client supplies the SMTP details below.**
+
+### What changed
+
+- **One handler**: `krm_form_submit()` in `inc/form-handler.php`, with a `form_type` field (`prayer_partner`,
+  `financial_partner`, `church_partner`, `volunteer`, `prayer_request`, `donation`). JavaScript posts to
+  `admin-ajax.php?action=krm_form_submit`. Without JavaScript the form posts to `admin-post.php`, which redirects
+  back to the page (`?krm_sent=…#form`) and shows the same message. Pages showing that result are never cached.
+  I used admin-ajax, not a REST route, because the live site's contact and newsletter forms already work through
+  admin-ajax, and security plugins often block REST for logged-out visitors.
+- **Recipient**: the constant `KRM_FORMS_TO_EMAIL` (default Info@kingdomrevivalministries.com; override it in
+  wp-config.php). From: "Kingdom Revival Website" <no-reply@kingdomrevivalministries.com> (`KRM_FORMS_FROM_EMAIL`).
+  Reply-To: the visitor's email when they gave one.
+- **SMTP** (`inc/mail.php`): configured through `phpmailer_init` from wp-config.php constants (`KRM_SMTP_HOST`,
+  `_PORT`, `_USER`, `_PASS`, optional `_SECURE`, `_FROM`). Nothing secret is in the theme or git. Without
+  `KRM_SMTP_HOST`, WordPress falls back to PHP `mail()`.
+- **Subjects**: `[Website] New Prayer Partner — {Name}`, `New Financial Partner`, `New Church & Ministry Partner`,
+  `New Volunteer`, `[Website] Prayer Request — {Name}` (`[Website] PRIVATE Prayer Request — {Name}` when "Keep my
+  request private" is ticked), `[Website] Donation Intent — $100/month for Widows Support — {Name}`.
+- **Email body**: a navy header with "Kingdom Revival Ministries" and a red rule, then every field label and value,
+  the page it came from, the date/time in PKT, a "Reply by email" button or a "Message on WhatsApp" button
+  (wa.me; 03xx numbers become 923xx), and a link to the saved entry. A plain-text alternative is included. All values
+  are escaped; line breaks are stripped from the name and subject.
+- **Donate**: the gift card is now the `donation` form. Its fields are Full name, Email or WhatsApp (was "Email"),
+  Country and a new Message field, plus a note saying never to type card numbers, CVV codes or bank passwords there.
+  Step 3's "Let us know about your gift" was a mailto link; it is now the form's submit button. It sends amount,
+  one-time/monthly, ministry, the selected payment tab and the donor details. The email is marked "Donation intent
+  only: NOT a payment confirmation". No card or bank-login field exists. As a safety net, any card-like number
+  (Luhn check) or "CVV 123" typed into the text is removed before it is saved or emailed. Payment confirmation must
+  come from PayPal IPN today (Phase 9), or from a Stripe webhook once Stripe is connected, never from this form.
+  Step 3's text changed from "send us a quick email" to "send us your gift details".
+- **Backup**: every accepted submission is saved before the email is sent. The submissions post type is now labelled
+  **Form Submissions** and is **Administrator-only** (it was Editor+). It can be filtered by form type, and the new
+  "Email status" column shows Sent / Failed / Not sent (possible spam); a failed entry shows the reason. The visitor
+  sees success whenever the submission was saved or emailed, and the red error only when both failed.
+- **Spam and security**: the nonce is fetched fresh by the script (`krm_form_nonce`), so the 15-day page cache on
+  the live site can't serve an expired one. Also: hidden honeypot, minimum 3 s between the start token and the post
+  (bots get a fake "sent", nothing is kept), at most 5 submissions per IP per 10 minutes across these forms, and
+  server-side validation of required fields, email-or-phone format and allowed choices. Error messages contain
+  no server details. Without JavaScript, a logged-out visitor on a cached page with an expired nonce is accepted on
+  the signed page token from Phase 11 instead.
+- **Loading state and feedback** (`assets/js/forms.js`, styles in `theme-global.css`): the button is disabled and
+  shows a spinner (currentColor, so it works in dark mode) with "Sending…". The form gets `aria-busy="true"`, text
+  fields become read-only, and double submits are blocked. A 20-second timeout counts as an error. Field errors
+  appear under the field with `aria-invalid` + `aria-describedby`, and focus moves to the first one. Status texts
+  are announced in an `aria-live="polite"` region. The success and error texts are editable ("Page content" →
+  Sign-up forms / Prayer request / Step 3), and `{name}` becomes the visitor's first name.
+- **Local testing**: `KRM_MAIL_CAPTURE` (wp-config.php, ignored on production) writes each email to
+  `wp-content/krm-mail/` as .eml/.html/.txt instead of sending it. A `FAIL` file in that folder simulates a failed
+  send.
+
+### Sample emails (one per form type)
+
+`qa-screenshots/phase-24/emails/` holds `<type>.png` (rendered), `.html`, `.txt` and the full `.eml` for prayer_partner,
+financial_partner, church_partner, volunteer, prayer_request (private), home_prayer and donation, captured from the
+local site.
+
+### How it was verified
+
+- `tools/visual-qa/phase24_check.js` runs on the local site with mail capture and wp-cli: **49 tests, 0 failures**.
+  - Success for all 7 forms at 1440 and 390, each with the reply held for 4 s (slow network). Each run checked the
+    loading state (aria-busy, disabled button, spinner, "Sending…", read-only fields), the thank-you replacing the
+    form, the live-region text, exactly one email (subject, multipart HTML + text, Reply-To, PKT, WhatsApp link),
+    the saved entry with status "sent", no JS errors and no overflow at 390.
+  - Validation (empty and malformed fields) on 4 forms × 2 widths: errors under the right fields, linked with
+    aria-describedby, focus on the first, nothing posted, errors clear once fixed, and **0 axe violations** in the
+    error state.
+  - Server validation bypassing the browser: missing fields 422, bad contact 422, bad choices 422, unknown type 400,
+    bad nonce 403, CR/LF header injection 422, no server details in any answer.
+  - Error cases: a 500 reply and a 20 s timeout (gave up at 23 s, including the 3 s minimum wait) both showed the
+    red message with +92-341-5418733, re-enabled the button and kept the values.
+  - Other cases: double click sent 1 request; a filled honeypot gave a fake success with 0 saved and 0 emails;
+    5 posts were accepted and the 6th refused with the rate-limit message; with mail failing the visitor still saw
+    success and the entry was saved as "failed"; card number and CVV were removed from email and storage.
+  - No JavaScript: an error redirect with the message and values kept, then success, on Volunteer, Prayer Request
+    and Donate.
+  - Dark mode: message contrast 5.54:1 (error) and 6.88:1 (success); light mode 4.63:1 and 7.15:1.
+  - Screenshots: `qa-screenshots/phase-24/shots/`; results: `qa-screenshots/phase-24/result.json`.
+- Before/after full-page pixel diff (`tools/visual-qa/shots24.js` + `wpdiff.js`) at 1440/768/390: Partner With Us and
+  Prayer Request **0 % different**. Donate changed as intended (new fields). Home showed only the hero video's
+  play/pause icon and a lazy photo loading at a different moment; the prayer form area was identical.
+- `final_pass.js`: 40 pages; overflow 0, JS errors 0, axe violations 0, light and dark contrast failures 0.
+- All theme PHP passes `php -l`; `git diff --check` is clean.
+
+### What the client must supply before emails work on the live site
+
+Pick one of these and send the details to whoever edits wp-config.php:
+
+1. **The hosting email account** (cPanel → Email Accounts → create e.g. `no-reply@kingdomrevivalministries.com`):
+   SMTP host (often `mail.kingdomrevivalministries.com`), port (465 SSL or 587 TLS), username (the full address)
+   and password.
+2. **A sending service** such as Brevo (free tier, 300 emails/day) or Mailgun: SMTP host
+   (`smtp-relay.brevo.com` / `smtp.mailgun.org`), port 587, SMTP login and SMTP key. The service shows DNS records to
+   add for the domain.
+
+Then add to wp-config.php (never to the theme):
+
+```php
+define( 'KRM_SMTP_HOST', '…' );
+define( 'KRM_SMTP_PORT', 587 );
+define( 'KRM_SMTP_USER', '…' );
+define( 'KRM_SMTP_PASS', '…' );
+// If the account may only send as itself:
+// define( 'KRM_SMTP_FROM', 'no-reply@kingdomrevivalministries.com' );
+```
+
+**DNS for kingdomrevivalministries.com**: add/extend the **SPF** TXT record to include the sending server or
+service (e.g. `include:spf.brevo.com`), publish the **DKIM** key the host/service gives, and add a basic **DMARC**
+record (`v=DMARC1; p=none; rua=mailto:Info@kingdomrevivalministries.com`). Without SPF/DKIM, mail sent as
+@kingdomrevivalministries.com is likely to go to spam or be rejected. Afterwards, send one test from each form and
+check Form Submissions → Email status says "Sent".
+
+### Not covered
+
+- No real email was sent: there are no SMTP credentials yet, so emails were captured locally (Mailpit isn't
+  installed here; the theme's capture mode was used instead). Nothing was uploaded to the live site.
+- The contact form, newsletter and testimony forms are unchanged. They still use the older handler and the Settings
+  "Send form notifications to" address.
+- The rate limit uses REMOTE_ADDR. If the live site sits behind Cloudflare or another proxy, all visitors share the
+  proxy's IP. In that case the host should pass the real IP to PHP, or the limit should be raised.
+
+### Decisions for you
+
+- Form Submissions is now Administrator-only, as the brief asked. Editors who read contact messages before can no
+  longer see them. Say if Editors should keep access.
+- The default success and error texts changed to the brief's wording. If the client had already saved their own
+  text in "Page content", their text is kept.
+
