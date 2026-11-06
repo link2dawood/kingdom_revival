@@ -138,3 +138,40 @@
   .impact-essay { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 480px) { .impact-essay { grid-template-columns: 1fr; } }
+
+/* What We Do (Phase 21): group cards (overview and the "other group" card), preview rows, group page intro */
+.wwd-group-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(18px, 2.5vw, 28px); margin: 0; padding: 0; list-style: none; }
+.wwd-group-grid.is-single { grid-template-columns: minmax(0, 1fr); }
+.wwd-group-grid > li { display: flex; min-width: 0; }
+.wwd-group-card { position: relative; isolation: isolate; display: flex; flex: 1; align-items: flex-end; min-height: clamp(320px, 34vw, 440px); overflow: hidden; border-radius: 18px; background: var(--color-band); color: var(--color-white); }
+.wwd-group-grid.is-single .wwd-group-card { min-height: 240px; }
+.wwd-group-card-img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.wwd-group-card::before { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(8,16,48,.30) 0%, rgba(8,16,48,.80) 55%, rgba(8,16,48,.94) 100%); content: ""; }
+.wwd-group-card-body { max-width: 620px; padding: clamp(24px, 3vw, 38px); }
+.wwd-group-card-eyebrow { margin: 0 0 10px; color: var(--color-accent); font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+.wwd-group-card-count { display: inline-block; margin: 0 0 14px; padding: 5px 12px; border-radius: 999px; background: var(--color-secondary); color: var(--color-white); font-size: 13px; font-weight: 700; }
+.wwd-group-card-title { margin: 0; color: var(--color-white); font-size: clamp(26px, 2.8vw, 36px); font-weight: 800; line-height: 1.15; }
+.wwd-group-card-title a { color: inherit; text-decoration: none; }
+.wwd-group-card-title a::after { position: absolute; inset: 0; z-index: 1; border-radius: inherit; content: ""; }
+.wwd-group-card-title a:focus-visible { outline: none; }
+.wwd-group-card:focus-within { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+.wwd-group-card-text { margin: 12px 0 0; color: var(--color-text-on-dark); line-height: 1.6; }
+.wwd-group-card-text.krm-admin-only { display: block; }
+.wwd-group-card-cta { display: inline-flex; align-items: center; min-height: 44px; margin-top: 14px; color: var(--color-white); font-weight: 700; transition: gap .2s ease, color .2s ease; }
+.wwd-group-card:hover .wwd-group-card-img { transform: scale(1.04); }
+.wwd-group-card:hover .wwd-group-card-cta { color: var(--color-accent); }
+@media (max-width: 760px) { .wwd-group-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .wwd-group-card-img { transition: none; } .wwd-group-card:hover .wwd-group-card-img { transform: none; } }
+.wwd-preview + .wwd-preview { margin-top: clamp(44px, 5vw, 64px); }
+.wwd-preview .ministry-head h2 a { color: inherit; text-decoration: none; }
+.wwd-preview .ministry-head h2 a:hover { color: var(--color-secondary-text); }
+.wwd-preview-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(170px, 100%), 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.wwd-preview-row > li { display: flex; min-width: 0; }
+.wwd-mini { display: flex; flex: 1; flex-direction: column; overflow: hidden; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); color: var(--color-heading); text-decoration: none; transition: transform .2s ease, box-shadow .2s ease, color .2s ease; }
+.wwd-mini-media { display: block; aspect-ratio: 20 / 13; background: var(--color-band-3); }
+.wwd-mini-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.wwd-mini-title { padding: 12px 14px 14px; font-size: 15px; font-weight: 700; line-height: 1.3; }
+.wwd-mini:hover, .wwd-mini:focus-visible { color: var(--color-secondary-text); box-shadow: var(--shadow); transform: translateY(-2px); }
+@media (max-width: 560px) { .wwd-preview-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+.wwd-intro { max-width: 760px; margin: 0 0 30px; color: var(--color-text-muted); font-size: 18px; line-height: 1.65; }
+.wwd-intro.krm-admin-only { display: block; font-size: 15px; }

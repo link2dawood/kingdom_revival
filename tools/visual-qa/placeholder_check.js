@@ -47,8 +47,9 @@ const B = (process.env.WP_URL || 'http://127.0.0.1:8899').replace(/\/$/, '');
     }
   }
   console.log('pages crawled', seen.size, 'non-200:', JSON.stringify(Object.entries(codes).filter(([u, c]) => c !== 200)));
-  console.log('sitemap has testimonies/hidden:', sitemapAll.filter(u => /testimonies|food-relief|persecuted|disaster-relief|youth-or-women/.test(u)));
-  console.log('links to testimonies:', testiLinks.length, testiLinks.slice(0, 5));
+  // Phase 21: Testimonies is always public (menu, links, sitemap); only hidden ministries must be absent.
+  console.log('sitemap has hidden ministries:', sitemapAll.filter(u => /food-relief|persecuted|disaster-relief|youth-or-women/.test(u)));
+  console.log('links to testimonies (expected since Phase 21):', testiLinks.length);
   console.log('links to hidden ministries:', hiddenLinks.length, hiddenLinks.slice(0, 5));
   console.log('PAGES WITH PLACEHOLDERS:', found.length);
   for (const [u, h] of found) console.log(u, JSON.stringify(h));

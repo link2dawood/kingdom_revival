@@ -33,6 +33,13 @@ function krm_breadcrumbs() {
 	}
 	$trail = array( array( 'Home', home_url( '/' ) ) );
 	if ( is_singular( 'ministry' ) ) {
+		// Home / What We Do / {Group} / {Ministry} (Phase 21).
+		$trail[] = array( __( 'What We Do', 'kingdom-revival' ), krm_ministries_url() );
+		$group   = krm_current_ministry_group();
+		if ( $group ) {
+			$trail[] = array( $group['name'], $group['url'] );
+		}
+	} elseif ( krm_current_group() ) {
 		$trail[] = array( __( 'What We Do', 'kingdom-revival' ), krm_ministries_url() );
 	} elseif ( is_singular( 'post' ) ) {
 		$trail[] = array( get_option( 'page_for_posts' ) ? get_the_title( (int) get_option( 'page_for_posts' ) ) : __( 'News & Updates', 'kingdom-revival' ), krm_blog_url() );
@@ -50,6 +57,8 @@ function krm_breadcrumbs() {
 		$title = get_the_title( get_queried_object() );
 	} elseif ( is_home() ) {
 		$title = get_the_title( (int) get_option( 'page_for_posts' ) );
+	} elseif ( krm_current_group() ) {
+		$title = krm_current_group()['name'];
 	} elseif ( is_post_type_archive( 'ministry' ) ) {
 		$title = __( 'What We Do', 'kingdom-revival' );
 	} elseif ( is_post_type_archive( array( 'sermon', 'event', 'testimonial' ) ) ) {
@@ -138,6 +147,8 @@ function krm_schema_url() {
 	$url = '';
 	if ( is_home() ) {
 		$url = krm_blog_url();
+	} elseif ( krm_current_group() ) {
+		$url = krm_current_group()['url'];
 	} elseif ( is_post_type_archive() ) {
 		$url = get_post_type_archive_link( krm_queried_post_type() );
 	} elseif ( is_category() || is_tag() || is_tax() ) {
@@ -392,13 +403,14 @@ function krm_schema_main_entities( $ids ) {
 }
 
 /**
- * All Ministries page: the ministries as an ItemList, in the order the page shows them.
+ * What We Do and its group pages: the ministries as an ItemList, in the order the page shows them.
  *
  * @param array $ids Node ids (url).
  */
 function krm_schema_ministry_list( $ids ) {
 	$items = array();
-	foreach ( krm_ministries() as $i => $m ) {
+	$group = krm_current_group();
+	foreach ( array_values( $group ? $group['ministries'] : krm_ministries() ) as $i => $m ) {
 		$items[] = array(
 			'@type'    => 'ListItem',
 			'position' => $i + 1,
@@ -409,7 +421,7 @@ function krm_schema_ministry_list( $ids ) {
 	return $items ? array(
 		'@type'           => 'ItemList',
 		'@id'             => $ids['url'] . '#ministries',
-		'name'            => __( 'What We Do', 'kingdom-revival' ),
+		'name'            => $group ? $group['name'] : __( 'What We Do', 'kingdom-revival' ),
 		'numberOfItems'   => count( $items ),
 		'itemListElement' => $items,
 	) : array();

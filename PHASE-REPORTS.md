@@ -43,6 +43,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Home "Our team" with the real team (theme 1.15.5)](#kingdom-revival-ministries-home-our-team-with-the-real-team-theme-1155)
 - [Kingdom Revival Ministries: Dummy stories on the home page (theme 1.15.6)](#kingdom-revival-ministries-dummy-stories-on-the-home-page-theme-1156)
 - [Kingdom Revival Ministries: Hero video autoplays everywhere and loops (theme 1.15.7)](#kingdom-revival-ministries-hero-video-autoplays-everywhere-and-loops-theme-1157)
+- [Kingdom Revival Ministries: Phase 21: What We Do groups, Our Impact subpages, Testimonies form (theme 1.16.0)](#kingdom-revival-ministries-phase-21-what-we-do-groups-our-impact-subpages-testimonies-form-theme-1160)
 
 ---
 
@@ -3357,3 +3358,148 @@ this work matters.]”".**
   quote (exact old value only; anything typed in is kept).
 - Verified on local WP: step 6 ran (option = 6), home page shows the quote; `placeholder_check.js`: 0 pages with
   placeholders.
+
+## Kingdom Revival Ministries: Phase 21: What We Do groups, Our Impact subpages, Testimonies form (theme 1.16.0)
+
+**Result: "What We Do" now has two group pages and every ministry lives under its group:
+/what-we-do/gospel-spiritual-ministries/[slug]/ and /what-we-do/compassion-humanitarian-ministries/[slug]/, with the
+breadcrumb Home / What We Do / [Group] / [Ministry]. The mega menu has two linked group columns and "View all →".
+Our Impact is a dropdown (Our Impact · Testimonies · Photo & Video Gallery). Testimonies is always public and has a
+"Share your testimony" form that saves pending testimonials. Old addresses redirect in one hop. Hidden ministries appear
+nowhere. Labels that said "Ministries" / "Our Ministries" now say "What We Do".**
+
+Source: the client's handwritten sitemap, page 1 (the user's Phase 21 brief, 2026-11-06).
+
+### What changed
+
+- **Data** (`inc/data/ministries.php`): each ministry's `menu_order` key is now `order` (the client's order; it still
+  seeds the post's menu order). Each group has `path` (gospel-spiritual-ministries / compassion-humanitarian-ministries),
+  `image` and `intro`. Order on the site = the brief's order. Youth / Women, Persecuted Christian Support, Food Relief
+  and Disaster Relief stay hidden (drafts).
+- **Addresses** (`inc/ministry.php`): the ministry permalink is `what-we-do/%krm_group%/{slug}` (`post_type_link`
+  fills in the group path from the Ministry Group). `/what-we-do/{segment}/` is either a group page or is redirected:
+  live ministry or an earlier slug → 301 to its nested address; hidden ministry → 302 to its group page; anything else
+  → 404. A ministry opened under the wrong group → 301; a hidden one under its group → 302 to the group page. The old
+  hook that sent hidden ministries to /what-we-do/ is gone (`inc/redirects.php`). Redirect targets of the form
+  `/what-we-do/{slug}/` (Settings → Redirects, the old-site list) now resolve straight to the nested address, and
+  `{ministries}slug/` links in page content resolve the same way (`krm_resolve_url()`).
+- **Helpers** (`inc/template-functions.php`): `krm_groups()`, `krm_group_url()`, `krm_group_path()`,
+  `krm_group_by_path()`, `krm_current_group()`, `krm_current_ministry_group()`, `krm_wwd_base()`.
+- **/what-we-do/** (`archive-ministry.php` → `template-parts/what-we-do/overview.php`): inner hero "What We Do"; two
+  large group cards side by side (photo under a navy overlay, "6 ministries", group name, intro, "Explore →", whole card
+  clickable; `group-card.php`); a preview row of each group's ministries (photo and name, "View all →"); the closing
+  banner. The filter tabs are removed.
+- **Group pages** (`template-parts/what-we-do/group.php`): hero with the group name; the intro; the group's ministry
+  cards (existing card, nested links); "Your gift at work" (the home page's cards); a card to the other group; the
+  closing banner. The group intro is a `[placeholder]` until the client sends it: administrators see it in the dashed
+  admin box, visitors see nothing. Image and intro are editable in Kingdom Revival → Site text → What We Do groups.
+- **Breadcrumbs, SEO, schema, sitemap**: ministry pages get the group crumb; group pages get title
+  "[Group] | What We Do | Kingdom Revival Ministries", their own canonical (also passed to Yoast / Rank Math), a
+  description (the intro, or "[Group] of Kingdom Revival Ministries in Pakistan: [ministries]" while it is a
+  placeholder), the group photo as share image, and an ItemList of their ministries. The archives sitemap lists both
+  group pages; the ministry sitemap has the 12 nested URLs; Testimonies is in the pages sitemap.
+- **Menus** (`inc/nav.php`, `theme-global.css` last block): a group item with a real link renders as a heading link
+  plus a chevron button. Desktop: two columns, heading = link to the group page, chevron hidden, "View all →" right-aligned
+  under the columns (the navy "All ministries" feature card and its three Site text fields are removed). Mobile: nested
+  accordions (the group name opens its page, the chevron with `aria-label` "[Group]: show the list" opens its list).
+  Our Impact is a standard dropdown. The default menu (no menu assigned) and Setup's menu definitions match.
+- **Upgrade step 7** (`inc/upgrade.php`, `krm_sitemap_version` 7), done in place so hand edits stay: group "#" items
+  get the group page links; "All ministries" becomes "View all →" and moves to the end of the panel; Our Impact gets its
+  three sub-items when it has none; footer "All ministries →" becomes "View all →"; then the menu is renumbered in tree
+  order (`krm_renumber_menu()`, reads the item posts directly, so items linking to drafts keep their place). Saved
+  labels still holding the old default (exact value only) become the new one.
+- **Labels**: What We Do hero eyebrow "Our Ministries" → none (the H1 already says What We Do); footer heading
+  "Ministries" → "What We Do"; home Giving cards eyebrow "Our Ministries" → "What We Do"; home hero button "Explore
+  Ministries" and explorer button "View All Ministries" → "Explore What We Do"; 404 button "Browse ministries" →
+  "Explore What We Do"; ministry pages "See all ministries →" → "Explore What We Do →"; footer / menu "All ministries →"
+  → "View all →"; screen-reader labels of the home explorer and the Our Impact tabs → "What We Do"; the post type's
+  archive name → "What We Do" (feed title), the dashboard menu stays "Ministries".
+- **Testimonies** (`page-templates/testimonies.php`, `template-parts/testimony-form.php`,
+  `assets/css/pages/testimonies.css`): the 302 to Our Impact, the menu exclusion and the sitemap exclusion are removed
+  (`krm_testimonies_hidden()` now always returns false). While no testimonial is published: hero, the line
+  "Testimonies from the families and churches we serve will appear here." and the form; once one is published the list
+  appears above the form. Form: name, village / city, ministry (live ministries), story, optional photo (JPG / PNG /
+  WebP, 5 MB, checked in the browser and on the server), consent "I agree this may be published" (required).
+  `inc/forms.php` form `testimony`: same token / honeypot / timing / rate limit as the other forms; saved as a
+  **pending** Testimonial (link-stuffed: draft, not emailed) with "Role or place" = village / city, "Related ministry",
+  the photo as featured image, consent time in `_krm_consent`; the email links to the edit screen. Never published
+  automatically. `components.js` sends file inputs as the file.
+- **Gallery** (`page-templates/gallery.php`): the Photos / Videos tabs and the Videos panel are printed only once at
+  least one YouTube link is listed; until then the page is photos only (the live ministries' real photos plus General
+  photos).
+- **Our Impact** (`template-parts/impact-links.php`): two link cards above the closing banner, Testimonies (with the
+  opening of the first published testimony and its name once one exists, else the card text) and Photo & Video Gallery,
+  with the two pages' hero photos. Their heading is "Explore more / Testimonies & Gallery" (the unused default was
+  "Stories from the field", the same as the section above it).
+- **Donate**: the hard-coded "Youth Ministry / Women Empowerment" fund option is removed (hidden ministries appear
+  nowhere).
+- `readme.md` (theme guide) updated; `tools/visual-qa/placeholder_check.js` now treats Testimonies links as expected.
+
+### How it was verified (local WP, logged out unless stated)
+
+- Addresses: /what-we-do/, both group pages, all 12 nested ministry pages → 200. /what-we-do/church-planting/,
+  /what-we-do/compassion-humanitarian-ministries/church-planting/, /what-we-do/outreach-ministry/,
+  /ministries/clean-water/, /ministries/outreach-ministry/, /outreach-ministry/, /urdu-bibles-distribution/,
+  /all-ministries.html?ministry=widows-support → one 301 to the nested address; /ministries/ → /what-we-do/; the four
+  hidden ministries (flat or nested) → 302 to their group page; /what-we-do/nonsense/ → 404.
+- `final_pass.js`: 37 pages crawled, overflow 0 (360 / 768 / 1024 / 1440), JS errors 0, axe violations 0, contrast
+  failures 0 in light and 0 in dark, no duplicate titles or descriptions, no missing pages.
+- Link check over the crawled pages: 131 internal links, 0 broken. No page and no sitemap contains a hidden ministry's
+  slug or name (the Donate fund option was the one hit, now removed); no page links to an old flat ministry address.
+- `placeholder_check.js`: 56 pages, all 200, 0 links to hidden ministries, 0 pages with placeholders for visitors.
+  With `krm_show_placeholders` forced (temporary mu-plugin): the two group intros show in the admin box on the
+  overview and group page; visitors: none.
+- Menus (Playwright, keyboard only): desktop: Enter on What We Do → `aria-expanded="true"`, panel visible; the two
+  headings link to the group pages; chevrons hidden; lists in the client's order; Tab goes heading → first ministry;
+  "View all →" → /what-we-do/; Esc closes and returns focus to What We Do. Our Impact: Enter opens three items, current
+  item marked, Esc closes. On a group page only that group's heading has `aria-current`. Mobile 390: menu opens, What
+  We Do opens, group list collapsed until its chevron (44 × 44 px) is pressed (`aria-expanded` true), Esc closes the
+  inner list first, Our Impact opens with three items. 27 of 28 checks passed; the one "failure" was the test: "→" is
+  drawn as the theme's arrow SVG, as everywhere.
+- Upgrade step 7 on the local site: menu items as described, in tree order; footer "View all →".
+- Testimony form: empty submit shows three field messages (name, story, consent); a filled submit with a JPG photo
+  → success message, a pending Testimonial with place, ministry, consent time and the photo as featured image; it does
+  not appear on the page. The QA entry was then deleted. Empty state checked by unpublishing the 12 dummy
+  testimonials (then republished): the line, the form, page in the menu and sitemap, no quote on the Our Impact card.
+- Screenshots, light and dark at 390 and 1440 (32 + 4 of the empty Testimonies state): /what-we-do/, both group pages,
+  Church Planting and Slavery & Freedom Ministry, /our-impact/, /our-impact/testimonies/, /our-impact/gallery/;
+  horizontal overflow 0 and no JS errors on all of them.
+
+### Fixed along the way
+
+- `add_rewrite_tag()` with an explicit query string does not register the query variable; group pages first rendered
+  as the overview.
+- The Our Impact link-card photos were stretched to 4:3 (now cover a 16:7 box).
+
+### "Ministries" / "ministries" left unchanged, and why
+
+- Ministry names the client wrote with "Ministry": Slavery & Freedom Ministry, Prayer & Deliverance Ministry,
+  Disaster Relief & Recovery Ministry, Youth Ministry / Women Empowerment; "Support this ministry" buttons.
+- The organisation name "Kingdom Revival Ministries" and the header's "MINISTRIES" line under "Kingdom Revival".
+- The group names "Gospel & Spiritual Ministries", "Compassion & Humanitarian Ministries" (and their URLs).
+- "Other ministries" (heading on ministry pages: three individual ministries), "All ministries" (Gallery filter's
+  first option), "6 ministries" (group card count): they count or list individual ministries, not the page.
+- Prose: "across all our ministries" (Donate), "Supports all our ministries" (Partner), "our ministries across
+  Pakistan" (Our Impact and Gallery intros), "Explore our ministries" (About button and 404 text), the What We Do lead
+  sentence naming both groups, "ministries, one mission" (About badge).
+- Admin only: the dashboard menu "Ministries", "Add New Ministry", the "Footer: Ministries" menu location / menu name
+  and help texts, function names and the `ministry` post type.
+
+### Not covered
+
+- Rank Math / Yoast / SureRank were not installed locally: their canonical filters for group pages are written but not
+  run; SureRank (the live site's plugin) gets no group-specific canonical and may give group pages /what-we-do/.
+- Email of the testimony notice: the local site has no mail server (`_krm_emailed` = 0, same as the other forms).
+- PHP's upload limit decides the largest photo that arrives; on a host below 5 MB a larger photo gets "could not be
+  uploaded".
+- Full-page screenshots sometimes show photos far below the fold as empty boxes (capture artifact); checked on screen.
+
+### Decisions for you
+
+1. **Group intros**: the brief asks for an admin-only placeholder, so these two are the one exception to the "dummy
+   content, no [brackets]" rule. Send the client's two intros, or say if you want dummy intros instead.
+2. **Gallery videos**: the three bundled videos (assets/video/gallery, about 20 MB of the 35 MB zip) are no longer shown
+   because the Videos tab now waits for a YouTube link. Upload them to YouTube and list the links, or say if they
+   should stay visible; if not, they can be removed from the theme to shrink the zip.
+3. **Hidden ministry addresses** redirect with 302 (temporary), so they work by themselves once published. Say if you
+   want 301.

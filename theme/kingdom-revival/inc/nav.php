@@ -32,9 +32,8 @@ function krm_menu_tree( $location ) {
 	$skipped = array();
 	foreach ( $items as $item ) {
 		// Left out, with their sub-items: links to an unpublished ministry or page (e.g. a ministry waiting for its
-		// description), and the Testimonies page while there are no testimonies (krm_testimonies_hidden()).
+		// description). The Testimonies page is always listed since Phase 21 (it has a "Share your testimony" form).
 		$gone = 'post_type' === $item->type && 'publish' !== get_post_status( (int) $item->object_id );
-		$gone = $gone || ( krm_testimonies_hidden() && krm_redirect_path( $item->url ) === krm_redirect_path( krm_page_url( 'testimonies' ) ) );
 		if ( $gone || isset( $skipped[ (int) $item->menu_item_parent ] ) ) {
 			$skipped[ $item->ID ] = true;
 			continue;
@@ -55,8 +54,11 @@ function krm_menu_tree( $location ) {
 			'ministry' => $ministry,
 			// The posts page counts as current on single stories, as in the design. WordPress doesn't know a
 			// rewritten link ("#contact" → /contact/) is the current page, so that is checked here.
-			'current'  => ! empty( $item->current ) || ( is_singular( 'post' ) && in_array( 'current_page_parent', (array) $item->classes, true ) )
-				|| ( $url !== $item->url && krm_url_is_current( $url ) ),
+			// On a group page (/what-we-do/{group}/) WordPress marks the What We Do archive link current too; only the
+			// group's own link is (a custom link, so matched by address).
+			'current'  => ( ! empty( $item->current ) && ! ( 'post_type_archive' === $item->type && krm_current_group() ) )
+				|| ( is_singular( 'post' ) && in_array( 'current_page_parent', (array) $item->classes, true ) )
+				|| ( ( $url !== $item->url || ( 'custom' === $item->type && krm_current_group() ) ) && krm_url_is_current( $url ) ),
 			'ancestor' => ! empty( $item->current_item_ancestor ),
 			'parent'   => (int) $item->menu_item_parent,
 			'children' => array(),
@@ -116,7 +118,8 @@ function krm_default_primary_tree() {
 			foreach ( $posts as $p ) {
 				$children[] = krm_node( get_the_title( $p ), get_permalink( $p ), array(), $p->post_name, is_single( $p->ID ) );
 			}
-			$groups[] = krm_node( $term->name, '#', array(), '', false, $children );
+			$current  = krm_current_group();
+			$groups[] = krm_node( $term->name, krm_group_url( $term->slug ), array(), '', $current && $current['slug'] === $term->slug, $children );
 		}
 	} else {
 		$data = include KRM_DIR . '/inc/data/ministries.php';
@@ -125,20 +128,25 @@ function krm_default_primary_tree() {
 			foreach ( $data['items'] as $slug => $m ) {
 				if ( $m['group'] === $gslug ) {
 					$current                      = is_singular( 'ministry' ) && get_queried_object()->post_name === $slug;
-					$children[ $m['menu_order'] ] = krm_node( $m['title'], krm_ministry_url( $slug ), array(), $slug, $current );
+					$children[ $m['order'] ] = krm_node( $m['title'], krm_ministry_url( $slug ), array(), $slug, $current );
 				}
 			}
 			ksort( $children );
-			$groups[] = krm_node( $group['name'], '#', array(), '', false, array_values( $children ) );
+			$groups[] = krm_node( $group['name'], krm_group_url( $gslug ), array(), '', false, array_values( $children ) );
 		}
 	}
-	array_unshift( $groups, krm_node( __( 'All ministries', 'kingdom-revival' ), krm_ministries_url(), array( 'menu-all' ), '', is_post_type_archive( 'ministry' ) ) );
+	$groups[] = krm_node( __( 'View all →', 'kingdom-revival' ), krm_ministries_url(), array( 'menu-all' ), '', is_post_type_archive( 'ministry' ) && ! krm_current_group() );
+	$impact   = array(
+		krm_node( __( 'Our Impact', 'kingdom-revival' ), krm_page_url( 'impact' ), array(), '', 'impact' === krm_design_template() ),
+		krm_node( __( 'Testimonies', 'kingdom-revival' ), krm_page_url( 'testimonies' ), array(), '', 'testimonies' === krm_design_template() ),
+		krm_node( __( 'Photo & Video Gallery', 'kingdom-revival' ), krm_page_url( 'gallery' ), array(), '', 'gallery' === krm_design_template() ),
+	);
 
 	return array(
 		krm_node( __( 'Home', 'kingdom-revival' ), home_url( '/' ), array(), '', is_front_page() ),
 		krm_node( __( 'About Us', 'kingdom-revival' ), krm_page_url( 'about' ), array(), '', 'about' === krm_design_template() ),
 		krm_node( __( 'What We Do', 'kingdom-revival' ), '#', array(), '', false, $groups ),
-		krm_node( __( 'Our Impact', 'kingdom-revival' ), krm_page_url( 'impact' ), array(), '', in_array( krm_design_template(), array( 'impact', 'testimonies', 'gallery' ), true ) ),
+		krm_node( __( 'Our Impact', 'kingdom-revival' ), '#', array(), '', false, $impact ),
 		krm_node( __( 'News & Updates', 'kingdom-revival' ), krm_blog_url(), array(), '', is_home() || is_singular( 'post' ) ),
 		krm_node( __( 'Partner With Us', 'kingdom-revival' ), krm_page_url( 'partner' ), array(), '', in_array( krm_design_template(), array( 'partner', 'prayer' ), true ) ),
 		krm_node( __( 'Contact', 'kingdom-revival' ), krm_page_url( 'contact' ), array(), '', 'contact' === krm_design_template() ),
@@ -208,7 +216,7 @@ function krm_local_url( $url ) {
  * A menu link that names a design page by an anchor or by its old static file ("#contact", "/#contact",
  * "contact.html", "index.html", "blog-post.html?post=…") points at that page's WordPress permalink instead, so menus
  * built by hand or kept from the previous site reach the real pages on any installation. "#all-ministries" goes to
- * the All Ministries page (/ministries/). Anchors of other home page sections (#top…) and every other link are
+ * the What We Do page (/what-we-do/). Anchors of other home page sections (#top…) and every other link are
  * returned unchanged.
  *
  * @param string $url Menu item URL.
@@ -273,6 +281,8 @@ function krm_url_is_current( $url ) {
 		$here = krm_blog_url();
 	} elseif ( is_singular() ) {
 		$here = get_permalink();
+	} elseif ( krm_current_group() ) {
+		$here = krm_current_group()['url'];
 	} else {
 		return false;
 	}
@@ -291,12 +301,12 @@ function krm_render_nodes( $nodes, $depth = 0 ) {
 		$classes      = $node['classes'];
 		if ( $has_children ) {
 			$classes[] = 'has-sub';
-			// The design highlights "What We Do" on ministry pages and on the What We Do page (/what-we-do/). The
+			// The design highlights "What We Do" on ministry pages and on What We Do and its group pages. The
 			// home page highlights nothing, as in the design.
 			if ( 0 === $depth && ! is_front_page() && ( krm_node_has_current( $node ) || ( is_post_type_archive( 'ministry' ) && krm_node_has_ministry( $node ) ) ) ) {
 				$classes[] = 'is-current';
 			}
-			// A top-level item whose children are groups (Ministries → groups → ministries) opens as the design's
+			// A top-level item whose children are groups (What We Do → groups → ministries) opens as the design's
 			// full-width panel on desktop, one column per group (theme-global.css, "Mega menu").
 			if ( 0 === $depth && array_filter( array_column( $node['children'], 'children' ) ) ) {
 				$classes[] = 'is-mega';
@@ -306,22 +316,32 @@ function krm_render_nodes( $nodes, $depth = 0 ) {
 		if ( $has_children && 0 === $depth ) {
 			$attrs .= ' id="' . esc_attr( 'nav-' . sanitize_title( $node['title'] ) ) . '"';
 		}
+		// A sub-item with children and a real link (a ministry group → its page, Phase 21): the link is the column
+		// heading on desktop; a separate chevron button opens its list in the mobile menu.
+		$head_link = $has_children && $depth > 0 && '' !== $node['url'] && '#' !== $node['url'];
+		if ( $head_link ) {
+			$attrs = str_replace( 'class="', 'class="has-link ', $attrs );
+		}
 		echo '<li' . $attrs . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
 		if ( $has_children ) {
-			echo '<button class="sub-toggle" type="button" aria-expanded="false">' . esc_html( $node['title'] ) . krm_icon( 'chev' ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			if ( $head_link ) {
+				printf(
+					'<a class="sub-head" href="%s"%s>%s</a>',
+					esc_url( krm_local_url( $node['url'] ) ),
+					$node['current'] ? ' aria-current="page"' : '',
+					esc_html( $node['title'] )
+				);
+				/* translators: %s: menu item, e.g. a ministry group */
+				echo '<button class="sub-toggle" type="button" aria-expanded="false" aria-label="' . esc_attr( sprintf( __( '%s: show the list', 'kingdom-revival' ), wp_strip_all_tags( $node['title'] ) ) ) . '">' . krm_icon( 'chev' ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			} else {
+				echo '<button class="sub-toggle" type="button" aria-expanded="false">' . esc_html( $node['title'] ) . krm_icon( 'chev' ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
 			echo '<ul class="submenu">';
 			krm_render_nodes( $node['children'], $depth + 1 );
 			echo '</ul>';
 		} else {
+			// "View all →" (class menu-all) in the What We Do panel is a full-width link under the group columns.
 			$label = esc_html( $node['title'] );
-			// "All ministries" in the What We Do panel is the panel's feature card on desktop (theme-global.css, "Mega
-			// menu: feature card"); on mobile only the title shows.
-			if ( 1 === $depth && in_array( 'menu-all', $classes, true ) ) {
-				$label = '<span class="mega-eyebrow">' . krm_text( krm_c( 'header.mega_eyebrow', 'site' ) ) . '</span>'
-					. '<span class="mega-title">' . $label . '</span>'
-					. '<span class="mega-text">' . krm_text( krm_c( 'header.mega_text', 'site' ) ) . '</span>'
-					. '<span class="mega-cta">' . krm_text( krm_c( 'header.mega_button', 'site' ) ) . '</span>';
-			}
 			printf(
 				'<a href="%s"%s%s>%s</a>',
 				esc_url( krm_local_url( $node['url'] ) ),
@@ -412,7 +432,7 @@ function krm_footer_links( $location ) {
 				);
 			}
 			$links[] = array(
-				'title' => __( 'All ministries →', 'kingdom-revival' ),
+				'title' => __( 'View all →', 'kingdom-revival' ),
 				'url'   => krm_ministries_url(),
 			);
 			return $links;

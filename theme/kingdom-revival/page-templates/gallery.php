@@ -3,7 +3,8 @@
  * Template Name: Photo & Video Gallery
  * Photo & Video Gallery (/our-impact/gallery/): tabs Photos / Videos and a ministry filter (assets/js/components.js).
  * Photos: every published ministry's gallery plus the page's "General photos", opened full screen by the photo
- * viewer (assets/js/viewer.js). Videos: the page's YouTube links, loaded only when played.
+ * viewer (assets/js/viewer.js). Videos: the page's YouTube links, loaded only when played; the Videos tab is shown
+ * only once at least one YouTube link has been added (Phase 21).
  *
  * Without JavaScript both lists show, one after the other, unfiltered.
  *
@@ -55,6 +56,12 @@ foreach ( $krm_video_items as $krm_v ) {
 	}
 	$krm_videos[] = $krm_video;
 }
+// The Videos tab exists only once a YouTube link has been added (Phase 21, client request); until then the page is
+// photos only and the local video files are not shown.
+$krm_has_videos = (bool) array_filter( array_column( $krm_videos, 'id' ) );
+if ( ! $krm_has_videos ) {
+	$krm_videos = array();
+}
 $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_column( $krm_videos, 'ministry' ) ) );
 ?>
 	<main id="main">
@@ -71,10 +78,12 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 	<section class="section">
 		<div class="wrap">
 		<div class="krm-filter-row">
+			<?php if ( $krm_has_videos ) : ?>
 			<div class="ministry-filter is-start" role="tablist" aria-label="<?php echo esc_attr( krm_fill( krm_c( 'hero.title' ) ) ); ?>" data-krm-tabs data-param="view">
 			<button type="button" role="tab" id="tab-photos" aria-controls="panel-photos" aria-selected="true" data-tab="photos"><?php krm_t( 'labels.photos' ); ?></button>
 			<button type="button" role="tab" id="tab-videos" aria-controls="panel-videos" aria-selected="false" data-tab="videos" tabindex="-1"><?php krm_t( 'labels.videos' ); ?></button>
 			</div>
+			<?php endif; ?>
 			<label class="krm-select" data-krm-filter="gallery" data-param="ministry" hidden><?php krm_t( 'labels.filter_label' ); ?>
 			<select>
 				<option value=""><?php krm_t( 'labels.all_label' ); ?></option>
@@ -91,7 +100,7 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 		</div>
 		<p class="visually-hidden" aria-live="polite" data-krm-filter-status="gallery" data-text="<?php echo esc_attr( krm_fill( krm_c( 'labels.count_text' ) ) ); ?>"></p>
 
-		<div role="tabpanel" id="panel-photos" aria-labelledby="tab-photos">
+		<div<?php echo $krm_has_videos ? ' role="tabpanel" aria-labelledby="tab-photos"' : ''; ?> id="panel-photos">
 			<?php if ( $krm_photos ) : ?>
 			<p class="gallery-tip" style="display: flex; align-items: center; gap: 8px; margin: 0 0 18px; color: var(--color-text-muted); font-size: 14px"><?php echo krm_icon( 'zoom' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php krm_t( 'labels.tip' ); ?></p>
 			<div class="gallery" data-gallery data-krm-filter-list="gallery">
@@ -105,6 +114,7 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 			<?php endif; ?>
 		</div>
 
+		<?php if ( $krm_has_videos ) : ?>
 		<div role="tabpanel" id="panel-videos" aria-labelledby="tab-videos">
 			<?php if ( $krm_videos ) : ?>
 			<ul class="video-grid" data-krm-filter-list="gallery">
@@ -128,6 +138,7 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 			<p class="krm-note"><?php krm_t( 'labels.no_videos' ); ?></p>
 			<?php endif; ?>
 		</div>
+		<?php endif; ?>
 		</div>
 	</section>
 	</main>

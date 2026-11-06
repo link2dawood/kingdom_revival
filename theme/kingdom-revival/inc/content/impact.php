@@ -39,8 +39,8 @@ return array(
 	'more'       => array(
 		'label'  => __( 'Testimonies and gallery links', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'           => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Lives changed' ),
-			'heading'           => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Stories from the field' ),
+			'eyebrow'           => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Explore more' ),
+			'heading'           => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Testimonies & Gallery' ),
 			'testimonies_title' => krm_f( 'text', __( 'Testimonies card: title', 'kingdom-revival' ), 'Testimonies' ),
 			'testimonies_text'  => krm_f( 'textarea', __( 'Testimonies card: text', 'kingdom-revival' ), 'Lives changed through the Gospel and practical care, in their own words.', __( 'DRAFT — CLIENT TO APPROVE: proposed wording, written only from text already on the site or in the client’s sitemap.', 'kingdom-revival' ) ),
 			'gallery_title'     => krm_f( 'text', __( 'Gallery card: title', 'kingdom-revival' ), 'Photo & Video Gallery' ),

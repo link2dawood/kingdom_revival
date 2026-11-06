@@ -5,7 +5,8 @@
      without JavaScript everything is listed. data-param keeps the choice in the address (?group=…).
    - Tabs: [data-krm-tabs] with role="tab" buttons and role="tabpanel" panels; arrow keys move between tabs.
    - Videos: button[data-krm-video] loads the YouTube player only when pressed (no YouTube request before).
-   - Forms: form[data-krm-form="prayer|signup"] post to WordPress with KRM.sendForm (site.js), as the contact form.
+   - Forms: form[data-krm-form="prayer|signup|testimony"] post to WordPress with KRM.sendForm (site.js), as the contact
+     form; a file input (the testimony photo) is checked for type and size and sent as the file itself.
    - Before/after slider: [data-krm-compare] with an input[data-krm-compare-range] (home and Slavery & Freedom).
    - Counters: [data-krm-count] numbers ("1,200+") count up once when they come into view (not with reduced motion).
    - Give card: [data-krm-give-card] amount buttons (data-give-amount) set its Donate link (ministry pages). */
@@ -184,6 +185,15 @@
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     /* Problem with a field's value ("" when fine): required, email, or "email or WhatsApp number" (data-validate). */
     function problem(el, value) {
+      if (el.type === "file") {
+        /* Optional photo (Testimonies): an image of an allowed type, no larger than data-max-size bytes. */
+        var file = el.files && el.files[0];
+        if (!file) return el.required ? "Please choose a file." : "";
+        var max = parseInt(el.getAttribute("data-max-size"), 10) || 0;
+        if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return "Please choose a JPG, PNG or WebP photo.";
+        if (max && file.size > max) return "This photo is too large. Please choose one under " + Math.round(max / 1048576) + " MB.";
+        return "";
+      }
       if (el.required && (el.type === "checkbox" ? !el.checked : !value)) return el.getAttribute("data-error-required") || "Please fill in this field.";
       if (!value || el.type === "checkbox") return "";
       if (el.type === "email" && !EMAIL_RE.test(value)) return "Please enter a valid email address.";
@@ -204,7 +214,7 @@
         note.className = "krm-field-error";
         note.id = "krm-err-" + name + "-" + el.name;
         holder.appendChild(note);
-        el.setAttribute("aria-describedby", note.id);
+        el.setAttribute("aria-describedby", ((el.getAttribute("aria-describedby") || "") + " " + note.id).trim());
       }
       if (note) { note.textContent = bad ? (message || "Please check this field.") : ""; note.hidden = !bad; }
     }
@@ -214,8 +224,9 @@
       var data = {};
       var first = null;
       fields.forEach(function (el) {
-        var value = el.type === "checkbox" ? (el.checked ? (el.value || "Yes") : "No") : el.value.trim();
-        var message = problem(el, el.type === "checkbox" ? "" : value);
+        var value = el.type === "checkbox" ? (el.checked ? (el.value || "Yes") : "No")
+          : el.type === "file" ? (el.files && el.files[0] ? el.files[0] : "") : el.value.trim();
+        var message = problem(el, el.type === "checkbox" || el.type === "file" ? "" : value);
         var bad = !!message;
         mark(el, bad, message);
         if (bad && !first) first = el;

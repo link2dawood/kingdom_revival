@@ -54,6 +54,9 @@ function krm_seo_title() {
 	if ( is_front_page() ) {
 		return $site . ' — Home';
 	}
+	if ( krm_current_group() ) {
+		return krm_current_group()['name'] . ' | What We Do | ' . $site;
+	}
 	if ( is_post_type_archive( 'ministry' ) ) {
 		return 'What We Do | ' . $site;
 	}
@@ -95,6 +98,20 @@ function krm_meta_description() {
 	}
 	if ( is_home() ) {
 		return 'Stories of hope from the field — read how the Gospel and practical care are changing lives across Pakistan.';
+	}
+	if ( krm_current_group() ) {
+		// The group's intro; while that is still a placeholder, its ministries by name.
+		$group = krm_current_group();
+		$intro = trim( (string) krm_public( $group['intro'] ) );
+		if ( '' !== $intro && ! krm_is_placeholder( $intro ) ) {
+			return wp_strip_all_tags( $intro );
+		}
+		return sprintf(
+			/* translators: 1: group name, 2: list of ministries */
+			__( '%1$s of Kingdom Revival Ministries in Pakistan: %2$s.', 'kingdom-revival' ),
+			$group['name'],
+			implode( ', ', wp_list_pluck( $group['ministries'], 'title' ) )
+		);
 	}
 	if ( is_post_type_archive( 'ministry' ) ) {
 		return wp_strip_all_tags( krm_fill( krm_c( 'ministries.lead', 'site' ) ) );
@@ -177,6 +194,8 @@ add_action(
 		$canonical = '';
 		if ( is_home() && ! is_front_page() ) {
 			$canonical = krm_blog_url();
+		} elseif ( krm_current_group() ) {
+			$canonical = krm_current_group()['url'];
 		} elseif ( is_post_type_archive() ) {
 			$canonical = get_post_type_archive_link( get_query_var( 'post_type' ) );
 		} elseif ( is_category() || is_tag() || is_tax() ) {
@@ -236,6 +255,9 @@ function krm_og_image() {
 	if ( is_singular( 'post' ) ) {
 		return krm_ref_url( krm_post_cover( get_queried_object_id() ), 'large' );
 	}
+	if ( krm_current_group() && krm_current_group()['image'] ) {
+		return krm_ref_url( krm_current_group()['image'], 'large' );
+	}
 	if ( is_singular( 'ministry' ) ) {
 		$gallery = (array) get_post_meta( get_queried_object_id(), '_krm_gallery', true );
 		if ( ! empty( $gallery[0] ) ) {
@@ -271,6 +293,19 @@ function krm_has_custom_seo_title( $meta_key ) {
  */
 function krm_seo_fallback( $value, $fallback ) {
 	return '' !== trim( wp_strip_all_tags( (string) $value ) ) ? $value : $fallback;
+}
+
+/*
+ * Group pages (/what-we-do/{group}/, Phase 21) are the ministry archive with a group chosen, so an SEO plugin would
+ * give them /what-we-do/ as their canonical address: Yoast SEO and Rank Math get the group page's own address.
+ */
+foreach ( array( 'wpseo_canonical', 'wpseo_opengraph_url', 'rank_math/frontend/canonical' ) as $krm_hook ) {
+	add_filter(
+		$krm_hook,
+		function ( $url ) {
+			return krm_current_group() ? krm_current_group()['url'] : $url;
+		}
+	);
 }
 
 /* Yoast SEO. */
@@ -496,7 +531,7 @@ foreach ( array( 'wpseo_sitemap_entry', 'rank_math/sitemap/entry' ) as $krm_hook
 }
 
 /*
- * Core sitemaps list single entries but not list pages: add /what-we-do/ (What We Do), /sermons/, /events/ and
+ * Core sitemaps list single entries but not list pages: add /what-we-do/ (What We Do) and its group pages, /sermons/, /events/ and
  * /testimonials/ while they have published items, so an empty list is never submitted.
  */
 add_action(
@@ -529,6 +564,12 @@ add_action(
 						$link = post_type_exists( $type ) ? get_post_type_archive_link( $type ) : false;
 						if ( $link && (int) wp_count_posts( $type )->publish > 0 ) {
 							$urls[] = array( 'loc' => $link );
+						}
+						if ( 'ministry' === $type ) {
+							// The group pages (/what-we-do/{group}/) of groups with a published ministry (Phase 21).
+							foreach ( krm_groups() as $group ) {
+								$urls[] = array( 'loc' => $group['url'] );
+							}
 						}
 					}
 					return $urls;

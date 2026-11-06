@@ -29,7 +29,7 @@ $krm_active = $krm_list ? $krm_list[0] : array(
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 28px">
 <?php krm_explorer_data( $krm_list ); ?>
-<div role="group" aria-label="Ministries" style="flex: 1 1 280px; max-width: 100%; display: flex; flex-direction: column; gap: 8px">
+<div role="group" aria-label="What We Do" style="flex: 1 1 280px; max-width: 100%; display: flex; flex-direction: column; gap: 8px">
 <?php
 foreach ( $krm_list as $krm_i => $krm_m ) :
 	$krm_on = 0 === $krm_i;

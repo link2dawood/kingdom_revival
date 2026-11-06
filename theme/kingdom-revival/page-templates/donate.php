@@ -70,7 +70,8 @@ $krm_gift = krm_gift_return();
 				foreach ( krm_ministries() as $krm_m ) {
 					$krm_funds[] = array( $krm_m['title'], $krm_m['slug'], $krm_m['title'] );
 				}
-				$krm_funds[] = array( 'Youth Ministry / Women Empowerment', 'youth-women-empowerment', 'Youth Ministry / Women Empowerment' );
+				// Hidden ministries (drafts, e.g. Youth Ministry / Women Empowerment until the client chooses) are not
+				// offered: krm_ministries() lists published ones only (Phase 21: hidden ministries appear nowhere).
 				$krm_pick    = 0;
 				foreach ( $krm_funds as $krm_i => $krm_f ) {
 					if ( ( '' !== $krm_pre_slug && $krm_pre_slug === $krm_f[1] ) || ( '' === $krm_pre_slug && '' !== $krm_pre_for && $krm_pre_for === $krm_f[0] ) ) {

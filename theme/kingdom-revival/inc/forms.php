@@ -1,6 +1,6 @@
 <?php
 /**
- * Contact, partner, newsletter and prayer request forms: validation, spam protection, saved submissions and email notifications.
+ * Contact, partner, newsletter, prayer request and testimony forms: validation, spam protection, saved submissions and email notifications.
  *
  * Spam protection (no third-party service, works with page caching):
  *  - hidden honeypot field,
@@ -64,6 +64,15 @@ function krm_form_fields( $form ) {
 			'project' => array( 'Project', false, 'text' ),
 			'message' => array( 'Message', false, 'textarea' ),
 		),
+		// Testimonies → "Share your testimony" (Phase 21): saved as a pending Testimonial, never published by itself.
+		// The optional photo arrives as the file "photo" (krm_testimony_photo()).
+		'testimony'  => array(
+			'name'     => array( 'Name', true, 'text' ),
+			'place'    => array( 'Village / city', false, 'text' ),
+			'ministry' => array( 'Ministry', false, 'text' ),
+			'story'    => array( 'Story', true, 'textarea' ),
+			'consent'  => array( 'May be published', true, 'consent' ),
+		),
 	);
 	return isset( $fields[ $form ] ) ? $fields[ $form ] : array();
 }
@@ -78,6 +87,7 @@ function krm_form_labels() {
 		'newsletter' => __( 'Newsletter sign-up', 'kingdom-revival' ),
 		'prayer'     => __( 'Prayer request', 'kingdom-revival' ),
 		'signup'     => __( 'Partner With Us sign-up', 'kingdom-revival' ),
+		'testimony'  => __( 'Testimony', 'kingdom-revival' ),
 	);
 }
 
@@ -165,6 +175,8 @@ function krm_handle_form() {
 			}
 		} elseif ( 'textarea' === $field[2] ) {
 			$value = sanitize_textarea_field( $raw );
+		} elseif ( 'consent' === $field[2] ) {
+			$value = 'Yes' === $raw ? 'Yes' : '';
 		} else {
 			$value = sanitize_text_field( $raw );
 		}
@@ -173,6 +185,16 @@ function krm_handle_form() {
 			$errors[ $key ] = __( 'This field is required.', 'kingdom-revival' );
 		}
 		$data[ $key ] = $value;
+	}
+	if ( 'testimony' === $form ) {
+		$slugs = wp_list_pluck( krm_ministries(), 'slug' );
+		if ( ! in_array( $data['ministry'], $slugs, true ) ) {
+			$data['ministry'] = '';
+		}
+		$photo = krm_testimony_photo_check();
+		if ( is_wp_error( $photo ) ) {
+			$errors['photo'] = $photo->get_error_message();
+		}
 	}
 	if ( $errors ) {
 		wp_send_json_error(
@@ -188,6 +210,11 @@ function krm_handle_form() {
 
 	// Messages stuffed with links are kept for review but not emailed.
 	$is_spam = preg_match_all( '#https?://#i', implode( ' ', $data ) ) > 3;
+
+	if ( 'testimony' === $form ) {
+		krm_save_testimony( $data, $is_spam );
+		wp_send_json_success();
+	}
 
 	$labels = krm_form_labels();
 	$title  = $labels[ $form ] . ' — ' . ( '' !== $data['name'] ? $data['name'] : $data['email'] );
@@ -241,8 +268,12 @@ function krm_notify( $form, $data, $title, $post_id ) {
 	foreach ( $data as $key => $value ) {
 		$lines[] = $fields[ $key ][0] . ': ' . ( '' !== $value ? $value : '—' );
 	}
-	$body  = $title . "\n\n" . implode( "\n", $lines );
-	$body .= "\n\n" . sprintf( /* translators: %s: admin URL */ __( 'View all submissions: %s', 'kingdom-revival' ), admin_url( 'edit.php?post_type=krm_submission' ) );
+	$body = $title . "\n\n" . implode( "\n", $lines );
+	if ( 'testimony' === $form ) {
+		$body .= "\n\n" . sprintf( /* translators: %s: admin URL */ __( 'Review it (it is not published until you press Publish): %s', 'kingdom-revival' ), admin_url( 'post.php?action=edit&post=' . (int) $post_id ) );
+	} else {
+		$body .= "\n\n" . sprintf( /* translators: %s: admin URL */ __( 'View all submissions: %s', 'kingdom-revival' ), admin_url( 'edit.php?post_type=krm_submission' ) );
+	}
 
 	$headers = array();
 	// The prayer form has one "Email or WhatsApp" field; reply to it when it is an email address.
@@ -437,3 +468,92 @@ add_action(
 		exit;
 	}
 );
+
+/* ---------- Testimonies → "Share your testimony" (Phase 21) ---------- */
+
+/**
+ * The testimony's optional photo ($_FILES['photo']): null when none was sent, true when it is an acceptable image
+ * (JPG, PNG or WebP, up to 5 MB), else a WP_Error with the message for the visitor.
+ *
+ * @return true|null|WP_Error
+ */
+function krm_testimony_photo_check() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- checked in krm_handle_form().
+	if ( empty( $_FILES['photo'] ) || ! isset( $_FILES['photo']['error'] ) || UPLOAD_ERR_NO_FILE === (int) $_FILES['photo']['error'] ) {
+		return null;
+	}
+	$file = $_FILES['photo']; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput -- validated below, then handled by wp_handle_upload().
+	if ( UPLOAD_ERR_OK !== (int) $file['error'] || empty( $file['tmp_name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
+		return new WP_Error( 'krm_photo', __( 'The photo could not be uploaded. Please try another one, or send your story without it.', 'kingdom-revival' ) );
+	}
+	if ( (int) $file['size'] > 5 * MB_IN_BYTES ) {
+		return new WP_Error( 'krm_photo', __( 'This photo is too large. Please choose one under 5 MB.', 'kingdom-revival' ) );
+	}
+	$types = array(
+		'jpg|jpeg|jpe' => 'image/jpeg',
+		'png'          => 'image/png',
+		'webp'         => 'image/webp',
+	);
+	$check = wp_check_filetype_and_ext( $file['tmp_name'], sanitize_file_name( (string) $file['name'] ), $types );
+	if ( empty( $check['type'] ) || ! in_array( $check['type'], $types, true ) || ! @getimagesize( $file['tmp_name'] ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- not an image: false.
+		return new WP_Error( 'krm_photo', __( 'Please choose a JPG, PNG or WebP photo.', 'kingdom-revival' ) );
+	}
+	return true;
+}
+
+/**
+ * Save a testimony as a pending Testimonial (a draft when it looks like spam), attach its photo as the featured
+ * image, and email the ministry (not for spam).
+ *
+ * @param array $data    Sanitized fields.
+ * @param bool  $is_spam Link-stuffed.
+ */
+function krm_save_testimony( $data, $is_spam ) {
+	$post_id = wp_insert_post(
+		array(
+			'post_type'    => 'testimonial',
+			'post_status'  => $is_spam ? 'draft' : 'pending',
+			'post_title'   => $data['name'],
+			'post_content' => $data['story'],
+			'post_author'  => 0,
+			'meta_input'   => array(
+				'_krm_role'       => $data['place'],
+				'_krm_ministry'   => $data['ministry'],
+				'_krm_consent'    => current_time( 'mysql' ),
+				'_krm_from_form'  => 1,
+				'_krm_spam'       => $is_spam ? 1 : 0,
+				'_krm_page'       => isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '',
+			),
+		),
+		true
+	);
+	if ( is_wp_error( $post_id ) || ! $post_id ) {
+		wp_send_json_error( array( 'message' => __( 'Sorry, your testimony could not be saved.', 'kingdom-revival' ) ), 500 );
+	}
+	if ( true === krm_testimony_photo_check() ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		$attachment = media_handle_upload(
+			'photo',
+			$post_id,
+			array( 'post_title' => sprintf( /* translators: %s: name */ __( 'Testimony photo — %s', 'kingdom-revival' ), $data['name'] ) ),
+			array(
+				'test_form' => false,
+				'mimes'     => array(
+					'jpg|jpeg|jpe' => 'image/jpeg',
+					'png'          => 'image/png',
+					'webp'         => 'image/webp',
+				),
+			)
+		);
+		if ( ! is_wp_error( $attachment ) ) {
+			set_post_thumbnail( $post_id, $attachment );
+			$data['photo'] = __( 'attached (featured image)', 'kingdom-revival' );
+		}
+	}
+	if ( ! $is_spam ) {
+		$labels = krm_form_labels();
+		krm_notify( 'testimony', array_intersect_key( $data, krm_form_fields( 'testimony' ) ), $labels['testimony'] . ' — ' . $data['name'], $post_id );
+	}
+}

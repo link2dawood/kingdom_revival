@@ -2,7 +2,9 @@
 /**
  * Template Name: Testimonies
  * Testimonies (/our-impact/testimonies/): every published Testimonial as a card in the home page's "Stories from
- * the field" style, with filter tabs by ministry (only ministries that have testimonies get a tab).
+ * the field" style, with filter tabs by ministry (only ministries that have testimonies get a tab), then the "Share
+ * your testimony" form (template-parts/testimony-form.php). While none is published (Phase 21): a short line instead
+ * of the list; the page is always in the menu and the sitemap.
  *
  * @package Kingdom_Revival
  */
@@ -54,13 +56,11 @@ uasort(
 		</div>
 	</section>
 
-	<?php if ( $krm_items || krm_show_placeholders() ) : // Visitors: no section until there are testimonies. ?>
 	<section class="section section-soft" aria-labelledby="testimonies-heading">
 		<div class="wrap">
 		<h2 class="visually-hidden" id="testimonies-heading"><?php krm_t( 'hero.title' ); ?></h2>
 		<?php if ( ! $krm_items ) : ?>
-			<?php krm_admin_only_note(); ?>
-		<p class="krm-note"><?php krm_t( 'list.empty' ); ?></p>
+		<p class="testimony-empty"><?php krm_t( 'list.empty' ); ?></p>
 		<?php else : ?>
 			<?php if ( count( $krm_tabs ) > 1 ) : ?>
 		<div class="ministry-filter" role="group" aria-label="<?php echo esc_attr( krm_fill( krm_c( 'list.filter_label' ) ) ); ?>" data-krm-filter="testimonies" data-param="ministry" hidden>
@@ -101,7 +101,7 @@ uasort(
 		<?php endif; ?>
 		</div>
 	</section>
-	<?php endif; ?>
+	<?php get_template_part( 'template-parts/testimony-form' ); ?>
 	</main>
 <?php
 get_footer();

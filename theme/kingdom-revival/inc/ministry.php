@@ -27,11 +27,14 @@ defined( 'ABSPATH' ) || exit;
 add_action(
 	'init',
 	function () {
+		add_rewrite_tag( '%krm_group%', '([^/]+)' ); // Also registers the krm_group query variable.
 		register_post_type(
 			'ministry',
 			array(
 				'labels'        => array(
-					'name'          => __( 'Ministries', 'kingdom-revival' ),
+					// "name" titles the archive (/what-we-do/: its feed, archive title); the dashboard menu keeps "Ministries".
+					'name'          => __( 'What We Do', 'kingdom-revival' ),
+					'menu_name'     => __( 'Ministries', 'kingdom-revival' ),
 					'singular_name' => __( 'Ministry', 'kingdom-revival' ),
 					'add_new_item'  => __( 'Add New Ministry', 'kingdom-revival' ),
 					'edit_item'     => __( 'Edit Ministry', 'kingdom-revival' ),
@@ -39,10 +42,12 @@ add_action(
 					'search_items'  => __( 'Search Ministries', 'kingdom-revival' ),
 				),
 				'public'        => true,
-				'has_archive'   => 'what-we-do',
+				'has_archive'   => krm_wwd_base(),
+				// /what-we-do/{group}/{ministry}/ (Phase 21): %krm_group% is the group page's path (krm_group_path()).
 				'rewrite'       => array(
-					'slug'       => 'what-we-do',
+					'slug'       => krm_wwd_base() . '/%krm_group%',
 					'with_front' => false,
+					'walk_dirs'  => false,
 				),
 				'menu_icon'     => 'dashicons-groups',
 				'menu_position' => 21,
@@ -66,6 +71,10 @@ add_action(
 				'show_in_rest'      => true,
 			)
 		);
+
+		// /what-we-do/{group}/ is the group page; a single segment that is not a group (an old /what-we-do/{ministry}/
+		// address) is redirected by krm_route_what_we_do(). After the archive's own rules (/what-we-do/page/2/).
+		add_rewrite_rule( '^' . krm_wwd_base() . '/([^/]+)/?$', 'index.php?post_type=ministry&krm_group=$matches[1]', 'top' );
 
 		foreach ( array( '_krm_focus', '_krm_points' ) as $key ) {
 			register_post_meta(
@@ -127,6 +136,112 @@ add_filter(
 			}
 		}
 		return $vars;
+	}
+);
+
+/* ---------- Addresses: /what-we-do/{group}/{ministry}/ (Phase 21) ---------- */
+
+/*
+ * A ministry's permalink puts its group page's path in place of %krm_group%: its Ministry Group (the term), else its
+ * group in the data file, else "ministry" (a ministry with no group still opens; it just has no group page above it).
+ */
+add_filter(
+	'post_type_link',
+	function ( $link, $post ) {
+		if ( 'ministry' !== $post->post_type || false === strpos( $link, '%krm_group%' ) ) {
+			return $link;
+		}
+		$group = krm_ministry_group_slug( $post );
+		return str_replace( '%krm_group%', '' !== $group ? krm_group_path( $group ) : 'ministry', $link );
+	},
+	10,
+	2
+);
+
+/**
+ * The group slug of a ministry post (the ministry_group term, else the data file's group), or ''.
+ *
+ * @param WP_Post $post Ministry.
+ */
+function krm_ministry_group_slug( $post ) {
+	$terms = get_the_terms( $post, 'ministry_group' );
+	if ( $terms && ! is_wp_error( $terms ) ) {
+		return $terms[0]->slug;
+	}
+	$data = krm_ministry_data();
+	return isset( $data['items'][ $post->post_name ]['group'] ) ? $data['items'][ $post->post_name ]['group'] : '';
+}
+
+/*
+ * Routing of /what-we-do/{segment}/ and /what-we-do/{group}/{ministry}/:
+ *  - {segment} is a group path → the group page (archive-ministry.php shows the group);
+ *  - {segment} is a ministry (its slug or an earlier slug, "was") → 301 to its address under its group, or, while the
+ *    ministry is not published (a draft waiting for its description), 302 to its group page;
+ *  - anything else → 404.
+ *  - A published ministry opened under the wrong group → 301 to its address; an unpublished one (404) → 302 to its
+ *    group page, so the address works again by itself once the ministry is published.
+ */
+add_action(
+	'template_redirect',
+	function () {
+		$segment = (string) get_query_var( 'krm_group' );
+		if ( '' === $segment ) {
+			return;
+		}
+		$data = krm_ministry_data();
+		if ( is_singular( 'ministry' ) ) {
+			$want = get_permalink( get_queried_object() );
+			if ( $want && krm_redirect_path( $want ) !== krm_redirect_path( add_query_arg( array() ) ) ) {
+				wp_safe_redirect( $want, 301, 'Kingdom Revival theme' );
+				exit;
+			}
+			return;
+		}
+		$name = (string) get_query_var( 'name' );
+		if ( '' === $name && krm_group_by_path( $segment ) ) {
+			return; // A group page.
+		}
+		$slug = sanitize_title( '' !== $name ? $name : $segment );
+		foreach ( $data['items'] as $key => $m ) {
+			if ( in_array( $slug, (array) $m['was'], true ) ) {
+				$slug = $key;
+				break;
+			}
+		}
+		$post = get_posts(
+			array(
+				'post_type'      => 'ministry',
+				'name'           => $slug,
+				'post_status'    => array( 'publish', 'draft', 'pending', 'private', 'future' ),
+				'posts_per_page' => 1,
+				'no_found_rows'  => true,
+			)
+		);
+		$post = $post ? $post[0] : null;
+		if ( $post && 'publish' === $post->post_status ) {
+			wp_safe_redirect( get_permalink( $post ), 301, 'Kingdom Revival theme' );
+			exit;
+		}
+		if ( $post || isset( $data['items'][ $slug ] ) ) {
+			$group = $post ? krm_ministry_group_slug( $post ) : $data['items'][ $slug ]['group'];
+			wp_safe_redirect( '' !== $group ? krm_group_url( $group ) : krm_ministries_url(), 302, 'Kingdom Revival theme' );
+			exit;
+		}
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
+		nocache_headers();
+	},
+	0
+);
+
+/* Group pages list every ministry of the group in one page; the main query is not paged. */
+add_action(
+	'pre_get_posts',
+	function ( $q ) {
+		if ( ! is_admin() && $q->is_main_query() && $q->is_post_type_archive( 'ministry' ) ) {
+			$q->set( 'posts_per_page', 100 );
+		}
 	}
 );
 

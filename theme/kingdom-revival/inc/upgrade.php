@@ -165,27 +165,26 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 		);
 	};
 
-	$groups = array(
-		array(
-			'title'   => 'All ministries',
-			'archive' => 'ministry',
-			'classes' => 'menu-all',
-		),
-	);
+	$groups = array();
 	foreach ( $data['groups'] as $gslug => $group ) {
 		$children = array();
 		foreach ( $data['items'] as $slug => $m ) {
 			if ( $m['group'] === $gslug && 'live' === $m['status'] ) {
-				$children[ $m['menu_order'] ] = $ministry_item( $slug );
+				$children[ $m['order'] ] = $ministry_item( $slug );
 			}
 		}
 		ksort( $children );
 		$groups[] = array(
 			'title'    => $group['name'],
-			'url'      => '#',
+			'url'      => krm_group_url( $gslug ),
 			'children' => array_values( $children ),
 		);
 	}
+	$groups[] = array(
+		'title'   => 'View all →',
+		'archive' => 'ministry',
+		'classes' => 'menu-all',
+	);
 
 	return array(
 		'primary'           => array(
@@ -201,7 +200,15 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 					'url'      => '#',
 					'children' => $groups,
 				),
-				$page_item( 'our-impact', 'Our Impact' ),
+				array(
+					'title'    => 'Our Impact',
+					'url'      => '#',
+					'children' => array(
+						$page_item( 'our-impact', 'Our Impact' ),
+						$page_item( 'testimonies', 'Testimonies' ),
+						$page_item( 'gallery', 'Photo & Video Gallery' ),
+					),
+				),
 				$page_item( 'news', 'News & Updates' ),
 				$page_item( 'partner-with-us', 'Partner With Us' ),
 				$page_item( 'contact', 'Contact' ),
@@ -235,7 +242,7 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 				$ministry_item( 'slavery-freedom' ),
 				$ministry_item( 'brick-kiln-family-care' ),
 				array(
-					'title'   => 'All ministries →',
+					'title'   => 'View all →',
 					'archive' => 'ministry',
 				),
 			),
@@ -326,7 +333,7 @@ function krm_create_ministry( $slug, $m, $group_ids, $import ) {
 			'post_title'   => $m['title'],
 			'post_name'    => $slug,
 			'post_excerpt' => $m['excerpt'],
-			'menu_order'   => $m['menu_order'],
+			'menu_order'   => $m['order'],
 			'meta_input'   => array(
 				'_krm_focus'          => $m['focus'],
 				'_krm_points'         => implode( "\n", $m['points'] ),
@@ -535,6 +542,231 @@ add_action(
 	25
 );
 
+/*
+ * Seventh step (Phase 21, theme 1.16.0, option krm_sitemap_version 7): "Ministries" labels become "What We Do", the
+ * menus get the group pages and the Our Impact dropdown. Done in place, so anything edited by hand is kept:
+ *  - main menu: a "#" item named like a ministry group links to the group page (/what-we-do/{group}/); the What We
+ *    Do archive item under What We Do ("All ministries") becomes "View all →", the last item of the panel; a top-level
+ *    Our Impact item with no sub-items becomes a dropdown: Our Impact · Testimonies · Photo & Video Gallery;
+ *  - footer: "All ministries →" becomes "View all →";
+ *  - Site text and home page labels still holding the earlier default (exact value only) get the new one.
+ */
+add_action(
+	'init',
+	function () {
+		if ( 6 !== (int) get_option( 'krm_sitemap_version' ) ) {
+			return;
+		}
+		update_option( 'krm_sitemap_version', 7 );
+		krm_upgrade_what_we_do();
+	},
+	26
+);
+
+/**
+ * The seventh upgrade step. See the comment above.
+ */
+function krm_upgrade_what_we_do() {
+	$groups = array();
+	foreach ( krm_groups( true ) as $slug => $group ) {
+		$groups[ $group['name'] ] = $slug;
+	}
+	$pages = krm_ensure_pages( false )['ids'];
+	foreach ( get_nav_menu_locations() as $location => $menu_id ) {
+		if ( ! $menu_id || ! in_array( $location, array( 'primary', 'footer_ministries', 'footer_quick' ), true ) ) {
+			continue;
+		}
+		$items = wp_get_nav_menu_items( $menu_id, array( 'post_status' => 'any' ) );
+		if ( ! $items ) {
+			continue;
+		}
+		$changed = false;
+		$kids    = array();
+		foreach ( $items as $item ) {
+			$kids[ (int) $item->menu_item_parent ][] = $item;
+		}
+		foreach ( $items as $item ) {
+			$title = wp_specialchars_decode( $item->title, ENT_QUOTES );
+			if ( 'custom' === $item->type && '#' === trim( $item->url ) && isset( $groups[ $title ] ) ) {
+				update_post_meta( $item->ID, '_menu_item_url', esc_url_raw( krm_group_url( $groups[ $title ] ) ) );
+				$changed = true;
+			}
+			if ( 'post_type_archive' === $item->type && 'ministry' === $item->object && in_array( $title, array( 'All ministries', 'All ministries →' ), true ) ) {
+				wp_update_post(
+					array(
+						'ID'         => $item->ID,
+						'post_title' => 'View all →',
+						// The panel's last item (krm_renumber_menu() puts it after its siblings).
+						'menu_order' => 100000,
+					)
+				);
+				$changed = true;
+			}
+			if ( 'primary' === $location && 0 === (int) $item->menu_item_parent && empty( $kids[ $item->ID ] ) && 'post_type' === $item->type && isset( $pages['our-impact'] ) && (int) $item->object_id === (int) $pages['our-impact'] ) {
+				foreach ( array(
+					'our-impact'  => 'Our Impact',
+					'testimonies' => 'Testimonies',
+					'gallery'     => 'Photo & Video Gallery',
+				) as $slug => $label ) {
+					if ( isset( $pages[ $slug ] ) ) {
+						wp_update_nav_menu_item(
+							$menu_id,
+							0,
+							array(
+								'menu-item-title'     => $label,
+								'menu-item-status'    => 'publish',
+								'menu-item-parent-id' => $item->ID,
+								'menu-item-type'      => 'post_type',
+								'menu-item-object'    => 'page',
+								'menu-item-object-id' => $pages[ $slug ],
+								'menu-item-position'  => 100000,
+							)
+						);
+					}
+				}
+				$changed = true;
+			}
+		}
+		if ( $changed ) {
+			krm_renumber_menu( $menu_id );
+		}
+	}
+
+	// Labels: earlier default => new default, per Site text field and home page field.
+	$site = get_option( 'krm_site_text' );
+	if ( is_array( $site ) ) {
+		$map = array(
+			'footer.ministries_heading'  => array( 'Ministries', 'What We Do' ),
+			'ministry.other_more'        => array( 'See all ministries →', 'Explore What We Do →' ),
+			'ministries.eyebrow'         => array( 'Our Ministries', '' ),
+			'ministries.list_heading'    => array( 'All ministries', 'Our ministry groups' ),
+			'notfound.button1_label'     => array( 'Browse ministries', 'Explore What We Do' ),
+		);
+		foreach ( $map as $path => $values ) {
+			list( $section, $field ) = explode( '.', $path );
+			if ( isset( $site[ $section ][ $field ] ) && $values[0] === $site[ $section ][ $field ] ) {
+				$site[ $section ][ $field ] = $values[1];
+			}
+		}
+		update_option( 'krm_site_text', $site, false );
+	}
+	foreach ( get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_key'       => '_krm_content_home', // phpcs:ignore WordPress.DB.SlowDBQuery -- runs once.
+		)
+	) as $post_id ) {
+		$values  = get_post_meta( $post_id, '_krm_content_home', true );
+		$changed = false;
+		foreach ( array(
+			'hero.button1_label'   => array( 'Explore Ministries', 'Explore What We Do' ),
+			'explorer.all_label'   => array( 'View All Ministries', 'Explore What We Do' ),
+			'causes.eyebrow'       => array( 'Our Ministries', 'What We Do' ),
+		) as $path => $pair ) {
+			list( $section, $field ) = explode( '.', $path );
+			if ( is_array( $values ) && isset( $values[ $section ][ $field ] ) && $pair[0] === $values[ $section ][ $field ] ) {
+				$values[ $section ][ $field ] = $pair[1];
+				$changed                      = true;
+			}
+		}
+		if ( $changed ) {
+			update_post_meta( $post_id, '_krm_content_home', $values );
+		}
+	}	// Our Impact's link cards (shown since Phase 21) had the heading of the section above them.
+	foreach ( get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_key'       => '_krm_content_impact', // phpcs:ignore WordPress.DB.SlowDBQuery -- runs once.
+		)
+	) as $post_id ) {
+		$values = get_post_meta( $post_id, '_krm_content_impact', true );
+		if ( is_array( $values ) && isset( $values['more']['heading'] ) && 'Stories from the field' === $values['more']['heading'] ) {
+			$values['more']['heading'] = 'Testimonies & Gallery';
+			if ( isset( $values['more']['eyebrow'] ) && 'Lives changed' === $values['more']['eyebrow'] ) {
+				$values['more']['eyebrow'] = 'Explore more';
+			}
+			update_post_meta( $post_id, '_krm_content_impact', $values );
+		}
+	}
+}
+
+/**
+ * Renumber a menu's items in tree order (each item followed by its sub-items, siblings in their current order), so
+ * items moved or added by the upgrade sit with their parent in Appearance → Menus.
+ *
+ * @param int $menu_id Menu ID.
+ */
+function krm_renumber_menu( $menu_id ) {
+	// The menu's item posts themselves: wp_get_nav_menu_items() leaves out items linking to a draft (a hidden ministry).
+	$items = get_posts(
+		array(
+			'post_type'      => 'nav_menu_item',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'orderby'        => 'menu_order',
+			'order'          => 'ASC',
+			'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- runs once.
+				array(
+					'taxonomy' => 'nav_menu',
+					'field'    => 'term_id',
+					'terms'    => (int) $menu_id,
+				),
+			),
+		)
+	);
+	if ( ! $items ) {
+		return;
+	}
+	$kids = array();
+	foreach ( $items as $item ) {
+		$item->menu_item_parent                 = (int) get_post_meta( $item->ID, '_menu_item_menu_item_parent', true );
+		$kids[ (int) $item->menu_item_parent ][] = $item;
+	}
+	$ids  = wp_list_pluck( $items, 'ID' );
+	$n    = 0;
+	$walk = function ( $parent ) use ( &$walk, &$n, $kids ) {
+		if ( empty( $kids[ $parent ] ) ) {
+			return;
+		}
+		usort(
+			$kids[ $parent ],
+			function ( $a, $b ) {
+				return (int) $a->menu_order - (int) $b->menu_order;
+			}
+		);
+		foreach ( $kids[ $parent ] as $item ) {
+			++$n;
+			if ( (int) $item->menu_order !== $n ) {
+				wp_update_post(
+					array(
+						'ID'         => $item->ID,
+						'menu_order' => $n,
+					)
+				);
+			}
+			$walk( (int) $item->ID );
+		}
+	};
+	$walk( 0 );
+	// Items whose parent is gone keep their place after the rest.
+	foreach ( $items as $item ) {
+		if ( (int) $item->menu_item_parent && ! in_array( (int) $item->menu_item_parent, $ids, true ) ) {
+			wp_update_post(
+				array(
+					'ID'         => $item->ID,
+					'menu_order' => ++$n,
+				)
+			);
+		}
+	}
+}
+
 /**
  * The second upgrade step. See the comment above.
  */
@@ -687,7 +919,7 @@ function krm_upgrade_to_sitemap() {
 				$update['post_title'] = $m['title'];
 			}
 			if ( ! isset( $old[ $key ] ) || in_array( (int) $post->menu_order, array( $old[ $key ][1], $old[ $key ][3] ), true ) ) {
-				$update['menu_order'] = $m['menu_order'];
+				$update['menu_order'] = $m['order'];
 			}
 			if ( count( $update ) > 1 ) {
 				wp_update_post( $update );

@@ -9,11 +9,17 @@
  * published), group, tag (label on the card photo), excerpt (short description), summary (card text; empty = the
  * excerpt), focus, points ("How this ministry serves"), sections (extra panels: heading, text, points), photos
  * ([ URL, alt text ]), explorer_image, raised / goal (whole dollars, '' = not set), stats ([ value, label ]),
- * was (the slugs this ministry had before theme 1.10.0, redirected here), menu_order, home_order; optional: camps
+ * was (the slugs this ministry had before theme 1.10.0, redirected here), order (position on the site — menus, group
+ * pages, cards, Donate — in the client's sitemap order; seeds the post's menu_order), home_order; optional: camps
  * ([ date, location, people served ] rows for the camps / projects timeline, hidden when empty), churches ([ name,
  * place, planted ] rows, hidden when empty), gifts ([ amount, title, text ] "How your gift helps" cards), layout
  * ('freedom': the home page's freedom steps and before/after slider) and drafts (fields holding
  * proposed wording marked "DRAFT — CLIENT TO APPROVE", shown as a notice in the ministry editor).
+ *
+ * Groups (Phase 21): name, short (tab label), order, path (the group page's address, /what-we-do/{path}/; the
+ * group's ministries live under it, /what-we-do/{path}/{ministry}/), image (group card and page hero) and intro
+ * (the group's short introduction; a [bracketed] value is shown to administrators only, visitors see nothing).
+ * Both are edited in Kingdom Revival → Site text → What We Do groups.
  *
  * Text in [square brackets] is a placeholder waiting for the client's wording.
  *
@@ -28,11 +34,17 @@ return array(
 			'name' => 'Gospel & Spiritual Ministries',
 			'short' => 'Gospel & Spiritual',
 			'order' => 1,
+			'path'  => 'gospel-spiritual-ministries',
+			'image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-10-scaled.jpg',
+			'intro' => '[Short introduction to the Gospel & Spiritual Ministries — to be supplied by the client]',
 		),
 		'compassion-humanitarian' => array(
 			'name' => 'Compassion & Humanitarian Ministries',
 			'short' => 'Compassion & Humanitarian',
 			'order' => 2,
+			'path'  => 'compassion-humanitarian-ministries',
+			'image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg',
+			'intro' => '[Short introduction to the Compassion & Humanitarian Ministries — to be supplied by the client]',
 		),
 	),
 	'items' => array(
@@ -115,7 +127,7 @@ return array(
 			'was' => array(
 				'outreach-ministry',
 			),
-			'menu_order' => 1,
+			'order' => 1,
 			'home_order' => 1,
 		),
 		'church-planting' => array(
@@ -191,7 +203,7 @@ return array(
 			'was' => array(
 				'church-planting',
 			),
-			'menu_order' => 2,
+			'order' => 2,
 			'home_order' => 2,
 		),
 		'bible-distribution' => array(
@@ -273,7 +285,7 @@ return array(
 			'was' => array(
 				'urdu-bibles',
 			),
-			'menu_order' => 3,
+			'order' => 3,
 			'home_order' => 3,
 		),
 		'leadership-training' => array(
@@ -339,7 +351,7 @@ return array(
 			'was' => array(
 				'leadership-and-discipleship',
 			),
-			'menu_order' => 4,
+			'order' => 4,
 			'home_order' => 4,
 		),
 		'baptisms-discipleship' => array(
@@ -421,7 +433,7 @@ return array(
 			'was' => array(
 				'baptisms',
 			),
-			'menu_order' => 5,
+			'order' => 5,
 			'home_order' => 5,
 		),
 		'prayer-deliverance' => array(
@@ -495,7 +507,7 @@ return array(
 			'was' => array(
 				'deliverance-and-healing',
 			),
-			'menu_order' => 6,
+			'order' => 6,
 			'home_order' => 6,
 		),
 		'youth-or-women' => array(
@@ -526,7 +538,7 @@ return array(
 				array( '8', 'Youth camps held' ),
 			),
 			'was' => array(),
-			'menu_order' => 7,
+			'order' => 7,
 			'home_order' => 7,
 		),
 		'slavery-freedom' => array(
@@ -610,7 +622,7 @@ return array(
 			'was' => array(
 				'freedom-from-slavery',
 			),
-			'menu_order' => 8,
+			'order' => 8,
 			'home_order' => 8,
 		),
 		'brick-kiln-family-care' => array(
@@ -697,7 +709,7 @@ return array(
 			'was' => array(
 				'brick-kiln-children',
 			),
-			'menu_order' => 9,
+			'order' => 9,
 			'home_order' => 9,
 		),
 		'children-orphan-care' => array(
@@ -843,7 +855,7 @@ return array(
 				'orphan-and-children-care',
 				'children-ministry',
 			),
-			'menu_order' => 10,
+			'order' => 10,
 			'home_order' => 10,
 		),
 		'clean-water' => array(
@@ -881,7 +893,7 @@ return array(
 			'was' => array(
 				'clean-water-project',
 			),
-			'menu_order' => 11,
+			'order' => 11,
 			'home_order' => 11,
 		),
 		'persecuted-christians' => array(
@@ -912,7 +924,7 @@ return array(
 				array( '10', 'Emergency relocations' ),
 			),
 			'was' => array(),
-			'menu_order' => 12,
+			'order' => 12,
 			'home_order' => 12,
 		),
 		'widows-support' => array(
@@ -974,7 +986,7 @@ return array(
 			'was' => array(
 				'widows-ministry',
 			),
-			'menu_order' => 13,
+			'order' => 13,
 			'home_order' => 13,
 		),
 		'medical-health' => array(
@@ -1013,7 +1025,7 @@ return array(
 			'was' => array(
 				'free-medical-camps',
 			),
-			'menu_order' => 14,
+			'order' => 14,
 			'home_order' => 14,
 		),
 		'food-relief' => array(
@@ -1044,7 +1056,7 @@ return array(
 				array( '25', 'Villages reached' ),
 			),
 			'was' => array(),
-			'menu_order' => 15,
+			'order' => 15,
 			'home_order' => 15,
 		),
 		'disaster-relief' => array(
@@ -1075,7 +1087,7 @@ return array(
 				array( '15', 'Villages reached' ),
 			),
 			'was' => array(),
-			'menu_order' => 16,
+			'order' => 16,
 			'home_order' => 16,
 		),
 	),

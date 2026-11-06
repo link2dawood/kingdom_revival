@@ -37,3 +37,23 @@
 .impact-explorer__tabs button[aria-selected=true] span{color:var(--color-accent)}
 .impact-map-grid>*{min-width:0}
 @media(max-width:600px){.impact-table-wrap th,.impact-table-wrap td,.impact-chart th,.impact-chart td{padding:10px 6px;font-size:13px}}
+
+/* Our Impact → its two subpages (Phase 21): Testimonies and Photo & Video Gallery link cards */
+.impact-links__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(18px, 2.5vw, 28px); margin: 0; padding: 0; list-style: none; }
+.impact-links__grid > li { display: flex; min-width: 0; }
+.impact-link-card { position: relative; display: flex; flex: 1; flex-direction: column; overflow: hidden; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-surface); transition: box-shadow .2s ease, transform .2s ease; }
+.impact-link-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.impact-link-card:focus-within { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+.impact-link-card__media { position: relative; aspect-ratio: 16 / 7; overflow: hidden; background: var(--color-band-3); }
+.impact-link-card__media img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.impact-link-card__body { display: flex; flex: 1; flex-direction: column; padding: clamp(20px, 2.6vw, 30px); }
+.impact-link-card h3 { margin: 0; color: var(--color-heading); font-size: clamp(22px, 2.2vw, 26px); font-weight: 800; }
+.impact-link-card h3 a { color: inherit; text-decoration: none; }
+.impact-link-card h3 a::after { position: absolute; inset: 0; z-index: 1; content: ""; }
+.impact-link-card h3 a:focus-visible { outline: none; }
+.impact-link-card__body > p { margin: 10px 0 0; color: var(--color-text-muted); line-height: 1.65; }
+.impact-link-card__quote { margin: 12px 0 0; padding-left: 14px; border-left: 3px solid var(--color-secondary); color: var(--color-text); font-style: italic; line-height: 1.6; }
+.impact-link-card__quote p { margin: 0; }
+.impact-link-card__quote cite { display: block; margin-top: 8px; color: var(--color-text-muted); font-size: 14px; font-style: normal; font-weight: 700; }
+.impact-link-card__more { margin-top: auto; padding-top: 16px; color: var(--color-secondary-text); font-weight: 700; }
+@media (max-width: 760px) { .impact-links__grid { grid-template-columns: minmax(0, 1fr); } }

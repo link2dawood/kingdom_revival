@@ -406,6 +406,11 @@ function krm_resolve_url( $url ) {
 			$base = krm_blog_url();
 			break;
 		case 'ministries':
+			// "{ministries}church-planting/#churches": a ministry's own address (/what-we-do/{group}/{slug}/), so links
+			// written for the earlier one-level addresses keep going straight there.
+			if ( preg_match( '#^([a-z0-9-]+)/?(.*)$#', $m[2], $mm ) && krm_get_by_path( $mm[1], 'ministry' ) ) {
+				return krm_ministry_url( $mm[1] ) . ltrim( $mm[2], '/' );
+			}
 			$base = krm_ministries_url();
 			break;
 		case 'email':

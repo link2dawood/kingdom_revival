@@ -1055,3 +1055,29 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
 .krm-team p{margin:6px 0 0;color:var(--color-secondary-text);font-size:14px;font-style:italic;font-synthesis:style;font-weight:500;line-height:1.4}
 @media(max-width:560px){.krm-team{gap:12px}.krm-team li{flex-basis:calc((100% - 12px) / 2);padding:18px 10px 16px}.krm-team h3{font-size:16px}}
 
+
+/* Mega menu, Phase 21: two group columns, each heading the link to its group page (/what-we-do/{group}/), and
+   "View all →" (class menu-all) under them. Replaces the navy "All ministries" feature card. A group row is a link
+   plus a chevron button (li.has-link): on desktop the button is hidden and the list always shows; in the mobile menu
+   the button opens the group's list as a nested accordion. */
+.submenu li.has-link { display: flex; flex-wrap: wrap; align-items: center; }
+.submenu li.has-link > .sub-head { flex: 1 1 0; width: auto; min-width: 0; font-weight: var(--font-weight-bold); }
+.submenu li.has-link > .sub-toggle { flex: none; width: 44px; min-height: 44px; justify-content: center; padding: 0; }
+.submenu li.has-link > .submenu { flex: 1 1 100%; }
+.submenu .menu-all:last-child { margin: 4px 0 0; padding: 4px 0 0; border-bottom: 0; border-top: 1px solid var(--color-bg-tint); }
+@media (min-width: 901px) {
+  .menu > li.is-mega > .submenu { grid-template-columns: auto auto; }
+  .is-mega > .submenu > li.has-link { display: block; }
+  .is-mega > .submenu > li.has-link > .sub-toggle { display: none; }
+  .is-mega > .submenu > li.has-link > .sub-head { display: flex; align-items: center; justify-content: flex-start; gap: 10px; width: auto; min-height: 32px; margin: 0 6px 10px; padding: 0; border-radius: 0; background: none; color: var(--color-secondary-text); font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .is-mega > .submenu > li.has-link > .sub-head::before { flex: none; width: 18px; height: 3px; border-radius: 2px; background: var(--color-secondary); content: ""; }
+  .is-mega > .submenu > li.has-link > .sub-head:hover, .is-mega > .submenu > li.has-link > .sub-head[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; }
+  .is-mega > .submenu > .menu-all, .is-mega > .submenu > .menu-all:last-child { order: 1; grid-column: 1 / -1; display: flex; justify-content: flex-end; margin: 0; padding: 0; border: 0; }
+  .is-mega > .submenu > .menu-all a { position: static; display: inline-flex; flex: none; flex-direction: row; align-items: center; width: auto; min-height: 44px; padding: 0 14px; overflow: visible; border-radius: 9px; background: none; color: var(--color-heading); font-size: 15px; font-weight: 700; }
+  .is-mega > .submenu > .menu-all a::before, .is-mega > .submenu > .menu-all a::after { display: none; }
+  .is-mega > .submenu > .menu-all a:hover, .is-mega > .submenu > .menu-all a:focus-visible, .is-mega > .submenu > .menu-all a[aria-current="page"] { background: var(--color-menu-hover); color: var(--color-secondary-text); }
+}
+@media (max-width: 900px) {
+  .is-mega > .submenu > li.has-link > .sub-head { color: var(--color-heading); }
+  .submenu li.has-link > .sub-toggle[aria-expanded="true"] { background: var(--color-bg-soft); }
+}

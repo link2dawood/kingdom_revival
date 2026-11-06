@@ -150,6 +150,15 @@ function krm_redirect_target( $target ) {
 	if ( '/' === substr( $target, 0, 1 ) && isset( $renames[ $path ] ) && 0 === strpos( $path, '/ministries' ) ) {
 		$target = $renames[ $path ];
 	}
+	// A ministry address of an earlier layout (/what-we-do/{slug}/, theme 1.10–1.15) goes straight to the ministry's
+	// current address (/what-we-do/{group}/{slug}/, Phase 21), so each old link takes one hop.
+	$path = krm_redirect_path( $target );
+	if ( '/' === substr( $target, 0, 1 ) && preg_match( '#^/' . preg_quote( krm_wwd_base(), '#' ) . '/([a-z0-9-]+)$#', $path, $m ) ) {
+		$ministry = krm_get_by_path( $m[1], 'ministry' );
+		if ( $ministry && 'publish' === $ministry->post_status ) {
+			return get_permalink( $ministry ) . (string) strstr( $target, '#' );
+		}
+	}
 	if ( '/' === substr( $target, 0, 1 ) ) {
 		return home_url( $target );
 	}
@@ -210,37 +219,6 @@ add_action(
 );
 
 /*
- * A ministry that is not published (a draft, e.g. one waiting for its description, or a data-file ministry marked
- * "hidden") sends its address /what-we-do/{slug}/ to What We Do with a temporary (302) redirect, so the address works
- * again by itself once the ministry is published.
+ * Unpublished ministries and the old one-level /what-we-do/{ministry}/ addresses are routed in inc/ministry.php
+ * (301 to the ministry under its group, 302 to the group page while a ministry is not published).
  */
-add_action(
-	'template_redirect',
-	function () {
-		if ( ! is_404() || ! isset( $_SERVER['REQUEST_URI'] ) ) {
-			return;
-		}
-		$path = trim( (string) wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH ), '/' );
-		$base = trim( (string) wp_parse_url( krm_ministries_url(), PHP_URL_PATH ), '/' );
-		if ( '' === $base || ! preg_match( '#^' . preg_quote( $base, '#' ) . '/([a-z0-9-]+)$#', $path, $m ) ) {
-			return;
-		}
-		$data   = krm_ministry_data();
-		$hidden = isset( $data['items'][ $m[1] ] ) && 'live' !== $data['items'][ $m[1] ]['status'];
-		$posts  = get_posts(
-			array(
-				'post_type'      => 'ministry',
-				'name'           => $m[1],
-				'post_status'    => array( 'draft', 'pending', 'private', 'future' ),
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-			)
-		);
-		if ( $posts || $hidden ) {
-			wp_safe_redirect( krm_ministries_url(), 302, 'Kingdom Revival theme' );
-			exit;
-		}
-	},
-	1
-);

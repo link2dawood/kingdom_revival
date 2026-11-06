@@ -388,8 +388,11 @@ function krm_blog_url() {
 function krm_ministry_url( $slug ) {
 	static $cache = array();
 	if ( ! isset( $cache[ $slug ] ) ) {
-		$post           = krm_get_by_path( $slug, 'ministry' );
-		$cache[ $slug ] = $post ? get_permalink( $post ) : home_url( user_trailingslashit( 'what-we-do/' . $slug ) );
+		$post = krm_get_by_path( $slug, 'ministry' );
+		$data = krm_ministry_data();
+		$grp  = isset( $data['items'][ $slug ]['group'] ) ? krm_group_path( $data['items'][ $slug ]['group'] ) . '/' : '';
+		// Before Setup has created the posts: the address the ministry will have (/what-we-do/{group}/{slug}/).
+		$cache[ $slug ] = $post ? get_permalink( $post ) : home_url( user_trailingslashit( krm_wwd_base() . '/' . $grp . $slug ) );
 	}
 	return $cache[ $slug ];
 }
@@ -399,7 +402,156 @@ function krm_ministry_url( $slug ) {
  */
 function krm_ministries_url() {
 	$url = get_post_type_archive_link( 'ministry' );
-	return $url ? $url : home_url( user_trailingslashit( 'what-we-do' ) );
+	return $url ? $url : home_url( user_trailingslashit( krm_wwd_base() ) );
+}
+
+/**
+ * The What We Do address base ("what-we-do"): the ministry archive and the start of every group and ministry address.
+ */
+function krm_wwd_base() {
+	return 'what-we-do';
+}
+
+/**
+ * The address segment of a ministry group's page (/what-we-do/{path}/): the data file's "path", else the group slug.
+ *
+ * @param string $group Group slug (ministry_group term slug).
+ */
+function krm_group_path( $group ) {
+	$data = krm_ministry_data();
+	return isset( $data['groups'][ $group ]['path'] ) ? $data['groups'][ $group ]['path'] : sanitize_title( $group );
+}
+
+/**
+ * URL of a ministry group's page.
+ *
+ * @param string $group Group slug.
+ */
+function krm_group_url( $group ) {
+	return home_url( user_trailingslashit( krm_wwd_base() . '/' . krm_group_path( $group ) ) );
+}
+
+/**
+ * The group slug whose page is at /what-we-do/{path}/, or '' when no group has that path.
+ *
+ * @param string $path Address segment.
+ */
+function krm_group_by_path( $path ) {
+	foreach ( krm_groups( true ) as $slug => $group ) {
+		if ( $group['path'] === $path ) {
+			return $slug;
+		}
+	}
+	return '';
+}
+
+/**
+ * The ministry groups, in order: slug => { slug, name, short, path, url, image, intro (raw; may be a [placeholder],
+ * see krm_public()), ministries (published, in the client's order) }. Name: the Ministry Group term (Ministries →
+ * Ministry Groups), else the data file. Image and intro: Site text → What We Do groups, else the data file; a group
+ * added in the admin uses its term description as the intro.
+ *
+ * @param bool $all Also groups with no published ministry (address lookups); false = only groups with live ministries.
+ * @return array[]
+ */
+function krm_groups( $all = false ) {
+	static $cache = null;
+	if ( null === $cache ) {
+		$data  = krm_ministry_data();
+		$cache = array();
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'ministry_group',
+				'hide_empty' => false,
+			)
+		);
+		$terms = is_wp_error( $terms ) ? array() : $terms;
+		$order = array();
+		foreach ( $data['groups'] as $slug => $g ) {
+			$cache[ $slug ] = array(
+				'slug'  => $slug,
+				'name'  => $g['name'],
+				'short' => $g['short'],
+				'path'  => krm_group_path( $slug ),
+				'image' => krm_c( 'groups.' . $slug . '_image', 'site' ),
+				'intro' => (string) krm_c( 'groups.' . $slug . '_intro', 'site' ),
+			);
+			$order[ $slug ] = (int) $g['order'];
+		}
+		foreach ( $terms as $term ) {
+			$name = wp_specialchars_decode( $term->name, ENT_QUOTES );
+			if ( ! isset( $cache[ $term->slug ] ) ) {
+				$cache[ $term->slug ] = array(
+					'slug'  => $term->slug,
+					'name'  => $name,
+					'short' => $name,
+					'path'  => krm_group_path( $term->slug ),
+					'image' => '',
+					'intro' => wp_strip_all_tags( (string) $term->description ),
+				);
+				$order[ $term->slug ] = 99;
+			} else {
+				$cache[ $term->slug ]['name'] = $name;
+			}
+			$saved = get_term_meta( $term->term_id, 'krm_order', true );
+			if ( '' !== $saved ) {
+				$order[ $term->slug ] = (int) $saved;
+			}
+		}
+		foreach ( $cache as $slug => $group ) {
+			$cache[ $slug ]['url']        = krm_group_url( $slug );
+			$cache[ $slug ]['ministries'] = array();
+		}
+		foreach ( krm_ministries() as $m ) {
+			if ( isset( $cache[ $m['group_slug'] ] ) ) {
+				$cache[ $m['group_slug'] ]['ministries'][] = $m;
+			}
+		}
+		foreach ( $cache as $slug => $group ) {
+			if ( '' === (string) $group['image'] && $group['ministries'] ) {
+				$cache[ $slug ]['image'] = $group['ministries'][0]['image'];
+			}
+		}
+		uksort(
+			$cache,
+			function ( $a, $b ) use ( $order ) {
+				return $order[ $a ] - $order[ $b ];
+			}
+		);
+	}
+	if ( $all ) {
+		return $cache;
+	}
+	return array_filter(
+		$cache,
+		function ( $g ) {
+			return (bool) $g['ministries'];
+		}
+	);
+}
+
+/**
+ * The group whose page is being viewed (/what-we-do/{group}/), as an item of krm_groups(), or null.
+ */
+function krm_current_group() {
+	if ( ! is_post_type_archive( 'ministry' ) ) {
+		return null;
+	}
+	$slug = krm_group_by_path( (string) get_query_var( 'krm_group' ) );
+	$all  = krm_groups( true );
+	return '' !== $slug && isset( $all[ $slug ] ) ? $all[ $slug ] : null;
+}
+
+/**
+ * The group of the ministry being viewed, as an item of krm_groups(), or null.
+ */
+function krm_current_ministry_group() {
+	if ( ! is_singular( 'ministry' ) ) {
+		return null;
+	}
+	$all  = krm_groups( true );
+	$slug = krm_ministry_group_slug( get_queried_object() );
+	return isset( $all[ $slug ] ) ? $all[ $slug ] : null;
 }
 
 /**
@@ -509,7 +661,7 @@ function krm_ministries( $order = 'menu' ) {
 				'layout'     => isset( $m['layout'] ) ? $m['layout'] : '',
 				'url'        => krm_ministry_url( $slug ),
 				'image'      => $m['explorer_image'],
-				'menu_order' => $m['menu_order'],
+				'menu_order' => $m['order'],
 				'home_order' => $m['home_order'],
 			);
 		}
@@ -1044,29 +1196,13 @@ function krm_admin_only_note( $hidden = true ) {
 }
 
 /**
- * Whether the Testimonies page is hidden: for visitors, while no Testimonial is published. It is then left out of
- * menus, links and sitemaps, and its address redirects (302) to Our Impact; the first published testimonial brings it
- * back by itself.
+ * Whether the Testimonies page is hidden. Never since Phase 21 (the client wants it visible): while no Testimonial is
+ * published it shows a short line and the "Share your testimony" form, and the list appears above the form once one
+ * is published. Kept so code written against earlier versions still works.
  */
 function krm_testimonies_hidden() {
-	static $hidden = null;
-	if ( null === $hidden ) {
-		$count  = wp_count_posts( 'testimonial' );
-		$hidden = ! krm_show_placeholders() && ( ! $count || empty( $count->publish ) );
-	}
-	return $hidden;
+	return false;
 }
-
-add_action(
-	'template_redirect',
-	function () {
-		if ( 'testimonies' === krm_design_template() && krm_testimonies_hidden() ) {
-			wp_safe_redirect( krm_page_url( 'impact' ), 302, 'Kingdom Revival theme' );
-			exit;
-		}
-	},
-	2
-);
 
 /**
  * The ID of the published Testimonies page, or 0.
@@ -1075,35 +1211,6 @@ function krm_testimonies_page_id() {
 	$pages = krm_design_template_pages();
 	return isset( $pages['testimonies'] ) ? (int) $pages['testimonies']->ID : 0;
 }
-
-/* Sitemaps leave the Testimonies page out while it is hidden: WordPress, Yoast SEO and Rank Math. */
-add_filter(
-	'wp_sitemaps_posts_query_args',
-	function ( $args, $post_type ) {
-		if ( 'page' === $post_type && krm_testimonies_hidden() && krm_testimonies_page_id() ) {
-			$args['post__not_in'] = array_merge( isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array(), array( krm_testimonies_page_id() ) );
-		}
-		return $args;
-	},
-	10,
-	2
-);
-add_filter(
-	'wpseo_exclude_from_sitemap_by_post_ids',
-	function ( $ids ) {
-		return krm_testimonies_hidden() && krm_testimonies_page_id() ? array_merge( (array) $ids, array( krm_testimonies_page_id() ) ) : $ids;
-	}
-);
-add_filter(
-	'rank_math/sitemap/entry',
-	function ( $url, $type, $post ) {
-		return ( 'post' === $type && is_object( $post ) && isset( $post->ID ) && (int) $post->ID === krm_testimonies_page_id() && krm_testimonies_hidden() ) ? false : $url;
-	},
-	10,
-	3
-);
-
-
 
 /**
  * Browser UI colours (meta theme-color) for the light and dark themes (Phase 20). The same values as the

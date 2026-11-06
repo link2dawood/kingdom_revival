@@ -25,7 +25,7 @@ return array(
 			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Bringing Hope to the Forgotten' ),
 			'title'          => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Sharing the Hope of <span style="color: var(--color-accent)">Jesus Christ</span> with the Unreached & <span style="color: var(--color-accent)">Vulnerable</span>', $krm_hl ),
 			'lead'           => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'We preach the Gospel, plant churches and care for brick kiln families, orphans and widows across Pakistan and beyond.' ),
-			'button1_label'  => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Explore Ministries' ),
+			'button1_label'  => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Explore What We Do' ),
 			'button1_url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '#ministries' ),
 			'button2_label'  => krm_f( 'text', __( 'Video link text', 'kingdom-revival' ), 'Watch Our Story' ),
 			'button2_url'    => krm_f( 'url', __( 'Video link', 'kingdom-revival' ), '#field-stories' ),
@@ -106,8 +106,8 @@ return array(
 			'support_label' => krm_f( 'text', __( 'Support button text', 'kingdom-revival' ), 'Support this ministry' ),
 			'support_url'   => krm_f( 'url', __( 'Support button link', 'kingdom-revival' ), '{donate}' ),
 			'more_label'    => krm_f( 'text', __( 'Ministry page button text', 'kingdom-revival' ), 'Learn more' ),
-			'all_label'     => krm_f( 'text', __( 'All Ministries button text', 'kingdom-revival' ), 'View All Ministries' ),
-			'all_url'       => krm_f( 'url', __( 'All Ministries button link', 'kingdom-revival' ), '{ministries}' ),
+			'all_label'     => krm_f( 'text', __( 'What We Do button text', 'kingdom-revival' ), 'Explore What We Do' ),
+			'all_url'       => krm_f( 'url', __( 'What We Do button link', 'kingdom-revival' ), '{ministries}' ),
 		),
 	),
 	'projects' => array(
@@ -122,7 +122,7 @@ return array(
 	'causes'   => array(
 		'label'  => __( 'Giving cards', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our Ministries' ),
+			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'What We Do' ),
 			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'You Can Bring Hope to Many by Giving a Little' ),
 			'note'         => krm_f( 'textarea', __( 'Small print on every card', 'kingdom-revival' ), 'Your gift brings practical care and lasting hope through this ministry.' ),
 			'button_label' => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Donate Now' ),
@@ -287,7 +287,7 @@ return array(
 					),
 				)
 			),
-			'map'       => krm_f( 'image', __( 'Map image', 'kingdom-revival' ), '', __( 'Optional. Leave empty to use the built-in map of central Punjab (district boundaries, Faisalabad and Jhang highlighted in red). An uploaded map replaces it; the pins are then placed on top of the image.', 'kingdom-revival' ) ),
+			'map'       => krm_f( 'image', __( 'Map image', 'kingdom-revival' ), '', __( 'Optional. Leave empty to use the built-in map of central Punjab (district boundaries; Faisalabad, Jhang, Chiniot and Toba Tek Singh highlighted in red). An uploaded map replaces it; the pins are then placed on top of the image.', 'kingdom-revival' ) ),
 			'map_alt'   => krm_f( 'text', __( 'Map description (alt text)', 'kingdom-revival' ), 'Map of Punjab showing where Kingdom Revival Ministries works' ),
 			'pins'      => krm_list_f(
 				__( 'Map pins', 'kingdom-revival' ),
