@@ -1,9 +1,13 @@
 <?php
 /**
  * Template Name: Photo & Video Gallery
- * Photo & Video Gallery (/our-impact/gallery/): tabs Photos / Videos and a ministry filter (assets/js/components.js).
- * Photos: every published ministry's gallery plus the page's "General photos", opened full screen by the photo
- * viewer (assets/js/viewer.js). Videos: the page's YouTube links, loaded only when played; the Videos tab is shown
+ * Photo & Video Gallery (/our-impact/gallery/): hero (breadcrumb, "Our Gallery", line, Give Now and Contact), tabs
+ * Photos / Videos and filter chips — "Everything" plus one per ministry that has photos (assets/js/components.js).
+ * Photos: every published ministry's gallery plus the page's "General photos", in a 2/3/4-column grid where every
+ * sixth photo is a large tile, with a scripture card after about every 10 photos (Everything only), opened full
+ * screen by the photo viewer (assets/js/viewer.js; it follows the active filter and skips the scripture cards).
+ * Loading: skeleton tiles, lazy images below the fold, a fade-in once loaded (assets/js/gallery.js,
+ * assets/css/pages/gallery.css). Videos: the page's YouTube links, loaded only when played; the Videos tab is shown
  * only once at least one YouTube link has been added (Phase 21).
  *
  * Without JavaScript both lists show, one after the other, unfiltered.
@@ -18,10 +22,18 @@ get_header();
 $krm_list   = krm_ministries();
 $krm_by_t   = array();
 $krm_photos = array();
+$krm_seen   = array();
 foreach ( $krm_list as $krm_m ) {
 	$krm_by_t[ strtolower( $krm_m['title'] ) ] = $krm_m['slug'];
 	foreach ( krm_ministry_photos( $krm_m ) as $krm_p ) {
-		$krm_photos[] = array( $krm_p[0], $krm_p[1], $krm_m['slug'], $krm_m['title'] );
+		// A photo in two ministries' galleries is one tile in both filters (data-group "a b"), not two tiles.
+		$krm_k = krm_project_ref_key( $krm_p[0] );
+		if ( isset( $krm_seen[ $krm_k ] ) ) {
+			$krm_photos[ $krm_seen[ $krm_k ] ][2] .= ' ' . $krm_m['slug'];
+			continue;
+		}
+		$krm_seen[ $krm_k ] = count( $krm_photos );
+		$krm_photos[]       = array( $krm_p[0], $krm_p[1], $krm_m['slug'], $krm_m['title'] );
 	}
 }
 foreach ( (array) krm_c( 'photos.items' ) as $krm_p ) {
@@ -62,16 +74,29 @@ $krm_has_videos = (bool) array_filter( array_column( $krm_videos, 'id' ) );
 if ( ! $krm_has_videos ) {
 	$krm_videos = array();
 }
-$krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_column( $krm_videos, 'ministry' ) ) );
+$krm_used = array_unique( array_merge( explode( ' ', implode( ' ', array_column( $krm_photos, 2 ) ) ), array_column( $krm_videos, 'ministry' ) ) );
 ?>
 	<main id="main">
 	<?php krm_hero_preload( krm_c( 'hero.image' ) ); ?>
 	<section class="page-hero" style="background-image: url('<?php echo esc_url( krm_ref_url( krm_c( 'hero.image' ) ) ); ?>')<?php krm_bg_small( krm_c( 'hero.image' ) ); ?>">
 		<div class="wrap">
 		<?php krm_breadcrumb_html(); ?>
-		<p class="eyebrow"><?php krm_t( 'hero.eyebrow' ); ?></p>
 		<h1><?php krm_h( 'hero.title' ); ?></h1>
 		<p class="lead"><?php krm_t( 'hero.lead' ); ?></p>
+		<?php
+		$krm_b1 = trim( (string) krm_c( 'hero.button1_label' ) );
+		$krm_b2 = trim( (string) krm_c( 'hero.button2_label' ) );
+		?>
+		<?php if ( '' !== $krm_b1 || '' !== $krm_b2 ) : ?>
+		<div class="hero-actions">
+			<?php if ( '' !== $krm_b1 ) : ?>
+			<a class="button button-primary" href="<?php krm_u( 'hero.button1_url' ); ?>"><?php echo krm_icon( 'heart18' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php krm_t( 'hero.button1_label' ); ?></a>
+			<?php endif; ?>
+			<?php if ( '' !== $krm_b2 ) : ?>
+			<a class="button button-light" href="<?php krm_u( 'hero.button2_url' ); ?>"><?php krm_t( 'hero.button2_label' ); ?></a>
+			<?php endif; ?>
+		</div>
+		<?php endif; ?>
 		</div>
 	</section>
 
@@ -84,29 +109,48 @@ $krm_used = array_unique( array_merge( array_column( $krm_photos, 2 ), array_col
 			<button type="button" role="tab" id="tab-videos" aria-controls="panel-videos" aria-selected="false" data-tab="videos" tabindex="-1"><?php krm_t( 'labels.videos' ); ?></button>
 			</div>
 			<?php endif; ?>
-			<label class="krm-select krm-needs-js" data-krm-filter="gallery" data-param="ministry"><?php krm_t( 'labels.filter_label' ); ?>
-			<select>
-				<option value=""><?php krm_t( 'labels.all_label' ); ?></option>
+			<?php // Chips: "Everything", then each ministry that has photos (or videos) — never an empty chip. Shown by components.js. ?>
+			<div class="krm-chips" role="group" aria-label="<?php echo esc_attr( krm_fill( krm_c( 'labels.filter_label' ) ) ); ?>" data-krm-filter="gallery" data-param="ministry" hidden>
+				<button type="button" data-group="" aria-pressed="true"><?php krm_t( 'labels.all_label' ); ?></button>
 				<?php foreach ( $krm_list as $krm_m ) : ?>
 					<?php if ( in_array( $krm_m['slug'], $krm_used, true ) ) : ?>
-				<option value="<?php echo esc_attr( $krm_m['slug'] ); ?>"><?php echo esc_html( $krm_m['title'] ); ?></option>
+				<button type="button" data-group="<?php echo esc_attr( $krm_m['slug'] ); ?>" aria-pressed="false"><?php echo esc_html( $krm_m['title'] ); ?></button>
 					<?php endif; ?>
 				<?php endforeach; ?>
 				<?php if ( in_array( 'general', $krm_used, true ) ) : ?>
-				<option value="general"><?php krm_t( 'labels.general' ); ?></option>
+				<button type="button" data-group="general" aria-pressed="false"><?php krm_t( 'labels.general' ); ?></button>
 				<?php endif; ?>
-			</select>
-			</label>
+			</div>
 		</div>
 		<p class="visually-hidden" aria-live="polite" data-krm-filter-status="gallery" data-text="<?php echo esc_attr( krm_fill( krm_c( 'labels.count_text' ) ) ); ?>"></p>
 
 		<div<?php echo $krm_has_videos ? ' role="tabpanel" aria-labelledby="tab-photos"' : ''; ?> id="panel-photos">
 			<?php if ( $krm_photos ) : ?>
 			<p class="gallery-tip" style="display: flex; align-items: center; gap: 8px; margin: 0 0 18px; color: var(--color-text-muted); font-size: 14px"><?php echo krm_icon( 'zoom' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php krm_t( 'labels.tip' ); ?></p>
-			<div class="gallery" data-gallery data-krm-filter-list="gallery" data-krm-more="18" data-more-text="<?php echo esc_attr( krm_fill( krm_c( 'labels.more' ) ) ); ?>">
-				<?php foreach ( $krm_photos as $krm_p ) : ?>
-				<figure class="photo" data-group="<?php echo esc_attr( $krm_p[2] ); ?>"><img <?php krm_img_src( $krm_p[0], '(max-width: 520px) calc(100vw - 32px), (max-width: 760px) calc(50vw - 25px), (max-width: 1240px) calc(33vw - 24px), 400px', true ); ?> alt="<?php echo esc_attr( $krm_p[1] ); ?>" loading="lazy" decoding="async"><figcaption><?php echo esc_html( $krm_p[3] ); ?></figcaption></figure>
-				<?php endforeach; ?>
+			<div class="krm-gal" data-gallery data-krm-filter-list="gallery">
+				<?php
+				$krm_verses = array();
+				foreach ( array( 1, 2 ) as $krm_vn ) {
+					if ( '' !== trim( (string) krm_c( 'labels.verse' . $krm_vn ) ) ) {
+						$krm_verses[] = array( krm_c( 'labels.verse' . $krm_vn ), krm_c( 'labels.cite' . $krm_vn ) );
+					}
+				}
+				$krm_total = count( $krm_photos );
+				foreach ( $krm_photos as $krm_i => $krm_p ) :
+					// Every sixth photo is a large tile (2 × 2 from tablet up); the first eight load at once.
+					$krm_big = 0 === $krm_i % 6;
+					?>
+				<figure class="krm-gal__tile<?php echo $krm_big ? ' is-big' : ''; ?>" data-group="<?php echo esc_attr( $krm_p[2] ); ?>"><img <?php krm_img_src( $krm_p[0], $krm_big ? '(max-width: 639px) calc(50vw - 22px), (max-width: 1023px) calc(66vw - 30px), 610px' : '(max-width: 639px) calc(50vw - 22px), (max-width: 1023px) calc(33vw - 24px), 300px', true ); ?> alt="<?php echo esc_attr( $krm_p[1] ); ?>"<?php echo $krm_i >= 8 ? ' loading="lazy"' : ''; ?> decoding="async"><figcaption><?php echo esc_html( $krm_p[3] ); ?></figcaption></figure>
+					<?php
+					// A scripture card after every 10 photos (not after the last), alternating; hidden by any filter.
+					if ( $krm_verses && 0 === ( $krm_i + 1 ) % 10 && $krm_i + 1 < $krm_total ) :
+						$krm_v = $krm_verses[ ( ( $krm_i + 1 ) / 10 - 1 ) % count( $krm_verses ) ];
+						?>
+				<blockquote class="krm-gal__verse" data-group=""><p><?php echo krm_text( $krm_v[0] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p><cite><?php echo krm_text( $krm_v[1] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></cite></blockquote>
+						<?php
+					endif;
+				endforeach;
+				?>
 			</div>
 			<p class="krm-note" data-krm-filter-empty hidden><?php krm_t( 'labels.empty' ); ?></p>
 			<?php else : ?>

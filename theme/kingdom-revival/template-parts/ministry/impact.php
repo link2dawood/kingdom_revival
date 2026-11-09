@@ -56,11 +56,11 @@ if ( ! $krm_story && ! $krm_essay ) {
 
 	<?php if ( $krm_essay ) : ?>
 	<h3 class="impact-essay__label"><?php krm_t( 'ministry.impact_photos', 'site' ); ?></h3>
-	<div class="impact-essay" data-gallery>
-		<?php foreach ( $krm_essay as $krm_photo ) : ?>
+	<div class="impact-essay krm-lead-grid" data-gallery>
+		<?php foreach ( $krm_essay as $krm_i => $krm_photo ) : // First photo: the lead (full width, 16:9); the others two per row, 4:3. ?>
 			<?php $krm_caption = krm_photo_caption( $krm_photo[0], $krm_photo[1] ); ?>
-		<figure>
-			<img <?php krm_img_src( $krm_photo[0], '(max-width: 560px) calc(100vw - 32px), (max-width: 1100px) 45vw, 260px', true ); ?> alt="<?php echo esc_attr( $krm_caption ); ?>" loading="lazy" decoding="async">
+		<figure<?php echo 0 === $krm_i ? ' class="is-lead"' : ''; ?>>
+			<img <?php krm_img_src( $krm_photo[0], 0 === $krm_i ? '(max-width: 1100px) calc(100vw - 32px), 820px' : '(max-width: 640px) calc(100vw - 32px), (max-width: 1100px) calc(50vw - 28px), 410px', 0 !== $krm_i ); ?> alt="<?php echo esc_attr( $krm_caption ); ?>" loading="lazy" decoding="async">
 			<figcaption><?php echo esc_html( $krm_caption ); ?></figcaption>
 		</figure>
 		<?php endforeach; ?>

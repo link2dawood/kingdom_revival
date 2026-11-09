@@ -133,7 +133,7 @@ add_action(
 			)
 		);
 
-		$scripts = array( 'front', 'blog', 'post', 'contact', 'donate', 'impact' );
+		$scripts = array( 'front', 'blog', 'post', 'contact', 'donate', 'impact', 'gallery' );
 		if ( in_array( $view, $scripts, true ) ) {
 			wp_enqueue_script( 'krm-' . $view, krm_asset( 'js/' . $view . '.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
 		}

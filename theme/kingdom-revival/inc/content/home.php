@@ -203,7 +203,7 @@ return array(
 	'causes'   => array(
 		'label'  => __( 'Giving cards', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'What We Do' ),
+			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our Ministries' ),
 			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'You Can Bring Hope to Many by Giving a Little' ),
 			'note'         => krm_f( 'textarea', __( 'Small print on every card', 'kingdom-revival' ), 'Your gift brings practical care and lasting hope through this ministry.' ),
 			'button_label' => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Donate Now' ),

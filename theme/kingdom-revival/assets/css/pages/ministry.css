@@ -175,3 +175,14 @@
 @media (max-width: 560px) { .wwd-preview-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
 .wwd-intro { max-width: 760px; margin: 0 0 30px; color: var(--color-text-muted); font-size: 18px; line-height: 1.65; }
 .wwd-intro.krm-admin-only { display: block; font-size: 15px; }
+
+/* Ministry photos and "The ministry in action" photos (template-parts/ministry/gallery.php, impact.php): a lead photo at
+   the full column width (16:9, at most 70vh), then the others two per row (4:3), one per row on phones. These rules
+   come after .gallery / .impact-essay above and replace their 3-column thumbnail grid. */
+.krm-lead-grid, .impact-essay.krm-lead-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.krm-lead-grid > .is-lead, .krm-lead-grid > :not(.is-lead):last-child:nth-child(even) { grid-column: 1 / -1; }
+.krm-lead-grid img, .impact-essay.krm-lead-grid img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.krm-lead-grid > .is-lead img, .krm-lead-grid > :not(.is-lead):last-child:nth-child(even) img { aspect-ratio: 16 / 9; max-height: 70vh; }
+@media (max-width: 640px) {
+  .krm-lead-grid, .impact-essay.krm-lead-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
