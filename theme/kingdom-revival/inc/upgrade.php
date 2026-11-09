@@ -1664,3 +1664,34 @@ add_action(
 		}
 	}
 );
+
+/*
+ * Theme 1.20.3: clean water wording. A saved home "Bringing Christ" text and a Clean Water Projects Excerpt still
+ * holding the earlier default get the new wording; text edited by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'krm_water_copy_version' ) >= 1 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_water_copy_version', 1 );
+		$front = (int) get_option( 'page_on_front' );
+		$saved = $front ? get_post_meta( $front, '_krm_content_home', true ) : null;
+		$old   = 'We preach the Gospel and plant churches among the unreached. We provide Sunday school and education for children growing up beside the kilns. We hold medical camps, place Urdu Bibles in the hands of new believers, and care for orphans and widows.';
+		if ( is_array( $saved ) && isset( $saved['mission']['text'] ) && $old === trim( (string) $saved['mission']['text'] ) ) {
+			$saved['mission']['text'] = str_replace( 'We hold medical camps, ', 'We hold medical camps, install clean water hand pumps at brick kilns, ', $old );
+			update_post_meta( $front, '_krm_content_home', $saved );
+		}
+		$post = krm_get_by_path( 'clean-water', 'ministry' );
+		if ( $post && 'We install hand pumps so families can reach safe, clean water close to home. Each pump serves daily needs and brings relief to the whole community.' === trim( (string) $post->post_excerpt ) ) {
+			wp_update_post(
+				array(
+					'ID'           => $post->ID,
+					'post_excerpt' => 'We install hand pumps at brick kilns and in communities in need, so families can reach clean water close to home. Each pump serves daily needs and brings relief to the whole community.',
+				)
+			);
+		}
+	},
+	30
+);

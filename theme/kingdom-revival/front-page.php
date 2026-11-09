@@ -25,6 +25,7 @@ get_template_part( 'template-parts/home/gift-calculator' );
 get_template_part( 'template-parts/home/about' );
 get_template_part( 'template-parts/home/explorer', null, array( 'ministries' => krm_ministries( 'home' ) ) );
 get_template_part( 'template-parts/home/mission' );
+get_template_part( 'template-parts/home/water' );
 get_template_part( 'template-parts/home/causes' );
 get_template_part( 'template-parts/home/projects' );
 get_template_part( 'template-parts/home/freedom' );

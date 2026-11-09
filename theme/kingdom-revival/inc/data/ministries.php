@@ -869,7 +869,7 @@ return array(
 			'status' => 'live',
 			'group' => 'compassion-humanitarian',
 			'tag' => 'WATER',
-			'excerpt' => 'We install hand pumps so families can reach safe, clean water close to home. Each pump serves daily needs and brings relief to the whole community.',
+			'excerpt' => 'We install hand pumps at brick kilns and in communities in need, so families can reach clean water close to home. Each pump serves daily needs and brings relief to the whole community.',
 			'summary' => '',
 			'focus' => 'Access to safe drinking water for village and brick kiln communities.',
 			'points' => array(
