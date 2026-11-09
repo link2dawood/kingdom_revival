@@ -56,6 +56,9 @@ return array(
 			'brand_sub'    => krm_f( 'text', __( 'Small line under the name', 'kingdom-revival' ), 'MINISTRIES' ),
 			'logo_alt'     => krm_f( 'text', __( 'Logo description (alt text)', 'kingdom-revival' ), 'Kingdom Revival Ministries logo' ),
 			'donate_label' => krm_f( 'text', __( 'Top bar button text', 'kingdom-revival' ), 'Donate' ),
+			'verse_short'  => krm_f( 'text', __( 'Top bar verse (short; empty hides it)', 'kingdom-revival' ), 'For God so loved the world, that he gave his only begotten Son...' ),
+			'verse_full'   => krm_f( 'textarea', __( 'Top bar verse (full, shown on hover or tap)', 'kingdom-revival' ), 'For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.' ),
+			'verse_ref'    => krm_f( 'text', __( 'Top bar verse reference', 'kingdom-revival' ), 'John 3:16' ),
 		),
 	),
 	'footer'        => array(

@@ -100,8 +100,9 @@
   --shadow-k: 1;                                 /* shadow opacity multiplier */
 
   /* Typography */
-  --font-body: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
-  --font-heading: var(--font-body);
+  --font-body: "Figtree", "Segoe UI", Arial, sans-serif;
+  --font-heading: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-scripture: "Newsreader", Georgia, serif;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -403,7 +404,7 @@
   .lb-thumbs { display: none; }
 }
 .nl { position: fixed; inset: 0; z-index: 15000; display: grid; place-items: center; padding: 16px; background: rgba(8,16,48,.72); animation: lb-in .25s ease; }
-.nl-box { position: relative; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); width: min(820px, 100%); max-height: calc(100vh - 32px); overflow: auto; border-radius: var(--radius-popup); background: var(--color-surface); color: var(--color-text); box-shadow: 0 30px 80px rgba(0,0,0,.35); animation: nl-up .35s ease; font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif; }
+.nl-box { position: relative; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); width: min(820px, 100%); max-height: calc(100vh - 32px); overflow: auto; border-radius: var(--radius-popup); background: var(--color-surface); color: var(--color-text); box-shadow: 0 30px 80px rgba(0,0,0,.35); animation: nl-up .35s ease; font-family: var(--font-body); }
 .nl-media { position: relative; min-height: 420px; background: var(--color-band) center / cover no-repeat; }
 .nl-media::after { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,16,48,0) 40%, rgba(8,16,48,.85) 100%); content: ""; }
 .nl-media p { position: absolute; left: 22px; right: 22px; bottom: 20px; z-index: 1; margin: 0; color: var(--color-white); font-size: 15px; font-weight: var(--font-weight-bold); line-height: 1.5; }
@@ -641,7 +642,7 @@
 .cause-card-amounts strong { color: var(--color-text); }
 .cause-card-bar { height: 6px; margin-top: 6px; overflow: hidden; border-radius: 99px; background: var(--color-border); }
 .cause-card-bar > span { display: block; height: 100%; border-radius: 99px; background: var(--color-chart-1); }
-.cause-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; margin-top: 8px; }
+.cause-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 8px; }
 .cause-card-donate { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; border-radius: 4px; background: var(--color-secondary); color: var(--color-white); font-size: 14px; font-weight: 700; line-height: 1.6; text-decoration: none; box-sizing: border-box; transition: background .2s ease; }
 .cause-card-donate:hover { background: var(--color-red-hover); color: var(--color-white); }
 .cause-card-more { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-heading); font-size: 14px; font-weight: 700; line-height: 1.6; text-decoration: none; }
@@ -822,6 +823,9 @@ a.work-card { display: flex; flex-direction: column; color: inherit; text-decora
 .cause-card-goal strong { color: var(--color-text); }
 .cause-card-tag.is-upcoming { background: var(--color-orange); color: var(--color-text); }
 .cause-card-more.is-button { padding: 10px 18px; border: 1.5px solid var(--color-heading); border-radius: 4px; box-sizing: border-box; }
+/* Current project cards: Give + outline "Learn more" sit at the card's foot, so they line up across a row; full width, stacked, on phones. */
+.cause-card-text + .cause-card-actions { margin-top: auto; padding-top: 8px; }
+@media (max-width: 520px) { .cause-card-actions > a { flex: 1 1 100%; justify-content: center; } }
 
 /* Banner with text and buttons (About → Join the Mission): the home page CTA banner. */
 .cta-banner { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 100px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
@@ -1023,10 +1027,13 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
 [data-photo-band="stats"] { --band-overlay: linear-gradient(rgba(12, 28, 79, .86), rgba(12, 28, 79, .86)); }
 [data-photo-band="cta"] { --band-overlay: linear-gradient(110deg, rgba(12, 28, 79, .9) 0%, rgba(12, 28, 79, .86) 45%, rgba(96, 6, 12, .9) 100%); }
 [data-photo-band="partner"] { --band-overlay: linear-gradient(rgba(12, 28, 79, .84), rgba(12, 28, 79, .84)); }
+[data-photo-band="freedom"] { --band-overlay: linear-gradient(rgba(12, 28, 79, .88), rgba(12, 28, 79, .88)); }
 :root[data-theme="dark"] [data-photo-band] { --band-overlay: linear-gradient(rgba(10, 18, 48, .88), rgba(10, 18, 48, .88)); }
+:root[data-theme="dark"] [data-photo-band="freedom"] { --band-overlay: linear-gradient(rgba(10, 18, 48, .92), rgba(10, 18, 48, .92)); }
 :root[data-theme="dark"] [data-photo-band="cta"] { --band-overlay: linear-gradient(110deg, rgba(10, 18, 48, .92) 0%, rgba(10, 18, 48, .88) 45%, rgba(120, 6, 12, .9) 100%); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) [data-photo-band] { --band-overlay: linear-gradient(rgba(10, 18, 48, .88), rgba(10, 18, 48, .88)); }
+  :root:not([data-theme="light"]) [data-photo-band="freedom"] { --band-overlay: linear-gradient(rgba(10, 18, 48, .92), rgba(10, 18, 48, .92)); }
   :root:not([data-theme="light"]) [data-photo-band="cta"] { --band-overlay: linear-gradient(110deg, rgba(10, 18, 48, .92) 0%, rgba(10, 18, 48, .88) 45%, rgba(120, 6, 12, .9) 100%); }
 }
 @media (min-width: 1025px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -1154,3 +1161,96 @@ body:has(#main :is(.page-hero, .post-hero, .impact-hero, [data-hero]), #main > #
    components.js takes over. */
 html:not(.js) .krm-needs-js { display: none !important; }
 html.js [data-krm-more="18"]:not([data-krm-more-ready]) > :nth-child(n+19) { display: none; }
+
+/* ---------- Typography (theme 1.19): Cormorant Garamond headings, Figtree text (--font-heading / --font-body) ----------
+   Cormorant's small letters are short (x-height .39 of the size, Figtree .5): font-size-adjust draws headings about 13%
+   larger at the sizes already set everywhere, without changing their line boxes. Long headings wrap in balanced lines. */
+body { font-family: var(--font-body); }
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-size-adjust: ex-height .44; text-wrap: balance; overflow-wrap: break-word; }
+input, select, textarea, button { font-family: inherit; }
+
+/* Heading highlights: key words in the hero's accent, italic Cormorant 600. On light backgrounds (hl--on-light, set by
+   effects.js) the pale accent becomes a marker stroke under the words, so the text keeps its contrast. */
+.hl { color: var(--color-accent); font-family: var(--font-heading); font-size-adjust: ex-height .44; font-style: italic; font-weight: 600; }
+.hl--on-light { color: inherit; padding: 0 .06em; background-image: linear-gradient(transparent 64%, color-mix(in srgb, var(--color-accent) 45%, transparent) 64%, color-mix(in srgb, var(--color-accent) 45%, transparent) 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+:root[data-theme="dark"] .hl--on-light { color: var(--color-accent); background-image: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hl--on-light { color: var(--color-accent); background-image: none; }
+}
+:root .hl.hl--plain { color: inherit; padding: 0 .06em; background-image: linear-gradient(transparent 64%, color-mix(in srgb, var(--color-accent) 55%, transparent) 64%, color-mix(in srgb, var(--color-accent) 55%, transparent) 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* ---------- Top bar verse (John 3:16), centred between the contacts and the social links / Donate ----------
+   Full verse on hover, keyboard focus or a tap (effects.js). From 1100px down it gets its own centred row. */
+.topbar { position: relative; z-index: 91; }
+.topbar-verse { position: relative; flex: 1 1 0; min-width: 0; display: flex; justify-content: center; animation: krm-verse-in .9s ease .2s both; }
+.topbar-verse-btn { display: inline-flex; align-items: center; gap: 0 .45em; max-width: 100%; min-height: 30px; padding: 0 4px; border: 0; background: none; color: inherit; font-family: var(--font-scripture); font-size: 15px; font-style: italic; font-weight: 400; line-height: 1.3; text-align: center; cursor: help; }
+.topbar-verse-text { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.topbar-verse cite { flex: none; color: var(--color-accent); font-family: var(--font-body); font-size: 12px; font-style: normal; font-weight: var(--font-weight-semibold); letter-spacing: .04em; white-space: nowrap; }
+.topbar-verse-full { position: absolute; top: calc(100% + 6px); left: 50%; z-index: 2; width: min(440px, calc(100vw - 32px)); margin: 0; padding: 14px 18px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); color: var(--color-text); box-shadow: 0 16px 40px rgba(0, 0, 0, .25); font-family: var(--font-scripture); font-size: 16px; font-style: italic; line-height: 1.55; text-align: center; opacity: 0; visibility: hidden; transform: translate(-50%, -4px); transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s; }
+.topbar-verse-full cite { display: inline-block; color: var(--color-secondary-text); }
+.topbar-verse-btn[aria-expanded="true"] + .topbar-verse-full, .topbar-verse-btn:focus-visible + .topbar-verse-full { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+@media (hover: hover) {
+  .topbar-verse:hover .topbar-verse-full { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+}
+@keyframes krm-verse-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (max-width: 1099px) {
+  .topbar-verse { order: 3; flex-basis: 100%; }
+  .topbar-verse-btn { display: block; font-size: 14px; text-wrap: balance; }
+  .topbar-verse-text { white-space: normal; }
+}
+@media (max-width: 1024px) { .topbar-verse-btn { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) {
+  .topbar-verse { animation: none; }
+  .topbar-verse-full { transition: none; }
+}
+
+/* ---------- Home: top bar and navbar over the hero (theme 1.19) ----------
+   The hero also slides up under the top bar (--topbar-h, measured by effects.js; these are its heights before that).
+   Both are see-through with one soft dark gradient from the top; the navbar keeps its sticky frosted state on scroll. */
+:root { --topbar-h: 47px; }
+@media (max-width: 1099px) { :root { --topbar-h: 85px; } }
+@media (max-width: 1024px) { :root { --topbar-h: 104px; } }
+body:has(#main > #top) { --hero-offset: calc(var(--header-h) + var(--topbar-h)); }
+body:has(#main > #top) .site-header { margin-bottom: calc(-1 * (var(--header-h) + var(--topbar-h))); }
+.js body:has(#main > #top) .topbar { background: linear-gradient(180deg, rgba(8, 16, 48, .72) 0%, rgba(8, 16, 48, .55) 100%); color: var(--color-white); }
+.js body:has(#main > #top) .site-header:not(.is-scrolled):not(:has([aria-expanded="true"])):not(:has(.has-sub:hover)) {
+  background-image: linear-gradient(180deg, rgba(8, 16, 48, .55) 0%, rgba(8, 16, 48, .28) 70%, rgba(8, 16, 48, 0) 100%);
+}
+
+/* Scripture verse (home mission section, project pages): moved from front.css so inner pages share it. */
+.krm-mission__verse { margin: 32px 0 0; padding: 4px 0 4px 22px; border-left: 3px solid var(--color-accent); }
+.krm-mission__verse p { margin: 0; font-family: var(--font-scripture); font-size: clamp(19px, 1.8vw, 22px); font-style: italic; line-height: 1.55; color: var(--color-white); }
+.krm-mission__verse cite { display: block; margin-top: 12px; font-family: var(--font-body); font-size: 12px; font-style: normal; font-weight: var(--font-weight-bold); letter-spacing: .2em; text-transform: uppercase; color: var(--color-accent); }
+
+/* Flagship freedom section (template-parts/home/freedom.php, home and the Slavery & Freedom Ministry page):
+   "How a family becomes trapped" (4 linked cards: arrows on desktop, a timeline below 1024px), a centred line, "The way
+   to freedom" (5 cards: 5 columns from 1100px, 2 from 600px, else 1) and a centred button. Cards use [data-glass]. */
+.krm-fr__sub { margin: 0 0 22px; color: var(--color-white); font-size: clamp(24px, 2.6vw, 32px); font-weight: 800; line-height: 1.2; }
+.krm-fr__trap, .krm-fr__steps { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.krm-fr__trap > li, .krm-fr__steps > li { position: relative; min-width: 0; padding: 22px; border-radius: 12px; background: var(--color-band-2); }
+.krm-fr__trap strong, .krm-fr__steps strong { display: block; margin-top: 6px; font-size: 18px; }
+.krm-fr__trap li > span:last-child, .krm-fr__steps li > span:last-child { display: block; margin-top: 6px; color: var(--color-text-on-dark); font-size: 14px; }
+.krm-fr__num { display: block; color: var(--color-accent); font-size: 28px; font-weight: 800; line-height: 1.6; }
+.krm-fr__num.is-trap { color: var(--color-secondary-on-dark); }
+.krm-fr__transition { max-width: 760px; margin: clamp(40px, 5vw, 56px) auto; padding: 18px 0; border-block: 1px solid rgba(255, 255, 255, .22); color: var(--color-white); font-family: var(--font-heading); font-size: clamp(21px, 2.3vw, 28px); font-style: italic; font-weight: 600; line-height: 1.35; text-align: center; text-wrap: balance; }
+.krm-fr__cta { margin: 32px 0 0; text-align: center; }
+/* Trapped: a vertical timeline (line and dots on the left) below 1024px. */
+.krm-fr__trap { padding-left: 30px; }
+.krm-fr__trap::before { position: absolute; top: 28px; bottom: 28px; left: 9px; width: 2px; background: color-mix(in srgb, var(--color-secondary-on-dark) 55%, transparent); content: ""; }
+.krm-fr__trap { position: relative; }
+.krm-fr__trap > li::before { position: absolute; top: 36px; left: -27px; width: 12px; height: 12px; border: 2px solid var(--color-secondary-on-dark); border-radius: 50%; background: var(--color-band); content: ""; }
+/* Desktop: four in a row, an arrow between neighbours. */
+@media (min-width: 1024px) {
+  .krm-fr__trap { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 34px; padding-left: 0; }
+  .krm-fr__trap::before { content: none; }
+  .krm-fr__trap > li::before { content: none; }
+  .krm-fr__trap > li:not(:last-child)::after { position: absolute; top: 50%; right: -27px; width: 20px; height: 20px; transform: translateY(-50%); background: var(--color-secondary-on-dark); content: ""; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat; }
+}
+@media (min-width: 600px) {
+  .krm-fr__steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .krm-fr__steps > li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media (min-width: 1100px) {
+  .krm-fr__steps { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .krm-fr__steps > li:last-child:nth-child(odd) { grid-column: auto; }
+}

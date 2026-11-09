@@ -32,6 +32,13 @@ function krm_breadcrumbs() {
 		return array();
 	}
 	$trail = array( array( 'Home', home_url( '/' ) ) );
+	$project = krm_current_project_page();
+	if ( $project ) {
+		// Home / Projects (Donate → Our Projects) / {Project}.
+		$trail[] = array( __( 'Projects', 'kingdom-revival' ), krm_donate_url() . '#projects' );
+		$trail[] = array( wp_strip_all_tags( $project['title'] ), krm_project_page_url( $project['key'] ) );
+		return $trail;
+	}
 	if ( is_singular( 'ministry' ) ) {
 		// Home / What We Do / {Group} / {Ministry} (Phase 21).
 		$trail[] = array( __( 'What We Do', 'kingdom-revival' ), krm_ministries_url() );
@@ -140,6 +147,9 @@ function krm_schema_text( $text ) {
 function krm_schema_url() {
 	if ( is_front_page() ) {
 		return home_url( '/' );
+	}
+	if ( krm_current_project_page() ) {
+		return krm_project_page_url( krm_current_project_page()['key'] );
 	}
 	if ( is_singular() ) {
 		return get_permalink( get_queried_object() );

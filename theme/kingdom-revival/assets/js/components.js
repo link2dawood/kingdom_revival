@@ -209,6 +209,15 @@
 
   /* ---------- Forms ---------- */
   var params = new URLSearchParams(location.search);
+  /* Contact: ?subject=Plan%20a%20Visit chooses the "I'm reaching out about" topic, added to the list when it is not in it. */
+  (function () {
+    var subject = (params.get("subject") || "").trim().slice(0, 100);
+    var topic = document.querySelector("#contact-form select[name=topic]");
+    if (!subject || !topic) return;
+    var match = Array.prototype.filter.call(topic.options, function (o) { return o.value.toLowerCase() === subject.toLowerCase(); })[0];
+    if (!match) { match = new Option(subject, subject); topic.add(match); }
+    topic.value = match.value;
+  })();
   all("form[data-krm-form]").forEach(function (form) {
     var name = form.getAttribute("data-krm-form");
     var sent = form.querySelector("[data-krm-form-status]");

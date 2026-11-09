@@ -214,4 +214,102 @@
     if (document.readyState === "complete") startVideo();
     else window.addEventListener("load", startVideo);
   }
+  /* ---------- Gift calculator ("Your gift at work", template-parts/home/gift-calculator.php) ----------
+     One rAF per frame at most: slider input only stores the value; the frame paints it. Numbers count to their new value
+     (instant with prefers-reduced-motion). The Give link keeps the hero card's flow: Donate ?amount=N&frequency=One-time#give. */
+  var calc = document.querySelector("[data-krm-calc]");
+  if (calc) (function () {
+    var range = calc.querySelector("[data-krm-calc-range]");
+    var amountEl = calc.querySelector("[data-krm-calc-amount]");
+    var give = calc.querySelector("[data-krm-calc-give]");
+    var giveAmount = calc.querySelector("[data-krm-calc-give-amount]");
+    var live = calc.querySelector("[data-krm-calc-live]");
+    var chips = [].slice.call(calc.querySelectorAll("[data-krm-calc-chip]"));
+    var min = Number(range.min), max = Number(range.max);
+    var motion = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+    var money = function (n) { return "$" + Math.round(n).toLocaleString("en-US"); };
+    var ease = function (t) { return 1 - Math.pow(1 - t, 3); };
+
+    // Counters: the big amount plus one per row with a cost.
+    var counters = [{ el: amountEl, fmt: money, shown: Number(range.value) }];
+    var rows = [].slice.call(calc.querySelectorAll("li[data-unit]")).map(function (li) {
+      var unit = Number(li.dataset.unit);
+      var c = { el: li.querySelector("[data-krm-calc-num]"), fmt: function (n) { return String(Math.round(n)); }, shown: Math.floor(Number(range.value) / unit) };
+      counters.push(c);
+      return { li: li, unit: unit, counter: c, unlock: li.querySelector("[data-krm-calc-unlock]"), n: c.shown };
+    });
+
+    var tweenFrame = 0;
+    function tweenTo(c, to) {
+      c.from = c.shown; c.to = to; c.t0 = 0;
+      if (motion.matches) { c.shown = to; c.el.textContent = c.fmt(to); return; }
+      if (!tweenFrame) tweenFrame = requestAnimationFrame(step);
+    }
+    function step(now) {
+      tweenFrame = 0;
+      var busy = false;
+      counters.forEach(function (c) {
+        if (c.to === undefined || c.shown === c.to) return;
+        if (!c.t0) c.t0 = now;
+        var t = Math.min(1, (now - c.t0) / 320);
+        c.shown = t >= 1 ? c.to : c.from + (c.to - c.from) * ease(t);
+        c.el.textContent = c.fmt(c.shown);
+        if (t < 1) busy = true;
+      });
+      if (busy) tweenFrame = requestAnimationFrame(step);
+    }
+
+    var announceTimer = 0;
+    function paint(v) {
+      range.style.setProperty("--p", ((v - min) / (max - min) * 100) + "%");
+      range.setAttribute("aria-valuetext", money(v));
+      chips.forEach(function (b) { b.setAttribute("aria-pressed", Number(b.dataset.krmCalcChip) === v ? "true" : "false"); });
+      give.href = give.href.replace(/([?&]amount=)[^&#]*/, "$1" + v);
+      giveAmount.textContent = money(v);
+      tweenTo(counters[0], v);
+      rows.forEach(function (r) {
+        var n = Math.floor(v / r.unit);
+        r.li.classList.toggle("is-locked", n < 1);
+        r.unlock.hidden = n >= 1;
+        if (n < 1) r.unlock.textContent = "Add " + money(r.unit - v) + " more to unlock";
+        if (n >= 1 && r.n < 1 && !motion.matches) {
+          r.li.classList.remove("is-unlocked");
+          void r.li.offsetWidth; // restart the glow
+          r.li.classList.add("is-unlocked");
+        }
+        r.n = n;
+        tweenTo(r.counter, n);
+      });
+      // Screen readers hear the amount once the slider settles, not every count.
+      clearTimeout(announceTimer);
+      announceTimer = setTimeout(function () { live.textContent = "Gift amount " + money(v); }, 700);
+    }
+    rows.forEach(function (r) { r.li.addEventListener("animationend", function () { r.li.classList.remove("is-unlocked"); }); });
+
+    var pending = null, inputFrame = 0, slide = 0;
+    range.addEventListener("input", function () {
+      if (slide) { cancelAnimationFrame(slide); slide = 0; }
+      pending = Number(range.value);
+      if (!inputFrame) inputFrame = requestAnimationFrame(function () { inputFrame = 0; paint(pending); });
+    });
+
+    // Quick amounts: glide the slider to the chosen amount (jump with reduced motion).
+    chips.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var to = Number(b.dataset.krmCalcChip), from = Number(range.value), t0 = 0;
+        if (slide) cancelAnimationFrame(slide);
+        if (motion.matches || from === to) { range.value = to; paint(to); return; }
+        paint(to); // counts and the Give link move now; the thumb glides there below
+        range.style.setProperty("--p", ((from - min) / (max - min) * 100) + "%");
+        slide = requestAnimationFrame(function frame(now) {
+          if (!t0) t0 = now;
+          var t = Math.min(1, (now - t0) / 420);
+          var v = t >= 1 ? to : Math.round((from + (to - from) * ease(t)) / 5) * 5;
+          range.value = v;
+          range.style.setProperty("--p", ((v - min) / (max - min) * 100) + "%");
+          slide = t < 1 ? requestAnimationFrame(frame) : 0;
+        });
+      });
+    });
+  })();
 })();

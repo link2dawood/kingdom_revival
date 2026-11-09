@@ -25,7 +25,7 @@ if ( ! $krm_stats ) {
 <?php endforeach; ?>
 </div>
 <div style="flex: 1 1 280px; background: var(--color-band); color: var(--color-white); padding: 24px 28px; display: flex; flex-direction: column; justify-content: center; gap: 10px">
-<strong style="font-size: 18px; line-height: 1.3">Our prayer: lives transformed by Christ</strong>
+<strong data-krm-hl style="font-size: 18px; line-height: 1.3">Our prayer: lives transformed by Christ</strong>
 <span style="display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--color-text-on-dark)">
 <span aria-hidden="true" style="display: flex"><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--color-placeholder-2); border: 2px solid var(--color-band)"></span><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--color-gold); border: 2px solid var(--color-band); margin-left: -10px"></span><span style="width: 28px; height: 28px; border-radius: 50%; background: var(--color-accent); border: 2px solid var(--color-band); margin-left: -10px"></span></span>
 Across Pakistan and beyond</span>

@@ -18,6 +18,9 @@ function krm_view() {
 	if ( is_front_page() ) {
 		return 'front';
 	}
+	if ( krm_current_project_page() ) {
+		return 'project';
+	}
 	$design = krm_design_template();
 	if ( $design ) {
 		return $design;
@@ -35,13 +38,17 @@ function krm_view() {
 }
 
 /*
- * Plus Jakarta Sans (latin, variable 400–800), served from the theme. The @font-face rule is declared in theme.json
- * and printed by WordPress on the site and in the editor; this preloads the file so text renders in it first time.
+ * Fonts from Google Fonts in one request (display=swap): Cormorant Garamond for headings, Figtree for body text and
+ * Newsreader italic for the scripture verse (--font-heading / --font-body / --font-scripture in theme-global.css).
  */
+function krm_fonts_url() {
+	return 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,600&family=Figtree:wght@300..700&family=Newsreader:ital,wght@1,300..600&display=swap';
+}
 add_action(
 	'wp_head',
 	function () {
-		printf( '<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n", esc_url( krm_asset( 'fonts/plus-jakarta-sans-latin.woff2' ) ) );
+		echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
 	},
 	2
 );
@@ -53,7 +60,8 @@ add_action(
 		$ver  = KRM_VERSION;
 
 		// Design tokens and shared components, loaded once and first on every page.
-		wp_register_style( 'krm-global', krm_asset( 'css/theme-global.css' ), array(), $ver );
+		wp_register_style( 'krm-fonts', krm_fonts_url(), array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+		wp_register_style( 'krm-global', krm_asset( 'css/theme-global.css' ), array( 'krm-fonts' ), $ver );
 		if ( 'front' === $view ) {
 			wp_enqueue_style( 'krm-front', krm_asset( 'css/front.css' ), array( 'krm-global' ), $ver );
 		} else {
@@ -95,7 +103,7 @@ add_action(
 
 		// The photo viewer, only where gallery photos or [data-zoom] images are printed: home, About, ministry pages,
 		// stories, sermons and events.
-		if ( in_array( $view, array( 'front', 'about', 'post', 'gallery' ), true ) || is_singular( 'ministry' ) ) {
+		if ( in_array( $view, array( 'front', 'about', 'post', 'gallery', 'project' ), true ) || is_singular( 'ministry' ) ) {
 			wp_enqueue_script( 'krm-viewer', krm_asset( 'js/viewer.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
 		}
 

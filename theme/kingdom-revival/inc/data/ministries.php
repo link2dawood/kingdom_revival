@@ -56,7 +56,7 @@ return array(
 			'status' => 'live',
 			'group' => 'gospel-spiritual',
 			'tag' => 'EVANGELISM',
-			'excerpt' => 'Taking the Gospel to villages and unreached communities across Pakistan.',
+			'excerpt' => 'We take the Gospel to villages and unreached communities across Pakistan. Through open-air gatherings and personal visits, we share the hope of Jesus with people who have rarely heard His name.',
 			'summary' => '',
 			'focus' => 'Taking the Gospel to villages and unreached communities across Pakistan.',
 			'points' => array(
@@ -138,7 +138,7 @@ return array(
 			'status' => 'live',
 			'group' => 'gospel-spiritual',
 			'tag' => 'CHURCH',
-			'excerpt' => 'Local congregations and house churches, led by pastors we train and walk alongside.',
+			'excerpt' => 'We plant churches and house churches where believers have no place to gather. Each new fellowship becomes a local witness for Christ and a family for its community.',
 			'summary' => '',
 			'focus' => 'Planting local congregations and house churches in the villages we reach.',
 			'points' => array(
@@ -214,7 +214,7 @@ return array(
 			'status' => 'live',
 			'group' => 'gospel-spiritual',
 			'tag' => 'SCRIPTURE',
-			'excerpt' => 'Placing Urdu Bibles in the hands of families and new believers.',
+			'excerpt' => 'We place Urdu Bibles in the hands of families and new believers. God\'s Word gives them a foundation to grow in faith and share it with others.',
 			'summary' => '',
 			'focus' => 'Sharing Urdu Bibles with families and new believers.',
 			'points' => array(
@@ -296,7 +296,7 @@ return array(
 			'status' => 'live',
 			'group' => 'gospel-spiritual',
 			'tag' => 'LEADERSHIP',
-			'excerpt' => 'Equipping pastors and leaders to shepherd local and house churches.',
+			'excerpt' => 'We train and encourage local pastors and leaders to serve their communities faithfully. Equipped with sound teaching, they can shepherd churches and raise up others.',
 			'summary' => '',
 			'focus' => 'Equipping pastors and leaders to serve local and house churches.',
 			'points' => array(
@@ -363,7 +363,7 @@ return array(
 			'group' => 'gospel-spiritual',
 			'tag' => 'BAPTISM',
 			// DRAFT — CLIENT TO APPROVE (excerpt): adds discipleship, from wording already on the site.
-			'excerpt' => 'New believers publicly following Jesus Christ in baptism, and discipled to grow in their faith.',
+			'excerpt' => 'We walk with new believers as they publicly follow Christ through baptism. Ongoing teaching and fellowship help them grow into mature, faithful disciples.',
 			'drafts' => array(
 				'excerpt',
 			),
@@ -444,7 +444,7 @@ return array(
 			'status' => 'live',
 			'group' => 'gospel-spiritual',
 			'tag' => 'PRAYER',
-			'excerpt' => 'Prayer for the sick and oppressed in the power of Jesus Christ.',
+			'excerpt' => 'We pray with those carrying heavy burdens, fear and spiritual oppression. Standing on God\'s Word, we seek His healing, peace and freedom for every life.',
 			'summary' => '',
 			'focus' => 'Prayer and compassionate support for people seeking spiritual restoration, freedom and healing.',
 			'points' => array(
@@ -552,7 +552,7 @@ return array(
 			'status' => 'live',
 			'group' => 'compassion-humanitarian',
 			'tag' => 'FREEDOM',
-			'excerpt' => 'Missions that help families held in debt bondage at brick kilns walk free.',
+			'excerpt' => 'We stand with families trapped in bonded labour and crushing debt. Your support helps clear what they owe, so they can begin again in freedom and dignity.',
 			'summary' => 'Helping families held in debt bondage at brick kilns walk free.',
 			'focus' => 'Helping families held in debt bondage at brick kilns find a path to freedom.',
 			'points' => array(
@@ -637,7 +637,7 @@ return array(
 			'group' => 'compassion-humanitarian',
 			'tag' => 'FAMILY CARE',
 			// DRAFT — CLIENT TO APPROVE (excerpt, summary): widened to the whole family, from wording already on the site.
-			'excerpt' => 'Care, education and the Gospel for families who live and work beside the brick kilns.',
+			'excerpt' => 'We serve families who live and labour beside the brick kilns. Through the Gospel, practical care and regular visits, we remind them that they are seen and loved.',
 			'summary' => 'Schooling, Sunday school and care for children, and practical care for families who live and work beside the kilns.',
 			'drafts' => array(
 				'excerpt',
@@ -723,7 +723,7 @@ return array(
 			'status' => 'live',
 			'group' => 'compassion-humanitarian',
 			'tag' => 'CHILDREN',
-			'excerpt' => 'Shelter, food, schooling and daily care for orphaned and underprivileged children.',
+			'excerpt' => 'We care for orphans and children growing up in hardship. Sunday school, education and loving support help them learn, grow in faith and build a brighter future.',
 			'summary' => 'Shelter, food and daily care for orphaned and underprivileged children.',
 			'focus' => 'Practical care and support for orphaned and underprivileged children.',
 			'points' => array(
@@ -869,7 +869,7 @@ return array(
 			'status' => 'live',
 			'group' => 'compassion-humanitarian',
 			'tag' => 'WATER',
-			'excerpt' => 'Safe drinking water for villages and kiln communities that go without.',
+			'excerpt' => 'We install hand pumps so families can reach safe, clean water close to home. Each pump serves daily needs and brings relief to the whole community.',
 			'summary' => '',
 			'focus' => 'Access to safe drinking water for village and brick kiln communities.',
 			'points' => array(
@@ -939,7 +939,7 @@ return array(
 			'status' => 'live',
 			'group' => 'compassion-humanitarian',
 			'tag' => 'WIDOWS',
-			'excerpt' => 'Support, fellowship and practical help for widows in the church and village.',
+			'excerpt' => 'We stand beside widows who often face loss and hardship alone. Through prayer, practical help and Christian fellowship, we help them find hope and belonging.',
 			'summary' => 'Support and fellowship for widows in the church and the village.',
 			'focus' => 'Support, fellowship and practical help for widows.',
 			'points' => array(
@@ -1001,7 +1001,7 @@ return array(
 			'status' => 'live',
 			'group' => 'compassion-humanitarian',
 			'tag' => 'MEDICAL',
-			'excerpt' => 'Free check-ups and medicine for brick kiln workers and village families.',
+			'excerpt' => 'We hold medical camps in brick kiln and village communities with limited access to care. Families receive check-ups and medicine, along with prayer and compassion.',
 			'summary' => '',
 			'focus' => 'Free medical support for brick kiln workers and village families.',
 			'points' => array(

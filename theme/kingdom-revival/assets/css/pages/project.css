@@ -1,0 +1,33 @@
+/* Project detail pages (single-project.php). Reuses .page-hero, .section, .section-head, .gallery/.photo,
+   .krm-mission__verse and .cta-banner; only the layout pieces specific to these pages live here. Colours are tokens. */
+
+/* 1. Hero: text beside the project card's photo (stacked on narrow screens). */
+.project-hero { background-image: none; }
+.project-hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(32px, 5vw, 64px); align-items: center; }
+.project-hero h1 { font-size: clamp(36px, 4.6vw, 58px); }
+.project-hero-media { margin: 0; overflow: hidden; border-radius: 14px; box-shadow: 0 24px 60px rgba(0, 0, 0, .35); }
+.project-hero-media img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 25%; }
+
+/* 2. The need: photo on the left on desktop (the hero's is on the right). */
+.project-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
+.project-split-media { order: -1; margin: 0; overflow: hidden; border-radius: 14px; box-shadow: 0 16px 40px rgba(var(--shadow-rgb), calc(.12 * var(--shadow-k))); }
+.project-split-media img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.project-split-text h2 { margin: 0; font-size: var(--font-size-h2); font-weight: 800; }
+.project-split-text p:not(.eyebrow) { margin: 18px 0 0; color: var(--color-text-muted); font-size: 18px; line-height: 1.8; }
+
+/* 3. How it works: three numbered cards. */
+.project-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; }
+.project-step { padding: 28px; border-radius: 10px; background: var(--color-surface); box-shadow: 0 6px 20px rgba(var(--shadow-rgb), calc(.07 * var(--shadow-k))); }
+.project-step-num { display: inline-grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; background: var(--color-band); color: var(--color-white); font-size: 20px; font-weight: 800; }
+.project-step h3 { margin: 18px 0 0; font-size: 22px; font-weight: 800; }
+.project-step p { margin: 10px 0 0; color: var(--color-text-muted); font-size: 16px; line-height: 1.7; }
+
+/* 5. Scripture: the home mission verse on the navy band. */
+.project-verse { padding: clamp(56px, 7vw, 96px) 0; background: var(--color-band); }
+.project-verse .krm-mission__verse { max-width: 760px; margin: 0 auto; }
+
+@media (max-width: 900px) {
+  .project-hero-grid, .project-split { grid-template-columns: minmax(0, 1fr); }
+  .project-split-media { order: 0; }
+  .project-steps { grid-template-columns: minmax(0, 1fr); }
+}

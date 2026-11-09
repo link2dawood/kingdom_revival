@@ -149,6 +149,7 @@ function krm_projects( $status = '', $limit = 0 ) {
 					'raised'      => (string) get_post_meta( $post->ID, '_krm_raised', true ),
 					'date'        => (string) get_post_meta( $post->ID, '_krm_date', true ),
 					'ministry'    => (string) get_post_meta( $post->ID, '_krm_ministry', true ),
+					'page'        => $post->post_name, // Linked to /projects/{slug}/ when a detail page has that key.
 					'placeholder' => false,
 				);
 			}
@@ -164,6 +165,9 @@ function krm_projects( $status = '', $limit = 0 ) {
 			$ministries[ $m['slug'] ] = $m;
 		}
 		foreach ( $all as $i => $p ) {
+			$page                      = isset( $p['page'] ) ? (string) $p['page'] : '';
+			$all[ $i ]['page']         = krm_project_page( $page ) ? $page : '';
+			$all[ $i ]['page_url']     = $all[ $i ]['page'] ? krm_project_page_url( $page ) : '';
 			$m                         = isset( $ministries[ $p['ministry'] ] ) ? $ministries[ $p['ministry'] ] : null;
 			$all[ $i ]['ministry_title'] = $m ? $m['title'] : '';
 			$all[ $i ]['ministry_url']   = $m ? $m['url'] : '';
@@ -181,4 +185,117 @@ function krm_projects( $status = '', $limit = 0 ) {
 		)
 	);
 	return $limit ? array_slice( $out, 0, $limit ) : $out;
+}
+
+/* ---------- Project detail pages (/projects/{slug}/), one template filled from inc/data/project-pages.php ---------- */
+
+/**
+ * The project base in addresses ("projects").
+ */
+function krm_project_base() {
+	return 'projects';
+}
+
+add_action(
+	'init',
+	function () {
+		add_rewrite_rule( '^' . krm_project_base() . '/([^/]+)/?$', 'index.php?krm_project_page=$matches[1]', 'top' );
+	}
+);
+
+add_filter(
+	'query_vars',
+	function ( $vars ) {
+		$vars[] = 'krm_project_page';
+		return $vars;
+	}
+);
+
+/**
+ * A project detail page's data by key, or null.
+ *
+ * @param string $key Key in inc/data/project-pages.php ('urdu-bibles').
+ * @return array|null
+ */
+function krm_project_page( $key ) {
+	static $pages = null;
+	if ( null === $pages ) {
+		$pages = include KRM_DIR . '/inc/data/project-pages.php';
+	}
+	$key = (string) $key;
+	return ( '' !== $key && isset( $pages[ $key ] ) ) ? $pages[ $key ] + array( 'key' => $key ) : null;
+}
+
+/**
+ * Address of a project detail page.
+ *
+ * @param string $key Key.
+ */
+function krm_project_page_url( $key ) {
+	return home_url( user_trailingslashit( krm_project_base() . '/' . $key ) );
+}
+
+/**
+ * The project detail page being viewed, or null (also null for an unknown /projects/{slug}/, which is a 404).
+ */
+function krm_current_project_page() {
+	$key = get_query_var( 'krm_project_page' );
+	return $key ? krm_project_page( sanitize_title( $key ) ) : null;
+}
+
+/*
+ * A /projects/{slug}/ request has no posts of its own: it is not the blog (no main posts query, not is_home), and an
+ * unknown slug is a 404.
+ */
+add_action(
+	'parse_query',
+	function ( $q ) {
+		if ( ! $q->is_main_query() || '' === (string) $q->get( 'krm_project_page' ) ) {
+			return;
+		}
+		$q->is_home = false; // An unknown slug then gets WordPress's own 404 (no posts); a known one: pre_handle_404 below.
+	}
+);
+add_filter(
+	'posts_pre_query',
+	function ( $posts, $q ) {
+		return ( $q->is_main_query() && '' !== (string) $q->get( 'krm_project_page' ) ) ? array() : $posts;
+	},
+	10,
+	2
+);
+add_filter(
+	'pre_handle_404',
+	function ( $handled ) {
+		return krm_current_project_page() ? true : $handled; // A known project page is found, though it has no posts.
+	}
+);
+add_filter(
+	'template_include',
+	function ( $template ) {
+		return krm_current_project_page() ? KRM_DIR . '/single-project.php' : $template;
+	}
+);
+
+/**
+ * Highlighted words (<span class="hl">) on a light card or section: the site's highlighter variant (.hl--on-light),
+ * since the plain orange .hl is for dark backgrounds.
+ *
+ * @param string $html Escaped inline HTML.
+ */
+function krm_hl_on_light( $html ) {
+	return str_replace( 'class="hl"', 'class="hl hl--on-light"', $html );
+}
+
+/**
+ * One key per image whether it is given as an attachment ID or a design URL, to spot the same photo twice.
+ *
+ * @param int|string $ref Image reference.
+ */
+function krm_project_ref_key( $ref ) {
+	if ( is_numeric( $ref ) ) {
+		return 'id:' . (int) $ref;
+	}
+	$id = krm_media_id( (string) $ref );
+	return $id ? 'id:' . $id : (string) $ref;
 }

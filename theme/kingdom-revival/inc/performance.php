@@ -216,6 +216,67 @@ add_filter( 'intermediate_image_sizes_advanced', 'krm_card_filter_sizes', 10, 2 
 add_filter( 'wp_get_missing_image_subsizes', 'krm_card_filter_sizes', 10, 2 );
 
 /**
+ * The edit mark ("-e" + 13 digits) WordPress adds to an image's file name when it is rotated, flipped or cropped in
+ * the image editor, or '' for an image never edited.
+ *
+ * @param array $meta Attachment metadata.
+ */
+function krm_image_edit_hash( $meta ) {
+	return ! empty( $meta['file'] ) && preg_match( '/-e[0-9]{13}/', wp_basename( (string) $meta['file'] ), $m ) ? $m[0] : '';
+}
+
+/**
+ * Was this card crop made from the photo as it was before an edit in the image editor? WordPress's
+ * wp_update_image_subsizes() always cuts missing sizes from the original upload, so for a photo rotated after
+ * upload the backfill below (before theme 1.18.4) made sideways crops. The current crops carry the edit mark in
+ * their file name, as WordPress's own srcset expects (wp_calculate_image_srcset()).
+ *
+ * @param array  $meta Attachment metadata.
+ * @param string $name Card size name.
+ */
+function krm_card_stale( $meta, $name ) {
+	$hash = krm_image_edit_hash( $meta );
+	return '' !== $hash && ! empty( $meta['sizes'][ $name ]['file'] ) && false === strpos( (string) $meta['sizes'][ $name ]['file'], $hash );
+}
+
+/**
+ * Card sizes an image should have but lacks (or has only as a stale crop): name => size data.
+ *
+ * @param array $meta Attachment metadata.
+ */
+function krm_card_missing( $meta ) {
+	$want = krm_card_filter_sizes( array_intersect_key( wp_get_registered_image_subsizes(), krm_card_sizes() ), $meta );
+	foreach ( array_keys( $want ) as $name ) {
+		if ( ! empty( $meta['sizes'][ $name ] ) && ! krm_card_stale( $meta, $name ) ) {
+			unset( $want[ $name ] );
+		}
+	}
+	return $want;
+}
+
+/**
+ * Make an edited photo's card crops from the file as edited (the one WordPress shows), not the original upload.
+ * Stale crops are dropped from the metadata (their files are left alone: an "undo" in the image editor may use them).
+ *
+ * @param int   $id   Attachment ID.
+ * @param array $meta Attachment metadata.
+ */
+function krm_card_make_from_current( $id, $meta ) {
+	$missing = krm_card_missing( $meta );
+	foreach ( array_keys( krm_card_sizes() ) as $name ) {
+		if ( krm_card_stale( $meta, $name ) ) {
+			unset( $meta['sizes'][ $name ] );
+		}
+	}
+	$file   = get_attached_file( $id );
+	$editor = $file && $missing ? wp_get_image_editor( $file ) : null;
+	if ( $editor && ! is_wp_error( $editor ) ) {
+		$meta['sizes'] = array_merge( isset( $meta['sizes'] ) && is_array( $meta['sizes'] ) ? $meta['sizes'] : array(), $editor->multi_resize( $missing ) );
+	}
+	wp_update_attachment_metadata( $id, $meta );
+}
+
+/**
  * The srcset of an image's card crops, or '' when it has none (the caller then uses the normal one).
  *
  * @param int $id Attachment ID.
@@ -226,7 +287,7 @@ function krm_card_srcset( $id ) {
 		return '';
 	}
 	foreach ( array_reverse( array_keys( krm_card_sizes() ) ) as $name ) {
-		if ( ! empty( $meta['sizes'][ $name ] ) ) {
+		if ( ! empty( $meta['sizes'][ $name ] ) && ! krm_card_stale( $meta, $name ) ) {
 			return (string) wp_get_attachment_image_srcset( $id, $name, $meta );
 		}
 	}
@@ -255,10 +316,14 @@ function krm_card_backfill() {
 	foreach ( $ids as $id ) {
 		update_option( 'krm_card_backfill', (int) $id );
 		$meta = wp_get_attachment_metadata( (int) $id );
-		if ( ! is_array( $meta ) || ! krm_card_wanted( $meta ) || ! wp_get_missing_image_subsizes( (int) $id ) ) {
+		if ( ! is_array( $meta ) || ! krm_card_wanted( $meta ) || ! krm_card_missing( $meta ) ) {
 			continue;
 		}
-		wp_update_image_subsizes( (int) $id );
+		if ( krm_image_edit_hash( $meta ) ) {
+			krm_card_make_from_current( (int) $id, $meta );
+		} else {
+			wp_update_image_subsizes( (int) $id );
+		}
 		if ( ++$made >= 3 ) {
 			break;
 		}

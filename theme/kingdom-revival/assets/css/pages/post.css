@@ -16,7 +16,7 @@
 .article h2 { margin: 44px 0 16px; font-size: clamp(24px, 2.6vw, 30px); font-weight: 800; }
 .article h3 { margin: 34px 0 12px; color: var(--color-heading); font-size: clamp(20px, 2.2vw, 25px); font-weight: 800; }
 .article blockquote { position: relative; margin: 36px 0; padding: 28px 28px 28px 72px; border-left: 5px solid var(--orange); border-radius: 0 var(--radius) var(--radius) 0; background: var(--soft); color: var(--color-heading); font-size: 21px; font-weight: 700; line-height: 1.55; }
-.article blockquote::before { position: absolute; top: 10px; left: 22px; color: var(--color-secondary-text); content: "“"; font-family: Georgia, serif; font-size: 72px; line-height: 1; }
+.article blockquote::before { position: absolute; top: 10px; left: 22px; color: var(--color-secondary-text); content: "“"; font-family: var(--font-heading); font-size: 72px; line-height: 1; }
 .article blockquote cite { display: block; margin-top: 10px; color: var(--color-secondary-text); font-size: 14px; font-style: normal; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .article figure { margin: 36px 0; }
 .article figure img { display: block; width: 100%; height: auto; max-height: 520px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }

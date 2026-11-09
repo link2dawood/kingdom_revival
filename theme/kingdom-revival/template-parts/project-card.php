@@ -1,7 +1,8 @@
 <?php
 /**
  * One project card: the giving card (.cause-card) for a project from krm_projects().
- * Current: photo, ministry, title, text, "Give to this project" (no raised/goal bar) (Donate, ministry preselected).
+ * Current: photo, ministry, title, text, "Give to this project" (no raised/goal bar) (Donate, ministry preselected),
+ * plus an outline "Learn more" to its detail page (/projects/{slug}/) when it has one.
  * Upcoming: photo with an "Upcoming" label, target amount, planned date, "Pledge / Get notified" (the Financial
  * Partner pledge form on Partner With Us, with the project filled in).
  *
@@ -18,7 +19,8 @@ if ( ! $krm_p ) {
 }
 $krm_h        = isset( $args['heading'] ) && in_array( $args['heading'], array( 'h2', 'h3', 'h4' ), true ) ? $args['heading'] : 'h3';
 $krm_upcoming = 'upcoming' === $krm_p['status'];
-$krm_title    = krm_fill( $krm_p['title'] );
+$krm_title    = wp_strip_all_tags( krm_fill( $krm_p['title'] ) ); // Plain text (alt, screen-reader labels).
+$krm_heading  = krm_hl_on_light( krm_inline( $krm_p['title'] ) ); // Visible title: <span class="hl"> allowed.
 if ( $krm_upcoming ) {
 	$krm_link = add_query_arg( 'project', rawurlencode( wp_strip_all_tags( $krm_title ) ), krm_page_url( 'partner' ) ) . '#financial-partner';
 } else {
@@ -37,7 +39,7 @@ $krm_alt = $krm_p['image'] ? trim( (string) krm_ref_alt( $krm_p['image'] ) ) : '
 		<?php if ( $krm_p['ministry_title'] ) : ?>
 		<p class="cause-card-meta"><a href="<?php echo esc_url( $krm_p['ministry_url'] ); ?>"><?php echo esc_html( $krm_p['ministry_title'] ); ?></a></p>
 		<?php endif; ?>
-		<<?php echo $krm_h; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- whitelisted above. ?> class="cause-card-title"><?php echo esc_html( $krm_title ); ?></<?php echo $krm_h; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+		<<?php echo $krm_h; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- whitelisted above. ?> class="cause-card-title"><?php echo $krm_heading; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- krm_inline() escapes. ?></<?php echo $krm_h; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 		<?php if ( '' !== trim( (string) $krm_p['text'] ) ) : ?>
 		<p class="cause-card-text"><?php echo esc_html( krm_fill( $krm_p['text'] ) ); ?></p>
 		<?php endif; ?>
@@ -57,6 +59,9 @@ $krm_alt = $krm_p['image'] ? trim( (string) krm_ref_alt( $krm_p['image'] ) ) : '
 			<a class="cause-card-more is-button" href="<?php echo esc_url( $krm_link ); ?>"><?php krm_t( 'projects.pledge_label', 'donate' ); ?><span class="visually-hidden">: <?php echo esc_html( $krm_title ); ?></span></a>
 			<?php else : ?>
 			<a class="cause-card-donate" href="<?php echo esc_url( $krm_link ); ?>"><?php krm_t( 'projects.give_label', 'donate' ); ?><span class="visually-hidden">: <?php echo esc_html( $krm_title ); ?></span></a>
+				<?php if ( ! empty( $krm_p['page_url'] ) ) : ?>
+			<a class="cause-card-more is-button" href="<?php echo esc_url( $krm_p['page_url'] ); ?>"><?php krm_t( 'projects.more_label', 'donate' ); ?><span class="visually-hidden">: <?php echo esc_html( $krm_title ); ?></span></a>
+				<?php endif; ?>
 			<?php endif; ?>
 		</div>
 	</div>

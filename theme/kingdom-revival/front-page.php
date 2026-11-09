@@ -16,14 +16,15 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 ?>
-<div class="krm-home" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--color-text); background: var(--color-bg); font-size: 16px; line-height: 1.6">
+<div class="krm-home" style="font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); font-size: 16px; line-height: 1.6">
 <main id="main">
 <?php
 get_template_part( 'template-parts/home/hero' );
 get_template_part( 'template-parts/home/stats' );
-get_template_part( 'template-parts/home/gift' );
+get_template_part( 'template-parts/home/gift-calculator' );
 get_template_part( 'template-parts/home/about' );
 get_template_part( 'template-parts/home/explorer', null, array( 'ministries' => krm_ministries( 'home' ) ) );
+get_template_part( 'template-parts/home/mission' );
 get_template_part( 'template-parts/home/causes' );
 get_template_part( 'template-parts/home/projects' );
 get_template_part( 'template-parts/home/freedom' );

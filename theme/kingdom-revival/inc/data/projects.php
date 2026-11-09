@@ -4,7 +4,8 @@
  * added in the dashboard (Projects → Add New). As soon as one project is published, this file is no longer used.
  *
  * Per project: title, ministry (slug from inc/data/ministries.php), status (current | upcoming), goal and raised
- * (whole dollars, '' = not set), date (planned start for upcoming projects, free text), image, text.
+ * (whole dollars, '' = not set), date (planned start for upcoming projects, free text), image, text, page (optional:
+ * key of its detail page in inc/data/project-pages.php, adds "Learn more"). Title: <span class="hl"> highlights words.
  * These are DUMMY projects (names, goals and amounts are made up): replace them with real ones before launch.
  *
  * @package Kingdom_Revival
@@ -14,7 +15,8 @@ defined( 'ABSPATH' ) || exit;
 
 return array(
 	array(
-		'title'    => 'Urdu Bibles for 500 new believers',
+		'title'    => 'Urdu Bibles for <span class="hl">New Believers</span>',
+		'page'     => 'urdu-bibles',
 		'ministry' => 'bible-distribution',
 		'status'   => 'current',
 		'goal'     => '6000',
@@ -24,7 +26,8 @@ return array(
 		'text'     => 'Printing and delivering Urdu Bibles to new believers and village churches around Faisalabad and Jhang.',
 	),
 	array(
-		'title'    => 'Freedom for 10 bonded kiln families',
+		'title'    => 'Freedom for <span class="hl">Bonded Kiln Families</span>',
+		'page'     => 'freedom-for-kiln-families',
 		'ministry' => 'slavery-freedom',
 		'status'   => 'current',
 		'goal'     => '15000',
@@ -34,14 +37,15 @@ return array(
 		'text'     => 'Paying off the debts of ten brick kiln families and helping each one start again with work and a home.',
 	),
 	array(
-		'title'    => 'A safe home for 20 children',
+		'title'    => 'Building a <span class="hl">Home</span> for Orphaned Children',
+		'page'     => 'orphanage-home',
 		'ministry' => 'children-orphan-care',
 		'status'   => 'current',
 		'goal'     => '12000',
 		'raised'   => '4800',
 		'date'     => '',
 		'image'    => '',
-		'text'     => 'Shelter, meals, schooling and daily care for orphaned and underprivileged children.',
+		'text'     => 'We are building an orphanage where orphaned and underprivileged children can receive shelter, meals, schooling and daily care.',
 	),
 	array(
 		'title'    => 'Hand pumps for five villages',

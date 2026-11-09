@@ -13,7 +13,7 @@ $krm_poster = $krm_up . 'elementor/thumbs/General-pictures-14-scaled-e1787296605
 $krm_video  = $krm_up . '2026/08/a.mp4';
 $krm_hero_v = 'krm-theme:video/hero.mp4'; // The client's hero video, shipped with the theme (assets/video/hero.mp4: 15 s, 1280px, no audio, H.264).
 $krm_hero_w = 'krm-theme:video/hero.webm'; // The same clip as WebM (VP9), for browsers without H.264.
-$krm_hl     = __( 'Wrap highlighted words in <span style="color: var(--color-accent)">…</span>.', 'kingdom-revival' );
+$krm_hl     = __( 'Wrap highlighted words in <span class="hl">…</span>.', 'kingdom-revival' );
 
 return array(
 	'hero'     => array(
@@ -23,14 +23,14 @@ return array(
 			'video'          => krm_f( 'url', __( 'Background video (MP4 link)', 'kingdom-revival' ), $krm_hero_v, __( 'Upload the video in Media → Add New and paste its link here. Leave empty to show only the image. It plays on screens 768px and wider only (not with data saver or reduced motion); phones always see the background image. Keep it short (about 15 s), without sound, under 4 MB.', 'kingdom-revival' ) ),
 			'video_webm'     => krm_f( 'url', __( 'Background video, WebM version (optional)', 'kingdom-revival' ), $krm_hero_w, __( 'The same clip as WebM, for browsers that cannot play the MP4. Leave empty if you only have the MP4.', 'kingdom-revival' ) ),
 			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Bringing Hope to the Forgotten' ),
-			'title'          => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Sharing the Hope of <span style="color: var(--color-accent)">Jesus Christ</span> with the Unreached & <span style="color: var(--color-accent)">Vulnerable</span>', $krm_hl ),
+			'title'          => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Sharing the Hope of <span class="hl">Jesus Christ</span> with the Unreached & <span class="hl">Vulnerable</span>', $krm_hl ),
 			'lead'           => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'We preach the Gospel, plant churches and care for brick kiln families, orphans and widows across Pakistan and beyond.' ),
 			'button1_label'  => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Explore What We Do' ),
 			'button1_url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '#ministries' ),
 			'button2_label'  => krm_f( 'text', __( 'Video link text', 'kingdom-revival' ), 'Watch Our Story' ),
 			'button2_url'    => krm_f( 'url', __( 'Video link', 'kingdom-revival' ), '#field-stories' ),
 			'card_badge'     => krm_f( 'text', __( 'Donation card: badge', 'kingdom-revival' ), 'MAKE AN IMPACT' ),
-			'card_heading'   => krm_f( 'text', __( 'Donation card: heading', 'kingdom-revival' ), 'Help Brick Kiln Children Go to School & Know Christ' ),
+			'card_heading'   => krm_f( 'text', __( 'Donation card: heading', 'kingdom-revival' ), 'Bring Hope to Pakistan’s Forgotten' ),
 			'card_text'      => krm_f( 'textarea', __( 'Donation card: text', 'kingdom-revival' ), 'Your gift provides Sunday school, education and care for children growing up beside the kilns.' ),
 			'card_ministry'  => krm_f( 'text', __( 'Donation card: ministry the gift goes to', 'kingdom-revival' ), 'children-orphan-care', __( 'The ministry’s slug (Ministries → edit → permalink), e.g. children-orphan-care. The card’s Donate button opens Donate with this ministry chosen. Leave empty for “Where it is needed most”.', 'kingdom-revival' ) ),
 			'card_note'      => krm_f( 'textarea', __( 'Donation card: small print', 'kingdom-revival' ), 'Every gift helps children learn, grow in faith and build a brighter future.' ),
@@ -81,19 +81,65 @@ return array(
 			),
 		),
 	),
+	'calc'     => array(
+		'label'  => __( 'Gift calculator', 'kingdom-revival' ),
+		'help'   => __( 'The home page’s “Your gift at work” calculator (slider, quick amounts and what the gift could provide). The amounts and the rows’ costs are fixed: $10 a Bible, $45 a medical camp visit, $40 a child’s schooling. “Give” opens Donate with the chosen amount, for where it is needed most. The “Your gift at work” cards above are still shown on ministry and What We Do pages.', 'kingdom-revival' ),
+		'fields' => array(
+			'heading'    => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Your <span class="hl">gift</span> at work', $krm_hl ),
+			'text'       => krm_f( 'text', __( 'Text under the heading', 'kingdom-revival' ), 'Drag the slider and see what your gift could do.' ),
+			'list_title' => krm_f( 'text', __( 'List heading', 'kingdom-revival' ), 'Your gift could provide' ),
+			'note'       => krm_f( 'textarea', __( 'Small print under the list', 'kingdom-revival' ), 'Each line shows what your full gift could provide on its own. Gifts are used where the need is greatest.' ),
+		),
+	),
 	'about'    => array(
 		'label'  => __( 'About', 'kingdom-revival' ),
+		'help'   => __( 'Text and photos of the About section after the gift band. Leave a field empty to hide it.', 'kingdom-revival' ),
 		'fields' => array(
-			'image1'       => krm_f( 'image', __( 'Large photo', 'kingdom-revival' ), $krm_up . 'elementor/thumbs/Leadership-and-Discipleship-9-scaled-rsiplqicgeaowcet38ec7199etzmpejk72qt9zqxco.jpg' ),
-			'image1_alt'   => krm_f( 'text', __( 'Large photo description (alt text)', 'kingdom-revival' ), 'Leadership and discipleship ministry' ),
-			'image2'       => krm_f( 'image', __( 'Small photo', 'kingdom-revival' ), $krm_up . 'elementor/thumbs/Orphanages-care-16-scaled-e1787819076312-rsij8jj20ojpz9btf5v77vd2yjnnuanqoo6mn3kqjc.jpg' ),
-			'image2_alt'   => krm_f( 'text', __( 'Small photo description (alt text)', 'kingdom-revival' ), 'Orphanage care ministry' ),
-			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'About Us' ),
-			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'A Gospel-Centred Ministry Serving Pakistan’s Forgotten' ),
-			'checks'       => krm_f( 'textarea', __( 'Check list', 'kingdom-revival' ), "Proclaiming the Gospel to unreached communities\nPlanting churches and house churches\nCaring for orphans and brick kiln children\nDistributing Urdu Bibles to families", __( 'One point per line.', 'kingdom-revival' ) ),
-			'text'         => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Our mission is to glorify God by making disciples of Jesus Christ, proclaiming the Gospel among unreached communities, planting churches, equipping leaders, and serving vulnerable children and brick kiln families.' ),
-			'button_label' => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'About Us' ),
-			'button_url'   => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{about}' ),
+			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'About Us' ),
+			'title1'        => krm_f( 'text', __( 'Heading: first part', 'kingdom-revival' ), 'Reaching the unreached.' ),
+			'title2'        => krm_f( 'text', __( 'Heading: second part (red)', 'kingdom-revival' ), 'Serving the forgotten.' ),
+			'lead'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Kingdom Revival Ministries exists to glorify God by making disciples of Jesus Christ — proclaiming the Gospel among unreached communities, planting churches, equipping leaders, and serving vulnerable children and brick kiln families across Pakistan.' ),
+			'verse'         => krm_f( 'textarea', __( 'Scripture', 'kingdom-revival' ), '“Go therefore and make disciples of all nations.”' ),
+			'verse_cite'    => krm_f( 'text', __( 'Scripture reference', 'kingdom-revival' ), 'Matthew 28:19' ),
+			'button_label'  => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Our Story' ),
+			'button_url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{about}' ),
+			'founder_photo' => krm_f( 'image', __( 'Founder: photo', 'kingdom-revival' ), 'krm-theme:images/content/team-adil-arif.jpg' ),
+			'founder_name'  => krm_f( 'text', __( 'Founder: link text', 'kingdom-revival' ), 'Meet Pastor Adil Arif' ),
+			'founder_role'  => krm_f( 'text', __( 'Founder: role', 'kingdom-revival' ), 'Founder & Pastor' ),
+			'founder_url'   => krm_f( 'url', __( 'Founder: link', 'kingdom-revival' ), '{about}#founder-story' ),
+			'badge_title'   => krm_f( 'text', __( 'Badge on the photos: title', 'kingdom-revival' ), 'Since 2018' ),
+			'badge_text'    => krm_f( 'text', __( 'Badge on the photos: text', 'kingdom-revival' ), 'Serving in Faisalabad & beyond' ),
+			'photos'        => krm_list_f(
+				__( 'Photos', 'kingdom-revival' ),
+				__( 'Photo', 'kingdom-revival' ),
+				array(
+					'image'   => krm_f( 'image', __( 'Photo', 'kingdom-revival' ) ),
+					'alt'     => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ) ),
+					'caption' => krm_f( 'text', __( 'Label on the photo', 'kingdom-revival' ) ),
+				),
+				array(
+					array( 'image' => 'krm-theme:images/content/leadership-and-discipleship-9-crop.jpg', 'alt' => 'A Kingdom Revival pastor preaching to children and families at a worship gathering', 'caption' => 'Sunday worship gathering' ),
+					array( 'image' => 'krm-theme:images/content/orphanages-care-16-crop.jpg', 'alt' => 'Children sitting in rows sharing a meal provided by the ministry', 'caption' => 'A meal for the children' ),
+					array( 'image' => 'krm-theme:images/content/church-planting-8.jpg', 'alt' => 'Families from a brick kiln gathered on mats to hear the Gospel', 'caption' => 'Church at the brick kilns' ),
+				),
+				__( 'The first photo is the tall one on the left; the next two sit beside it.', 'kingdom-revival' )
+			),
+			'cards'         => krm_list_f(
+				__( 'Cards', 'kingdom-revival' ),
+				__( 'Card', 'kingdom-revival' ),
+				array(
+					'title' => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
+					'text'  => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ) ),
+					'url'   => krm_f( 'url', __( 'Link (optional)', 'kingdom-revival' ) ),
+				),
+				array(
+					array( 'title' => 'Gospel to the unreached', 'text' => 'Taking Christ to villages and communities who have never heard.', 'url' => '' ),
+					array( 'title' => 'Churches planted', 'text' => 'Local congregations and house churches led by trained pastors.', 'url' => '' ),
+					array( 'title' => 'Orphans & kiln children', 'text' => 'Care, meals and schooling for the most vulnerable children.', 'url' => '' ),
+					array( 'title' => 'Urdu Bibles', 'text' => 'Scripture in the heart language of families and new believers.', 'url' => '' ),
+				),
+				__( 'The icon and colour follow the card’s position: globe, church, heart, book.', 'kingdom-revival' )
+			),
 		),
 	),
 	'explorer' => array(
@@ -108,6 +154,23 @@ return array(
 			'more_label'    => krm_f( 'text', __( 'Ministry page button text', 'kingdom-revival' ), 'Learn more' ),
 			'all_label'     => krm_f( 'text', __( 'What We Do button text', 'kingdom-revival' ), 'Explore What We Do' ),
 			'all_url'       => krm_f( 'url', __( 'What We Do button link', 'kingdom-revival' ), '{ministries}' ),
+		),
+	),
+	'mission'  => array(
+		'label'  => __( 'Mission: brick kilns of Pakistan', 'kingdom-revival' ),
+		'help'   => __( 'The section after the ministry explorer. Leave a button text empty to hide that button.', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Pakistan and Beyond' ),
+			'heading1'      => krm_f( 'text', __( 'Heading: first line', 'kingdom-revival' ), 'Bringing Christ' ),
+			'heading2'      => krm_f( 'text', __( 'Heading: second line (italic accent)', 'kingdom-revival' ), 'to the brick kilns of Pakistan.' ),
+			'text'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'We preach the Gospel and plant churches among the unreached. We provide Sunday school and education for children growing up beside the kilns. We hold medical camps, place Urdu Bibles in the hands of new believers, and care for orphans and widows.' ),
+			'quote'         => krm_f( 'textarea', __( 'Scripture', 'kingdom-revival' ), '“The Spirit of the Lord is upon me, because he hath anointed me to preach the gospel to the poor.”' ),
+			'cite'          => krm_f( 'text', __( 'Scripture reference', 'kingdom-revival' ), 'Luke 4:18' ),
+			'button1_label' => krm_f( 'text', __( 'First button text', 'kingdom-revival' ), 'Partner With Us' ),
+			'button1_url'   => krm_f( 'url', __( 'First button link', 'kingdom-revival' ), '{partner}' ),
+			'button2_label' => krm_f( 'text', __( 'Second button text', 'kingdom-revival' ), 'See Our Impact' ),
+			'button2_url'   => krm_f( 'url', __( 'Second button link', 'kingdom-revival' ), '{impact}' ),
+			'ghost'         => krm_f( 'text', __( 'Large faint word behind the section (decoration)', 'kingdom-revival' ), 'Hope' ),
 		),
 	),
 	'projects' => array(
@@ -155,8 +218,38 @@ return array(
 		'fields' => array(
 			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Flagship ministry · Slavery & Freedom' ),
 			'band_photo'    => krm_f( 'image', __( 'Background photo (seen through the navy overlay; empty = plain colour)', 'kingdom-revival' ), 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-32-scaled.jpg' ),
-			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Behind every brick, a family waiting to be free.' ),
-			'text'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Whole families labour at brick kilns under debts passed down for generations. Here is exactly how your gift brings a family out.' ),
+			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Behind every brick, a family <span class="hl">waiting to be free</span>.', $krm_hl ),
+			'text'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'Whole families labour at brick kilns under debts that can pass from one generation to the next. This is how they become trapped, and how your gift can bring them out.' ),
+			'trap_heading'  => krm_f( 'html', __( 'How a family becomes trapped: heading', 'kingdom-revival' ), 'How a family becomes <span class="hl">trapped</span>', $krm_hl ),
+			'trap'          => krm_list_f(
+				__( 'How a family becomes trapped', 'kingdom-revival' ),
+				__( 'Stage', 'kingdom-revival' ),
+				array(
+					'title' => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
+					'text'  => krm_f( 'text', __( 'Text', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'title' => 'A small loan',
+						'text'  => 'Facing hunger, illness or a daughter’s wedding, a family borrows from the kiln owner.',
+					),
+					array(
+						'title' => 'The debt grows',
+						'text'  => 'Interest, wage deductions and unclear accounts make repayment nearly impossible.',
+					),
+					array(
+						'title' => 'The whole family works',
+						'text'  => 'Parents and children make bricks for long hours and very little pay.',
+					),
+					array(
+						'title' => 'The debt is passed down',
+						'text'  => 'When parents cannot repay, the burden can fall on their children.',
+					),
+				),
+				__( 'Numbered 01, 02… in this order, joined by arrows (a timeline on phones).', 'kingdom-revival' )
+			),
+			'transition'    => krm_f( 'text', __( 'Line between the two lists', 'kingdom-revival' ), 'Bonded labour is illegal in Pakistan, yet many families remain trapped.' ),
+			'steps_heading' => krm_f( 'html', __( 'The way to freedom: heading', 'kingdom-revival' ), 'The way to <span class="hl">freedom</span>', $krm_hl ),
 			'steps'         => krm_list_f(
 				__( 'Steps', 'kingdom-revival' ),
 				__( 'Step', 'kingdom-revival' ),
@@ -212,6 +305,8 @@ return array(
 				),
 				__( 'Shown as a row of photos under the slider; click a photo to see it full size. A label starting with "Before" gets the red badge.', 'kingdom-revival' )
 			),
+			'cta_label'     => krm_f( 'text', __( 'Button under the steps: text', 'kingdom-revival' ), 'Help a family walk free' ),
+			'cta_url'       => krm_f( 'url', __( 'Button under the steps: link', 'kingdom-revival' ), '{home}projects/freedom-for-kiln-families/' ),
 			'compare_label' => krm_f( 'text', __( 'Slider label', 'kingdom-revival' ), 'Drag to compare' ),
 			'button_label'  => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Help free a family' ),
 			'button_url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{donate}?ministry=slavery-freedom#give' ),
@@ -257,11 +352,15 @@ return array(
 		),
 	),
 	'where'    => array(
-		'label'  => __( 'Where we work', 'kingdom-revival' ),
+		'label'  => __( 'Where we serve (map)', 'kingdom-revival' ),
+		'help'   => __( 'A map of Pakistan (provinces from geoBoundaries, public domain; built into the theme, assets/images/pakistan-map.svg) over a darkened photo. Punjab is highlighted, and a place in the list below gets a marker when it is one of the towns the map knows: Faisalabad (HQ), Jhang, Chiniot, Toba Tek Singh. The highlight under the text is the first impact number (Kingdom Revival → Settings → Impact numbers).', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'   => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Where we work' ),
-			'heading'   => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Villages, kilns and house churches across Punjab.' ),
-			'places'    => krm_list_f(
+			'eyebrow'    => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our reach' ),
+			'heading'    => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Where we <span class="hl">serve</span>', $krm_hl ),
+			'text'       => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'From brick kilns to village churches, we are carrying the hope of Christ to communities across Pakistan and beyond.' ),
+			'band_photo' => krm_f( 'image', __( 'Background photo (darkened behind the map; empty = plain colour)', 'kingdom-revival' ), $krm_poster ),
+			'region'     => krm_f( 'text', __( 'Heading over the places', 'kingdom-revival' ), 'Punjab, Pakistan' ),
+			'places'     => krm_list_f(
 				__( 'Places', 'kingdom-revival' ),
 				__( 'Place', 'kingdom-revival' ),
 				array(
@@ -286,30 +385,6 @@ return array(
 						'count' => '6 villages',
 					),
 				)
-			),
-			'map'       => krm_f( 'image', __( 'Map image', 'kingdom-revival' ), '', __( 'Optional. Leave empty to use the built-in map of central Punjab (district boundaries; Faisalabad, Jhang, Chiniot and Toba Tek Singh highlighted in red). An uploaded map replaces it; the pins are then placed on top of the image.', 'kingdom-revival' ) ),
-			'map_alt'   => krm_f( 'text', __( 'Map description (alt text)', 'kingdom-revival' ), 'Map of Punjab showing where Kingdom Revival Ministries works' ),
-			'pins'      => krm_list_f(
-				__( 'Map pins', 'kingdom-revival' ),
-				__( 'Pin', 'kingdom-revival' ),
-				array(
-					'label' => krm_f( 'text', __( 'Label', 'kingdom-revival' ) ),
-					'left'  => krm_f( 'text', __( 'From the left (%)', 'kingdom-revival' ) ),
-					'top'   => krm_f( 'text', __( 'From the top (%)', 'kingdom-revival' ) ),
-				),
-				array(
-					array(
-						'label' => 'Faisalabad (HQ)',
-						'left'  => '60.2',
-						'top'   => '47.3',
-					),
-					array(
-						'label' => 'Jhang',
-						'left'  => '39.7',
-						'top'   => '54.3',
-					),
-				),
-				__( 'Each pin is a red map pointer; the first (headquarters) is a little larger. On the built-in map: Faisalabad 60.2 / 47.3, Jhang 39.7 / 54.3 (% of the map from the left / top). Another town: left = (longitude − 70.85) × 27.03, top = (32.44 − latitude) × 46.3.', 'kingdom-revival' )
 			),
 		),
 	),
@@ -408,24 +483,32 @@ return array(
 				__( 'Ways', 'kingdom-revival' ),
 				__( 'Way', 'kingdom-revival' ),
 				array(
-					'title' => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
-					'text'  => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ) ),
+					'title'  => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
+					'text'   => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ) ),
+					'button' => krm_f( 'text', __( 'Button text (empty = no button)', 'kingdom-revival' ) ),
+					'url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ) ),
 				),
 				array(
 					array(
-						'title' => 'Pray',
-						'text'  => 'Intercede for the ministry, the families we serve, and the power of the Gospel.',
+						'title'  => 'Pray',
+						'text'   => 'Intercede for the ministry, the families we serve, and the power of the Gospel.',
+						'button' => 'Become a Prayer Partner',
+						'url'    => '{partner}#prayer-partners',
 					),
 					array(
-						'title' => 'Give',
-						'text'  => 'Provide Bibles, education, orphan care and emergency aid for families in crisis.',
+						'title'  => 'Give',
+						'text'   => 'Provide Bibles, education, orphan care and emergency aid for families in crisis.',
+						'button' => 'Give Now',
+						'url'    => '{donate}#give',
 					),
 					array(
-						'title' => 'Go',
-						'text'  => 'Support outreach, church planting and humanitarian work on the ground.',
+						'title'  => 'Go',
+						'text'   => 'Support outreach, church planting and humanitarian work on the ground.',
+						'button' => 'Plan a Visit',
+						'url'    => '{contact}?subject=Plan%20a%20Visit#contact-form',
 					),
 				),
-				__( 'The second card is the dark one. Icons follow the order: cross, heart, globe.', 'kingdom-revival' )
+				__( 'The second card is the dark one, with a red button; the others have outline buttons. Icons follow the order: cross, heart, globe. A Contact link may add ?subject=… to choose the form\'s topic.', 'kingdom-revival' )
 			),
 		),
 	),
@@ -445,7 +528,7 @@ return array(
 	'founder'  => array(
 		'label'  => __( 'Founder', 'kingdom-revival' ),
 		'fields' => array(
-			'image'          => krm_f( 'image', __( 'Photo', 'kingdom-revival' ), $krm_up . '2026/08/file_00000000b46471f484befac1dc0ee291.png' ),
+			'image'          => krm_f( 'image', __( 'Photo', 'kingdom-revival' ), 'krm-theme:images/content/founder-adil-arif.jpg' ),
 			'image_alt'      => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ), 'Pastor Adil Arif, founder of Kingdom Revival Ministries' ),
 			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Founder & Pastor' ),
 			'heading'        => krm_f( 'html', __( 'Name', 'kingdom-revival' ), 'Pastor Adil Arif' ),
@@ -477,11 +560,6 @@ return array(
 					'role'  => krm_f( 'text', __( 'Role', 'kingdom-revival' ) ),
 				),
 				array(
-					array(
-						'photo' => 'krm-theme:images/content/team-adil-arif.jpg',
-						'name'  => 'Pastor Adil Arif',
-						'role'  => 'Founder',
-					),
 					array(
 						'photo' => 'krm-theme:images/content/team-sajid-arif.jpg',
 						'name'  => 'Sajid Arif',

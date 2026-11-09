@@ -1,11 +1,11 @@
 // Phase 22: the client's navbar, checked on the RENDERED site (logged out, caches bypassed), so a menu stored in the
 // database that differs from the theme can't slip through again.
 //   structure  — top level exactly: Home · About Us · What We Do ▾ · Our Impact ▾ · News & Updates · Partner With Us ·
-//                Contact · Donate / Give (red button); What We Do = two linked group headings with their ministries in
+//                Contact · Donate (red button); What We Do = two linked group headings with their ministries in
 //                the client's order + "View all of What We Do →"; Our Impact = 3 items; no "Ministries" menu item;
 //                no ">Ministries<" anywhere in the home page HTML; Youth Ministry / Women Empowerment not listed
 //   footer     — Quick Links exactly: Home, About Us, What We Do, Our Impact, News & Updates, Partner With Us, Contact,
-//                Donate / Give
+//                Donate
 //   links      — every link of both dropdowns, the top level and Quick Links answers 200 itself (no redirect, no 404)
 //   behaviour  — desktop: hover opens What We Do; click / Enter set aria-expanded; Esc closes and returns focus;
 //                a click outside closes; aria-current on the page, its group heading and the top-level item.
@@ -14,7 +14,7 @@
 //                with another theme version (a private window showed the old header on live, theme 1.17.1);
 //                testimonials — cards, no form, heading "Testimonials"
 //   soon       — Persecuted Christian Support, Food Relief, Disaster Relief: 200, "Details about this ministry are
-//                coming soon.", Donate / Give with ?ministry=slug, Contact us, the other-ministries row, no stats /
+//                coming soon.", Donate with ?ministry=slug, Contact us, the other-ministries row, no stats /
 //                gifts / story / gallery sections, no [brackets]
 //   shots      — out/nav/ (named after the output file): desktop 1440 closed / What We Do open / Our Impact open, mobile 390 menu with What We Do
 //                (both groups) open / Our Impact open; light and dark
@@ -29,7 +29,7 @@ const OUT = process.argv[2] || path.join(__dirname, 'out', 'nav.json');
 const SHOTS = path.join(path.dirname(OUT), path.basename(OUT, '.json')); // out/nav.json → out/nav/
 const BUST = 'krmnav=' + Date.now(); // A query string no page cache has seen: the page is built fresh.
 
-const TOP = ['Home', 'About Us', 'What We Do', 'Our Impact', 'News & Updates', 'Partner With Us', 'Contact', 'Donate / Give'];
+const TOP = ['Home', 'About Us', 'What We Do', 'Our Impact', 'News & Updates', 'Partner With Us', 'Contact', 'Donate'];
 const WWD = 'what-we-do';
 const GROUPS = [
   ['Gospel & Spiritual Ministries', `/${WWD}/gospel-spiritual-ministries/`, [
@@ -46,7 +46,7 @@ const GROUPS = [
   ]],
 ];
 const IMPACT = [['Our Impact', '/our-impact/'], ['Testimonials', '/our-impact/testimonies/'], ['Photo & Video Gallery', '/our-impact/gallery/']];
-const QUICK = ['Home', 'About Us', 'What We Do', 'Our Impact', 'News & Updates', 'Partner With Us', 'Contact', 'Donate / Give'];
+const QUICK = ['Home', 'About Us', 'What We Do', 'Our Impact', 'News & Updates', 'Partner With Us', 'Contact', 'Donate'];
 const SOON = ['persecuted-christians', 'food-relief', 'disaster-relief'];
 const SOON_LINE = 'Details about this ministry are coming soon.';
 
@@ -158,8 +158,8 @@ async function shot(p, name) {
     return { text: a.textContent.trim(), href: a.href, bg: cs.backgroundColor, red: redRgb, li: a.parentElement.className };
   });
   results.structure.donate = donate;
-  if (!donate || donate.text !== 'Donate / Give' || donate.bg !== donate.red) fail('structure', 'last item is not the red "Donate / Give" button: ' + JSON.stringify(donate));
-  if (donate && !/\/donate\/?$/.test(pathOf(donate.href))) fail('structure', 'Donate / Give links to ' + donate.href);
+  if (!donate || donate.text !== 'Donate' || donate.bg !== donate.red) fail('structure', 'last item is not the red "Donate" button: ' + JSON.stringify(donate));
+  if (donate && !/\/donate\/?$/.test(pathOf(donate.href))) fail('structure', 'Donate links to ' + donate.href);
 
   const quick = await p.evaluate(() => {
     const h = Array.from(document.querySelectorAll('footer h2, footer h3, footer h4')).find((x) => /quick links/i.test(x.textContent));
@@ -342,7 +342,7 @@ async function shot(p, name) {
       const hero = document.getElementById('ministry-hero');
       return {
         line: !!hero && hero.textContent.includes(line),
-        donate: Array.from(hero ? hero.querySelectorAll('a') : []).filter((a) => a.textContent.trim() === 'Donate / Give').map((a) => a.href),
+        donate: Array.from(hero ? hero.querySelectorAll('a') : []).filter((a) => a.textContent.trim() === 'Donate').map((a) => a.href),
         contact: Array.from(hero ? hero.querySelectorAll('a') : []).some((a) => a.textContent.trim() === 'Contact us'),
         others: main.querySelectorAll('.ministry-others .cause-card').length,
         extra: Array.from(main.querySelectorAll('section')).map((x) => x.id || x.className).filter((x) => !/ministry-hero|ministry-others/.test(x)),
@@ -352,7 +352,7 @@ async function shot(p, name) {
     s.status = r.status();
     results.soon[slug] = s;
     if (s.status !== 200 || !s.line || !s.contact || s.others < 1 || s.extra.length || s.brackets) fail('soon', `${slug}: ${JSON.stringify(s)}`);
-    if (!s.donate.length || !s.donate.every((h) => h.includes('ministry=' + slug))) fail('soon', `${slug}: Donate / Give does not preselect it: ${s.donate}`);
+    if (!s.donate.length || !s.donate.every((h) => h.includes('ministry=' + slug))) fail('soon', `${slug}: Donate does not preselect it: ${s.donate}`);
   }
   for (const u of [`/${WWD}/`, `/${WWD}/compassion-humanitarian-ministries/`]) {
     await sp.goto(withBust(B + u), { waitUntil: 'domcontentloaded' });

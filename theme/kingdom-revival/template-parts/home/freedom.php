@@ -1,7 +1,8 @@
 <?php
 /**
- * Home: flagship ministry "Slavery & Freedom Ministry" — the five steps and the before/after photo slider
- * (assets/js/components.js moves the split). Also shown on the Slavery & Freedom Ministry page.
+ * Home: flagship ministry "Slavery & Freedom Ministry" — how a family becomes trapped (four linked stages), the way to
+ * freedom (the five steps), a button to the project page, then the before/after photo slider (assets/js/components.js
+ * moves the split). Styles: .krm-fr__* in assets/css/theme-global.css. Also shown on the Slavery & Freedom Ministry page.
  *
  * @param array $args { screen: content screen to read (default: the current page's; 'home' elsewhere). }
  *
@@ -22,15 +23,35 @@ $krm_screen = isset( $args['screen'] ) ? (string) $args['screen'] : ''; // 'home
 </div>
 <p style="margin: 0; flex: 1 1 340px; align-self: flex-end; color: var(--color-text-on-dark)"><?php krm_t( 'freedom.text', $krm_screen ); ?></p>
 </div>
-<ol style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px">
-<?php foreach ( array_values( (array) krm_c( 'freedom.steps', $krm_screen ) ) as $krm_i => $krm_step ) : ?>
-<li data-glass style="background: var(--color-band-2); border-radius: 12px; padding: 22px">
-<span style="display: block; font-size: 28px; font-weight: 800; color: var(--color-accent)"><?php echo esc_html( sprintf( '%02d', $krm_i + 1 ) ); ?></span>
-<strong style="display: block; margin-top: 6px; font-size: 18px"><?php echo krm_text( $krm_step['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
-<span style="display: block; margin-top: 6px; font-size: 14px; color: var(--color-text-on-dark)"><?php echo krm_text( $krm_step['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+<?php $krm_trap = array_values( (array) krm_c( 'freedom.trap', $krm_screen ) ); ?>
+<?php if ( $krm_trap ) : ?>
+<h3 class="krm-fr__sub"><?php krm_h( 'freedom.trap_heading', $krm_screen ); ?></h3>
+<ol class="krm-fr__trap" data-reveal-stagger>
+<?php foreach ( $krm_trap as $krm_i => $krm_step ) : ?>
+<li data-glass>
+<span class="krm-fr__num is-trap"><?php echo esc_html( sprintf( '%02d', $krm_i + 1 ) ); ?></span>
+<strong><?php echo krm_text( $krm_step['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
+<span><?php echo krm_text( $krm_step['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 </li>
 <?php endforeach; ?>
 </ol>
+<?php endif; ?>
+<?php if ( '' !== trim( (string) krm_c( 'freedom.transition', $krm_screen ) ) ) : ?>
+<p class="krm-fr__transition" data-reveal><?php krm_t( 'freedom.transition', $krm_screen ); ?></p>
+<?php endif; ?>
+<h3 class="krm-fr__sub"><?php krm_h( 'freedom.steps_heading', $krm_screen ); ?></h3>
+<ol class="krm-fr__steps" data-reveal-stagger>
+<?php foreach ( array_values( (array) krm_c( 'freedom.steps', $krm_screen ) ) as $krm_i => $krm_step ) : ?>
+<li data-glass>
+<span class="krm-fr__num"><?php echo esc_html( sprintf( '%02d', $krm_i + 1 ) ); ?></span>
+<strong><?php echo krm_text( $krm_step['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
+<span><?php echo krm_text( $krm_step['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+</li>
+<?php endforeach; ?>
+</ol>
+<?php if ( '' !== trim( (string) krm_c( 'freedom.cta_label', $krm_screen ) ) ) : ?>
+<p class="krm-fr__cta"><a class="button button-primary" href="<?php krm_u( 'freedom.cta_url', $krm_screen ); ?>"><?php krm_t( 'freedom.cta_label', $krm_screen ); ?></a></p>
+<?php endif; ?>
 <div data-krm-compare style="position: relative; height: clamp(300px, 40vw, 520px); overflow: hidden; border-radius: 14px; margin-top: 40px; background: var(--color-band-3)">
 <div style="position: absolute; inset: 0; background: var(--color-placeholder-2); display: flex; align-items: flex-end; justify-content: flex-end; padding: 18px">
 <?php if ( krm_c( 'freedom.after', $krm_screen ) ) : ?>

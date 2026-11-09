@@ -53,6 +53,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Phase 24: form emails with a loading state (theme 1.18.0)](#kingdom-revival-ministries-phase-24-form-emails-with-a-loading-state-theme-1180)
 - [Kingdom Revival Ministries: Web3Forms for the form emails, social links in a new tab (theme 1.18.2)](#kingdom-revival-ministries-web3forms-for-the-form-emails-social-links-in-a-new-tab-theme-1182)
 - [Kingdom Revival Ministries: New Web3Forms access key (theme 1.18.3)](#kingdom-revival-ministries-new-web3forms-access-key-theme-1183)
+- [Kingdom Revival Ministries: New fonts, John 3:16 in the top bar, see-through home header, heading highlights (theme 1.19.0)](#kingdom-revival-ministries-new-fonts-john-316-in-the-top-bar-see-through-home-header-heading-highlights-theme-1190)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4172,3 +4173,48 @@ df5b0a03-… from 1.18.2. Web3Forms delivers to the inbox this new key was creat
   every Web3Forms request: **54 tests, 0 failures**. Web3Forms was mocked, so no real email was sent.
 - Not covered: a real send. After uploading 1.18.3, send one test from the Contact page and one from Partner With
   Us, and confirm they arrive at Info@kingdomrevivalministries.com.
+
+## Kingdom Revival Ministries: New fonts, John 3:16 in the top bar, see-through home header, heading highlights (theme 1.19.0)
+
+**Result:** headings are now Cormorant Garamond and body text Figtree, with Newsreader italic for the verse, all from Google Fonts in one request. John 3:16 sits in the centre of the top bar and shows the full verse on hover or tap. On the home page the top bar and navbar sit over the hero photo. The hero text stands out more, and key words in the main headings use the accent colour in italic.
+
+- Fonts: `krm_fonts_url()` + preconnects in `inc/enqueue.php` (`krm-fonts` is a dependency of `krm-global`). Tokens
+  `--font-body` / `--font-heading` / new `--font-scripture`. Removed: the self-hosted Plus Jakarta Sans file and its preload/theme.json
+  face, plus every hard-coded `'Plus Jakarta Sans'` (home templates, impact.css, where-map, newsletter popup). Headings use
+  `font-size-adjust: ex-height .44` (about 13% larger, since Cormorant's x-height is .39 vs Figtree's .5) and `text-wrap: balance`.
+- Verse: `header.php` `.topbar-verse` (Site text → Header: short text, full text and reference; leaving the short text empty hides
+  the verse). It fades in, with no animation under reduced motion. Below 1100px it gets its own centred row. effects.js toggles the full
+  verse on tap/click and closes it on Escape or an outside tap.
+- Home header: the hero also slides under the top bar (`--topbar-h`, measured by effects.js, with CSS fallbacks 47/85/104px). The top bar
+  and navbar share one dark gradient. After 80px the sticky navbar keeps its existing frosted state. Inner pages are unchanged.
+- Hero: stronger left-to-right overlay, eyebrow in capitals with 26px below it, a text shadow, a white 18px lead, and a larger CTA with a shadow.
+  The donation card has not moved.
+- Highlights: the `.hl` class. effects.js marks the `<em>` words, or the first 1–2 words from its list, in h1/h2 headings of 26px and up,
+  in the hero card title, and in "Our prayer" (`data-krm-hl`). On light backgrounds the accent is too pale as text (2:1), so it becomes a
+  marker stroke under the words (`hl--on-light`; dark mode uses accent text). On the red band it is also a stroke (`hl--plain`). The home hero default now uses `<span class="hl">`.
+- Verified on the local site: no horizontal overflow at 320–1920; the top-bar items never overlap; `final_pass.js` reports overflow
+  0 and JS errors 0. Its first run found the accent on the red band of Our Impact (2.23:1). After the fix, axe colour-contrast reports 0 on
+  Home / About / Donate / Our Impact in light and dark at 1440 and 360.
+- Not covered: pixel diffs against `html/`. The new fonts change every page on purpose, so the old baseline no longer applies.
+
+**Decisions for you:** visitors' IP addresses now go to Google Fonts (privacy note in readme). Highlights on light backgrounds are
+an accent underline, not orange text (contrast).
+
+## Kingdom Revival Ministries: New home About section (theme 1.19.3)
+
+**Result:** the home page's About section (after "Your gift at work") is rebuilt from the user's screenshot: "Reaching the
+unreached. Serving the forgotten." with text, Matthew 28:19, an "Our Story" button and a "Meet Pastor Adil Arif" link on the left,
+a three-photo collage with a "Since 2018" badge on the right, and four focus cards below.
+
+- Files: `template-parts/home/about.php` (rewritten, classes `.krm-about*`), styles at the end of `assets/css/front.css`, schema
+  `about` in `inc/content/home.php` (new keys; the old `image1/image2/heading/checks/text` fields are gone, so any saved values for
+  them are ignored), readme "Home page sections".
+- Content is only what the site already says: the mission sentence (old About text), "Since 2018" and Faisalabad (About page history),
+  Pastor Adil Arif / Founder & Pastor (home Founder section), the four card topics (the old About checklist). Photos are the theme's
+  bundled ones: `leadership-and-discipleship-9-crop.jpg` (worship gathering, tall), `orphanages-care-16-crop.jpg` (children's meal),
+  `church-planting-8.jpg` (church at a brick kiln), `team-adil-arif.jpg` (founder avatar).
+- The red heading part is an `<em>`; effects.js marks it `.hl`, and `.krm-about__accent.hl` keeps it red (no accent stroke).
+  Colours are tokens only; dark mode uses `--color-secondary-text`, `--color-band-3` for the navy card edge and orange for the verse reference.
+- Layout: 2 columns on desktop; stacked at ≤1024px with 2 cards per row; 1 card per row and a full-width button at ≤560px.
+- Verified on the local site at 1440 (light and dark), 768 and 390: no horizontal overflow, no JS errors, all images load, cards reveal.
+- Not covered: pixel diffs (the section is new on purpose), a full `final_pass.js` run.

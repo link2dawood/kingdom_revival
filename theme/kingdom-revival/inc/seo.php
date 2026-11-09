@@ -54,6 +54,9 @@ function krm_seo_title() {
 	if ( is_front_page() ) {
 		return $site . ' — Home';
 	}
+	if ( krm_current_project_page() ) {
+		return krm_current_project_page()['seo_title'] . ' | ' . $site;
+	}
 	if ( krm_current_group() ) {
 		return krm_current_group()['name'] . ' | What We Do | ' . $site;
 	}
@@ -95,6 +98,9 @@ function krm_page_seo() {
 function krm_meta_description() {
 	if ( is_front_page() ) {
 		return 'We preach the Gospel, plant churches and care for brick kiln families, orphans and widows across Pakistan and beyond.';
+	}
+	if ( krm_current_project_page() ) {
+		return krm_current_project_page()['seo_desc'];
 	}
 	if ( is_home() ) {
 		return 'Stories of hope from the field — read how the Gospel and practical care are changing lives across Pakistan.';
@@ -200,7 +206,9 @@ add_action(
 
 		// Core prints canonical links for single posts and pages; add them for listing pages.
 		$canonical = '';
-		if ( is_home() && ! is_front_page() ) {
+		if ( krm_current_project_page() ) {
+			$canonical = krm_project_page_url( krm_current_project_page()['key'] );
+		} elseif ( is_home() && ! is_front_page() ) {
 			$canonical = krm_blog_url();
 		} elseif ( krm_current_group() ) {
 			$canonical = krm_current_group()['url'];
@@ -252,6 +260,9 @@ add_action(
  * Social sharing image for the current view.
  */
 function krm_og_image() {
+	if ( krm_current_project_page() ) {
+		return krm_ref_url( krm_current_project_page()['image'], 'large' );
+	}
 	$screen = krm_current_screen();
 	if ( $screen ) {
 		// Design pages: the page's hero image (Page content → Hero).

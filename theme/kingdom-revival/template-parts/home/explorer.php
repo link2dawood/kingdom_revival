@@ -34,7 +34,7 @@ $krm_active = $krm_list ? $krm_list[0] : array(
 foreach ( $krm_list as $krm_i => $krm_m ) :
 	$krm_on = 0 === $krm_i;
 	?>
-<button type="button" data-index="<?php echo esc_attr( $krm_i ); ?>" aria-pressed="<?php echo $krm_on ? 'true' : 'false'; ?>" style="font: 600 15px 'Plus Jakarta Sans', sans-serif; text-align: left; display: flex; gap: 18px; align-items: center; padding: 13px 18px; min-height: 46px; border: 0; border-radius: 8px; cursor: pointer; background: <?php echo $krm_on ? 'var(--color-band)' : 'var(--color-bg-soft)'; ?>; color: <?php echo $krm_on ? 'var(--color-white)' : 'var(--color-text)'; ?>"><span style="font-size: 13px; font-weight: 700; color: <?php echo $krm_on ? 'var(--color-accent)' : 'var(--color-secondary-text)'; ?>"><?php echo esc_html( sprintf( '%02d', $krm_i + 1 ) ); ?></span><?php echo esc_html( $krm_m['title'] ); ?></button>
+<button type="button" data-index="<?php echo esc_attr( $krm_i ); ?>" aria-pressed="<?php echo $krm_on ? 'true' : 'false'; ?>" style="font: 600 15px var(--font-body); text-align: left; display: flex; gap: 18px; align-items: center; padding: 13px 18px; min-height: 46px; border: 0; border-radius: 8px; cursor: pointer; background: <?php echo $krm_on ? 'var(--color-band)' : 'var(--color-bg-soft)'; ?>; color: <?php echo $krm_on ? 'var(--color-white)' : 'var(--color-text)'; ?>"><span style="font-size: 13px; font-weight: 700; color: <?php echo $krm_on ? 'var(--color-accent)' : 'var(--color-secondary-text)'; ?>"><?php echo esc_html( sprintf( '%02d', $krm_i + 1 ) ); ?></span><?php echo esc_html( $krm_m['title'] ); ?></button>
 <?php endforeach; ?>
 </div>
 <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap; border-radius: 20px; overflow: hidden; background: var(--color-band)">

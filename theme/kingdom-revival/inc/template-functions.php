@@ -71,12 +71,15 @@ Kingdom Revival Ministries",
 		'stat_4_label'        => 'Bibles distributed',
 		'stat_5_value'        => '400',
 		'stat_5_label'        => 'Baptisms',
+		'stat_6_value'        => '18',
+		'stat_6_label'        => 'Clean water hand pumps installed',
 		// The home page design words two labels differently from the about page.
 		'home_stat_1_label'   => 'Communities reached',
 		'home_stat_2_label'   => 'Church planted included house churches',
 		'home_stat_3_label'   => 'Children supported',
 		'home_stat_4_label'   => 'Bible distributed',
 		'home_stat_5_label'   => 'Baptisms',
+		'home_stat_6_label'   => 'Clean water hand pumps installed',
 	);
 }
 
@@ -117,14 +120,14 @@ function krm_whatsapp_url() {
 }
 
 /**
- * The five impact stats. The numbers are shared; the home page has its own labels.
+ * The six impact stats. The numbers are shared; the home page has its own labels.
  *
  * @param string $context 'home' for the home page labels, '' for the about page labels.
  */
 function krm_stats( $context = '' ) {
 	$stats  = array();
 	$prefix = 'home' === $context ? 'home_' : '';
-	for ( $i = 1; $i <= 5; $i++ ) {
+	for ( $i = 1; $i <= 6; $i++ ) {
 		$stats[] = array(
 			'value' => krm_opt( "stat_{$i}_value" ),
 			'label' => krm_opt( "{$prefix}stat_{$i}_label" ),
@@ -134,7 +137,7 @@ function krm_stats( $context = '' ) {
 }
 
 /**
- * The five impact stats as krm_stats() returns them, without those whose number is not set yet for visitors
+ * The impact stats as krm_stats() returns them, without those whose number is not set yet for visitors
  * (keys kept, as some templates pick stats by position).
  *
  * @param string $context As krm_stats().

@@ -102,6 +102,7 @@ We pray for everyone who gives, and your gift will be used exactly where you ask
 			'current_tag'    => krm_f( 'text', __( 'Label on current project photos', 'kingdom-revival' ), 'CURRENT' ),
 			'upcoming_tag'   => krm_f( 'text', __( 'Label on upcoming project photos', 'kingdom-revival' ), 'UPCOMING' ),
 			'give_label'     => krm_f( 'text', __( 'Current: button text', 'kingdom-revival' ), 'Give to this project' ),
+			'more_label'     => krm_f( 'text', __( 'Current: detail page button text', 'kingdom-revival' ), 'Learn more' ),
 			'pledge_label'   => krm_f( 'text', __( 'Upcoming: button text', 'kingdom-revival' ), 'Pledge / Get notified' ),
 			'target_label'   => krm_f( 'text', __( 'Upcoming: “Target” label', 'kingdom-revival' ), 'Target' ),
 			'date_label'     => krm_f( 'text', __( 'Upcoming: “Planned” label', 'kingdom-revival' ), 'Planned' ),

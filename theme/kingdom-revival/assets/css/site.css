@@ -29,7 +29,7 @@ h1, h2, h3, h4 { color: var(--color-heading); font-family: var(--font-heading); 
 .page-hero .wrap { position: relative; padding: calc(clamp(72px, 10vw, 128px) + var(--hero-offset, 0px)) 0 clamp(64px, 8vw, 104px); }
 .page-hero .eyebrow { color: var(--orange); }
 .page-hero h1 { max-width: 820px; margin: 0; color: var(--color-white); font-size: var(--font-size-h1); font-weight: 800; line-height: 1.08; letter-spacing: -.03em; }
-.page-hero h1 em { color: var(--orange); font-style: normal; }
+.page-hero h1 em { color: var(--orange); font-style: italic; font-weight: 600; }
 .page-hero p.lead { max-width: 640px; margin: 20px 0 0; color: var(--color-text-on-dark-2); font-size: clamp(16px, 1.6vw, 19px); line-height: 1.75; }
 .breadcrumb { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; color: var(--color-footer-text); font-size: 14px; }
 .breadcrumb li + li::before { margin-right: 8px; content: "/"; opacity: .6; }

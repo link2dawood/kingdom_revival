@@ -1563,3 +1563,104 @@ add_action(
 		}
 	}
 );
+
+/*
+ * Theme 1.18.4: photos rotated in the image editor got their 4:3 card crops cut from the sideways original (see
+ * krm_card_stale()). Run the card backfill over every image once more; it now remakes those crops from the
+ * rotated file.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'krm_card_rotate_fix' ) ) {
+			return;
+		}
+		update_option( 'krm_card_rotate_fix', 1, false );
+		update_option( 'krm_card_backfill', 0 );
+	}
+);
+
+/*
+ * Theme 1.19.2: the home donation card's heading is a general line now. A saved heading still holding the old default
+ * ("Help Brick Kiln Children Go to School & Know Christ") is replaced; one typed by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		$front = (int) get_option( 'page_on_front' );
+		$saved = $front ? get_post_meta( $front, '_krm_content_home', true ) : null;
+		if ( is_array( $saved ) && isset( $saved['hero']['card_heading'] ) && 'Help Brick Kiln Children Go to School & Know Christ' === trim( (string) $saved['hero']['card_heading'] ) ) {
+			$saved['hero']['card_heading'] = 'Bring Hope to Pakistan’s Forgotten';
+			update_post_meta( $front, '_krm_content_home', $saved );
+		}
+	}
+);
+
+/*
+ * Theme 1.19.4: longer ministry short descriptions (the Excerpt, shown in the home "What We Do" explorer and on cards
+ * without their own card text). A ministry whose saved Excerpt is still the earlier default gets the new wording from
+ * inc/data/ministries.php; an Excerpt edited by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'krm_excerpt_version' ) >= 1 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_excerpt_version', 1 );
+		$data = krm_ministry_data();
+		foreach ( array(
+			'evangelism-outreach' => 'Taking the Gospel to villages and unreached communities across Pakistan.',
+			'church-planting' => 'Local congregations and house churches, led by pastors we train and walk alongside.',
+			'bible-distribution' => 'Placing Urdu Bibles in the hands of families and new believers.',
+			'leadership-training' => 'Equipping pastors and leaders to shepherd local and house churches.',
+			'baptisms-discipleship' => 'New believers publicly following Jesus Christ in baptism, and discipled to grow in their faith.',
+			'prayer-deliverance' => 'Prayer for the sick and oppressed in the power of Jesus Christ.',
+			'slavery-freedom' => 'Missions that help families held in debt bondage at brick kilns walk free.',
+			'brick-kiln-family-care' => 'Care, education and the Gospel for families who live and work beside the brick kilns.',
+			'children-orphan-care' => 'Shelter, food, schooling and daily care for orphaned and underprivileged children.',
+			'clean-water' => 'Safe drinking water for villages and kiln communities that go without.',
+			'widows-support' => 'Support, fellowship and practical help for widows in the church and village.',
+			'medical-health' => 'Free check-ups and medicine for brick kiln workers and village families.',
+		) as $slug => $old ) {
+			$post = krm_get_by_path( $slug, 'ministry' );
+			if ( $post && $old === trim( (string) $post->post_excerpt ) && isset( $data['items'][ $slug ]['excerpt'] ) ) {
+				wp_update_post(
+					array(
+						'ID'           => $post->ID,
+						'post_excerpt' => $data['items'][ $slug ]['excerpt'],
+					)
+				);
+			}
+		}
+	},
+	30
+);
+
+/*
+ * Theme 1.20.1: the home freedom section's heading and text have new wording. Saved values still holding the earlier
+ * defaults are replaced; text typed by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		$front = (int) get_option( 'page_on_front' );
+		$saved = $front ? get_post_meta( $front, '_krm_content_home', true ) : null;
+		if ( ! is_array( $saved ) || empty( $saved['freedom'] ) ) {
+			return;
+		}
+		$changed = false;
+		foreach ( array(
+			'heading' => array( 'Behind every brick, a family waiting to be free.', 'Behind every brick, a family <span class="hl">waiting to be free</span>.' ),
+			'text'    => array( 'Whole families labour at brick kilns under debts passed down for generations. Here is exactly how your gift brings a family out.', 'Whole families labour at brick kilns under debts that can pass from one generation to the next. This is how they become trapped, and how your gift can bring them out.' ),
+		) as $key => $pair ) {
+			if ( isset( $saved['freedom'][ $key ] ) && $pair[0] === trim( (string) $saved['freedom'][ $key ] ) ) {
+				$saved['freedom'][ $key ] = $pair[1];
+				$changed                  = true;
+			}
+		}
+		if ( $changed ) {
+			update_post_meta( $front, '_krm_content_home', $saved );
+		}
+	}
+);

@@ -113,11 +113,14 @@ function krm_settings_schema() {
 			'stat_4_label'      => array( __( 'Stat 4 label', 'kingdom-revival' ), 'text', '' ),
 			'stat_5_value'      => array( __( 'Stat 5 number', 'kingdom-revival' ), 'text', '' ),
 			'stat_5_label'      => array( __( 'Stat 5 label', 'kingdom-revival' ), 'text', '' ),
+			'stat_6_value'      => array( __( 'Stat 6 number', 'kingdom-revival' ), 'text', '' ),
+			'stat_6_label'      => array( __( 'Stat 6 label', 'kingdom-revival' ), 'text', '' ),
 			'home_stat_1_label' => array( __( 'Stat 1 label (home page)', 'kingdom-revival' ), 'text', __( 'The home page uses its own wording of each label.', 'kingdom-revival' ) ),
 			'home_stat_2_label' => array( __( 'Stat 2 label (home page)', 'kingdom-revival' ), 'text', '' ),
 			'home_stat_3_label' => array( __( 'Stat 3 label (home page)', 'kingdom-revival' ), 'text', '' ),
 			'home_stat_4_label' => array( __( 'Stat 4 label (home page)', 'kingdom-revival' ), 'text', '' ),
 			'home_stat_5_label' => array( __( 'Stat 5 label (home page)', 'kingdom-revival' ), 'text', '' ),
+			'home_stat_6_label' => array( __( 'Stat 6 label (home page)', 'kingdom-revival' ), 'text', '' ),
 		),
 	);
 }

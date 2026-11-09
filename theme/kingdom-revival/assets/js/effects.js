@@ -72,10 +72,13 @@
   /* ---------- Scroll progress bar and header state ---------- */
   var bar = doc.querySelector(".krm-progress");
   var header = doc.querySelector(".site-header");
+  var topbar = doc.querySelector(".topbar");
   var max = 0;
   var queued = false;
   function measure() {
     max = Math.max(0, html.scrollHeight - win.innerHeight);
+    // The home hero slides up under the top bar too (theme-global.css): its height, which wraps on small screens.
+    if (topbar) html.style.setProperty("--topbar-h", topbar.offsetHeight + "px");
     // Pages that (almost) fit the screen have nothing to show.
     if (bar) bar.classList.toggle("is-idle", max < 48);
   }
@@ -90,7 +93,11 @@
   win.addEventListener("scroll", queue, { passive: true });
   win.addEventListener("resize", remeasure, { passive: true });
   win.addEventListener("load", remeasure);
-  if ("ResizeObserver" in win) new ResizeObserver(remeasure).observe(doc.body); // images, fonts, opened panels
+  if ("ResizeObserver" in win) {
+    var ro = new ResizeObserver(remeasure);
+    ro.observe(doc.body); // images, fonts, opened panels
+    if (topbar) ro.observe(topbar);
+  }
   measure();
   draw();
 
@@ -109,6 +116,97 @@
   } else {
     bands.forEach(loadBand);
   }
+
+  /* ---------- Top bar verse: the full verse on hover (CSS), keyboard focus or a tap ---------- */
+  all("[data-krm-verse]").forEach(function (box) {
+    var btn = box.querySelector("button");
+    if (!btn) return;
+    function set(open) { btn.setAttribute("aria-expanded", open ? "true" : "false"); }
+    btn.addEventListener("click", function () { set(btn.getAttribute("aria-expanded") !== "true"); });
+    doc.addEventListener("click", function (e) { if (!box.contains(e.target)) set(false); });
+    doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && btn.getAttribute("aria-expanded") === "true") { set(false); btn.focus(); } });
+  });
+
+  /* ---------- Heading highlights (.hl): 1–2 key words of each main heading in the accent, italic ---------- */
+  // Words already marked in the content (<em>, or a span in the accent colour) are used as they are; otherwise the
+  // first phrases of this list found in the heading. The copy itself never changes.
+  var HL = ["Jesus Christ", "Vulnerable", "Brick Kiln Children", "Know Christ", "Our prayer", "Your gift", "your generosity",
+    "your giving", "Gospel hope", "Pakistan’s Forgotten", "Pakistan's Forgotten", "Bring Hope", "be free", "Punjab",
+    "in action", "the field", "Stand With Us", "pray with you", "faith", "on the ground", "news", "God’s Word", "New Life",
+    "Brick Kiln", "a person", "twelve expressions", "Growth", "a new beginning", "Still Ahead", "a Calling", "here to do",
+    "staff", "integrity", "the mission", "help", "God", "a project", "partner", "Partnership", "projects", "Testimonials",
+    "Gallery", "We Do", "ministry groups", "Ministries", "this work", "serves", "Outreach", "Church", "Bible", "Discipleship",
+    "Deliverance", "Freedom", "Orphan Care", "Clean Water", "Christian", "Widows", "Health", "Food", "Recovery", "Equipping",
+    "Sunday School", "planted", "completed", "photos", "hope", "Gospel", "an amount", "Search", "Categories", "updates"];
+  var LETTER = /[A-Za-zÀ-ɏ’']/;
+  function wrapFirst(h, phrase) {
+    var walker = doc.createTreeWalker(h, 4, null);
+    var lower = phrase.toLowerCase();
+    for (var n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (n.parentElement.closest(".hl")) continue;
+      var t = n.nodeValue;
+      var at = t.toLowerCase().indexOf(lower);
+      while (at > -1) {
+        var end = at + phrase.length;
+        if (!(at > 0 && LETTER.test(t[at - 1])) && !(end < t.length && LETTER.test(t[end]))) {
+          var mid = n.splitText(at);
+          mid.splitText(phrase.length);
+          var span = doc.createElement("span");
+          span.className = "hl";
+          mid.parentNode.replaceChild(span, mid);
+          span.appendChild(mid);
+          return true;
+        }
+        at = t.toLowerCase().indexOf(lower, at + 1);
+      }
+    }
+    return false;
+  }
+  // Main headings (26px and up, outside forms and popups), plus smaller titles marked data-krm-hl in the templates.
+  var heads = all("#main h1, #main h2, [data-krm-hl]").filter(function (h) {
+    return h.hasAttribute("data-krm-hl") || (!h.closest("form, [role='dialog'], .give-card, [data-krm-give-card]") && parseFloat(win.getComputedStyle(h).fontSize) >= 26);
+  });
+  heads.forEach(function (h) {
+    var marked = all("em, span[style*='--color-accent']", h);
+    marked.forEach(function (m) { m.classList.add("hl"); });
+    if (marked.length || h.querySelector(".hl")) return;
+    var done = 0;
+    for (var i = 0; i < HL.length && done < 2; i++) if (wrapFirst(h, HL[i])) done++;
+  });
+  // On light backgrounds the accent as text is too pale to read (2:1), so there it underlines the words instead
+  // (class hl--on-light: headings in a dark colour). Rechecked when the theme changes; dark mode always uses the text colour.
+  // On a mid-tone colour band (the red one) the accent is unreadable in both themes: class hl--plain, same stroke.
+  function rgb(c) { return (c.match(/[\d.]+/g) || []).map(Number); }
+  function lumOf(c) { var m = rgb(c); return m.length >= 3 ? (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255 : 1; }
+  function relLum(m) {
+    var f = function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(m[0]) + 0.7152 * f(m[1]) + 0.0722 * f(m[2]);
+  }
+  function bandColor(el) {
+    for (var p = el; p && p !== doc.body; p = p.parentElement) {
+      var cs = win.getComputedStyle(p);
+      if (cs.backgroundImage !== "none" && !/^linear-gradient/.test(cs.backgroundImage)) return null; // a photo under a dark overlay
+      var m = rgb(cs.backgroundColor);
+      if (m.length >= 3 && m[3] !== 0) return m;
+    }
+    return null;
+  }
+  function hlTone() {
+    var dark = current() === "dark";
+    all(".hl").forEach(function (el) {
+      var h = el.closest("h1, h2, h3, h4, h5, h6, [data-krm-hl]") || el.parentElement;
+      var light = lumOf(win.getComputedStyle(h).color) >= 0.45;
+      var bg = bandColor(h);
+      var acc = rgb(win.getComputedStyle(el).getPropertyValue("--color-accent").trim().replace(/^#(..)(..)(..)$/, function (x, r, g, b) { return parseInt(r, 16) + "," + parseInt(g, 16) + "," + parseInt(b, 16); }));
+      var ratio = 21;
+      if (bg && acc.length >= 3) { var a = relLum(acc), c = relLum(bg); ratio = (Math.max(a, c) + 0.05) / (Math.min(a, c) + 0.05); }
+      el.classList.toggle("hl--plain", light && ratio < 3);
+      if (!dark) el.classList.toggle("hl--on-light", !light);
+    });
+  }
+  hlTone();
+  doc.addEventListener("krm:themechange", hlTone);
+  if (darkMq.addEventListener) darkMq.addEventListener("change", hlTone);
 
   /* ---------- Scroll reveal ---------- */
   var main = doc.getElementById("main") || doc.querySelector("main");
