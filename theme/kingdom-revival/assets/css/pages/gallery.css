@@ -13,7 +13,21 @@
   .krm-chips { flex-wrap: nowrap; width: calc(100% + 32px); margin: 0 -16px; padding: 4px 16px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
   .krm-chips::-webkit-scrollbar { display: none; }
   .krm-chips button { scroll-snap-align: start; }
+  .krm-chips-wrap { width: 100%; }
 }
+/* "‹ ›" on the scrolling chip row (gallery.js shows each only when there is more that way), over a soft fade. */
+.krm-chips-wrap { position: relative; min-width: 0; }
+.krm-chips-nav { position: absolute; z-index: 2; top: 50%; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: var(--color-surface); color: var(--color-heading); cursor: pointer; transform: translateY(-50%); box-shadow: 0 2px 10px rgba(var(--shadow-rgb), calc(.18 * var(--shadow-k))), inset 0 0 0 1px color-mix(in srgb, var(--color-heading) 18%, transparent); }
+.krm-chips-nav[hidden] { display: none; }
+.krm-chips-nav svg { width: 18px; height: 18px; }
+.krm-chips-nav--next { right: -6px; }
+.krm-chips-nav--next svg { transform: rotate(-90deg); }
+.krm-chips-nav--prev { left: -6px; }
+.krm-chips-nav--prev svg { transform: rotate(90deg); }
+.krm-chips-nav:hover { color: var(--color-secondary-text); }
+.krm-chips-wrap.can-next::after, .krm-chips-wrap.can-prev::before { content: ""; position: absolute; z-index: 1; top: 0; bottom: 0; width: 64px; pointer-events: none; }
+.krm-chips-wrap.can-next::after { right: -16px; background: linear-gradient(to right, transparent, var(--color-bg) 70%); }
+.krm-chips-wrap.can-prev::before { left: -16px; background: linear-gradient(to left, transparent, var(--color-bg) 70%); }
 
 /* Layout: the shared justified rows (.krm-just in theme-global.css): every photo whole, at its own shape. */
 .krm-gal__tile { position: relative; overflow: hidden; margin: 0; aspect-ratio: var(--r); border-radius: 12px; background: var(--color-placeholder); isolation: isolate; }

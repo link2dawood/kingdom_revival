@@ -110,6 +110,9 @@ $krm_used = array_unique( array_merge( explode( ' ', implode( ' ', array_column(
 			</div>
 			<?php endif; ?>
 			<?php // Chips: "Everything", then each ministry that has photos (or videos) — never an empty chip. Shown by components.js. ?>
+			<div class="krm-chips-wrap" data-krm-scroller>
+			<?php // Phones / tablets: "‹ ›" buttons show there are more chips and scroll the row (assets/js/gallery.js); shown only when the row overflows that way. ?>
+			<button type="button" class="krm-chips-nav krm-chips-nav--prev" data-dir="-1" aria-label="<?php esc_attr_e( 'Previous filters', 'kingdom-revival' ); ?>" tabindex="-1" hidden><?php echo krm_icon( 'chev' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></button>
 			<div class="krm-chips" role="group" aria-label="<?php echo esc_attr( krm_fill( krm_c( 'labels.filter_label' ) ) ); ?>" data-krm-filter="gallery" data-param="ministry" hidden>
 				<button type="button" data-group="" aria-pressed="true"><?php krm_t( 'labels.all_label' ); ?></button>
 				<?php foreach ( $krm_list as $krm_m ) : ?>
@@ -120,6 +123,8 @@ $krm_used = array_unique( array_merge( explode( ' ', implode( ' ', array_column(
 				<?php if ( in_array( 'general', $krm_used, true ) ) : ?>
 				<button type="button" data-group="general" aria-pressed="false"><?php krm_t( 'labels.general' ); ?></button>
 				<?php endif; ?>
+			</div>
+			<button type="button" class="krm-chips-nav krm-chips-nav--next" data-dir="1" aria-label="<?php esc_attr_e( 'More filters', 'kingdom-revival' ); ?>" tabindex="-1" hidden><?php echo krm_icon( 'chev' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></button>
 			</div>
 		</div>
 		<p class="visually-hidden" aria-live="polite" data-krm-filter-status="gallery" data-text="<?php echo esc_attr( krm_fill( krm_c( 'labels.count_text' ) ) ); ?>"></p>
