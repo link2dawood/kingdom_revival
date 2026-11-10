@@ -130,7 +130,7 @@
   --space-7: 48px;
   --space-8: 64px;
   --space-section: clamp(64px, 8vw, 104px);   /* top and bottom of a page section */
-  --container-max: 1200px;
+  --container-max: 1280px;
   --container-gutter: 40px;                   /* 32px below 560px wide */
 
   /* Shapes and depth */
@@ -622,8 +622,8 @@
    they render as on the home page (front.css has no heading rules). */
 .krm-design :is(h1, h2, h3, h4) { color: inherit; letter-spacing: normal; line-height: inherit; }
 
-/* The design's section and container: 1240px, side padding clamp(16px, 3vw, 32px), section padding clamp(72px, 8vw, 110px). */
-.krm-container { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+/* The design's section and container: 1320px (was 1240px), side padding clamp(16px, 3vw, 32px), section padding clamp(72px, 8vw, 110px). */
+.krm-container { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .krm-band-soft { background: var(--color-bg-soft); }
 
 /* Ministry giving card (template-parts/ministry-card.php; .cause-card because the story sidebar already has a .ministry-card): the home design's "causes" card. */
@@ -832,7 +832,7 @@ a.work-card { display: flex; flex-direction: column; color: inherit; text-decora
 @media (max-width: 520px) { .cause-card-actions > a { flex: 1 1 100%; justify-content: center; } }
 
 /* Banner with text and buttons (About → Join the Mission): the home page CTA banner. */
-.cta-banner { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 100px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.cta-banner { max-width: 1320px; margin: 0 auto; padding: clamp(64px, 7vw, 100px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .cta-banner > div { display: flex; flex-wrap: wrap; gap: 24px 48px; align-items: center; justify-content: space-between; padding: clamp(32px, 5vw, 56px); border-radius: 14px; background: var(--color-band); color: var(--color-white); }
 .cta-banner-text { flex: 999 1 480px; min-width: 0; }
 .cta-banner h2 { margin: 0; color: var(--color-white); font-size: clamp(24px, 2.8vw, 34px); font-weight: 800; line-height: 1.25; letter-spacing: normal; }

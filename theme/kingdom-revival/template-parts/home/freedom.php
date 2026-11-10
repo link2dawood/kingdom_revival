@@ -15,7 +15,7 @@ $krm_screen = isset( $args['screen'] ) ? (string) $args['screen'] : ''; // 'home
 ?>
 <!-- Flagship: Freedom from Slavery -->
 <section id="freedom"<?php echo krm_photo_band_attrs( krm_c( 'freedom.band_photo', $krm_screen ), 'freedom' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> style="background: var(--color-band); color: var(--color-white)">
-<div style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
+<div style="max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
 <div style="display: flex; flex-wrap: wrap; gap: 24px 64px; margin-bottom: 44px">
 <div style="flex: 999 1 520px; min-width: 0">
 <p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-accent)"><?php krm_t( 'freedom.eyebrow', $krm_screen ); ?></p>
@@ -55,13 +55,13 @@ $krm_screen = isset( $args['screen'] ) ? (string) $args['screen'] : ''; // 'home
 <div data-krm-compare style="position: relative; height: clamp(300px, 40vw, 520px); overflow: hidden; border-radius: 14px; margin-top: 40px; background: var(--color-band-3)">
 <div style="position: absolute; inset: 0; background: var(--color-placeholder-2); display: flex; align-items: flex-end; justify-content: flex-end; padding: 18px">
 <?php if ( krm_c( 'freedom.after', $krm_screen ) ) : ?>
-<img loading="lazy" decoding="async" <?php krm_img_src( krm_c( 'freedom.after', $krm_screen ), '(max-width: 1240px) 100vw, 1176px' ); ?> alt="<?php echo krm_alt( krm_c( 'freedom.after', $krm_screen ), krm_c( 'freedom.after_alt', $krm_screen ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+<img loading="lazy" decoding="async" <?php krm_img_src( krm_c( 'freedom.after', $krm_screen ), '(max-width: 1320px) 100vw, 1256px' ); ?> alt="<?php echo krm_alt( krm_c( 'freedom.after', $krm_screen ), krm_c( 'freedom.after_alt', $krm_screen ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
 <?php endif; ?>
 <span style="position: relative; background: var(--color-surface); color: var(--color-text); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 700"><?php krm_t( 'freedom.after_label', $krm_screen ); ?></span>
 </div>
 <div data-krm-compare-before style="position: absolute; inset: 0; background: var(--color-placeholder-3); clip-path: inset(0 50% 0 0); display: flex; align-items: flex-end; padding: 18px">
 <?php if ( krm_c( 'freedom.before', $krm_screen ) ) : ?>
-<img loading="lazy" decoding="async" <?php krm_img_src( krm_c( 'freedom.before', $krm_screen ), '(max-width: 1240px) 100vw, 1176px' ); ?> alt="<?php echo krm_alt( krm_c( 'freedom.before', $krm_screen ), krm_c( 'freedom.before_alt', $krm_screen ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+<img loading="lazy" decoding="async" <?php krm_img_src( krm_c( 'freedom.before', $krm_screen ), '(max-width: 1320px) 100vw, 1256px' ); ?> alt="<?php echo krm_alt( krm_c( 'freedom.before', $krm_screen ), krm_c( 'freedom.before_alt', $krm_screen ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
 <?php endif; ?>
 <span style="position: relative; background: var(--color-secondary); color: var(--color-white); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 700"><?php krm_t( 'freedom.before_label', $krm_screen ); ?></span>
 </div>

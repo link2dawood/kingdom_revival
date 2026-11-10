@@ -14,7 +14,7 @@ if ( ! $krm_stats ) {
 }
 ?>
 <!-- Stats bar -->
-<section aria-label="Impact" style="position: relative; max-width: 1240px; margin: -64px auto 0; padding: 0 clamp(16px, 3vw, 32px)">
+<section aria-label="Impact" style="position: relative; max-width: 1320px; margin: -64px auto 0; padding: 0 clamp(16px, 3vw, 32px)">
 <div style="display: flex; flex-wrap: wrap; gap: 0; background: var(--color-surface); border-radius: 10px; box-shadow: 0 14px 40px rgba(var(--shadow-rgb), calc(0.12 * var(--shadow-k))); overflow: hidden">
 <div style="flex: 3 1 560px; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; padding: 24px 28px">
 <?php foreach ( $krm_stats as $krm_i => $krm_stat ) : ?>

@@ -1,7 +1,7 @@
 /* Home page only, from the home page design (it does not load site.css). Design tokens and the components
    shared with the inner pages are in theme-global.css. */
   .krm-field-stories { background: var(--color-band); color: var(--color-white); }
-  .krm-field-stories__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); }
+  .krm-field-stories__inner { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); }
   .krm-field-stories__intro { max-width: 760px; margin: 0 auto 38px; text-align: center; }
   .krm-field-stories__eyebrow { margin: 0 0 10px; color: var(--color-accent); font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
   .krm-field-stories__intro h2 { margin: 0 0 14px; font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; line-height: 1.2; }
@@ -55,7 +55,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 /* Home: mission statement after the ministry explorer (template-parts/home/mission.php). A navy band in both themes, so
    the accent line keeps its contrast; the ghost word sits behind the content, clipped by the section. */
 .krm-mission { position: relative; overflow: hidden; isolation: isolate; background: var(--color-band); color: var(--color-text-on-dark); }
-.krm-mission__inner { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) clamp(140px, 18vw, 280px); box-sizing: border-box; }
+.krm-mission__inner { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) clamp(140px, 18vw, 280px); box-sizing: border-box; }
 .krm-mission__inner > * { max-width: 680px; }
 .krm-mission__eyebrow { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; font-family: var(--font-body); font-size: 13px; font-weight: var(--font-weight-bold); letter-spacing: .22em; text-transform: uppercase; color: var(--color-accent); }
 .krm-mission__eyebrow::before { content: ""; flex: none; width: 36px; height: 2px; background: currentColor; }
@@ -72,7 +72,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 
 /* Home: About (template-parts/home/about.php) — copy + three-photo collage with the "Since" badge, four focus cards. */
 .krm-about { background: var(--color-bg-soft); }
-.krm-about__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.krm-about__inner { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .krm-about__intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 48px clamp(40px, 6vw, 80px); align-items: center; }
 .krm-about__eyebrow { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; font-size: 13px; font-weight: var(--font-weight-bold); letter-spacing: .22em; text-transform: uppercase; color: var(--color-secondary-text); }
 .krm-about__eyebrow::before { content: ""; flex: none; width: 32px; height: 2px; background: currentColor; }
@@ -139,7 +139,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 
 /* ---------- "Your gift at work" gift calculator (template-parts/home/gift-calculator.php, front.js) ----------
    A navy panel in both themes, so the accent reads as text on it (orange on navy, well over 4.5:1). */
-.krm-calc { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px) 0; }
+.krm-calc { max-width: 1320px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px) 0; }
 .krm-calc__head { margin-bottom: 28px; }
 .krm-calc__title { margin: 0; font-size: clamp(26px, 2.8vw, 34px); font-weight: 800; color: var(--color-heading); }
 .krm-calc__lead { margin: 6px 0 0; color: var(--color-text-muted); }
@@ -211,7 +211,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
    The map (assets/images/pakistan-map.svg) is inline; towns are HTML marks at % of the map with leader lines. */
 #where.krm-where { position: relative; overflow: hidden; color: var(--color-white); background-color: var(--color-band-deep); }
 #where.krm-where[data-photo-band] { --band-overlay: linear-gradient(100deg, color-mix(in srgb, var(--color-band-deep) 95%, transparent) 0%, color-mix(in srgb, var(--color-band-deep) 90%, transparent) 50%, color-mix(in srgb, var(--color-band-deep) 82%, transparent) 100%); }
-.krm-where__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: center; }
+.krm-where__inner { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: center; }
 .krm-where__text { position: relative; z-index: 2; min-width: 0; }
 .krm-where__eyebrow { margin: 0 0 12px; color: var(--color-accent); font-size: 13px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
 .krm-where__title { margin: 0; color: var(--color-white); font-size: clamp(32px, 3.8vw, 46px); font-weight: 800; line-height: 1.12; }
@@ -266,7 +266,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 
 /* Clean water (template-parts/home/water.php): compact text beside a photo, stacked below 900px. Verse: .krm-about__verse. */
 .krm-water { background: var(--color-bg-soft, var(--color-bg)); }
-.krm-water__inner { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(32px, 5vw, 72px); align-items: center; max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.krm-water__inner { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(32px, 5vw, 72px); align-items: center; max-width: 1320px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .krm-water__eyebrow { margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--color-secondary-text); }
 .krm-water__title { margin: 0; font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; line-height: 1.15; color: var(--color-heading); }
 .krm-water__lead { margin: 18px 0 0; font-size: var(--font-size-lead, 18px); line-height: 1.75; color: var(--color-text-muted); }

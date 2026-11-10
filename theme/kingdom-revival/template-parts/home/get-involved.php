@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 $krm_screen = isset( $args['screen'] ) ? (string) $args['screen'] : ''; // 'home' when shown on another page.
 ?>
 <!-- Pray Give Go -->
-<section style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
+<section style="max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
 <div style="text-align: center; max-width: 680px; margin: 0 auto 44px">
 <p style="margin: 0 0 8px; font-weight: 700; color: var(--color-secondary-text)"><?php krm_t( 'involved.eyebrow', $krm_screen ); ?></p>
 <h2 style="margin: 0; font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; line-height: 1.2"><?php krm_h( 'involved.heading', $krm_screen ); ?></h2>

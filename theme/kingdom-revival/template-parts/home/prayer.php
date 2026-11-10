@@ -26,7 +26,7 @@ $krm_err = function ( $key ) use ( $krm_form ) {
 $krm_input = "font: 400 16px var(--font-body); padding: 12px 14px; border: 1px solid var(--color-input-border); border-radius: 8px; background: var(--color-surface); color: var(--color-text); min-height: 46px; box-sizing: border-box";
 ?>
 <!-- Prayer request -->
-<section id="<?php echo esc_attr( $krm_id ); ?>" style="max-width: 1240px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 32px) clamp(72px, 8vw, 110px)">
+<section id="<?php echo esc_attr( $krm_id ); ?>" style="max-width: 1320px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 32px) clamp(72px, 8vw, 110px)">
 <div style="border-radius: 16px; background: var(--color-bg-soft); padding: clamp(28px, 4vw, 52px); display: flex; flex-wrap: wrap; gap: 32px 56px">
 <div style="flex: 1 1 320px; min-width: 0">
 <p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary-text)"><?php krm_t( 'prayer.eyebrow', $krm_screen ); ?></p>

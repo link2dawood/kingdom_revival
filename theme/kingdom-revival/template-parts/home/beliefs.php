@@ -18,7 +18,7 @@ $krm_none = ! array_filter(
 );
 ?>
 <!-- Beliefs + Team -->
-<section id="beliefs" style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) 0; display: flex; flex-wrap: wrap; gap: 48px 64px">
+<section id="beliefs" style="max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) 0; display: flex; flex-wrap: wrap; gap: 48px 64px">
 <div style="flex: 1 1 400px; min-width: 0">
 <p style="<?php echo esc_attr( $krm_eyebrow ); ?>"><?php krm_t( 'beliefs.eyebrow' ); ?></p>
 <h2 style="<?php echo esc_attr( $krm_heading ); ?>"><?php krm_h( 'beliefs.heading' ); ?></h2>

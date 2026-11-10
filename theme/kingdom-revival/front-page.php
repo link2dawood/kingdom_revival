@@ -36,7 +36,6 @@ get_template_part( 'template-parts/home/stories' );
 get_template_part( 'template-parts/home/get-involved' );
 get_template_part( 'template-parts/home/prayer' );
 get_template_part( 'template-parts/home/founder' );
-get_template_part( 'template-parts/home/beliefs' );
 get_template_part( 'template-parts/home/news' );
 get_template_part( 'template-parts/home/cta' );
 get_template_part( 'template-parts/home/whatsapp' );
