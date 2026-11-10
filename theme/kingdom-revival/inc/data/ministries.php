@@ -878,8 +878,117 @@ return array(
 				'Brick kiln communities',
 			),
 			'sections' => array(),
-			'photos' => array(),
-			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg',
+			'photos' => array(
+				array(
+					'krm-theme:images/content/clean-water-project-06.jpg',
+					'Families at a brick kiln raising their hands to celebrate a new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-02.jpg',
+					'A boy at a brick kiln washing under water from a new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-04.jpg',
+					'A man drawing water from a new hand pump beside the "Clean Water, Pure Hope" banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-18.jpg',
+					'A man pumping water into a bucket at a newly installed hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-24.jpg',
+					'Children and families celebrating around a new hand pump with the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-15.jpg',
+					'A woman washing a dish under a new hand pump beside the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-20.jpg',
+					'A team member standing beside a new hand pump and the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-09.jpg',
+					'A crowd of brick kiln families and children gathered at their new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-14.jpg',
+					'A woman filling a bucket with clean water at a hand pump in a village lane',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-01.jpg',
+					'A pastor working a new hand pump at a brick kiln while children watch',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-03.jpg',
+					'A smiling boy splashing clean water from a hand pump on his face',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-05.jpg',
+					'A woman pumping clean water at a brick kiln beside the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-07.jpg',
+					'Children beside a new hand pump and the Clean Water banner at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-08.jpg',
+					'A team member standing at a newly built hand pump at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-10.jpg',
+					'Men, women and children of a brick kiln community at the new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-11.jpg',
+					'Brick kiln families waving together beside their new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-12.jpg',
+					'Children and adults raising their hands in thanks at a new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-13.jpg',
+					'Children cheering with a team member next to the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-16.jpg',
+					'A woman drinking from a new hand pump in a narrow village lane',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-17.jpg',
+					'A new hand pump on a concrete base in a village lane, beside the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-19.jpg',
+					'A newly installed hand pump on a fresh concrete base in an open field',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-21.jpg',
+					'A team member waving beside a newly installed hand pump in a field',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-22.jpg',
+					'Families from a brick kiln sitting together on mats for the hand pump dedication',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-23.jpg',
+					'Women and children of a brick kiln community gathered for the new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-25.jpg',
+					'A community and the team cheering at a new hand pump in a field',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-26.jpg',
+					'A boy raising his arms beside a new hand pump and the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-27.jpg',
+					'A child cheering beside a new hand pump and the Clean Water banner',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/clean-water-project-06.jpg',
 			'raised' => '2600',
 			'goal' => '9000',
 			'gifts' => array(
@@ -917,8 +1026,22 @@ return array(
 				'Prayer and pastoral visits',
 			),
 			'sections' => array(),
-			'photos' => array(),
-			'explorer_image' => '',
+			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
+			'photos' => array(
+				array(
+					'krm-theme:images/content/persecuted-christians-1.jpg',
+					'A pastor visiting an elderly believer at his village home and giving him an Urdu Bible',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-2.jpg',
+					'A pastor standing with an elderly believer outside his home',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-3.jpg',
+					'A pastor meeting an elderly believer in his village and giving him a Bible',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/persecuted-christians-1.jpg',
 			'raised' => '1200',
 			'goal' => '5000',
 			'gifts' => array(
@@ -1010,7 +1133,25 @@ return array(
 				'Support for brick kiln workers and village families',
 			),
 			'sections' => array(),
-			'photos' => array(),
+			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
+			'photos' => array(
+				array(
+					'krm-theme:images/content/medical-health-1.jpg',
+					'A pastor visiting a sick woman at her home and praying with her',
+				),
+				array(
+					'krm-theme:images/content/medical-health-2.jpg',
+					'Praying beside a sick woman resting on her bed',
+				),
+				array(
+					'krm-theme:images/content/medical-health-3.jpg',
+					'An elderly woman in a wheelchair receiving prayer and care',
+				),
+				array(
+					'krm-theme:images/content/medical-health-4.jpg',
+					'A pastor praying for an elderly woman who cannot walk',
+				),
+			),
 			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg',
 			'raised' => '2900',
 			'goal' => '9500',
@@ -1050,8 +1191,34 @@ return array(
 				'Emergency food after a crisis',
 			),
 			'sections' => array(),
-			'photos' => array(),
-			'explorer_image' => '',
+			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
+			'photos' => array(
+				array(
+					'krm-theme:images/content/food-relief-1.jpg',
+					'Rows of food parcels — sacks of flour and bags of groceries — ready for brick kiln families',
+				),
+				array(
+					'krm-theme:images/content/food-relief-2.jpg',
+					'A pastor serving a hot meal to children sitting together at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-3.jpg',
+					'A mother and her children with their food parcel at the kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-4.jpg',
+					'A little girl with her plate of rice and a juice box',
+				),
+				array(
+					'krm-theme:images/content/food-relief-5.jpg',
+					'Children sharing a meal on mats laid out on a rooftop',
+				),
+				array(
+					'krm-theme:images/content/food-relief-6.jpg',
+					'A ministry worker handing out bread to children at a brick kiln',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/food-relief-1.jpg',
 			'raised' => '1400',
 			'goal' => '6000',
 			'gifts' => array(
@@ -1082,8 +1249,30 @@ return array(
 				'Rebuilding homes and livelihoods',
 			),
 			'sections' => array(),
-			'photos' => array(),
-			'explorer_image' => '',
+			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
+			'photos' => array(
+				array(
+					'krm-theme:images/content/disaster-relief-5.jpg',
+					'A ministry worker with a family receiving a relief sack outside their mud-brick home',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-1.jpg',
+					'Warm clothes and blankets laid out, ready to give to brick kiln families',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-2.jpg',
+					'A pastor with children beside piles of donated clothes and blankets',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-3.jpg',
+					'Children at a brick kiln wearing new winter jackets and hats',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-4.jpg',
+					'A crowd of brick kiln children in warm clothes, waving, in front of the kiln chimney',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/disaster-relief-5.jpg',
 			'raised' => '1100',
 			'goal' => '8000',
 			'gifts' => array(

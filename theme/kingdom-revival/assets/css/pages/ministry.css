@@ -7,6 +7,7 @@
 
 /* Layout: the content column with the donation card beside it (sticky under the header). */
 .ministry-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 48px; align-items: start; padding: clamp(56px, 7vw, 88px) 0; }
+.ministry-soon-photos { padding: clamp(48px, 6vw, 72px) 0 0; }
 .ministry-main { min-width: 0; }
 .ministry-main > * + * { margin-top: clamp(56px, 7vw, 80px); }
 .ministry-aside { position: sticky; top: 104px; }

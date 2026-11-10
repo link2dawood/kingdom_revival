@@ -1835,3 +1835,42 @@ add_action(
 	},
 	33
 );
+
+/**
+ * Theme 1.22.4: the client's Clean Water Project photos (assets/images/content/clean-water-project-01…27.jpg, listed in
+ * inc/data/ministries.php). An existing Clean Water Projects ministry whose gallery is still empty gets them with
+ * their captions, and its photo on cards / the home explorer, while still the shared placeholder ("General pictures
+ * 14"), becomes the celebrating families photo. A gallery or photo chosen by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_water_photos_version' ) >= 1 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_water_photos_version', 1 );
+		$post = krm_get_by_path( 'clean-water', 'ministry' );
+		$data = krm_ministry_data();
+		if ( ! $post || empty( $data['items']['clean-water']['photos'] ) ) {
+			return;
+		}
+		$m = $data['items']['clean-water'];
+		if ( ! array_filter( (array) get_post_meta( $post->ID, '_krm_gallery', true ) ) ) {
+			$alts = array();
+			foreach ( $m['photos'] as $photo ) {
+				$alts[ $photo[0] ] = $photo[1];
+			}
+			update_post_meta( $post->ID, '_krm_gallery', wp_list_pluck( $m['photos'], 0 ) );
+			update_post_meta( $post->ID, '_krm_photo_alts', $alts );
+		}
+		$placeholder = 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg';
+		$explorer    = (string) get_post_meta( $post->ID, '_krm_explorer_image', true );
+		if ( '' === $explorer || $placeholder === $explorer || ( krm_media_id( $placeholder ) && (string) krm_media_id( $placeholder ) === $explorer ) ) {
+			update_post_meta( $post->ID, '_krm_explorer_image', $m['explorer_image'] );
+		}
+		if ( function_exists( 'krm_purge_page_caches' ) ) {
+			krm_purge_page_caches();
+		}
+	},
+	34
+);

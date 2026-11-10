@@ -14,7 +14,8 @@
  *  Special layouts: the freedom steps and before/after slider ('layout' => 'freedom'), churches planted and the
  *  camps / projects timeline (each shown only when it has rows).
  *  8. Other ministries of the same group.    9. CTA banner (the home page's).
- *  A "coming soon" ministry (Phase 22, krm_ministry_soon()) shows only 1 (with Donate and Contact us) and 8.
+ *  A "coming soon" ministry (Phase 22, krm_ministry_soon()) shows only 1 (with Donate and Contact us), its photos (5,
+ *  since theme 1.22.4; nothing when it has none) and 8.
  *
  * @package Kingdom_Revival
  */
@@ -37,6 +38,9 @@ while ( have_posts() ) :
 		<?php get_template_part( 'template-parts/ministry/hero', null, $krm_args ); ?>
 
 		<?php if ( ! empty( $krm_m['soon'] ) ) : ?>
+			<?php if ( $krm_photos ) : ?>
+			<div class="wrap ministry-soon-photos"><?php get_template_part( 'template-parts/ministry/gallery', null, $krm_args ); ?></div>
+			<?php endif; ?>
 			<?php get_template_part( 'template-parts/ministry/others', null, $krm_args ); ?>
 		<?php else : ?>
 		<div class="wrap ministry-layout">
