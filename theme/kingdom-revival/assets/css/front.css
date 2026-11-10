@@ -90,7 +90,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 }
 .krm-mission__eyebrow { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; font-family: var(--font-body); font-size: 13px; font-weight: var(--font-weight-bold); letter-spacing: .22em; text-transform: uppercase; color: var(--color-accent); }
 .krm-mission__title { margin: 0; font-size: clamp(38px, 5vw, 60px); font-weight: 700; line-height: 1.08; letter-spacing: -.01em; color: var(--color-white); text-wrap: initial; max-width: 860px; }
-.krm-mission__title em { display: table; margin-top: .08em; padding: 0 .12em; border-radius: 2px; background: linear-gradient(var(--color-highlight-bg), var(--color-highlight-bg)) 0 58% / 100% 80% no-repeat; color: var(--color-highlight-text); font-style: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; font-weight: inherit; }
+.krm-mission__title em { display: inline; padding: 0 .12em; border-radius: 2px; background: linear-gradient(var(--color-highlight-bg), var(--color-highlight-bg)) 0 58% / 100% 80% no-repeat; color: var(--color-highlight-text); font-style: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; font-weight: inherit; }
 .krm-mission__text { margin: 24px 0 0; font-family: var(--font-body); font-size: var(--font-size-lead); line-height: 1.75; }
 .krm-mission__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
 .krm-mission__actions .button { box-sizing: border-box; text-transform: uppercase; letter-spacing: .08em; }

@@ -26,7 +26,7 @@ $krm_sl = array_values(
 <div class="krm-mission__inner<?php echo $krm_sl ? ' krm-mission__inner--slider' : ''; ?>" data-reveal>
 <div class="krm-mission__copy">
 <p class="krm-mission__eyebrow"><?php krm_t( 'mission.eyebrow' ); ?></p>
-<h2 id="krm-mission-title" class="krm-mission__title"><?php krm_t( 'mission.heading1' ); ?> <em><?php krm_t( 'mission.heading2' ); ?></em></h2>
+<h2 id="krm-mission-title" class="krm-mission__title"><?php krm_t( 'mission.heading1' ); ?><br> <em><?php krm_t( 'mission.heading2' ); ?></em></h2>
 <p class="krm-mission__text"><?php krm_t( 'mission.text' ); ?></p>
 <blockquote class="krm-mission__verse">
 <p><?php krm_t( 'mission.quote' ); ?></p>

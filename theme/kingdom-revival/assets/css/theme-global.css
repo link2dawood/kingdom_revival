@@ -1192,7 +1192,7 @@ input, select, textarea, button { font-family: inherit; }
 .hl, .hl.hl--on-light { padding: 0 .12em; border-radius: 2px; background: linear-gradient(var(--color-highlight-bg), var(--color-highlight-bg)) 0 58% / 100% 80% no-repeat; color: var(--color-highlight-text); font-family: var(--font-heading); font-size-adjust: ex-height .44; font-style: normal; font-weight: inherit; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 :root .hl.hl--plain { background: linear-gradient(var(--color-highlight-bg-alt), var(--color-highlight-bg-alt)) 0 58% / 100% 80% no-repeat; color: var(--color-highlight-text); }
 /* Headings with a highlight block get a little more line spacing, so the blocks of two lines don't touch. */
-.page-hero h1:has(.hl, em), #top .hero-title:has(.hl) { line-height: 1.16; }
+.page-hero h1:has(.hl, em), #top .hero-title:has(.hl), .krm-mission__title:has(em) { line-height: 1.18; }
 
 /* ---------- Top bar verse (John 3:16), centred between the contacts and the social links / Donate ----------
    Full verse on hover, keyboard focus or a tap (effects.js). From 1100px down it gets its own centred row. */
