@@ -103,7 +103,7 @@ return array(
 			'verse_cite'    => krm_f( 'text', __( 'Scripture reference', 'kingdom-revival' ), 'Matthew 28:19' ),
 			'button_label'  => krm_f( 'text', __( 'Button text', 'kingdom-revival' ), 'Our Story' ),
 			'button_url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '{about}' ),
-			'founder_photo' => krm_f( 'image', __( 'Founder: photo', 'kingdom-revival' ), 'krm-theme:images/content/team-adil-arif.jpg' ),
+			'founder_photo' => krm_f( 'image', __( 'Founder: photo', 'kingdom-revival' ), 'krm-theme:images/content/pastor-adil-arif.jpg' ),
 			'founder_name'  => krm_f( 'text', __( 'Founder: link text', 'kingdom-revival' ), 'Meet Pastor Adil Arif' ),
 			'founder_role'  => krm_f( 'text', __( 'Founder: role', 'kingdom-revival' ), 'Founder & Pastor' ),
 			'founder_url'   => krm_f( 'url', __( 'Founder: link', 'kingdom-revival' ), '{about}#founder-story' ),
@@ -171,11 +171,29 @@ return array(
 			'button2_label' => krm_f( 'text', __( 'Second button text', 'kingdom-revival' ), 'See Our Impact' ),
 			'button2_url'   => krm_f( 'url', __( 'Second button link', 'kingdom-revival' ), '{impact}' ),
 			'ghost'         => krm_f( 'text', __( 'Large faint word behind the section (decoration)', 'kingdom-revival' ), 'Hope' ),
+			'slides'        => krm_list_f(
+				__( 'Photo slider', 'kingdom-revival' ),
+				__( 'Slide', 'kingdom-revival' ),
+				array(
+					'image' => krm_f( 'image', __( 'Photo', 'kingdom-revival' ) ),
+					'alt'   => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ) ),
+					'title' => krm_f( 'text', __( 'Caption: title (accent colour)', 'kingdom-revival' ) ),
+					'meta'  => krm_f( 'text', __( 'Caption: place / year', 'kingdom-revival' ) ),
+				),
+				array(
+					array( 'image' => 'krm-theme:images/content/church-planting-8.jpg', 'alt' => 'A pastor preaching to brick kiln families gathered on mats', 'title' => 'Church at the brick kilns', 'meta' => 'Faisalabad' ),
+					array( 'image' => 'krm-theme:images/content/clean-water-2.jpg', 'alt' => 'A ministry worker pumping clean water for children at a new hand pump', 'title' => 'Clean water hand pump', 'meta' => 'Punjab' ),
+					array( 'image' => 'krm-theme:images/content/outreach-ministry-7.jpg', 'alt' => 'The ministry team handing out food bags to a brick kiln family', 'title' => 'Food for kiln families', 'meta' => 'Punjab' ),
+					array( 'image' => 'krm-theme:images/content/church-planting-6.jpg', 'alt' => 'Families listening to the Gospel beside stacks of bricks and a wooden cross', 'title' => 'Gospel gathering', 'meta' => 'Brick kiln, Punjab' ),
+					array( 'image' => 'krm-theme:images/content/outreach-ministry-12.jpg', 'alt' => 'A widow at a brick kiln with the food bags she received', 'title' => 'Caring for widows', 'meta' => 'Punjab' ),
+				),
+				__( 'Photos beside the text, one at a time; they change every few seconds and can be moved with the arrows. The caption shows the title in the accent colour, then the place / year. Delete every slide to hide the slider.', 'kingdom-revival' )
+			),
 		),
 	),
 	'water'    => array(
 		'label'  => __( 'Clean water', 'kingdom-revival' ),
-		'help'   => __( 'The section after "Bringing Christ". The number is the clean water hand pumps impact number (Kingdom Revival → Settings → Impact numbers). Until a photo is chosen, visitors see a plain tinted box. Leave a button text empty to hide that button.', 'kingdom-revival' ),
+		'help'   => __( 'The section after "Bringing Christ". The number is the clean water hand pumps impact number (Kingdom Revival → Settings → Impact numbers). Up to three photos (one tall, two stacked); they open in the photo viewer. With all three empty, visitors see a plain tinted box. Leave a button text empty to hide that button.', 'kingdom-revival' ),
 		'fields' => array(
 			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Clean water' ),
 			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), '<span class="hl">Clean water</span> for brick kiln families', $krm_hl ),
@@ -183,8 +201,12 @@ return array(
 			'stat_label'    => krm_f( 'text', __( 'Label under the number', 'kingdom-revival' ), 'Clean water hand pumps installed' ),
 			'quote'         => krm_f( 'textarea', __( 'Scripture', 'kingdom-revival' ), '“But whosoever drinketh of the water that I shall give him shall never thirst.”' ),
 			'cite'          => krm_f( 'text', __( 'Scripture reference', 'kingdom-revival' ), 'John 4:14' ),
-			'image'         => krm_f( 'image', __( 'Photo of a hand pump (empty = a plain tinted box)', 'kingdom-revival' ), '' ),
-			'image_alt'     => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ), 'Families drawing clean water from a hand pump at a brick kiln' ),
+			'image'         => krm_f( 'image', __( 'Large photo (left; all three empty = a plain tinted box)', 'kingdom-revival' ), 'krm-theme:images/content/clean-water-1.jpg' ),
+			'image_alt'     => krm_f( 'text', __( 'Large photo description (alt text)', 'kingdom-revival' ), 'A smiling boy rinsing off under a new hand pump at a brick kiln while other children cup their hands for water' ),
+			'image2'        => krm_f( 'image', __( 'Second photo (top right)', 'kingdom-revival' ), 'krm-theme:images/content/clean-water-2.jpg' ),
+			'image2_alt'    => krm_f( 'text', __( 'Second photo description (alt text)', 'kingdom-revival' ), 'A ministry worker pumping clean water for children at a brick kiln' ),
+			'image3'        => krm_f( 'image', __( 'Third photo (bottom right)', 'kingdom-revival' ), 'krm-theme:images/content/clean-water-3.jpg' ),
+			'image3_alt'    => krm_f( 'text', __( 'Third photo description (alt text)', 'kingdom-revival' ), 'A woman filling a bucket at a hand pump beside the kiln homes' ),
 			'button1_label' => krm_f( 'text', __( 'First button text', 'kingdom-revival' ), 'Help Provide Clean Water' ),
 			'button1_url'   => krm_f( 'url', __( 'First button link', 'kingdom-revival' ), '{donate}?ministry=clean-water#give' ),
 			'button2_label' => krm_f( 'text', __( 'Second button text', 'kingdom-revival' ), 'Learn More' ),
@@ -546,7 +568,7 @@ return array(
 	'founder'  => array(
 		'label'  => __( 'Founder', 'kingdom-revival' ),
 		'fields' => array(
-			'image'          => krm_f( 'image', __( 'Photo', 'kingdom-revival' ), 'krm-theme:images/content/founder-adil-arif.jpg' ),
+			'image'          => krm_f( 'image', __( 'Photo', 'kingdom-revival' ), 'krm-theme:images/content/pastor-adil-arif.jpg' ),
 			'image_alt'      => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ), 'Pastor Adil Arif, founder of Kingdom Revival Ministries' ),
 			'eyebrow'        => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Founder & Pastor' ),
 			'heading'        => krm_f( 'html', __( 'Name', 'kingdom-revival' ), 'Pastor Adil Arif' ),

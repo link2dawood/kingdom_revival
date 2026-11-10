@@ -54,6 +54,8 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Web3Forms for the form emails, social links in a new tab (theme 1.18.2)](#kingdom-revival-ministries-web3forms-for-the-form-emails-social-links-in-a-new-tab-theme-1182)
 - [Kingdom Revival Ministries: New Web3Forms access key (theme 1.18.3)](#kingdom-revival-ministries-new-web3forms-access-key-theme-1183)
 - [Kingdom Revival Ministries: New fonts, John 3:16 in the top bar, see-through home header, heading highlights (theme 1.19.0)](#kingdom-revival-ministries-new-fonts-john-316-in-the-top-bar-see-through-home-header-heading-highlights-theme-1190)
+- [Kingdom Revival Ministries: New home About section (theme 1.19.3)](#kingdom-revival-ministries-new-home-about-section-theme-1193)
+- [Kingdom Revival Ministries: Pastor photo, block heading highlights, uncropped galleries and face-aware crops (theme 1.21.4–1.22.0)](#kingdom-revival-ministries-pastor-photo-block-heading-highlights-uncropped-galleries-and-face-aware-crops-theme-1214-1220)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4218,3 +4220,34 @@ a three-photo collage with a "Since 2018" badge on the right, and four focus car
 - Layout: 2 columns on desktop; stacked at ≤1024px with 2 cards per row; 1 card per row and a full-width button at ≤560px.
 - Verified on the local site at 1440 (light and dark), 768 and 390: no horizontal overflow, no JS errors, all images load, cards reveal.
 - Not covered: pixel diffs (the section is new on purpose), a full `final_pass.js` run.
+
+## Kingdom Revival Ministries: Pastor photo, block heading highlights, uncropped galleries and face-aware crops (theme 1.21.4–1.22.0)
+
+**Result:** the client's new photo of Pastor Adil is used everywhere he appears; key words of headings sit on a solid red
+block instead of an accent stroke; gallery photos are shown whole at their own shape (as on hhmpak.org); every other cropped
+photo is centred on its faces, so the pastor's face is no longer cut off.
+
+- Content-width change asked for and then reverted (1.21.1 → 1.21.2): widths are back to 1200 / 1240 px.
+- Pastor photo (1.21.4): `assets/images/content/pastor-adil-arif.jpg` (square, home About avatar and home Founder circle) and
+  `pastor-adil-arif-portrait.jpg` (4:4.5 head and shoulders, About page Founder testimony), both made from the client's cut-out
+  on a soft light backdrop. Pastor Adil left the About page "Our staff" list (Founder section only). An `init` step
+  (`krm_founder_photo_version`) updates saved page content that still holds the old default photos and removes his staff card.
+- Heading highlights (1.21.5): `.hl` (and `<em>` in page-hero titles, the home mission and About headings) is a red block
+  (`--color-highlight-bg`, white text, upright), navy on the red band (`--color-highlight-bg-alt`); the pale "skin" marker is gone.
+  Blocks cover 80% of the line box and hero titles have line-height 1.16, so blocks on two lines don't touch.
+- Galleries (1.22.0): Gallery page, ministry page galleries and project galleries use `.krm-just` (theme-global.css) — justified
+  rows, each tile `--r` = the photo's width / height from `krm_ratio_style()` (attachment metadata, or the measured shape of theme
+  photos). The Gallery page's 2×2 large tiles and the ministry gallery's 16:9 lead photo are gone (they cropped).
+- Face-aware crops (1.22.0): `tools/focal/build_focal.py` (dev-time, OpenCV YuNet) wrote `inc/data/focal.php`: faces found in
+  116 of 269 photos (theme images + local uploads). `krm_img_src()` adds `data-focal="x% y%"`; effects.js sets it as the
+  object-position; the home ministry explorer passes it too. Photos with a focus point use full-size srcsets instead of the
+  centred 4:3 card crops. `.wwd-mini-media` now clips at 4:3 (it grew with its image).
+- Verified on the local site: all 102 Gallery tiles, 9 ministry and 5 project photos show at their exact shape (0 cropped), no
+  horizontal overflow at 1440 / 390, no JS errors on 8 pages. Box sizes of all 406 face-centred images on 12 pages × 2 widths
+  match the previous layout except 12 What We Do cards that had no 4:3 crop file and now match their neighbours (4:3).
+  Highlights: white on red 5.6:1 (light), 4.7:1 (dark).
+- Not covered: photos uploaded later have no focus point until build_focal.py is run again (they keep the template's crop;
+  galleries still show them whole); live-site files renamed on import (e.g. a "-1" suffix) miss their focus point the same way.
+  No full `final_pass.js` run (it timed out).
+
+**Decisions for you:** highlight colour (one token); whether to re-run build_focal.py on the live site's uploads after new photos.

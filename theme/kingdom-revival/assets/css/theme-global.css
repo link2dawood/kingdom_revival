@@ -51,6 +51,9 @@
   --color-header-bg: rgba(255, 255, 255, .97);
   --color-header-frost: rgba(255, 255, 255, .92);   /* .85 let dark content behind lower the red current-page link under 4.5:1 */
   --color-secondary-text: var(--color-secondary); /* red used as text: eyebrows, links, errors */
+  --color-highlight-bg: var(--color-secondary);     /* heading highlight block (.hl) */
+  --color-highlight-bg-alt: var(--color-primary);  /* .hl on the red band */
+  --color-highlight-text: var(--color-white);
   --color-secondary-on-dark: #FF9C9E;
   --color-red-hover: #A80509;
   --color-orange: #E18426;                       /* brand orange: pill buttons, quote marks */
@@ -130,7 +133,7 @@
   --space-7: 48px;
   --space-8: 64px;
   --space-section: clamp(64px, 8vw, 104px);   /* top and bottom of a page section */
-  --container-max: 1280px;
+  --container-max: 1200px;
   --container-gutter: 40px;                   /* 32px below 560px wide */
 
   /* Shapes and depth */
@@ -622,8 +625,8 @@
    they render as on the home page (front.css has no heading rules). */
 .krm-design :is(h1, h2, h3, h4) { color: inherit; letter-spacing: normal; line-height: inherit; }
 
-/* The design's section and container: 1320px (was 1240px), side padding clamp(16px, 3vw, 32px), section padding clamp(72px, 8vw, 110px). */
-.krm-container { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+/* The design's section and container: 1240px, side padding clamp(16px, 3vw, 32px), section padding clamp(72px, 8vw, 110px). */
+.krm-container { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .krm-band-soft { background: var(--color-bg-soft); }
 
 /* Ministry giving card (template-parts/ministry-card.php; .cause-card because the story sidebar already has a .ministry-card): the home design's "causes" card. */
@@ -700,6 +703,16 @@
 .empty-gallery { padding: 24px; border: 1px dashed var(--color-border-dashed); border-radius: 10px; color: var(--muted); line-height: 1.7; }
 @media (max-width: 760px) { .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .gallery { grid-template-columns: 1fr; } }
+
+/* Justified photo rows (Gallery page, ministry and project galleries), as on hhmpak.org: every photo whole, at its own
+   shape (--r = width / height, from krm_ratio_style()), in rows of equal height that fill the width; nothing is
+   cropped, so no face is cut off. The last row keeps its natural size. */
+.krm-just { --row-h: 170px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+.krm-just::after { flex: 1000000 1 0px; content: ""; }
+.krm-just > * { --r: 1.3333; flex: var(--r) 1 calc(var(--r) * var(--row-h)); min-width: 0; margin: 0; }
+.krm-just > * img { width: 100%; height: auto; aspect-ratio: var(--r); object-fit: cover; }
+@media (min-width: 640px) { .krm-just { --row-h: 210px; gap: 14px; } }
+@media (min-width: 1024px) { .krm-just { --row-h: 250px; gap: 16px; } }
 /* Prayer request form: one column on phones (the design's two columns are too narrow there). */
 @media (max-width: 560px) {
   form[data-krm-prayer] { grid-template-columns: minmax(0, 1fr) !important; }
@@ -832,7 +845,7 @@ a.work-card { display: flex; flex-direction: column; color: inherit; text-decora
 @media (max-width: 520px) { .cause-card-actions > a { flex: 1 1 100%; justify-content: center; } }
 
 /* Banner with text and buttons (About → Join the Mission): the home page CTA banner. */
-.cta-banner { max-width: 1320px; margin: 0 auto; padding: clamp(64px, 7vw, 100px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.cta-banner { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 100px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .cta-banner > div { display: flex; flex-wrap: wrap; gap: 24px 48px; align-items: center; justify-content: space-between; padding: clamp(32px, 5vw, 56px); border-radius: 14px; background: var(--color-band); color: var(--color-white); }
 .cta-banner-text { flex: 999 1 480px; min-width: 0; }
 .cta-banner h2 { margin: 0; color: var(--color-white); font-size: clamp(24px, 2.8vw, 34px); font-weight: 800; line-height: 1.25; letter-spacing: normal; }
@@ -1173,15 +1186,13 @@ body { font-family: var(--font-body); }
 h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-size-adjust: ex-height .44; text-wrap: balance; overflow-wrap: break-word; }
 input, select, textarea, button { font-family: inherit; }
 
-/* Heading highlights: key words in the hero's accent, italic Cormorant 600. On light backgrounds (hl--on-light, set by
-   effects.js) the pale accent becomes a marker stroke under the words, so the text keeps its contrast. */
-.hl { color: var(--color-accent); font-family: var(--font-heading); font-size-adjust: ex-height .44; font-style: italic; font-weight: 600; }
-.hl--on-light { color: inherit; padding: 0 .06em; background-image: linear-gradient(transparent 64%, color-mix(in srgb, var(--color-accent) 45%, transparent) 64%, color-mix(in srgb, var(--color-accent) 45%, transparent) 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-:root[data-theme="dark"] .hl--on-light { color: var(--color-accent); background-image: none; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .hl--on-light { color: var(--color-accent); background-image: none; }
-}
-:root .hl.hl--plain { color: inherit; padding: 0 .06em; background-image: linear-gradient(transparent 64%, color-mix(in srgb, var(--color-accent) 55%, transparent) 64%, color-mix(in srgb, var(--color-accent) 55%, transparent) 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+/* Heading highlights (.hl, marked by effects.js): 1–2 key words of each main heading sit on a solid block of brand
+   colour with white upright text, on photos, light sections and in dark mode alike. On the red colour band
+   (hl--plain) the block is navy so it still stands out. Colours: --color-highlight-bg / --color-highlight-text. */
+.hl, .hl.hl--on-light { padding: 0 .12em; border-radius: 2px; background: linear-gradient(var(--color-highlight-bg), var(--color-highlight-bg)) 0 58% / 100% 80% no-repeat; color: var(--color-highlight-text); font-family: var(--font-heading); font-size-adjust: ex-height .44; font-style: normal; font-weight: inherit; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+:root .hl.hl--plain { background: linear-gradient(var(--color-highlight-bg-alt), var(--color-highlight-bg-alt)) 0 58% / 100% 80% no-repeat; color: var(--color-highlight-text); }
+/* Headings with a highlight block get a little more line spacing, so the blocks of two lines don't touch. */
+.page-hero h1:has(.hl, em), #top .hero-title:has(.hl) { line-height: 1.16; }
 
 /* ---------- Top bar verse (John 3:16), centred between the contacts and the social links / Donate ----------
    Full verse on hover, keyboard focus or a tap (effects.js). From 1100px down it gets its own centred row. */

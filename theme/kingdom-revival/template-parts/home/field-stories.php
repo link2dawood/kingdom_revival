@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) || exit;
 			?>
 		<li>
 			<<?php echo $krm_tag; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> class="krm-program-card"<?php echo $krm_href ? ' href="' . $krm_href . '"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-				<img <?php krm_img_src( $krm_photo['image'], '(max-width: 760px) 100vw, (max-width: 1320px) 33vw, 400px', true ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async">
+				<img <?php krm_img_src( $krm_photo['image'], '(max-width: 760px) 100vw, (max-width: 1240px) 33vw, 400px', true ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['image_alt'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async">
 				<span class="krm-program-card__body">
 					<?php if ( '' !== trim( (string) krm_public( $krm_photo['label'] ) ) ) : ?><span class="krm-program-card__label"><?php echo krm_text( $krm_photo['label'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><?php endif; ?>
 					<span class="krm-program-card__title"><?php echo krm_text( $krm_photo['caption'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>

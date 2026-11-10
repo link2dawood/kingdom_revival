@@ -24,9 +24,9 @@ if ( ! $krm_photos && ! krm_show_placeholders() ) {
 		<?php endif; ?>
 	</div>
 	<?php if ( $krm_photos ) : ?>
-	<div class="gallery krm-lead-grid" id="ministry-gallery" data-gallery>
-		<?php foreach ( $krm_photos as $krm_i => $krm_photo ) : // The first photo is the lead (full width, 16:9, full-size sources); the rest two per row, 4:3. ?>
-		<figure class="photo<?php echo 0 === $krm_i ? ' is-lead' : ''; ?>"><img <?php krm_img_src( $krm_photo[0], 0 === $krm_i ? '(max-width: 1100px) calc(100vw - 32px), 820px' : '(max-width: 640px) calc(100vw - 32px), (max-width: 1100px) calc(50vw - 28px), 410px', 0 !== $krm_i ); ?> alt="<?php echo esc_attr( krm_photo_caption( $krm_photo[0], $krm_photo[1] ) ); ?>" loading="lazy" decoding="async"></figure>
+	<div class="gallery krm-just" id="ministry-gallery" data-gallery>
+		<?php foreach ( $krm_photos as $krm_i => $krm_photo ) : // Justified rows: every photo whole, at its own shape (--r). ?>
+		<figure class="photo"<?php echo krm_ratio_style( $krm_photo[0] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><img <?php krm_img_src( $krm_photo[0], '(max-width: 640px) 70vw, (max-width: 1100px) 45vw, 520px' ); ?> alt="<?php echo esc_attr( krm_photo_caption( $krm_photo[0], $krm_photo[1] ) ); ?>" loading="lazy" decoding="async"></figure>
 		<?php endforeach; ?>
 	</div>
 		<?php if ( count( $args['photos'] ) > 9 ) : ?>

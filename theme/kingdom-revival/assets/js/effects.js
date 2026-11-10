@@ -127,7 +127,11 @@
     doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && btn.getAttribute("aria-expanded") === "true") { set(false); btn.focus(); } });
   });
 
-  /* ---------- Heading highlights (.hl): 1–2 key words of each main heading in the accent, italic ---------- */
+  /* ---------- Photo focus: a cropped photo (object-fit: cover) keeps its faces in view ---------- */
+  // data-focal ("x% y%") comes from krm_img_src() (inc/data/focal.php, built by tools/focal/build_focal.py).
+  all("img[data-focal]").forEach(function (img) { img.style.objectPosition = img.getAttribute("data-focal"); });
+
+  /* ---------- Heading highlights (.hl): 1–2 key words of each main heading on a solid colour block ---------- */
   // Words already marked in the content (<em>, or a span in the accent colour) are used as they are; otherwise the
   // first phrases of this list found in the heading. The copy itself never changes.
   var HL = ["Jesus Christ", "Vulnerable", "Brick Kiln Children", "Know Christ", "Our prayer", "Your gift", "your generosity",
@@ -381,4 +385,17 @@
     section.scrollIntoView();
     cleanAddress();
   });
+})();
+
+/* Home "Where we serve": the village/kiln dots pop in once the map scrolls into view (visible without JS). */
+(function () {
+  var dots = document.querySelector(".krm-where__dots");
+  if (!dots || !("IntersectionObserver" in window)) return;
+  dots.classList.add("is-armed");
+  var io = new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    dots.classList.add("is-in");
+    io.disconnect();
+  }, { threshold: 0.25 });
+  io.observe(dots);
 })();

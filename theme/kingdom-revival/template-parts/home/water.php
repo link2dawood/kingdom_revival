@@ -4,15 +4,23 @@
  * Text: Pages → Home → Page content → Clean water. The number is the clean water hand pumps impact number
  * (krm_opt( 'stat_6_value' ), the same one as the stats bar). Styles: .krm-water in assets/css/front.css.
  *
- * Photo: no hand pump photo exists yet, so the Photo field is empty by default. Visitors then see a plain tinted box
- * with a water-drop icon; administrators also see a note saying the slot is waiting for a photo.
+ * Photos (theme 1.21.3): up to three — one tall on the left, two stacked on the right (fewer fill the box) — by default
+ * the client's Clean Water Project photos (assets/images/content/clean-water-1…3.jpg). They open in the photo viewer.
+ * With all three empty, visitors see a plain tinted box with a water-drop icon; administrators also see a note.
  *
  * @package Kingdom_Revival
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$krm_img   = krm_c( 'water.image' );
+$krm_imgs = array();
+foreach ( array( 'image', 'image2', 'image3' ) as $krm_key ) {
+	$krm_ref = krm_c( 'water.' . $krm_key );
+	if ( $krm_ref ) {
+		$krm_imgs[] = array( $krm_ref, krm_c( 'water.' . $krm_key . '_alt' ) );
+	}
+}
+$krm_n = count( $krm_imgs );
 $krm_count = trim( (string) krm_public( krm_opt( 'stat_6_value' ) ) );
 $krm_quote = trim( (string) krm_c( 'water.quote' ) );
 $krm_b1    = trim( (string) krm_c( 'water.button1_label' ) );
@@ -45,13 +53,15 @@ $krm_b2    = trim( (string) krm_c( 'water.button2_label' ) );
 </div>
 <?php endif; ?>
 </div>
-<figure class="krm-water__media<?php echo $krm_img ? '' : ' is-empty'; ?>" data-reveal>
-<?php if ( $krm_img ) : ?>
-<img loading="lazy" decoding="async" <?php krm_img_src( $krm_img, '(max-width: 900px) calc(100vw - 32px), 560px' ); ?> alt="<?php echo krm_alt( $krm_img, krm_c( 'water.image_alt' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
+<figure class="krm-water__media<?php echo $krm_n ? ' has-' . (int) $krm_n : ' is-empty'; ?>" data-reveal>
+<?php if ( $krm_n ) : ?>
+	<?php foreach ( $krm_imgs as $krm_i => $krm_im ) : ?>
+<img loading="lazy" decoding="async" <?php krm_img_src( $krm_im[0], 0 === $krm_i ? '(max-width: 900px) 55vw, 320px' : '(max-width: 900px) 45vw, 260px' ); ?> alt="<?php echo krm_alt( $krm_im[0], $krm_im[1] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" data-zoom="water">
+	<?php endforeach; ?>
 <?php else : ?>
 <svg aria-hidden="true" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke-width="1.6" style="stroke: var(--color-heading)"><path d="M12 2.7l5.7 5.7a8 8 0 1 1-11.3 0z"></path></svg>
 	<?php if ( krm_show_placeholders() ) : ?>
-<figcaption class="krm-admin-only"><?php esc_html_e( 'Photo slot: add a hand pump photo in Pages → Home → Page content → Clean water. Visitors see this tinted box until then.', 'kingdom-revival' ); ?></figcaption>
+<figcaption class="krm-admin-only"><?php esc_html_e( 'Photo slot: add hand pump photos in Pages → Home → Page content → Clean water. Visitors see this tinted box until then.', 'kingdom-revival' ); ?></figcaption>
 	<?php endif; ?>
 <?php endif; ?>
 </figure>

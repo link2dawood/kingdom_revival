@@ -19,7 +19,7 @@ $krm_active = $krm_list ? $krm_list[0] : array(
 );
 ?>
 <!-- Ministry explorer -->
-<section id="all-ministries" style="max-width: 1320px; margin: 0 auto; padding: clamp(24px, 3vw, 40px) clamp(16px, 3vw, 32px) clamp(72px, 8vw, 110px)">
+<section id="all-ministries" style="max-width: 1240px; margin: 0 auto; padding: clamp(24px, 3vw, 40px) clamp(16px, 3vw, 32px) clamp(72px, 8vw, 110px)">
 <div style="display: flex; flex-wrap: wrap; gap: 20px 64px; justify-content: space-between; align-items: flex-end; margin-bottom: 44px">
 <div style="flex: 1 1 520px; min-width: 0">
 <p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary-text)"><?php krm_t( 'explorer.eyebrow' ); ?></p>
@@ -39,7 +39,7 @@ foreach ( $krm_list as $krm_i => $krm_m ) :
 </div>
 <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap; border-radius: 20px; overflow: hidden; background: var(--color-band)">
 <div style="position: relative; flex: 1 1 320px; min-height: 340px; background: var(--color-band-2); overflow: hidden">
-<img data-krm-explorer="img" <?php krm_img_src( $krm_active['image'], '(max-width: 760px) 100vw, (max-width: 1320px) 66vw, 430px' ); ?> alt="<?php echo esc_attr( $krm_active['title'] ); ?>" data-zoom="explorer" loading="lazy" decoding="async" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%">
+<img data-krm-explorer="img" <?php krm_img_src( $krm_active['image'], '(max-width: 760px) 100vw, (max-width: 1240px) 66vw, 430px' ); ?> alt="<?php echo esc_attr( $krm_active['title'] ); ?>" data-zoom="explorer" loading="lazy" decoding="async" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%">
 </div>
 <div style="flex: 1 1 320px; min-width: 0; padding: clamp(32px, 4vw, 48px) clamp(28px, 3.4vw, 40px); display: flex; flex-direction: column; justify-content: center; color: var(--color-white)">
 <p style="margin: 0; font-size: clamp(56px, 6vw, 72px); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--color-accent)" data-krm-explorer="num">01</p>

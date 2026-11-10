@@ -127,7 +127,7 @@ $krm_used = array_unique( array_merge( explode( ' ', implode( ' ', array_column(
 		<div<?php echo $krm_has_videos ? ' role="tabpanel" aria-labelledby="tab-photos"' : ''; ?> id="panel-photos">
 			<?php if ( $krm_photos ) : ?>
 			<p class="gallery-tip" style="display: flex; align-items: center; gap: 8px; margin: 0 0 18px; color: var(--color-text-muted); font-size: 14px"><?php echo krm_icon( 'zoom' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php krm_t( 'labels.tip' ); ?></p>
-			<div class="krm-gal" data-gallery data-krm-filter-list="gallery">
+			<div class="krm-gal krm-just" data-gallery data-krm-filter-list="gallery">
 				<?php
 				$krm_verses = array();
 				foreach ( array( 1, 2 ) as $krm_vn ) {
@@ -137,10 +137,9 @@ $krm_used = array_unique( array_merge( explode( ' ', implode( ' ', array_column(
 				}
 				$krm_total = count( $krm_photos );
 				foreach ( $krm_photos as $krm_i => $krm_p ) :
-					// Every sixth photo is a large tile (2 × 2 from tablet up); the first eight load at once.
-					$krm_big = 0 === $krm_i % 6;
+					// Each tile has its photo's own shape (--r); the first eight load at once.
 					?>
-				<figure class="krm-gal__tile<?php echo $krm_big ? ' is-big' : ''; ?>" data-group="<?php echo esc_attr( $krm_p[2] ); ?>"><img <?php krm_img_src( $krm_p[0], $krm_big ? '(max-width: 639px) calc(50vw - 22px), (max-width: 1023px) calc(66vw - 30px), 610px' : '(max-width: 639px) calc(50vw - 22px), (max-width: 1023px) calc(33vw - 24px), 300px', true ); ?> alt="<?php echo esc_attr( $krm_p[1] ); ?>"<?php echo $krm_i >= 8 ? ' loading="lazy"' : ''; ?> decoding="async"><figcaption><?php echo esc_html( $krm_p[3] ); ?></figcaption></figure>
+				<figure class="krm-gal__tile" data-group="<?php echo esc_attr( $krm_p[2] ); ?>"<?php echo krm_ratio_style( $krm_p[0] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><img <?php krm_img_src( $krm_p[0], '(max-width: 639px) 60vw, (max-width: 1023px) 45vw, 520px' ); ?> alt="<?php echo esc_attr( $krm_p[1] ); ?>"<?php echo $krm_i >= 8 ? ' loading="lazy"' : ''; ?> decoding="async"><figcaption><?php echo esc_html( $krm_p[3] ); ?></figcaption></figure>
 					<?php
 					// A scripture card after every 10 photos (not after the last), alternating; hidden by any filter.
 					if ( $krm_verses && 0 === ( $krm_i + 1 ) % 10 && $krm_i + 1 < $krm_total ) :

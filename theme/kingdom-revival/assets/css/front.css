@@ -1,7 +1,7 @@
 /* Home page only, from the home page design (it does not load site.css). Design tokens and the components
    shared with the inner pages are in theme-global.css. */
   .krm-field-stories { background: var(--color-band); color: var(--color-white); }
-  .krm-field-stories__inner { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); }
+  .krm-field-stories__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); }
   .krm-field-stories__intro { max-width: 760px; margin: 0 auto 38px; text-align: center; }
   .krm-field-stories__eyebrow { margin: 0 0 10px; color: var(--color-accent); font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
   .krm-field-stories__intro h2 { margin: 0 0 14px; font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; line-height: 1.2; }
@@ -55,12 +55,42 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 /* Home: mission statement after the ministry explorer (template-parts/home/mission.php). A navy band in both themes, so
    the accent line keeps its contrast; the ghost word sits behind the content, clipped by the section. */
 .krm-mission { position: relative; overflow: hidden; isolation: isolate; background: var(--color-band); color: var(--color-text-on-dark); }
-.krm-mission__inner { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) clamp(140px, 18vw, 280px); box-sizing: border-box; }
-.krm-mission__inner > * { max-width: 680px; }
+.krm-mission__inner { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) clamp(140px, 18vw, 280px); box-sizing: border-box; }
+.krm-mission__copy { max-width: 680px; }
+/* Photo slider beside the text: one photo at a time, progress bars on top, round arrows, caption tag at the foot. */
+.krm-mission__inner--slider { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: center; }
+.krm-mission__slider { position: relative; overflow: hidden; aspect-ratio: 4 / 5; max-height: 640px; border-radius: 14px; background: var(--color-band-deep); box-shadow: 0 24px 60px -24px rgba(0,0,0,.55); }
+.krm-mission__slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .7s ease, visibility 0s .7s; visibility: hidden; }
+.krm-mission__slide.is-active { opacity: 1; visibility: visible; transition: opacity .7s ease; }
+.krm-mission__slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.krm-mission__slide::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, color-mix(in srgb, var(--color-band-deep) 45%, transparent) 0%, transparent 18%, transparent 72%, color-mix(in srgb, var(--color-band-deep) 55%, transparent) 100%); }
+.krm-mission__cap { position: absolute; z-index: 1; left: 20px; bottom: 20px; right: 20px; width: fit-content; max-width: calc(100% - 40px); padding: 7px 12px; border-radius: 3px; background: color-mix(in srgb, var(--color-band-deep) 88%, transparent); font-size: 13px; font-weight: 700; letter-spacing: .08em; line-height: 1.4; text-transform: uppercase; color: var(--color-white); }
+.krm-mission__cap strong { color: var(--color-accent); margin-right: 6px; }
+.krm-mission__bars { position: absolute; z-index: 2; top: 20px; left: 20px; right: 20px; display: flex; gap: 6px; }
+.krm-mission__bar { flex: 1; height: 3px; border-radius: 2px; overflow: hidden; background: color-mix(in srgb, var(--color-white) 35%, transparent); }
+.krm-mission__bar i { display: block; height: 100%; width: 0; background: var(--color-accent); }
+.krm-mission__bar.is-done i { width: 100%; }
+.krm-mission__bar.is-active i { animation: krm-mission-bar var(--krm-slide-ms, 5000ms) linear forwards; }
+.krm-mission__slider.is-paused .krm-mission__bar.is-active i { animation-play-state: paused; }
+@keyframes krm-mission-bar { from { width: 0; } to { width: 100%; } }
+.krm-mission__nav { position: absolute; z-index: 2; top: 50%; display: grid; place-items: center; width: 48px; height: 48px; margin-top: -24px; padding: 0; border: 1px solid color-mix(in srgb, var(--color-white) 30%, transparent); border-radius: 50%; background: color-mix(in srgb, var(--color-band-deep) 70%, transparent); color: var(--color-white); cursor: pointer; transition: background .2s ease; }
+.krm-mission__nav:hover { background: color-mix(in srgb, var(--color-band-deep) 92%, transparent); }
+.krm-mission__nav:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.krm-mission__nav--prev { left: 16px; }
+.krm-mission__nav--next { right: 16px; }
+@media (min-width: 960px) {
+  .krm-mission__inner--slider { grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 64px; }
+}
+@media (max-width: 959px) {
+  .krm-mission__slider { max-width: 560px; aspect-ratio: 4 / 4.4; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .krm-mission__slide, .krm-mission__slide.is-active { transition: none; }
+  .krm-mission__bar.is-active i { animation: none; width: 100%; }
+}
 .krm-mission__eyebrow { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; font-family: var(--font-body); font-size: 13px; font-weight: var(--font-weight-bold); letter-spacing: .22em; text-transform: uppercase; color: var(--color-accent); }
-.krm-mission__eyebrow::before { content: ""; flex: none; width: 36px; height: 2px; background: currentColor; }
 .krm-mission__title { margin: 0; font-size: clamp(38px, 5vw, 60px); font-weight: 700; line-height: 1.08; letter-spacing: -.01em; color: var(--color-white); text-wrap: initial; max-width: 860px; }
-.krm-mission__title em { display: block; font-style: italic; font-weight: 600; color: var(--color-accent); }
+.krm-mission__title em { display: table; margin-top: .08em; padding: 0 .12em; border-radius: 2px; background: linear-gradient(var(--color-highlight-bg), var(--color-highlight-bg)) 0 58% / 100% 80% no-repeat; color: var(--color-highlight-text); font-style: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; font-weight: inherit; }
 .krm-mission__text { margin: 24px 0 0; font-family: var(--font-body); font-size: var(--font-size-lead); line-height: 1.75; }
 .krm-mission__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
 .krm-mission__actions .button { box-sizing: border-box; text-transform: uppercase; letter-spacing: .08em; }
@@ -72,12 +102,11 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 
 /* Home: About (template-parts/home/about.php) — copy + three-photo collage with the "Since" badge, four focus cards. */
 .krm-about { background: var(--color-bg-soft); }
-.krm-about__inner { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.krm-about__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .krm-about__intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 48px clamp(40px, 6vw, 80px); align-items: center; }
 .krm-about__eyebrow { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; font-size: 13px; font-weight: var(--font-weight-bold); letter-spacing: .22em; text-transform: uppercase; color: var(--color-secondary-text); }
-.krm-about__eyebrow::before { content: ""; flex: none; width: 32px; height: 2px; background: currentColor; }
 .krm-about__title { margin: 0; font-size: clamp(36px, 4.4vw, 56px); font-weight: 700; line-height: 1.08; letter-spacing: -.01em; color: var(--color-heading); }
-.krm-about__title .krm-about__accent, .krm-about__title .krm-about__accent.hl { color: var(--color-secondary-text); font-family: inherit; font-size-adjust: none; font-style: normal; font-weight: inherit; padding: 0; background-image: none; }
+.krm-about__title .krm-about__accent, .krm-about__title .krm-about__accent.hl { padding: 0 .12em; border-radius: 2px; background: linear-gradient(var(--color-highlight-bg), var(--color-highlight-bg)) 0 58% / 100% 80% no-repeat; color: var(--color-highlight-text); font-style: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; font-family: inherit; font-size-adjust: none; font-weight: inherit; }
 .krm-about__lead { margin: 22px 0 0; max-width: 560px; font-size: var(--font-size-lead, 18px); line-height: 1.75; color: var(--color-text-muted); }
 .krm-about__verse { margin: 28px 0 0; max-width: 560px; padding: 20px 24px; border-radius: 14px; background: var(--color-surface); box-shadow: 0 12px 32px rgba(var(--shadow-rgb), calc(.08 * var(--shadow-k))); }
 .krm-about__verse p { margin: 0; font-family: var(--font-scripture, var(--font-heading)); font-size: clamp(18px, 1.6vw, 21px); font-style: italic; font-weight: 600; line-height: 1.5; color: var(--color-heading); }
@@ -139,7 +168,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 
 /* ---------- "Your gift at work" gift calculator (template-parts/home/gift-calculator.php, front.js) ----------
    A navy panel in both themes, so the accent reads as text on it (orange on navy, well over 4.5:1). */
-.krm-calc { max-width: 1320px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px) 0; }
+.krm-calc { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px) 0; }
 .krm-calc__head { margin-bottom: 28px; }
 .krm-calc__title { margin: 0; font-size: clamp(26px, 2.8vw, 34px); font-weight: 800; color: var(--color-heading); }
 .krm-calc__lead { margin: 6px 0 0; color: var(--color-text-muted); }
@@ -211,7 +240,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
    The map (assets/images/pakistan-map.svg) is inline; towns are HTML marks at % of the map with leader lines. */
 #where.krm-where { position: relative; overflow: hidden; color: var(--color-white); background-color: var(--color-band-deep); }
 #where.krm-where[data-photo-band] { --band-overlay: linear-gradient(100deg, color-mix(in srgb, var(--color-band-deep) 95%, transparent) 0%, color-mix(in srgb, var(--color-band-deep) 90%, transparent) 50%, color-mix(in srgb, var(--color-band-deep) 82%, transparent) 100%); }
-.krm-where__inner { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: center; }
+.krm-where__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: center; }
 .krm-where__text { position: relative; z-index: 2; min-width: 0; }
 .krm-where__eyebrow { margin: 0 0 12px; color: var(--color-accent); font-size: 13px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
 .krm-where__title { margin: 0; color: var(--color-white); font-size: clamp(32px, 3.8vw, 46px); font-weight: 800; line-height: 1.12; }
@@ -231,6 +260,18 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 .krm-where__map .pk-lines { fill: none; stroke: var(--color-text-on-dark); stroke-opacity: .32; stroke-width: 1; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .krm-where__map .pk-hl { fill: var(--color-accent); fill-opacity: .26; stroke: var(--color-accent); stroke-opacity: .85; stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .krm-where__map .pk-fills { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--color-accent) 55%, transparent)); }
+/* Village dots and kiln squares (one per village / kiln in the places list); they pop in when the map scrolls into view. */
+.krm-where__dots { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.krm-where__dots .krm-where__v { fill: var(--color-accent); fill-opacity: .85; stroke: var(--color-band-deep); stroke-opacity: .5; stroke-width: 1; }
+.krm-where__dots .krm-where__k { fill: var(--color-secondary-on-dark); stroke: var(--color-band-deep); stroke-opacity: .5; stroke-width: 1; }
+.krm-where__dots g > * { transform-box: fill-box; transform-origin: center; }
+.krm-where__dots.is-armed g > * { opacity: 0; }
+.krm-where__dots.is-in g > * { animation: krm-where-pop .5s ease-out both; animation-delay: var(--d, 0ms); }
+@keyframes krm-where-pop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+.krm-where__legend { position: absolute; right: 4%; bottom: 4%; display: flex; gap: 16px; margin: 0; color: var(--color-text-on-dark); font-size: 13px; font-weight: 600; }
+.krm-where__legend span { display: inline-flex; align-items: center; gap: 7px; }
+.krm-where__legend i { width: 9px; height: 9px; border-radius: 50%; background: var(--color-accent); }
+.krm-where__legend .krm-where__lk { border-radius: 1px; background: var(--color-secondary-on-dark); }
 .krm-where__town { position: absolute; width: 0; height: 0; }
 .krm-where__dot { position: absolute; z-index: 2; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 2px var(--color-band-deep); }
 .krm-where__town--hq .krm-where__dot { left: -7px; top: -7px; width: 14px; height: 14px; background: var(--color-white); box-shadow: 0 0 0 3px var(--color-accent); }
@@ -249,7 +290,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 .krm-where__town--w .krm-where__label { right: calc(var(--l) + 1px); top: 0; transform: translateY(-50%); }
 @media (min-width: 960px) {
   .krm-where__inner { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 0; }
-  .krm-where__map { margin: -40px -2% -40px -26%; --l: 40px; }
+  .krm-where__map { margin: -40px -2% -40px 24px; --l: 40px; } /* Beside the text, never under it. */
 }
 @media (max-width: 600px) {
   .krm-where__map { --l: 20px; margin: 0 calc(-1 * clamp(16px, 3vw, 32px)); }
@@ -262,11 +303,12 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 }
 @media (prefers-reduced-motion: reduce) {
   .krm-where__dot::after { animation: none; opacity: .5; transform: scale(1.8); }
+  .krm-where__dots.is-armed g > *, .krm-where__dots.is-in g > * { opacity: 1; animation: none; }
 }
 
 /* Clean water (template-parts/home/water.php): compact text beside a photo, stacked below 900px. Verse: .krm-about__verse. */
 .krm-water { background: var(--color-bg-soft, var(--color-bg)); }
-.krm-water__inner { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(32px, 5vw, 72px); align-items: center; max-width: 1320px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.krm-water__inner { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(32px, 5vw, 72px); align-items: center; max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .krm-water__eyebrow { margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--color-secondary-text); }
 .krm-water__title { margin: 0; font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; line-height: 1.15; color: var(--color-heading); }
 .krm-water__lead { margin: 18px 0 0; font-size: var(--font-size-lead, 18px); line-height: 1.75; color: var(--color-text-muted); }
@@ -276,7 +318,12 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 .krm-water__verse { margin-top: 24px; }
 .krm-water__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .krm-water__media { position: relative; margin: 0; overflow: hidden; border-radius: 14px; aspect-ratio: 4 / 3; background: var(--color-placeholder); box-shadow: 0 16px 40px rgba(var(--shadow-rgb), calc(.12 * var(--shadow-k))); }
-.krm-water__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.krm-water__media img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: cover; cursor: zoom-in; }
+.krm-water__media.has-2, .krm-water__media.has-3 { display: grid; gap: 10px; padding: 10px; background: var(--color-surface); }
+.krm-water__media.has-2 { grid-template-columns: 1fr 1fr; }
+.krm-water__media.has-3 { grid-template-columns: 1.15fr 1fr; grid-template-rows: 1fr 1fr; aspect-ratio: 1 / 1; }
+.krm-water__media.has-3 img:first-child { grid-row: 1 / 3; }
+.krm-water__media.has-2 img, .krm-water__media.has-3 img { border-radius: 8px; }
 .krm-water__media.is-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; background: var(--color-bg-tint); }
 .krm-water__media.is-empty .krm-admin-only { max-width: 320px; margin: 0; text-align: center; }
 @media (max-width: 900px) {

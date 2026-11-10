@@ -19,7 +19,7 @@ if ( ! $krm_posts ) {
 }
 ?>
 <!-- From the field -->
-<section id="news" style="max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) 0">
+<section id="news" style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) 0">
 <div style="display: flex; flex-wrap: wrap; gap: 12px 48px; justify-content: space-between; align-items: flex-end; margin-bottom: 32px">
 <div>
 <p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary-text)"><?php krm_t( 'news.eyebrow' ); ?></p>

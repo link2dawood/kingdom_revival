@@ -241,11 +241,17 @@ function krm_media( $url, $size = 'full' ) {
  * @param bool       $card  Use the 4:3 card crops.
  */
 function krm_img_src( $ref, $sizes = '(max-width: 820px) 100vw, 50vw', $card = false ) {
-	$id  = is_numeric( $ref ) ? (int) $ref : krm_media_id( $ref );
-	$src = is_numeric( $ref ) ? wp_get_attachment_image_url( $id, 'full' ) : krm_media( $ref );
+	$id    = is_numeric( $ref ) ? (int) $ref : krm_media_id( $ref );
+	$src   = is_numeric( $ref ) ? wp_get_attachment_image_url( $id, 'full' ) : krm_media( $ref );
+	$focal = krm_focal( $ref );
 	echo 'src="' . esc_url( (string) $src ) . '"';
+	if ( '' !== $focal ) {
+		// Where the faces are: effects.js makes it the photo's object-position, so a cropped photo keeps them in view.
+		echo ' data-focal="' . esc_attr( $focal ) . '"';
+	}
 	if ( $id ) {
-		$srcset = $card ? krm_card_srcset( $id ) : '';
+		// The 4:3 card crops are cut from the middle of the photo, which can lose the faces: full sizes then.
+		$srcset = $card && '' === $focal ? krm_card_srcset( $id ) : '';
 		if ( ! $srcset ) {
 			$srcset = wp_get_attachment_image_srcset( $id, 'full' );
 		}
@@ -253,6 +259,92 @@ function krm_img_src( $ref, $sizes = '(max-width: 820px) 100vw, 50vw', $card = f
 			echo ' srcset="' . esc_attr( $srcset ) . '" sizes="' . esc_attr( $sizes ) . '"';
 		}
 	}
+}
+
+/**
+ * Data built by tools/focal/build_focal.py (inc/data/focal.php): face positions and the theme photos' shapes.
+ */
+function krm_focal_data() {
+	static $data = null;
+	if ( null === $data ) {
+		$file = KRM_DIR . '/inc/data/focal.php';
+		$data = is_readable( $file ) ? include $file : array();
+		$data = is_array( $data ) ? $data + array( 'focal' => array(), 'ratio' => array() ) : array( 'focal' => array(), 'ratio' => array() );
+	}
+	return $data;
+}
+
+/**
+ * Key of a photo in the focal data: its file name, lower case, without extension, size (-300x225), -scaled /
+ * -rotated and edit (-e1787…) suffixes, so every copy of one photo shares the key.
+ *
+ * @param string $name File name, path or URL.
+ */
+function krm_focal_key( $name ) {
+	$name = strtolower( pathinfo( (string) wp_parse_url( $name, PHP_URL_PATH ), PATHINFO_FILENAME ) );
+	$name = preg_replace( '/-\d+x\d+$/', '', $name );
+	$name = preg_replace( '/-e\d{10,}$/', '', $name );
+	$name = preg_replace( '/-(scaled|rotated)$/', '', $name );
+	return preg_replace( '/-e\d{10,}$/', '', $name );
+}
+
+/**
+ * File name behind an image reference: the attachment's file, or the design URL / theme path itself.
+ *
+ * @param int|string $ref Attachment ID or design URL.
+ */
+function krm_ref_file( $ref ) {
+	$id = is_numeric( $ref ) ? (int) $ref : krm_media_id( (string) $ref );
+	if ( $id ) {
+		$file = (string) get_post_meta( $id, '_wp_attached_file', true );
+		if ( '' !== $file ) {
+			return $file;
+		}
+	}
+	return is_numeric( $ref ) ? '' : (string) $ref;
+}
+
+/**
+ * Focus point of a photo ("x% y%", where its faces are) or '' when no face was found or the photo is unknown.
+ *
+ * @param int|string $ref Attachment ID or design URL.
+ */
+function krm_focal( $ref ) {
+	$file = krm_ref_file( $ref );
+	if ( '' === $file ) {
+		return '';
+	}
+	$data = krm_focal_data();
+	$key  = krm_focal_key( $file );
+	return isset( $data['focal'][ $key ] ) ? (string) $data['focal'][ $key ] : '';
+}
+
+/**
+ * Shape of a photo (width / height), or 0 when unknown: attachment metadata, else the theme copy's measured shape.
+ *
+ * @param int|string $ref Attachment ID or design URL.
+ */
+function krm_img_ratio( $ref ) {
+	$id = is_numeric( $ref ) ? (int) $ref : krm_media_id( (string) $ref );
+	if ( $id ) {
+		$meta = wp_get_attachment_metadata( $id );
+		if ( ! empty( $meta['width'] ) && ! empty( $meta['height'] ) ) {
+			return round( $meta['width'] / $meta['height'], 4 );
+		}
+	}
+	$local = is_numeric( $ref ) ? '' : krm_media_local( (string) $ref );
+	$data  = krm_focal_data();
+	return '' !== $local && isset( $data['ratio'][ $local ] ) ? (float) $data['ratio'][ $local ] : 0.0;
+}
+
+/**
+ * style attribute giving a gallery tile its photo's shape (--r, used by the .krm-just rows), or '' when unknown.
+ *
+ * @param int|string $ref Attachment ID or design URL.
+ */
+function krm_ratio_style( $ref ) {
+	$r = krm_img_ratio( $ref );
+	return $r > 0 ? ' style="--r: ' . esc_attr( (string) max( 0.4, min( 3.0, $r ) ) ) . '"' : '';
 }
 
 /**

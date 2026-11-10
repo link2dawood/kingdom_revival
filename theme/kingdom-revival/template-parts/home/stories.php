@@ -27,7 +27,7 @@ $krm_none = ! array_filter(
 );
 ?>
 <!-- Stories -->
-<section id="stories" style="max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
+<section id="stories" style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
 <div style="text-align: center; max-width: 680px; margin: 0 auto 44px">
 <?php krm_admin_only_note( $krm_none ); ?>
 <p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary-text)"><?php krm_t( 'stories.eyebrow' ); ?></p>

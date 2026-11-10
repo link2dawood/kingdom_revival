@@ -117,7 +117,7 @@ return array(
 	'founder' => array(
 		'label'  => __( 'Founder testimony', 'kingdom-revival' ),
 		'fields' => array(
-			'image'        => krm_f( 'image', __( 'Photo', 'kingdom-revival' ), $krm_up . '2026/08/file_00000000b46471f484befac1dc0ee291.png' ),
+			'image'        => krm_f( 'image', __( 'Photo', 'kingdom-revival' ), 'krm-theme:images/content/pastor-adil-arif-portrait.jpg' ),
 			'image_alt'    => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ), 'Pastor Adil Arif, founder of Kingdom Revival Ministries' ),
 			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Founder & Pastor' ),
 			'heading'      => krm_f( 'html', __( 'Name', 'kingdom-revival' ), 'Pastor Adil Arif' ),
@@ -193,12 +193,6 @@ return array(
 					'bio'   => krm_f( 'textarea', __( 'Short bio', 'kingdom-revival' ) ),
 				),
 				array(
-					array(
-						'photo' => 'krm-theme:images/content/team-adil-arif.jpg',
-						'name'  => 'Pastor Adil Arif',
-						'role'  => 'Founder',
-						'bio'   => 'Pastor Adil leads Kingdom Revival Ministries in evangelism, discipleship and church ministry, with a heart for children and youth — and for practical care among villages, marginalised communities and brick kiln families.',
-					),
 					array(
 						'photo' => 'krm-theme:images/content/team-sajid-arif.jpg',
 						'name'  => 'Sajid Arif',

@@ -13,7 +13,7 @@ $krm_buttons = array(
 );
 ?>
 <!-- Flagship: Bibles + Church planting -->
-<section style="max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 26px">
+<section style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 26px">
 <?php
 foreach ( array_values( (array) krm_c( 'flagship.cards' ) ) as $krm_i => $krm_card ) :
 	$krm_button = $krm_buttons[ $krm_i % 2 ];

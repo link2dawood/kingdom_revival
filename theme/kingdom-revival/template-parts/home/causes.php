@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <!-- Ministries / causes -->
 <section id="ministries" style="background: var(--color-bg-soft)">
-<div style="max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
+<div style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
 <div style="text-align: center; max-width: 720px; margin: 0 auto 48px">
 <p style="margin: 0 0 8px; font-weight: 700; color: var(--color-secondary-text)"><?php krm_t( 'causes.eyebrow' ); ?></p>
 <h2 style="margin: 0; font-size: clamp(30px, 3.4vw, 42px); font-weight: 800; line-height: 1.2; letter-spacing: -0.01em"><?php krm_h( 'causes.heading' ); ?></h2>

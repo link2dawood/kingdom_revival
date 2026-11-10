@@ -100,9 +100,9 @@ get_header();
 	<div class="section-head">
 		<h2 id="project-photos-h"><?php esc_html_e( 'Photo gallery', 'kingdom-revival' ); ?></h2>
 	</div>
-	<div class="gallery" data-gallery>
+	<div class="gallery krm-just" data-gallery>
 		<?php foreach ( $krm_gallery as $krm_photo ) : ?>
-		<figure class="photo"><img <?php krm_img_src( $krm_photo[0], '(max-width: 520px) calc(100vw - 32px), (max-width: 760px) calc(50vw - 25px), 390px', true ); ?> alt="<?php echo esc_attr( $krm_photo[1] ); ?>" loading="lazy" decoding="async"></figure>
+		<figure class="photo"<?php echo krm_ratio_style( $krm_photo[0] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>><img <?php krm_img_src( $krm_photo[0], '(max-width: 640px) 70vw, (max-width: 1100px) 45vw, 520px' ); ?> alt="<?php echo esc_attr( $krm_photo[1] ); ?>" loading="lazy" decoding="async"></figure>
 		<?php endforeach; ?>
 	</div>
 </div>

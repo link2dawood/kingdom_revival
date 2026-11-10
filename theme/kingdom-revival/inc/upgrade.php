@@ -1695,3 +1695,92 @@ add_action(
 	},
 	30
 );
+
+/**
+ * Theme 1.21.3: clean water photos. A saved home "Clean water" section whose photo is still the old empty default gets
+ * the three Clean Water Project photos (the schema defaults); a photo chosen by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'krm_water_copy_version' ) < 1 || get_option( 'krm_water_copy_version' ) >= 2 ) {
+			return;
+		}
+		update_option( 'krm_water_copy_version', 2 );
+		$front = (int) get_option( 'page_on_front' );
+		$saved = $front ? get_post_meta( $front, '_krm_content_home', true ) : null;
+		if ( is_array( $saved ) && isset( $saved['water'] ) && is_array( $saved['water'] ) && '' === trim( (string) ( $saved['water']['image'] ?? '' ) ) && ! isset( $saved['water']['image2'] ) ) {
+			unset( $saved['water']['image'], $saved['water']['image_alt'] );
+			update_post_meta( $front, '_krm_content_home', $saved );
+		}
+	},
+	31
+);
+
+/**
+ * Theme 1.21.4: new photo of Pastor Adil. Saved home "About" founder photo, home "Founder" photo and About page
+ * "Founder testimony" photo still holding an earlier default (as the design URL or its imported attachment) get the
+ * new photo; a photo chosen by hand is kept. Pastor Adil's card leaves the About page "Our staff" list (he stays in the
+ * Founder section).
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_founder_photo_version' ) >= 1 ) {
+			return;
+		}
+		update_option( 'krm_founder_photo_version', 1 );
+		$is_old = function ( $value, $old ) {
+			$value = is_scalar( $value ) ? trim( (string) $value ) : '';
+			if ( $value === $old ) {
+				return true;
+			}
+			return is_numeric( $value ) && (int) $value > 0 && (int) $value === (int) krm_media_id( $old );
+		};
+		$front = (int) get_option( 'page_on_front' );
+		$saved = $front ? get_post_meta( $front, '_krm_content_home', true ) : null;
+		if ( is_array( $saved ) ) {
+			$changed = false;
+			if ( isset( $saved['about']['founder_photo'] ) && $is_old( $saved['about']['founder_photo'], 'krm-theme:images/content/team-adil-arif.jpg' ) ) {
+				$saved['about']['founder_photo'] = 'krm-theme:images/content/pastor-adil-arif.jpg';
+				$changed                         = true;
+			}
+			if ( isset( $saved['founder']['image'] ) && $is_old( $saved['founder']['image'], 'krm-theme:images/content/founder-adil-arif.jpg' ) ) {
+				$saved['founder']['image'] = 'krm-theme:images/content/pastor-adil-arif.jpg';
+				$changed                   = true;
+			}
+			if ( $changed ) {
+				update_post_meta( $front, '_krm_content_home', $saved );
+			}
+		}
+		foreach ( get_pages( array( 'meta_key' => '_krm_content_about' ) ) as $page ) {
+			$saved = get_post_meta( $page->ID, '_krm_content_about', true );
+			if ( ! is_array( $saved ) ) {
+				continue;
+			}
+			$changed = false;
+			if ( isset( $saved['founder']['image'] ) && $is_old( $saved['founder']['image'], 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/file_00000000b46471f484befac1dc0ee291.png' ) ) {
+				$saved['founder']['image'] = 'krm-theme:images/content/pastor-adil-arif-portrait.jpg';
+				$changed                   = true;
+			}
+			if ( isset( $saved['team']['main'] ) && is_array( $saved['team']['main'] ) ) {
+				$kept = array_values(
+					array_filter(
+						$saved['team']['main'],
+						function ( $person ) {
+							return ! ( is_array( $person ) && 'Pastor Adil Arif' === trim( (string) ( $person['name'] ?? '' ) ) );
+						}
+					)
+				);
+				if ( count( $kept ) !== count( $saved['team']['main'] ) ) {
+					$saved['team']['main'] = $kept;
+					$changed               = true;
+				}
+			}
+			if ( $changed ) {
+				update_post_meta( $page->ID, '_krm_content_about', $saved );
+			}
+		}
+	},
+	32
+);

@@ -113,6 +113,7 @@ function krm_explorer_data( $ministries ) {
 			'slug'   => $m['slug'],
 			'img'    => krm_ref_url( $m['image'] ),
 			'srcset' => $id ? (string) wp_get_attachment_image_srcset( $id, 'full' ) : '',
+			'focal'  => krm_focal( $m['image'] ),
 		);
 	}
 	echo '<script type="application/json" id="krm-explorer-data">' . wp_json_encode( $items, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . '</script>';

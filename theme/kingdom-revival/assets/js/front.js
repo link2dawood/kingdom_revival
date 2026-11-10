@@ -66,6 +66,7 @@
         if (item.srcset) img.srcset = item.srcset; else img.removeAttribute("srcset");
         img.src = item.img;
         img.alt = item.title;
+        img.style.objectPosition = item.focal || "center 20%"; // where the faces are, else the template's position
       }
       part("num").textContent = item.num;
       part("title").textContent = item.title;
@@ -312,4 +313,63 @@
       });
     });
   })();
+})();
+
+/* ---------- Mission photo slider (template-parts/home/mission.php) ----------
+   One photo at a time, cross-fading every 5 s; the progress bars fill as each photo shows. Pauses while hovered or
+   focused and when off screen; arrows, swipe and ←/→ keys move it. With reduced motion it does not play by itself. */
+(function () {
+  document.querySelectorAll("[data-krm-slider]").forEach(function (root) {
+    var slides = root.querySelectorAll(".krm-mission__slide");
+    var bars = root.querySelectorAll(".krm-mission__bar");
+    if (slides.length < 2) return;
+    var MS = 5000;
+    var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var at = 0, timer = null, hover = false, seen = true;
+    root.style.setProperty("--krm-slide-ms", MS + "ms");
+
+    function go(n) {
+      at = (n + slides.length) % slides.length;
+      slides.forEach(function (s, i) {
+        s.classList.toggle("is-active", i === at);
+        if (i === at) s.removeAttribute("aria-hidden"); else s.setAttribute("aria-hidden", "true");
+        var img = s.querySelector("img");
+        if (img && (i === at || i === (at + 1) % slides.length)) img.loading = "eager"; // the next photo is ready in time
+      });
+      bars.forEach(function (b, i) {
+        b.classList.remove("is-active");
+        b.classList.toggle("is-done", i < at);
+      });
+      if (bars[at]) { void bars[at].offsetWidth; bars[at].classList.add("is-active"); } // restart its fill
+      schedule();
+    }
+    function schedule() {
+      clearTimeout(timer);
+      var paused = hover || !seen || still;
+      root.classList.toggle("is-paused", paused);
+      if (!paused) timer = setTimeout(function () { go(at + 1); }, MS);
+    }
+    root.querySelector("[data-krm-prev]").addEventListener("click", function () { go(at - 1); });
+    root.querySelector("[data-krm-next]").addEventListener("click", function () { go(at + 1); });
+    root.addEventListener("mouseenter", function () { hover = true; schedule(); });
+    root.addEventListener("mouseleave", function () { hover = false; go(at); });
+    root.addEventListener("focusin", function () { hover = true; schedule(); });
+    root.addEventListener("focusout", function () { hover = false; schedule(); });
+    root.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { e.preventDefault(); go(at - 1); }
+      if (e.key === "ArrowRight") { e.preventDefault(); go(at + 1); }
+    });
+    var x0 = null;
+    root.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    root.addEventListener("touchend", function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 40) go(dx < 0 ? at + 1 : at - 1);
+    });
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (en) { seen = en[0].isIntersecting; if (seen) go(at); else schedule(); }, { threshold: 0.3 }).observe(root);
+    }
+    go(0);
+  });
 })();

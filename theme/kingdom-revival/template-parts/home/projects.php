@@ -14,7 +14,7 @@ if ( ! $krm_projects ) {
 }
 ?>
 <!-- Current projects -->
-<section id="projects" aria-labelledby="projects-h" style="max-width: 1320px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
+<section id="projects" aria-labelledby="projects-h" style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
 <div style="display: flex; flex-wrap: wrap; gap: 12px 48px; justify-content: space-between; align-items: flex-end; margin-bottom: 32px">
 <div>
 <?php krm_admin_only_note( ! array_filter( wp_list_pluck( $krm_projects, 'placeholder' ), function ( $v ) { return ! $v; } ) ); // phpcs:ignore Generic.Formatting.MultipleStatementAlignment ?>

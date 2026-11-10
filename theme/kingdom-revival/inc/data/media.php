@@ -118,6 +118,8 @@ return array(
 	'krm-theme:images/content/outreach-ministry-10.jpg' => 'A pastor with a family and their children holding food bags',
 	'krm-theme:images/content/outreach-ministry-11.jpg' => 'Women sitting with the food and supply bags they received',
 	'krm-theme:images/content/outreach-ministry-12.jpg' => 'A woman at a brick kiln with her bags of food and supplies',
+	'krm-theme:images/content/pastor-adil-arif.jpg' => 'Pastor Adil Arif, founder of Kingdom Revival Ministries',
+	'krm-theme:images/content/pastor-adil-arif-portrait.jpg' => 'Pastor Adil Arif, founder of Kingdom Revival Ministries',
 	'krm-theme:images/content/founder-adil-arif.jpg' => 'Pastor Adil Arif, founder of Kingdom Revival Ministries',
 	'krm-theme:images/content/team-adil-arif.jpg' => 'Pastor Adil Arif, Founder of Kingdom Revival Ministries',
 	'krm-theme:images/content/team-sajid-arif.jpg' => 'Sajid Arif, Co-founder of Kingdom Revival Ministries',

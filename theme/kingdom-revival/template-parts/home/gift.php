@@ -22,7 +22,7 @@ $krm_hidden = ! array_filter(
 );
 ?>
 <!-- Your gift at work -->
-<section aria-labelledby="gift-h" style="max-width: 1320px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px) 0">
+<section aria-labelledby="gift-h" style="max-width: 1240px; margin: 0 auto; padding: clamp(64px, 7vw, 96px) clamp(16px, 3vw, 32px) 0">
 <?php krm_admin_only_note( $krm_hidden ); ?>
 <div style="display: flex; flex-wrap: wrap; gap: 12px 48px; justify-content: space-between; align-items: flex-end; margin-bottom: 28px">
 <h2 id="gift-h" style="margin: 0; font-size: clamp(26px, 2.8vw, 34px); font-weight: 800; color: var(--color-heading)"><?php krm_t( 'gift.heading', $krm_screen ); ?></h2>
