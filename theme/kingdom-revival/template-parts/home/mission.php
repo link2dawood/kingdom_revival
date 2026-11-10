@@ -1,6 +1,6 @@
 <?php
 /**
- * Home: "Bringing Christ to the brick kilns of Pakistan" — mission statement with Luke 4:18, after the ministry
+ * Home: "Taking the Gospel to the villages of Pakistan" (theme 1.21.3; was "Bringing Christ to the brick kilns of Pakistan") — mission statement with Luke 4:18, after the ministry
  * explorer, with a photo slider beside the text (progress bars, arrows, caption; script in assets/js/front.js).
  * Text and slides: Pages → Home → Page content → Mission. Styles: .krm-mission in assets/css/front.css.
  *
@@ -21,7 +21,7 @@ $krm_sl = array_values(
 	)
 );
 ?>
-<!-- Mission: brick kilns of Pakistan -->
+<!-- Mission: villages of Pakistan -->
 <section id="mission" class="krm-mission" aria-labelledby="krm-mission-title">
 <div class="krm-mission__inner<?php echo $krm_sl ? ' krm-mission__inner--slider' : ''; ?>" data-reveal>
 <div class="krm-mission__copy">

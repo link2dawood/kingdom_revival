@@ -387,7 +387,7 @@
   });
 })();
 
-/* Home "Where we serve": the village/kiln dots pop in once the map scrolls into view (visible without JS). */
+/* Map of Pakistan (home "Where we serve", Our Impact): the village/kiln dots pop in once the map scrolls into view (visible without JS). */
 (function () {
   var dots = document.querySelector(".krm-where__dots");
   if (!dots || !("IntersectionObserver" in window)) return;

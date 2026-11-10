@@ -1,6 +1,6 @@
 <?php
 /**
- * Home: "Clean water for brick kiln families" — compact text-and-photo section after "Bringing Christ" (mission.php).
+ * Home: "Clean water for brick kiln families" — compact text-and-photo section after "Taking the Gospel" (mission.php).
  * Text: Pages → Home → Page content → Clean water. The number is the clean water hand pumps impact number
  * (krm_opt( 'stat_6_value' ), the same one as the stats bar). Styles: .krm-water in assets/css/front.css.
  *

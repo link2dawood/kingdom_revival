@@ -1269,3 +1269,51 @@ body:has(#main > #top) .site-header { margin-bottom: calc(-1 * (var(--header-h) 
   .krm-fr__steps { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .krm-fr__steps > li:last-child:nth-child(odd) { grid-column: auto; }
 }
+
+/* Map of Pakistan with towns and village/kiln dots (template-parts/where-map.php): home "Where we serve" and Our Impact. */
+.krm-where__map { position: relative; z-index: 1; min-width: 0; aspect-ratio: 1000 / 911; --l: 34px; }
+.krm-where__map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.krm-where__map .pk-lines { fill: none; stroke: var(--color-text-on-dark); stroke-opacity: .32; stroke-width: 1; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.krm-where__map .pk-hl { fill: var(--color-accent); fill-opacity: .26; stroke: var(--color-accent); stroke-opacity: .85; stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.krm-where__map .pk-fills { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--color-accent) 55%, transparent)); }
+/* Village dots and kiln squares (one per village / kiln in the places list); they pop in when the map scrolls into view. */
+.krm-where__dots { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.krm-where__dots .krm-where__v { fill: var(--color-accent); fill-opacity: .85; stroke: var(--color-band-deep); stroke-opacity: .5; stroke-width: 1; }
+.krm-where__dots .krm-where__k { fill: var(--color-secondary-on-dark); stroke: var(--color-band-deep); stroke-opacity: .5; stroke-width: 1; }
+.krm-where__dots g > * { transform-box: fill-box; transform-origin: center; }
+.krm-where__dots.is-armed g > * { opacity: 0; }
+.krm-where__dots.is-in g > * { animation: krm-where-pop .5s ease-out both; animation-delay: var(--d, 0ms); }
+@keyframes krm-where-pop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+.krm-where__legend { position: absolute; right: 4%; bottom: 4%; display: flex; gap: 16px; margin: 0; color: var(--color-text-on-dark); font-size: 13px; font-weight: 600; }
+.krm-where__legend span { display: inline-flex; align-items: center; gap: 7px; }
+.krm-where__legend i { width: 9px; height: 9px; border-radius: 50%; background: var(--color-accent); }
+.krm-where__legend .krm-where__lk { border-radius: 1px; background: var(--color-secondary-on-dark); }
+.krm-where__town { position: absolute; width: 0; height: 0; }
+.krm-where__dot { position: absolute; z-index: 2; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 2px var(--color-band-deep); }
+.krm-where__town--hq .krm-where__dot { left: -7px; top: -7px; width: 14px; height: 14px; background: var(--color-white); box-shadow: 0 0 0 3px var(--color-accent); }
+.krm-where__dot::after { content: ""; position: absolute; inset: -3px; border: 2px solid var(--color-accent); border-radius: 50%; opacity: 0; animation: krm-where-pulse 2.6s ease-out infinite; }
+.krm-where__town:nth-child(odd) .krm-where__dot::after { animation-delay: 1.3s; }
+@keyframes krm-where-pulse { 0% { transform: scale(1); opacity: .85; } 100% { transform: scale(3); opacity: 0; } }
+.krm-where__leader { position: absolute; left: 0; top: -.5px; width: var(--l); height: 1px; background: color-mix(in srgb, var(--color-white) 70%, transparent); transform-origin: 0 50%; }
+.krm-where__label { position: absolute; padding: 3px 8px; border: 1px solid color-mix(in srgb, var(--color-white) 18%, transparent); border-radius: 4px; background: color-mix(in srgb, var(--color-band-deep) 82%, transparent); color: var(--color-white); font: 700 13px/1.25 var(--font-body); white-space: nowrap; }
+.krm-where__label small { color: var(--color-accent); font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+.krm-where__town--n .krm-where__leader { transform: rotate(-90deg); }
+.krm-where__town--n .krm-where__label { left: 0; bottom: calc(var(--l) + 1px); transform: translateX(-50%); }
+.krm-where__town--s .krm-where__leader { transform: rotate(90deg); }
+.krm-where__town--s .krm-where__label { left: 0; top: calc(var(--l) + 1px); transform: translateX(-50%); }
+.krm-where__town--e .krm-where__label { left: calc(var(--l) + 1px); top: 0; transform: translateY(-50%); }
+.krm-where__town--w .krm-where__leader { transform: rotate(180deg); }
+.krm-where__town--w .krm-where__label { right: calc(var(--l) + 1px); top: 0; transform: translateY(-50%); }
+@media (max-width: 600px) {
+  .krm-where__map { --l: 20px; }
+  .krm-where__label { padding: 2px 6px; font-size: 12px; }
+  .krm-where__town--e .krm-where__leader { width: 12px; }
+  .krm-where__town--e .krm-where__label { left: 13px; }
+}
+@media (max-width: 420px) {
+  .krm-where__label small { display: none; } /* Room for "Faisalabad" beside the cluster; its white mark still shows HQ. */
+}
+@media (prefers-reduced-motion: reduce) {
+  .krm-where__dot::after { animation: none; opacity: .5; transform: scale(1.8); }
+  .krm-where__dots.is-armed g > *, .krm-where__dots.is-in g > * { opacity: 1; animation: none; }
+}

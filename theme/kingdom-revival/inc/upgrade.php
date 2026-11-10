@@ -1784,3 +1784,33 @@ add_action(
 	},
 	32
 );
+
+/**
+ * Theme 1.21.3: home mission heading "Bringing Christ / to the brick kilns of Pakistan." becomes "Taking the Gospel /
+ * to the villages of Pakistan." in a saved home page that still holds the old default; edited lines are kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'krm_mission_heading_version' ) >= 1 ) {
+			return;
+		}
+		update_option( 'krm_mission_heading_version', 1 );
+		$front = (int) get_option( 'page_on_front' );
+		$saved = $front ? get_post_meta( $front, '_krm_content_home', true ) : null;
+		if ( ! is_array( $saved ) || empty( $saved['mission'] ) || ! is_array( $saved['mission'] ) ) {
+			return;
+		}
+		$changed = false;
+		foreach ( array( 'heading1' => array( 'Bringing Christ', 'Taking the Gospel' ), 'heading2' => array( 'to the brick kilns of Pakistan.', 'to the villages of Pakistan.' ) ) as $key => $pair ) {
+			if ( isset( $saved['mission'][ $key ] ) && $pair[0] === trim( (string) $saved['mission'][ $key ] ) ) {
+				$saved['mission'][ $key ] = $pair[1];
+				$changed                  = true;
+			}
+		}
+		if ( $changed ) {
+			update_post_meta( $front, '_krm_content_home', $saved );
+		}
+	},
+	32
+);

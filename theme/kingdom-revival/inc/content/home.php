@@ -157,12 +157,12 @@ return array(
 		),
 	),
 	'mission'  => array(
-		'label'  => __( 'Mission: brick kilns of Pakistan', 'kingdom-revival' ),
+		'label'  => __( 'Mission: villages of Pakistan', 'kingdom-revival' ),
 		'help'   => __( 'The section after the ministry explorer. Leave a button text empty to hide that button.', 'kingdom-revival' ),
 		'fields' => array(
 			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Pakistan and Beyond' ),
-			'heading1'      => krm_f( 'text', __( 'Heading: first line', 'kingdom-revival' ), 'Bringing Christ' ),
-			'heading2'      => krm_f( 'text', __( 'Heading: second line (italic accent)', 'kingdom-revival' ), 'to the brick kilns of Pakistan.' ),
+			'heading1'      => krm_f( 'text', __( 'Heading: first line', 'kingdom-revival' ), 'Taking the Gospel' ),
+			'heading2'      => krm_f( 'text', __( 'Heading: second line (italic accent)', 'kingdom-revival' ), 'to the villages of Pakistan.' ),
 			'text'          => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ), 'We preach the Gospel and plant churches among the unreached. We provide Sunday school and education for children growing up beside the kilns. We hold medical camps, install clean water hand pumps at brick kilns, place Urdu Bibles in the hands of new believers, and care for orphans and widows.' ),
 			'quote'         => krm_f( 'textarea', __( 'Scripture', 'kingdom-revival' ), '“The Spirit of the Lord is upon me, because he hath anointed me to preach the gospel to the poor.”' ),
 			'cite'          => krm_f( 'text', __( 'Scripture reference', 'kingdom-revival' ), 'Luke 4:18' ),
@@ -193,7 +193,7 @@ return array(
 	),
 	'water'    => array(
 		'label'  => __( 'Clean water', 'kingdom-revival' ),
-		'help'   => __( 'The section after "Bringing Christ". The number is the clean water hand pumps impact number (Kingdom Revival → Settings → Impact numbers). Up to three photos (one tall, two stacked); they open in the photo viewer. With all three empty, visitors see a plain tinted box. Leave a button text empty to hide that button.', 'kingdom-revival' ),
+		'help'   => __( 'The section after "Taking the Gospel". The number is the clean water hand pumps impact number (Kingdom Revival → Settings → Impact numbers). Up to three photos (one tall, two stacked); they open in the photo viewer. With all three empty, visitors see a plain tinted box. Leave a button text empty to hide that button.', 'kingdom-revival' ),
 		'fields' => array(
 			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Clean water' ),
 			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), '<span class="hl">Clean water</span> for brick kiln families', $krm_hl ),
