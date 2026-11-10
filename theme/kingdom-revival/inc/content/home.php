@@ -517,7 +517,7 @@ return array(
 	'involved' => array(
 		'label'  => __( 'Get involved', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow' => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Get Involved' ),
+			'eyebrow' => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Make a Difference' ),
 			'heading' => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Three Ways to Stand With Us' ),
 			'items'   => krm_list_f(
 				__( 'Ways', 'kingdom-revival' ),

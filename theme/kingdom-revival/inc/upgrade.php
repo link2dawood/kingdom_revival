@@ -1814,3 +1814,24 @@ add_action(
 	},
 	32
 );
+
+/**
+ * Theme 1.22.2: the home "Three Ways to Stand With Us" small heading "Get Involved" becomes "Make a Difference" in a
+ * saved home page that still holds the old default; a heading typed by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_involved_eyebrow_version' ) >= 1 ) {
+			return;
+		}
+		update_option( 'krm_involved_eyebrow_version', 1 );
+		$front = (int) get_option( 'page_on_front' );
+		$saved = $front ? get_post_meta( $front, '_krm_content_home', true ) : null;
+		if ( is_array( $saved ) && isset( $saved['involved']['eyebrow'] ) && 'Get Involved' === trim( (string) $saved['involved']['eyebrow'] ) ) {
+			$saved['involved']['eyebrow'] = 'Make a Difference';
+			update_post_meta( $front, '_krm_content_home', $saved );
+		}
+	},
+	33
+);
