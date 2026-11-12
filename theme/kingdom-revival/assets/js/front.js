@@ -237,7 +237,7 @@
       var unit = Number(li.dataset.unit);
       var c = { el: li.querySelector("[data-krm-calc-num]"), fmt: function (n) { return String(Math.round(n)); }, shown: Math.floor(Number(range.value) / unit) };
       counters.push(c);
-      return { li: li, unit: unit, counter: c, unlock: li.querySelector("[data-krm-calc-unlock]"), n: c.shown };
+      return { li: li, unit: unit, counter: c, unlock: li.querySelector("[data-krm-calc-unlock]"), what: li.querySelector(".krm-calc__what[data-one]"), n: c.shown };
     });
 
     var tweenFrame = 0;
@@ -279,6 +279,7 @@
           r.li.classList.add("is-unlocked");
         }
         r.n = n;
+        if (r.what) r.what.textContent = n === 1 ? r.what.dataset.one : r.what.dataset.many; // plural unless exactly 1
         tweenTo(r.counter, n);
       });
       // Screen readers hear the amount once the slider settles, not every count.

@@ -57,6 +57,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: New home About section (theme 1.19.3)](#kingdom-revival-ministries-new-home-about-section-theme-1193)
 - [Kingdom Revival Ministries: Pastor photo, block heading highlights, uncropped galleries and face-aware crops (theme 1.21.4–1.22.0)](#kingdom-revival-ministries-pastor-photo-block-heading-highlights-uncropped-galleries-and-face-aware-crops-theme-1214-1220)
 - [Kingdom Revival Ministries: New home page layout, plural statistic labels, Lahore and Karachi on the map (theme 1.23.0)](#kingdom-revival-ministries-new-home-page-layout-plural-statistic-labels-lahore-and-karachi-on-the-map-theme-1230)
+- [Kingdom Revival Ministries: Three home sections restored (theme 1.23.2)](#kingdom-revival-ministries-three-home-sections-restored-theme-1232)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4321,4 +4322,38 @@ six-number bar under it (the brief's hero list doesn't name them; the brief's pl
 - Verified: Our Impact 200 at 1440 / 768 / 390, no overflow or JS errors, map identical to home; home unchanged (order, no
   overflow, no errors); axe on Our Impact: no findings in the map section (two older ones elsewhere on the page: the
   impact explorer's `<article role="tabpanel">` and the floating WhatsApp button outside a landmark). Zip rebuilt.
+
+## Kingdom Revival Ministries: Three home sections restored (theme 1.23.2)
+
+**Result:** three sections taken off the home page in 1.23.0 are back, unchanged, at the positions the client asked for. The
+home page now has 16 parts: header, hero, Who We Are, **Taking the Gospel to the villages of Pakistan**, What We Do, Why
+Pakistan Needs Hope, Our Impact (with the map), Featured Projects, Stories from the Field, Our Journey, **Our Ministries
+01–12**, Partner With Us, **Your gift at work**, Latest News & Updates, "Together, We Can Bring Hope", footer.
+
+- `front-page.php`: the order above. The template parts (`mission.php`, `explorer.php`, `gift-calculator.php`), their CSS
+  (front.css) and scripts (front.js) had been kept in 1.23.0, so markup, design, photos and animations are the 1.23.0-era
+  versions as they were.
+- `inc/content/home.php`: the `mission`, `explorer` and `calc` schema sections are back with their earlier defaults
+  (copied from 1.23.0's parent commit), so their "Page content" fields are editable again. Values saved before 1.23.0 were
+  never deleted and show again. The box's section labels are renumbered 1–2 … 15 in page order.
+- Gift calculator plurals: a row's text is singular only when its number is exactly 1 ("1 family medical camp visit",
+  "1 child's schooling", "1 Urdu Bible for a family or a new believer"), plural otherwise (10 Urdu Bibles…, 2 family medical
+  camp visits, 2 children's schooling…, 0 … when locked). Server render and live slider updates (front.js swaps the text
+  from `data-one` / `data-many`). The kiln-debt row has no number (it is the always-on ✓ line), so it stays "Helps free a
+  family from kiln debt".
+- `readme.md` home section list updated; version 1.23.2; zip rebuilt (317 files).
+- Verified on the local site at 1440 / 768 / 390: all 15 sections in order, each once; no duplicate IDs; no horizontal
+  overflow; no JS errors. Mission slider: 5 slides, 5 progress bars, next/prev arrows move it, caption "Church at the brick
+  kilns · Faisalabad", faint "Hope" word, both buttons (Partner With Us, Our Impact). Explorer: 12 ministries 01–12; picking
+  07 sets number, title, "Support this ministry" (Donate ?ministry=slavery-freedom) and "Learn more"; "Explore What We Do"
+  below. Calculator: $100 → 10 / 2 / 2, Give $100 → Donate ?amount=100; slider to $45 → 4 / 1 / 1 with singular text;
+  chip $25 → 2 Bibles, other rows locked ("Add $20 more to unlock"); chip $500 → 50 / 11 / 12, Give $500. All 50 internal
+  links on the home page 200. axe-core: 0 violations at 1440 and 390, light and dark. Space between sections matches the
+  other same-colour neighbours (e.g. Our Journey → Our Ministries 150 px, Your gift at work → News 160 px on desktop).
+- Not covered: pixel diffs (no baseline for the new order); the live site (upload, then the cache purge runs once per
+  version).
+
+**Decision for you:** Our Ministries keeps its original eyebrow and heading, "What We Do" / "One Gospel, shared in word and
+deed." — the What We Do section above uses almost the same heading ("One Gospel, shared in word and deed"). Both can be
+edited in Pages → Home → Page content (sections 5 and 11); e.g. the restored one could read "Our Ministries".
 
