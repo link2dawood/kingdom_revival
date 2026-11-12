@@ -58,6 +58,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Pastor photo, block heading highlights, uncropped galleries and face-aware crops (theme 1.21.4–1.22.0)](#kingdom-revival-ministries-pastor-photo-block-heading-highlights-uncropped-galleries-and-face-aware-crops-theme-1214-1220)
 - [Kingdom Revival Ministries: New home page layout, plural statistic labels, Lahore and Karachi on the map (theme 1.23.0)](#kingdom-revival-ministries-new-home-page-layout-plural-statistic-labels-lahore-and-karachi-on-the-map-theme-1230)
 - [Kingdom Revival Ministries: Three home sections restored (theme 1.23.2)](#kingdom-revival-ministries-three-home-sections-restored-theme-1232)
+- [Kingdom Revival Ministries: What We Do group introductions and larger ministry cards (theme 1.23.3)](#kingdom-revival-ministries-what-we-do-group-introductions-and-larger-ministry-cards-theme-1233)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4356,4 +4357,24 @@ Pakistan Needs Hope, Our Impact (with the map), Featured Projects, Stories from 
 **Decision for you:** Our Ministries keeps its original eyebrow and heading, "What We Do" / "One Gospel, shared in word and
 deed." — the What We Do section above uses almost the same heading ("One Gospel, shared in word and deed"). Both can be
 edited in Pages → Home → Page content (sections 5 and 11); e.g. the restored one could read "Our Ministries".
+
+## Kingdom Revival Ministries: What We Do group introductions and larger ministry cards (theme 1.23.3)
+
+**Result:** the two ministry groups have dummy introductions instead of the admin-only "[Short introduction … to be supplied by
+the client]" boxes, and the ministry cards under each group on /what-we-do/ are larger.
+
+- `inc/data/ministries.php`: default intros (facts already on the site only). Gospel & Spiritual: "We take the Gospel to
+  villages and brick kiln communities across Pakistan: we plant churches, place Urdu Bibles in the hands of new believers,
+  train local leaders, walk with new believers through baptism and discipleship, and pray with those who carry heavy
+  burdens." Compassion & Humanitarian: "We show the love of Christ in practical ways: we stand with brick kiln families
+  trapped in bonded labour, care for orphans and widows, install clean water hand pumps and hold medical camps where help
+  rarely reaches." Shown on the group cards, the group pages and in their meta description.
+- `krm_groups()`: a saved intro that still holds [bracket] text (e.g. Site text saved on the live site) shows the default.
+- `assets/css/pages/ministry.css`: preview rows 3 per row on computers (were 6; 6 and 9 ministries fill whole rows), 2 below
+  900px; photo 16:10, title 18px with more padding (15px on phones), gentle photo zoom on hover (off with reduced motion).
+  Card size at 1440: 385 × 299 px (was ≈ 185 × 205). Image `sizes` updated.
+- Verified at 1440 / 768 / 390: /what-we-do/ and both group pages 200, no "[to be supplied" text, no overflow, no JS errors.
+  Zip rebuilt.
+
+**Dummy content to replace before launch:** the two group introductions (Kingdom Revival → Site text → What We Do groups).
 

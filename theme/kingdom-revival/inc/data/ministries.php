@@ -39,7 +39,7 @@ return array(
 			'order' => 1,
 			'path'  => 'gospel-spiritual-ministries',
 			'image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-10-scaled.jpg',
-			'intro' => '[Short introduction to the Gospel & Spiritual Ministries — to be supplied by the client]',
+			'intro' => 'We take the Gospel to villages and brick kiln communities across Pakistan: we plant churches, place Urdu Bibles in the hands of new believers, train local leaders, walk with new believers through baptism and discipleship, and pray with those who carry heavy burdens.',
 		),
 		'compassion-humanitarian' => array(
 			'name' => 'Compassion & Humanitarian Ministries',
@@ -47,7 +47,7 @@ return array(
 			'order' => 2,
 			'path'  => 'compassion-humanitarian-ministries',
 			'image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg',
-			'intro' => '[Short introduction to the Compassion & Humanitarian Ministries — to be supplied by the client]',
+			'intro' => 'We show the love of Christ in practical ways: we stand with brick kiln families trapped in bonded labour, care for orphans and widows, install clean water hand pumps and hold medical camps where help rarely reaches.',
 		),
 	),
 	'items' => array(

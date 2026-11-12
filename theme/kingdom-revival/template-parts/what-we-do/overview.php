@@ -59,7 +59,7 @@ $krm_groups = krm_groups();
 				<a class="wwd-mini" href="<?php echo esc_url( $krm_m['url'] ); ?>">
 					<span class="wwd-mini-media">
 					<?php if ( $krm_m['image'] ) : ?>
-					<img <?php krm_img_src( $krm_m['image'], '(max-width: 560px) 45vw, 200px', true ); ?> alt="" width="200" height="130" loading="lazy" decoding="async">
+					<img <?php krm_img_src( $krm_m['image'], '(max-width: 900px) 45vw, 400px', true ); ?> alt="" width="400" height="250" loading="lazy" decoding="async">
 					<?php endif; ?>
 					</span>
 					<span class="wwd-mini-title"><?php echo esc_html( $krm_m['title'] ); ?></span>

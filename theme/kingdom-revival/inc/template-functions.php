@@ -618,13 +618,18 @@ function krm_groups( $all = false ) {
 		$terms = is_wp_error( $terms ) ? array() : $terms;
 		$order = array();
 		foreach ( $data['groups'] as $slug => $g ) {
+			// Theme 1.23.3: a saved intro still holding the old "[… to be supplied by the client]" text shows the dummy default.
+			$intro = (string) krm_c( 'groups.' . $slug . '_intro', 'site' );
+			if ( krm_is_placeholder( $intro ) ) {
+				$intro = (string) $g['intro'];
+			}
 			$cache[ $slug ] = array(
 				'slug'  => $slug,
 				'name'  => $g['name'],
 				'short' => $g['short'],
 				'path'  => krm_group_path( $slug ),
 				'image' => krm_c( 'groups.' . $slug . '_image', 'site' ),
-				'intro' => (string) krm_c( 'groups.' . $slug . '_intro', 'site' ),
+				'intro' => $intro,
 			);
 			$order[ $slug ] = (int) $g['order'];
 		}
