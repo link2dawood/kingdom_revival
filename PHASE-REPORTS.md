@@ -59,6 +59,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: New home page layout, plural statistic labels, Lahore and Karachi on the map (theme 1.23.0)](#kingdom-revival-ministries-new-home-page-layout-plural-statistic-labels-lahore-and-karachi-on-the-map-theme-1230)
 - [Kingdom Revival Ministries: Three home sections restored (theme 1.23.2)](#kingdom-revival-ministries-three-home-sections-restored-theme-1232)
 - [Kingdom Revival Ministries: What We Do group introductions and larger ministry cards (theme 1.23.3)](#kingdom-revival-ministries-what-we-do-group-introductions-and-larger-ministry-cards-theme-1233)
+- [Kingdom Revival Ministries: Kiln debt line in "Your gift at work" (theme 1.23.4)](#kingdom-revival-ministries-kiln-debt-line-in-your-gift-at-work-theme-1234)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4378,3 +4379,14 @@ the client]" boxes, and the ministry cards under each group on /what-we-do/ are 
 
 **Dummy content to replace before launch:** the two group introductions (Kingdom Revival → Site text → What We Do groups).
 
+## Kingdom Revival Ministries: Kiln debt line in "Your gift at work" (theme 1.23.4)
+
+**Result:** the kiln-debt line of the home gift calculator keeps "Helps free a family from kiln debt" but shows a broken-chain
+icon instead of the ✓, with the note "Every family's debt is different — every gift brings their freedom closer". It has
+no number on purpose: each family's debt is different (the user rejected a fixed-cost progress ring).
+
+- `template-parts/home/gift-calculator.php`: broken-chain icon (accent stroke, 30 px) in the number column; the note in the
+  small-text style of the "Add $X more to unlock" lines. `assets/css/front.css` (`.krm-calc__num--free`): a short
+  scale/tilt pulse; `assets/js/front.js` replays it whenever the amount changes (not with reduced motion), so the line
+  reacts to the slider like the counted lines.
+- Verified at 1440 (light and dark) and 390: icon and note shown, pulse on a quick-amount click, no JS errors. Zip rebuilt.

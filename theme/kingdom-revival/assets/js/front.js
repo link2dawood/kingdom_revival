@@ -240,6 +240,10 @@
       return { li: li, unit: unit, counter: c, unlock: li.querySelector("[data-krm-calc-unlock]"), what: li.querySelector(".krm-calc__what[data-one]"), n: c.shown };
     });
 
+    // Kiln debt row: no number (each family's debt differs); its broken-chain icon pulses when the amount changes.
+    var free = calc.querySelector("[data-krm-calc-free]");
+    if (free) free.addEventListener("animationend", function () { free.classList.remove("is-pulse"); });
+
     var tweenFrame = 0;
     function tweenTo(c, to) {
       c.from = c.shown; c.to = to; c.t0 = 0;
@@ -282,6 +286,7 @@
         if (r.what) r.what.textContent = n === 1 ? r.what.dataset.one : r.what.dataset.many; // plural unless exactly 1
         tweenTo(r.counter, n);
       });
+      if (free && !motion.matches) { free.classList.remove("is-pulse"); void free.offsetWidth; free.classList.add("is-pulse"); }
       // Screen readers hear the amount once the slider settles, not every count.
       clearTimeout(announceTimer);
       announceTimer = setTimeout(function () { live.textContent = "Gift amount " + money(v); }, 700);

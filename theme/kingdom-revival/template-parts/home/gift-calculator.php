@@ -61,9 +61,9 @@ foreach ( $krm_rows as $krm_row ) :
 <?php if ( $krm_unit ) : ?>
 <span class="krm-calc__num" data-krm-calc-num><?php echo (int) $krm_n; ?></span>
 <?php else : ?>
-<span class="krm-calc__num krm-calc__num--check" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="m9.5 16.2-4.2-4.2-1.4 1.4 5.6 5.6 11-11-1.4-1.4z"></path></svg></span>
+<span class="krm-calc__num krm-calc__num--free" aria-hidden="true" data-krm-calc-free><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.84 12.25 1.72-1.71a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="m5.17 11.75-1.71 1.71a5 5 0 0 0 7.07 7.07l1.71-1.71"></path><path d="M8 2v3M2 8h3M16 19v3M19 16h3"></path></svg></span>
 <?php endif; ?>
-<span class="krm-calc__text"><span class="krm-calc__what"<?php echo $krm_forms[0] !== $krm_forms[1] ? ' data-one="' . esc_attr( $krm_forms[0] ) . '" data-many="' . esc_attr( $krm_forms[1] ) . '"' : ''; ?>><?php echo esc_html( $krm_label ); ?></span><?php if ( $krm_unit ) : ?><span class="krm-calc__unlock" data-krm-calc-unlock<?php echo $krm_n < 1 ? '' : ' hidden'; ?>>Add $<?php echo (int) max( 0, $krm_unit - $krm_default ); ?> more to unlock</span><?php endif; ?></span>
+<span class="krm-calc__text"><span class="krm-calc__what"<?php echo $krm_forms[0] !== $krm_forms[1] ? ' data-one="' . esc_attr( $krm_forms[0] ) . '" data-many="' . esc_attr( $krm_forms[1] ) . '"' : ''; ?>><?php echo esc_html( $krm_label ); ?></span><?php if ( ! $krm_unit ) : ?><span class="krm-calc__unlock"><?php esc_html_e( 'Every family’s debt is different — every gift brings their freedom closer', 'kingdom-revival' ); ?></span><?php endif; ?><?php if ( $krm_unit ) : ?><span class="krm-calc__unlock" data-krm-calc-unlock<?php echo $krm_n < 1 ? '' : ' hidden'; ?>>Add $<?php echo (int) max( 0, $krm_unit - $krm_default ); ?> more to unlock</span><?php endif; ?></span>
 </li>
 <?php endforeach; ?>
 </ul>

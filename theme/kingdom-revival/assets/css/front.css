@@ -217,6 +217,11 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 .krm-calc__icon svg, .krm-calc__num--check svg { fill: var(--color-accent); }
 .krm-calc__num { color: var(--color-accent); font-family: var(--font-heading); font-size: 34px; font-weight: 700; line-height: 1; text-align: center; font-variant-numeric: lining-nums tabular-nums; }
 .krm-calc__num--check { display: grid; place-items: center; }
+/* Kiln debt row (1.23.4): a broken chain in the number column instead of a count (each family's debt is different). */
+.krm-calc__num--free { display: grid; place-items: center; }
+.krm-calc__num--free svg { fill: none; stroke: var(--color-accent); }
+.krm-calc__num--free.is-pulse svg { animation: krm-calc-free .45s ease; }
+@keyframes krm-calc-free { 40% { transform: scale(1.18) rotate(-6deg); } }
 .krm-calc__text { display: flex; flex-direction: column; min-width: 0; }
 .krm-calc__what { color: var(--color-white); font-weight: 600; line-height: 1.35; }
 .krm-calc__unlock { margin-top: 2px; color: var(--color-text-on-dark-3); font-size: 13px; }
