@@ -212,6 +212,20 @@
   doc.addEventListener("krm:themechange", hlTone);
   if (darkMq.addEventListener) darkMq.addEventListener("change", hlTone);
 
+  /* ---------- Journey timeline: the progress line fills and the dots light up once it is in view ---------- */
+  all("[data-journey]").forEach(function (list) {
+    if (!hasIO || reduce) { list.classList.add("is-drawn"); return; }
+    list.classList.add("is-pending");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        io.disconnect();
+        win.setTimeout(function () { list.classList.remove("is-pending"); list.classList.add("is-drawn"); }, 250);
+      });
+    }, { rootMargin: "0px 0px -20% 0px", threshold: 0 });
+    io.observe(list);
+  });
+
   /* ---------- Scroll reveal ---------- */
   var main = doc.getElementById("main") || doc.querySelector("main");
   if (!main || !hasIO || reduce) return;

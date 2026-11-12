@@ -60,6 +60,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Three home sections restored (theme 1.23.2)](#kingdom-revival-ministries-three-home-sections-restored-theme-1232)
 - [Kingdom Revival Ministries: What We Do group introductions and larger ministry cards (theme 1.23.3)](#kingdom-revival-ministries-what-we-do-group-introductions-and-larger-ministry-cards-theme-1233)
 - [Kingdom Revival Ministries: Kiln debt line in "Your gift at work" (theme 1.23.4)](#kingdom-revival-ministries-kiln-debt-line-in-your-gift-at-work-theme-1234)
+- [Kingdom Revival Ministries: Our Ministries heading, orphan home project, highlighted project titles, animated journey (theme 1.23.5)](#kingdom-revival-ministries-our-ministries-heading-orphan-home-project-highlighted-project-titles-animated-journey-theme-1235)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4390,3 +4391,26 @@ no number on purpose: each family's debt is different (the user rejected a fixed
   scale/tilt pulse; `assets/js/front.js` replays it whenever the amount changes (not with reduced motion), so the line
   reacts to the slider like the counted lines.
 - Verified at 1440 (light and dark) and 390: icon and note shown, pulse on a quick-amount click, no JS errors. Zip rebuilt.
+
+## Kingdom Revival Ministries: Our Ministries heading, orphan home project, highlighted project titles, animated journey (theme 1.23.5)
+
+**Result:** the restored Our Ministries section no longer repeats the What We Do heading; Featured Projects has a fourth card for
+the children's home being built; project titles have highlighted key words; the Our Journey timeline animates. The edits were
+made by a parallel Claude session and committed from this one after checking them.
+
+- `inc/content/home.php` (defaults): Our Ministries eyebrow "Our Ministries", heading "Many ministries, <span class="hl">one
+  calling</span>.", button "Discover All Our Ministries" (was "What We Do" / "One Gospel, shared in word and deed." /
+  "Explore What We Do"). Featured Projects titles are now HTML fields with highlights: Brick Kiln Family **Freedom**,
+  **Clean Water** for Kiln Families, Care for **Vulnerable Children**, and the new card Building a **Home** for Orphaned
+  Children (tag Orphan Care, photo Orphanages-care-20, Donate → Children & Orphan Care). Our Journey gains 2020 "Hope in
+  difficult seasons" (dummy text).
+- `template-parts/home/featured.php` prints titles with `krm_inline()`; `assets/css/front.css`: four cards per row from
+  1024px (two on tablets, one on phones). Journey: the line fills and the dots light up in turn when it scrolls into view,
+  the latest year pulses (`data-journey`, `assets/js/effects.js`; static with reduced motion or without JavaScript).
+- Verified at 1440 / 768 / 390: 4 project cards in 4 / 2 / 1 columns, 7 journey years, timeline drawn after scrolling, new
+  explorer heading shown, no horizontal overflow, no JS errors. Zip rebuilt.
+- Not covered: a site where the home page content was saved before keeps its saved Our Ministries texts and three project
+  cards (defaults only fill unsaved fields); edit them in Pages → Home → Page content (sections 8 and 11) there.
+
+**Dummy content to replace before launch:** the 2020 milestone text and the children's home project text.
+

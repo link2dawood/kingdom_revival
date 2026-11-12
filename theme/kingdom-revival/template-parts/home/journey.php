@@ -2,7 +2,8 @@
 /**
  * Home: 9. Our Journey — milestones from 2018 to today: a line across with a dot per year on computers, down the page
  * on tablets and phones. Text: Pages → Home → Page content → 9. Our Journey (the full timeline is on About Us).
- * Styles: .krm-journey in assets/css/front.css.
+ * Styles: .krm-journey in assets/css/front.css; the line fills and the dots light up in turn when it scrolls into view
+ * (data-journey, assets/js/effects.js).
  *
  * @package Kingdom_Revival
  */
@@ -36,9 +37,9 @@ if ( ! $krm_items ) {
 <a class="krm-sec__link" href="<?php krm_u( 'journey.link_url' ); ?>"><?php krm_t( 'journey.link_label' ); ?></a>
 <?php endif; ?>
 </div>
-<ol class="krm-journey__list" style="--n: <?php echo (int) count( $krm_items ); ?>" data-reveal-stagger>
+<ol class="krm-journey__list" style="--n: <?php echo (int) count( $krm_items ); ?>" data-journey data-reveal-stagger>
 <?php foreach ( $krm_items as $krm_i => $krm_item ) : ?>
-<li class="krm-journey__item<?php echo count( $krm_items ) - 1 === $krm_i ? ' is-now' : ''; ?>">
+<li class="krm-journey__item<?php echo count( $krm_items ) - 1 === $krm_i ? ' is-now' : ''; ?>" style="--i: <?php echo (int) $krm_i; ?>">
 <span class="krm-journey__year"><?php echo krm_text( $krm_item['year'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 <span class="krm-journey__dot" aria-hidden="true"></span>
 <h3><?php echo krm_text( $krm_item['title'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>

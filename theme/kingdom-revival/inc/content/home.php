@@ -242,7 +242,7 @@ return array(
 	),
 	'featured' => array(
 		'label'  => __( '8. Featured Projects', 'kingdom-revival' ),
-		'help'   => __( 'Three project cards. “{donate}?ministry=slavery-freedom#give” opens Donate with that ministry chosen.', 'kingdom-revival' ),
+		'help'   => __( 'Project cards (four in a row on computers). Highlight words in a title with <span class="hl">…</span>. “{donate}?ministry=slavery-freedom#give” opens Donate with that ministry chosen.', 'kingdom-revival' ),
 		'fields' => array(
 			'eyebrow'      => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Featured Projects' ),
 			'heading'      => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Projects you can <span class="hl">support today</span>', $krm_hl ),
@@ -254,7 +254,7 @@ return array(
 				__( 'Project', 'kingdom-revival' ),
 				array(
 					'tag'   => krm_f( 'text', __( 'Label on the photo', 'kingdom-revival' ) ),
-					'title' => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
+					'title' => krm_f( 'html', __( 'Title', 'kingdom-revival' ), '', $krm_hl ),
 					'image' => krm_f( 'image', __( 'Photo', 'kingdom-revival' ) ),
 					'alt'   => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ) ),
 					'text'  => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ) ),
@@ -263,7 +263,7 @@ return array(
 				array(
 					array(
 						'tag'   => 'Freedom',
-						'title' => 'Brick Kiln Family Freedom',
+						'title' => 'Brick Kiln Family <span class="hl">Freedom</span>',
 						'image' => 'krm-theme:images/content/freedom-after-1.jpg',
 						'alt'   => 'A freed brick kiln family with a ministry worker in their new home',
 						'text'  => 'Pay off a bonded family’s debt to the kiln owner, move them to a safe home and help them start again with work and school.',
@@ -271,7 +271,7 @@ return array(
 					),
 					array(
 						'tag'   => 'Clean Water',
-						'title' => 'Clean Water',
+						'title' => '<span class="hl">Clean Water</span> for Kiln Families',
 						'image' => 'krm-theme:images/content/clean-water-1.jpg',
 						'alt'   => 'A boy rinsing off under a new hand pump at a brick kiln while other children wait for water',
 						'text'  => 'Install hand pumps at brick kilns and villages so families have safe water close to where they live and work.',
@@ -279,10 +279,18 @@ return array(
 					),
 					array(
 						'tag'   => 'Children',
-						'title' => 'Vulnerable Children',
+						'title' => 'Care for <span class="hl">Vulnerable Children</span>',
 						'image' => 'krm-theme:images/content/orphanages-care-16-crop.jpg',
 						'alt'   => 'Children sitting in rows sharing a meal provided by the ministry',
 						'text'  => 'Meals, schooling, Sunday school and loving care for orphans and children growing up beside the kilns.',
+						'url'   => '{donate}?ministry=children-orphan-care#give',
+					),
+					array(
+						'tag'   => 'Orphan Care',
+						'title' => 'Building a <span class="hl">Home</span> for Orphaned Children',
+						'image' => $krm_up . '2026/08/Orphanages-care-20.jpg',
+						'alt'   => 'A large group of children raise their hands and cheer together outdoors',
+						'text'  => 'We are building a children’s home where orphaned and underprivileged children receive shelter, meals, schooling and daily care.',
 						'url'   => '{donate}?ministry=children-orphan-care#give',
 					),
 				)
@@ -362,12 +370,13 @@ return array(
 				array(
 					array( 'year' => '2018', 'title' => 'The beginning', 'text' => 'Kingdom Revival Ministries is founded in Faisalabad with a burden for evangelism.' ),
 					array( 'year' => '2019', 'title' => 'Rooted in prayer', 'text' => 'Prayer meetings and village outreach grow into the first house churches.' ),
+					array( 'year' => '2020', 'title' => 'Hope in difficult seasons', 'text' => 'Through uncertain times, prayer, faith and the Gospel kept the ministry moving forward.' ),
 					array( 'year' => '2021', 'title' => 'A heart for the forgotten', 'text' => 'Care begins for brick kiln families, widows and children in need.' ),
 					array( 'year' => '2022', 'title' => 'Standing with the persecuted', 'text' => 'Encouraging believers who suffer for the name of Jesus.' ),
 					array( 'year' => '2025', 'title' => 'Freedom and compassion', 'text' => 'Kiln families freed from debt, clean water hand pumps and Urdu Bibles for new believers.' ),
 					array( 'year' => '2026', 'title' => 'Moving forward', 'text' => 'Ministry reaching Lahore and Karachi, with more leaders trained to serve.' ),
 				),
-				__( 'Up to 6 fit on one line on computers.', 'kingdom-revival' )
+				__( 'Up to 7 fit on one line on computers.', 'kingdom-revival' )
 			),
 		),
 	),
@@ -375,13 +384,13 @@ return array(
 		'label'  => __( '11. Our Ministries (ministry explorer)', 'kingdom-revival' ),
 		'help'   => __( 'The list shows your published ministries. Each ministry’s explorer photo and position are set on the ministry (Ministries → edit).', 'kingdom-revival' ),
 		'fields' => array(
-			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'What We Do' ),
-			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'One Gospel, shared in word and deed.' ),
+			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Our Ministries' ),
+			'heading'       => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Many ministries, <span class="hl">one calling</span>.', $krm_hl ),
 			'intro'         => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'Choose a ministry to see what it does and how your support reaches people.' ),
 			'support_label' => krm_f( 'text', __( 'Support button text', 'kingdom-revival' ), 'Support this ministry' ),
 			'support_url'   => krm_f( 'url', __( 'Support button link', 'kingdom-revival' ), '{donate}' ),
 			'more_label'    => krm_f( 'text', __( 'Ministry page button text', 'kingdom-revival' ), 'Learn more' ),
-			'all_label'     => krm_f( 'text', __( 'What We Do button text', 'kingdom-revival' ), 'Explore What We Do' ),
+			'all_label'     => krm_f( 'text', __( 'What We Do button text', 'kingdom-revival' ), 'Discover All Our Ministries' ),
 			'all_url'       => krm_f( 'url', __( 'What We Do button link', 'kingdom-revival' ), '{ministries}' ),
 		),
 	),

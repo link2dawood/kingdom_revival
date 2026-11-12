@@ -1,7 +1,7 @@
 <?php
 /**
- * Home: 7. Featured Projects — three project cards (Brick Kiln Family Freedom, Clean Water, Vulnerable Children), each
- * with a photo, a short text and a "Support This Project" button. The giving-card style (.cause-card, theme-global.css).
+ * Home: 8. Featured Projects — four project cards (Brick Kiln Family Freedom, Clean Water, Vulnerable Children, Building a
+ * Home for Orphaned Children), each with a highlighted title (<span class="hl">), a photo, a short text and a "Support This Project" button. The giving-card style (.cause-card, theme-global.css).
  * Text: Pages → Home → Page content → 7. Featured Projects. The full list of projects is on Donate → Our Projects.
  *
  * @package Kingdom_Revival
@@ -51,7 +51,7 @@ $krm_button = trim( (string) krm_c( 'featured.button_label' ) );
 	<?php endif; ?>
 </div>
 <div class="cause-card-body">
-<h3 class="cause-card-title"><?php echo krm_text( $krm_card['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
+<h3 class="cause-card-title"><?php echo krm_inline( $krm_card['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
 	<?php if ( '' !== trim( (string) ( $krm_card['text'] ?? '' ) ) ) : ?>
 <p class="cause-card-text"><?php echo krm_text( $krm_card['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 	<?php endif; ?>

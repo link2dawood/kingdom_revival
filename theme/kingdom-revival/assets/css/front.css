@@ -382,7 +382,17 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 
 /* 9. Our Journey: a line across with a dot per milestone (computers); down the page with the line on the left (below 1024px). */
 .krm-journey__list { position: relative; display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
-.krm-journey__list::before { content: ""; position: absolute; left: 0; right: 0; top: 47px; height: 2px; background: linear-gradient(90deg, color-mix(in srgb, var(--color-secondary) 25%, transparent), var(--color-secondary)); }
+.krm-journey__list::before, .krm-journey__list::after { content: ""; position: absolute; left: 0; right: 0; top: 47px; height: 2px; border-radius: 2px; pointer-events: none; }
+.krm-journey__list::before { background: color-mix(in srgb, var(--color-secondary) 16%, transparent); }
+/* The progress line: fills left to right (top to bottom below 1024px) when the timeline scrolls into view; each dot
+   lights up as the line reaches it, and the latest year keeps a soft pulse. Without JavaScript it is simply full. */
+.krm-journey__list::after { background: linear-gradient(90deg, color-mix(in srgb, var(--color-secondary) 35%, transparent), var(--color-secondary)); transform-origin: 0 50%; transition: transform 1.8s cubic-bezier(.45, .05, .25, 1); }
+.krm-journey__list.is-pending::after { transform: scaleX(0); }
+.krm-journey__dot { position: relative; z-index: 1; transition: transform .45s cubic-bezier(.34, 1.56, .64, 1), background-color .45s, box-shadow .45s; transition-delay: calc(var(--i, 0) * 1.8s / var(--n, 6)); }
+.krm-journey__list.is-pending .krm-journey__dot { transform: scale(.55); }
+.krm-journey__list.is-pending .krm-journey__item.is-now .krm-journey__dot { background: var(--color-bg); box-shadow: none; }
+.krm-journey__list.is-drawn .krm-journey__item.is-now .krm-journey__dot { animation: krm-journey-pulse 2.4s ease-out 2s infinite; }
+@keyframes krm-journey-pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-secondary) 45%, transparent); } 70%, 100% { box-shadow: 0 0 0 12px color-mix(in srgb, var(--color-secondary) 0%, transparent); } }
 .krm-journey__item { position: relative; min-width: 0; }
 .krm-journey__year { display: block; color: var(--color-heading); font-family: var(--font-heading); font-size: 30px; font-weight: 700; line-height: 1.2; }
 .krm-journey__dot { display: block; width: 16px; height: 16px; margin: 4px 0 18px; border: 3px solid var(--color-secondary); border-radius: 50%; background: var(--color-bg); box-sizing: border-box; }
@@ -410,6 +420,8 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 
 @media (prefers-reduced-motion: reduce) {
   .krm-tile__link svg, .krm-story, .krm-story__link svg, .krm-hero-btn, .krm-final__btn, .krm-tile__btn { transition: none; }
+  .krm-journey__list::after, .krm-journey__dot { transition: none; }
+  .krm-journey__list.is-drawn .krm-journey__item.is-now .krm-journey__dot { animation: none; }
 }
 @media (max-width: 1024px) {
   .krm-tiles--3 { grid-template-columns: 1fr 1fr; }
@@ -418,7 +430,9 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
   .krm-needs__photo { aspect-ratio: 16 / 10; }
   .krm-impact__counters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .krm-journey__list { grid-template-columns: minmax(0, 1fr); gap: 0; padding-left: 34px; }
-  .krm-journey__list::before { left: 7px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto; background: linear-gradient(color-mix(in srgb, var(--color-secondary) 25%, transparent), var(--color-secondary)); }
+  .krm-journey__list::before, .krm-journey__list::after { left: 7px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto; }
+  .krm-journey__list::after { background: linear-gradient(color-mix(in srgb, var(--color-secondary) 35%, transparent), var(--color-secondary)); transform-origin: 50% 0; }
+  .krm-journey__list.is-pending::after { transform: scaleY(0); }
   .krm-journey__item { padding: 0 0 26px; }
   .krm-journey__item:last-child { padding-bottom: 0; }
   .krm-journey__dot { position: absolute; left: -34px; top: 8px; margin: 0; }
@@ -430,6 +444,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
   .krm-stories__list > li { flex: 0 0 min(44%, 380px); scroll-snap-align: start; }
   .krm-story:hover { transform: none; }
 }
+@media (min-width: 1024px) { .krm-featured { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; } } /* 1.23.5: four projects in a row */
 @media (min-width: 640px) and (max-width: 1023px) {
   /* Two columns: a lone last card sits in the middle at the same width, not stretched or left alone. */
   .krm-featured { grid-template-columns: repeat(2, minmax(0, 1fr)); }
