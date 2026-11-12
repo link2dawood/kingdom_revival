@@ -399,3 +399,13 @@
   }, { threshold: 0.25 });
   io.observe(dots);
 })();
+
+/* Map towns: a tap opens the town's tooltip (name and note), a second tap or a tap elsewhere closes it (hover shows it with a mouse). */
+(function () {
+  if (!document.querySelector(".krm-where__town")) return;
+  document.addEventListener("click", function (e) {
+    var town = e.target.closest && e.target.closest(".krm-where__town");
+    document.querySelectorAll(".krm-where__town.is-open").forEach(function (t) { if (t !== town) t.classList.remove("is-open"); });
+    if (town) town.classList.toggle("is-open");
+  });
+})();

@@ -75,9 +75,9 @@ Kingdom Revival Ministries",
 		'stat_6_label'        => 'Clean water hand pumps installed',
 		// The home page design words two labels differently from the about page.
 		'home_stat_1_label'   => 'Communities reached',
-		'home_stat_2_label'   => 'Church planted included house churches',
+		'home_stat_2_label'   => 'Churches planted incl. house churches',
 		'home_stat_3_label'   => 'Children supported',
-		'home_stat_4_label'   => 'Bible distributed',
+		'home_stat_4_label'   => 'Urdu Bibles distributed',
 		'home_stat_5_label'   => 'Baptisms',
 		'home_stat_6_label'   => 'Clean water hand pumps installed',
 	);
@@ -130,10 +130,63 @@ function krm_stats( $context = '' ) {
 	for ( $i = 1; $i <= 6; $i++ ) {
 		$stats[] = array(
 			'value' => krm_opt( "stat_{$i}_value" ),
-			'label' => krm_opt( "{$prefix}stat_{$i}_label" ),
+			'label' => krm_plural_label( krm_opt( "{$prefix}stat_{$i}_label" ), krm_opt( "stat_{$i}_value" ) ),
 		);
 	}
 	return $stats;
+}
+
+/**
+ * A statistic label in the plural when its number is more than 1 (theme 1.23.0): "Church planted" → "Churches planted",
+ * "Urdu Bible" → "Urdu Bibles". Only the nouns listed here change, whole words only, so a label already in the plural, or
+ * worded some other way, is printed as it was typed.
+ *
+ * @param string     $label Label as saved.
+ * @param string|int $value The number shown with it ("650", "1,200", "80+").
+ */
+function krm_plural_label( $label, $value ) {
+	$label  = (string) $label;
+	$number = (float) preg_replace( '/[^0-9.]/', '', (string) $value );
+	if ( $number <= 1 || '' === trim( $label ) ) {
+		return $label;
+	}
+	$plurals = array(
+		'baptism'   => 'baptisms',
+		'believer'  => 'believers',
+		'bible'     => 'bibles',
+		'camp'      => 'camps',
+		'child'     => 'children',
+		'church'    => 'churches',
+		'community' => 'communities',
+		'district'  => 'districts',
+		'family'    => 'families',
+		'home'      => 'homes',
+		'kiln'      => 'kilns',
+		'leader'    => 'leaders',
+		'life'      => 'lives',
+		'meal'      => 'meals',
+		'orphan'    => 'orphans',
+		'pastor'    => 'pastors',
+		'patient'   => 'patients',
+		'project'   => 'projects',
+		'pump'      => 'pumps',
+		'village'   => 'villages',
+		'well'      => 'wells',
+		'widow'     => 'widows',
+	);
+	return preg_replace_callback(
+		// The counted noun is the last word, or the one before a past participle or "incl." ("Church planted incl. house
+		// churches"); a noun used to describe another ("Medical camp patients", "Brick kiln families") is left alone.
+		'/\b(' . implode( '|', array_keys( $plurals ) ) . ')\b(?![\'’]s)(?=\s*$|\s+[a-z]+ed\b|\s+incl)/iu',
+		function ( $m ) use ( $plurals ) {
+			$plural = $plurals[ strtolower( $m[1] ) ];
+			if ( strtoupper( $m[1] ) === $m[1] && strlen( $m[1] ) > 1 ) {
+				return strtoupper( $plural );
+			}
+			return ctype_upper( $m[1][0] ) ? ucfirst( $plural ) : $plural;
+		},
+		$label
+	);
 }
 
 /**
@@ -1471,4 +1524,33 @@ function krm_theme_toggle() {
 		<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
 	</button>
 	<?php
+}
+
+/**
+ * The footer's policy links (theme 1.23.0): Privacy Policy, Terms & Conditions, Donation/Refund Policy and Financial
+ * Accountability, each only once its page is published. The pages come from inc/data/policies.php (Setup and the
+ * 1.23.0 update step create them); Privacy Policy is the page chosen in Settings → Privacy when that one is published.
+ *
+ * @return array[] [ link text, URL ] in the data file's order.
+ */
+function krm_policy_links() {
+	static $links = null;
+	if ( null !== $links ) {
+		return $links;
+	}
+	$links = array();
+	foreach ( include KRM_DIR . '/inc/data/policies.php' as $slug => $policy ) {
+		$page    = null;
+		$privacy = 'privacy-policy' === $slug ? (int) get_option( 'wp_page_for_privacy_policy' ) : 0;
+		if ( $privacy && 'publish' === get_post_status( $privacy ) ) {
+			$page = get_post( $privacy );
+		}
+		if ( ! $page ) {
+			$page = krm_get_by_path( $slug );
+		}
+		if ( $page && 'publish' === $page->post_status ) {
+			$links[] = array( $policy[1], get_permalink( $page ) );
+		}
+	}
+	return $links;
 }

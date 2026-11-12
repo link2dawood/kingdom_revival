@@ -102,7 +102,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 
 /* Home: About (template-parts/home/about.php) — copy + three-photo collage with the "Since" badge, four focus cards. */
 .krm-about { background: var(--color-bg-soft); }
-.krm-about__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.krm-about__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); } /* Content edge in line with the hero (theme 1.23.0). */
 .krm-about__intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 48px clamp(40px, 6vw, 80px); align-items: center; }
 .krm-about__eyebrow { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; font-size: 13px; font-weight: var(--font-weight-bold); letter-spacing: .22em; text-transform: uppercase; color: var(--color-secondary-text); }
 .krm-about__title { margin: 0; font-size: clamp(36px, 4.4vw, 56px); font-weight: 700; line-height: 1.08; letter-spacing: -.01em; color: var(--color-heading); }
@@ -121,7 +121,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 .krm-about__founder strong { display: block; font-size: 16px; line-height: 1.3; }
 .krm-about__founder small { display: block; font-size: 13px; color: var(--color-text-muted); }
 .krm-about__founder:hover strong { color: var(--color-secondary-text); }
-.krm-about__btn:focus-visible, .krm-about__founder:focus-visible, .krm-about__card a:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 4px; }
+.krm-about__btn:focus-visible, .krm-about__founder:focus-visible, .krm-tile a:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 4px; }
 .krm-about__collage { position: relative; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px; height: clamp(380px, 38vw, 480px); }
 .krm-about__photo { position: relative; margin: 0; overflow: hidden; border-radius: 18px; background: var(--color-placeholder); box-shadow: 0 14px 34px rgba(var(--shadow-rgb), calc(.14 * var(--shadow-k))); }
 .krm-about__photo:first-child { grid-row: 1 / span 2; }
@@ -133,27 +133,27 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 .krm-about__badge { position: absolute; z-index: 2; top: -22px; right: -12px; margin: 0; padding: 12px 18px; border-radius: 14px; background: var(--color-orange); color: var(--color-on-accent); box-shadow: 0 12px 28px rgba(var(--shadow-rgb), calc(.22 * var(--shadow-k))); transform: rotate(-2deg); }
 .krm-about__badge strong { display: block; font-family: var(--font-heading); font-size: 26px; line-height: 1.1; }
 .krm-about__badge span { display: block; font-size: 12px; font-weight: var(--font-weight-bold); }
-.krm-about__cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin: clamp(56px, 6vw, 80px) 0 0; padding: 0; list-style: none; }
-.krm-about__card { --tone: var(--color-band); position: relative; padding: 28px 24px 26px; border-radius: 16px; border-top: 4px solid var(--tone); background: var(--color-surface); box-shadow: 0 8px 24px rgba(var(--shadow-rgb), calc(.07 * var(--shadow-k))); transition: transform .25s, box-shadow .25s; }
-.krm-about__card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(var(--shadow-rgb), calc(.12 * var(--shadow-k))); }
-.krm-about__card--red { --tone: var(--color-secondary); }
-.krm-about__card--orange { --tone: var(--color-orange); }
-.krm-about__icon { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: color-mix(in srgb, var(--tone) 12%, transparent); color: var(--color-heading); }
-.krm-about__card--red .krm-about__icon { color: var(--color-secondary-text); }
-.krm-about__card--orange .krm-about__icon { color: var(--color-orange); }
-.krm-about__card h3 { margin: 20px 0 8px; font-size: 21px; font-weight: 700; line-height: 1.25; color: var(--color-heading); }
-.krm-about__card h3 a { color: inherit; text-decoration: none; }
-.krm-about__card h3 a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
-.krm-about__card p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--color-text-muted); }
-:root[data-theme="dark"] .krm-about__card--navy { --tone: var(--color-band-3); }
+.krm-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin: clamp(56px, 6vw, 80px) 0 0; padding: 0; list-style: none; }
+.krm-tile { --tone: var(--color-band); position: relative; padding: 28px 24px 26px; border-radius: 16px; border-top: 4px solid var(--tone); background: var(--color-surface); box-shadow: 0 8px 24px rgba(var(--shadow-rgb), calc(.07 * var(--shadow-k))); transition: transform .25s, box-shadow .25s; }
+.krm-tile:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(var(--shadow-rgb), calc(.12 * var(--shadow-k))); }
+.krm-tile--red { --tone: var(--color-secondary); }
+.krm-tile--orange { --tone: var(--color-orange); }
+.krm-tile__icon { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: color-mix(in srgb, var(--tone) 12%, transparent); color: var(--color-heading); }
+.krm-tile--red .krm-tile__icon { color: var(--color-secondary-text); }
+.krm-tile--orange .krm-tile__icon { color: var(--color-orange); }
+.krm-tile h3 { margin: 20px 0 8px; font-size: 21px; font-weight: 700; line-height: 1.25; color: var(--color-heading); }
+.krm-tile h3 a { color: inherit; text-decoration: none; }
+.krm-tile h3 a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.krm-tile p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--color-text-muted); }
+:root[data-theme="dark"] .krm-tile--navy { --tone: var(--color-band-3); }
 :root[data-theme="dark"] .krm-about__verse cite { color: var(--color-orange); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .krm-about__card--navy { --tone: var(--color-band-3); } :root:not([data-theme="light"]) .krm-about__verse cite { color: var(--color-orange); } }
-@media (prefers-reduced-motion: reduce) { .krm-about__btn, .krm-about__btn svg, .krm-about__photo img, .krm-about__card { transition: none; } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .krm-tile--navy { --tone: var(--color-band-3); } :root:not([data-theme="light"]) .krm-about__verse cite { color: var(--color-orange); } }
+@media (prefers-reduced-motion: reduce) { .krm-about__btn, .krm-about__btn svg, .krm-about__photo img, .krm-tile { transition: none; } }
 @media (max-width: 1024px) {
   .krm-about__intro { grid-template-columns: 1fr; }
   .krm-about__collage { margin-top: 16px; height: clamp(360px, 62vw, 520px); }
   .krm-about__badge { right: 8px; }
-  .krm-about__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .krm-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
   .krm-about__collage { gap: 10px; height: 400px; }
@@ -162,7 +162,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
   .krm-about__badge { top: -18px; right: 6px; padding: 10px 14px; }
   .krm-about__badge strong { font-size: 21px; }
   .krm-about__badge span { font-size: 11px; }
-  .krm-about__cards { grid-template-columns: 1fr; gap: 14px; }
+  .krm-tiles { grid-template-columns: 1fr; gap: 14px; }
   .krm-about__btn { flex: 1 1 100%; justify-content: center; }
 }
 
@@ -235,34 +235,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
   .krm-calc__range:active::-webkit-slider-thumb, .krm-calc__range:active::-moz-range-thumb { transform: none; }
 }
 
-/* ---------- "Where we serve" (template-parts/home/where.php): text and places over a map of Pakistan ----------
-   Dark in both themes: a darkened photo (photo band "where") under the map, so the accent and the white text read on it.
-   The map (assets/images/pakistan-map.svg) is inline; towns are HTML marks at % of the map with leader lines. */
-#where.krm-where { position: relative; overflow: hidden; color: var(--color-white); background-color: var(--color-band-deep); }
-#where.krm-where[data-photo-band] { --band-overlay: linear-gradient(100deg, color-mix(in srgb, var(--color-band-deep) 95%, transparent) 0%, color-mix(in srgb, var(--color-band-deep) 90%, transparent) 50%, color-mix(in srgb, var(--color-band-deep) 82%, transparent) 100%); }
-.krm-where__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: center; }
-.krm-where__text { position: relative; z-index: 2; min-width: 0; }
-.krm-where__eyebrow { margin: 0 0 12px; color: var(--color-accent); font-size: 13px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
-.krm-where__title { margin: 0; color: var(--color-white); font-size: clamp(32px, 3.8vw, 46px); font-weight: 800; line-height: 1.12; }
-.krm-where__lead { max-width: 34em; margin: 16px 0 0; color: var(--color-text-on-dark); font-size: 17px; line-height: 1.65; }
-.krm-where__stat { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 26px 0 0; padding: 12px 20px 12px 18px; border-left: 3px solid var(--color-accent); border-radius: 0 10px 10px 0; background: color-mix(in srgb, var(--color-band) 70%, transparent); }
-.krm-where__stat strong { color: var(--color-accent); font-family: var(--font-heading); font-size: 42px; font-weight: 700; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
-.krm-where__stat span { color: var(--color-white); font-weight: 600; }
-.krm-where__region { margin: 30px 0 2px; color: var(--color-text-on-dark-3); font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
-.krm-where__places { max-width: 30em; margin: 0; padding: 0; list-style: none; }
-.krm-where__places li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 16px; padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent); }
-.krm-where__place { display: flex; gap: 10px; align-items: center; color: var(--color-white); font-weight: 700; }
-.krm-where__bullet { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); }
-.krm-where__count { color: var(--color-text-on-dark-3); }
-
-/* The map itself (.krm-where__map…) is in theme-global.css: shared with Our Impact (template-parts/where-map.php). */
-@media (min-width: 960px) {
-  .krm-where__inner { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 0; }
-  .krm-where__map { margin: -40px -2% -40px 24px; --l: 40px; } /* Beside the text, never under it. */
-}
-@media (max-width: 600px) {
-  .krm-where__map { margin: 0 calc(-1 * clamp(16px, 3vw, 32px)); }
-}
+/* "Where we serve" (.krm-where…): theme-global.css since 1.23.1 (also on Our Impact). */
 
 /* Clean water (template-parts/home/water.php): compact text beside a photo, stacked below 900px. Verse: .krm-about__verse. */
 .krm-water { background: var(--color-bg-soft, var(--color-bg)); }
@@ -290,4 +263,184 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 @media (max-width: 520px) {
   .krm-water__actions { flex-direction: column; }
   .krm-water__actions .button { width: 100%; box-sizing: border-box; }
+}
+
+/* ==========================================================================================================================
+   Theme 1.23.0: the client's home page order. Shared section head (.krm-sec), cards (.krm-tile, above), and the new
+   sections: hero buttons, Who We Are (vision / mission), What We Do, Why Pakistan Needs Hope, Our Impact (+ the map
+   block above), Featured Projects (.cause-card, theme-global.css), Stories, Our Journey, Partner With Us, final banner.
+   ========================================================================================================================== */
+.krm-sec { background: var(--color-bg); }
+.krm-sec--soft { background: var(--color-bg-soft); }
+.krm-sec__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); } /* 1240px of content, like the hero, news and map. */
+.krm-sec__head { margin: 0 0 clamp(36px, 4vw, 48px); }
+.krm-sec__head--center { max-width: 720px; margin-left: auto; margin-right: auto; text-align: center; }
+.krm-sec__head--row { display: flex; flex-wrap: wrap; gap: 12px 48px; justify-content: space-between; align-items: flex-end; }
+.krm-sec__head--row > div { max-width: 720px; }
+.krm-sec__eyebrow { margin: 0 0 12px; font-size: 13px; font-weight: var(--font-weight-bold); letter-spacing: .22em; text-transform: uppercase; color: var(--color-secondary-text); }
+.krm-sec__title { margin: 0; font-size: clamp(32px, 3.8vw, 46px); font-weight: 700; line-height: 1.12; letter-spacing: -.01em; color: var(--color-heading); }
+.krm-sec__intro { margin: 16px 0 0; font-size: var(--font-size-lead, 18px); line-height: 1.7; color: var(--color-text-muted); }
+.krm-sec__link, .krm-sec__more a { display: inline-flex; align-items: center; min-height: 44px; font-weight: var(--font-weight-bold); color: var(--color-secondary-text); }
+.krm-sec__more { margin: 32px 0 0; text-align: center; }
+
+/* Hero buttons: Donate Now (red) and Partner With Us (white outline). */
+.krm-hero-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 30px; border: 2px solid var(--color-secondary); border-radius: 4px; background: var(--color-secondary); color: var(--color-white); font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 10px 28px rgba(0, 0, 0, .35); box-sizing: border-box; transition: background .2s, border-color .2s, color .2s; }
+.krm-hero-btn:hover, .krm-hero-btn:focus-visible { border-color: var(--color-red-hover); background: var(--color-red-hover); color: var(--color-white); }
+.krm-hero-btn--outline { border-color: rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .06); box-shadow: none; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.krm-hero-btn--outline:hover, .krm-hero-btn--outline:focus-visible { border-color: var(--color-white); background: var(--color-white); color: var(--color-primary); }
+.krm-hero-btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+
+/* 3. Who We Are: "Founded in 2018", then the Vision and Mission boxes. */
+.krm-about__founded { display: inline-flex; align-items: center; gap: 8px; margin: 18px 0 0; padding: 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--color-orange) 18%, transparent); color: var(--color-heading); font-size: 14px; font-weight: var(--font-weight-bold); letter-spacing: .02em; }
+.krm-about__founded svg { color: var(--color-secondary-text); }
+.krm-about__vm { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 26px 0 0; max-width: 620px; }
+.krm-about__vm-box { padding: 20px 20px 18px; border-radius: 14px; border-top: 4px solid var(--color-secondary); background: var(--color-surface); box-shadow: 0 10px 28px rgba(var(--shadow-rgb), calc(.08 * var(--shadow-k))); }
+.krm-about__vm-box--mission { border-top-color: var(--color-band); }
+.krm-about__vm-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: color-mix(in srgb, var(--color-secondary) 12%, transparent); color: var(--color-secondary-text); }
+.krm-about__vm-box--mission .krm-about__vm-icon { background: color-mix(in srgb, var(--color-band) 12%, transparent); color: var(--color-heading); }
+.krm-about__vm-box h3 { margin: 12px 0 6px; font-size: 19px; font-weight: 700; color: var(--color-heading); }
+.krm-about__vm-box p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--color-text-muted); }
+:root[data-theme="dark"] .krm-about__vm-box--mission { border-top-color: var(--color-band-3); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .krm-about__vm-box--mission { border-top-color: var(--color-band-3); } }
+
+/* Cards (.krm-tile) used by 4. What We Do (3 across) and 10. Partner With Us (4 across): link or button at the foot. */
+.krm-tiles--3, .krm-tiles--4 { margin-top: 0; }
+.krm-tiles--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.krm-tile { display: flex; flex-direction: column; }
+.krm-tile p { flex: 1 1 auto; }
+.krm-tiles--3 .krm-tile { padding: 32px 28px 28px; }
+.krm-tiles--3 .krm-tile__icon { width: 56px; height: 56px; border-radius: 14px; }
+.krm-tiles--3 .krm-tile h3 { font-size: 23px; }
+.krm-tile__link { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; margin-top: 14px; color: var(--color-secondary-text); font-weight: var(--font-weight-bold); text-decoration: none; }
+.krm-tile__link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; } /* The whole card opens the link. */
+.krm-tile__link svg { transition: transform .2s; }
+.krm-tile:hover .krm-tile__link svg { transform: translateX(4px); }
+.krm-tile__link:focus-visible { outline: none; }
+.krm-tile:has(.krm-tile__link:focus-visible) { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+.krm-tile__btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; margin-top: 20px; padding: 0 18px; border: 2px solid var(--color-button-navy); border-radius: 4px; color: var(--color-heading); font-size: 15px; font-weight: var(--font-weight-bold); text-align: center; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
+.krm-tile__btn:hover, .krm-tile__btn:focus-visible { background: var(--color-button-navy); color: var(--color-white); }
+.krm-tile__btn.is-red { border-color: var(--color-secondary); background: var(--color-secondary); color: var(--color-white); }
+.krm-tile__btn.is-red:hover, .krm-tile__btn.is-red:focus-visible { border-color: var(--color-red-hover); background: var(--color-red-hover); }
+.krm-tile__btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+:root[data-theme="dark"] .krm-tile__btn:not(.is-red) { border-color: var(--color-band-3); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .krm-tile__btn:not(.is-red) { border-color: var(--color-band-3); } }
+
+/* 5. Why Pakistan Needs Hope: a tall photo beside short blocks of text. */
+.krm-needs__grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(36px, 5vw, 72px); align-items: center; }
+.krm-needs__photo { position: relative; margin: 0; overflow: hidden; border-radius: 18px; aspect-ratio: 4 / 5; background: var(--color-placeholder); box-shadow: 0 18px 44px rgba(var(--shadow-rgb), calc(.16 * var(--shadow-k))); }
+.krm-needs__photo img { display: block; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+.krm-needs__photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 60%, color-mix(in srgb, var(--color-band-deep) 70%, transparent)); pointer-events: none; }
+.krm-needs__photo figcaption { position: absolute; z-index: 1; left: 18px; bottom: 16px; right: 18px; color: var(--color-white); font-size: 14px; font-weight: var(--font-weight-bold); }
+.krm-needs__copy .krm-sec__head { margin-bottom: 28px; }
+.krm-needs__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.krm-needs__item { display: flex; gap: 14px; padding: 18px; border-radius: 14px; border-left: 4px solid var(--color-secondary); background: var(--color-surface); box-shadow: 0 6px 18px rgba(var(--shadow-rgb), calc(.06 * var(--shadow-k))); }
+.krm-needs__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.krm-needs__icon { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 10px; background: color-mix(in srgb, var(--color-secondary) 11%, transparent); color: var(--color-secondary-text); }
+.krm-needs__item h3 { margin: 0 0 4px; font-size: 17px; font-weight: 700; line-height: 1.3; color: var(--color-heading); }
+.krm-needs__item p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--color-text-muted); }
+.krm-needs__action { margin: 28px 0 0; }
+
+/* 6. Our Impact: heading and key achievements, counters, then the map block (.krm-where__inner, above). */
+.krm-impact__inner { position: relative; z-index: 2; max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px) 0; }
+.krm-impact__top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 32px clamp(40px, 6vw, 80px); align-items: start; }
+.krm-impact__link { margin: 18px 0 0; }
+.krm-impact__link a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-accent); font-weight: var(--font-weight-bold); }
+.krm-impact__achieve { padding: 24px 26px; border: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--color-band) 55%, transparent); }
+.krm-impact__achieve h3 { margin: 0 0 12px; color: var(--color-white); font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.krm-impact__achieve ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.krm-impact__achieve li { display: flex; gap: 10px; align-items: flex-start; color: var(--color-text-on-dark); font-size: 15.5px; line-height: 1.5; }
+.krm-impact__achieve svg { flex: none; margin-top: 2px; color: var(--color-accent); }
+.krm-impact__counters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin: clamp(40px, 5vw, 56px) 0 0; padding: 0; overflow: hidden; border: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--color-white) 14%, transparent); list-style: none; }
+.krm-impact__counters li { display: flex; flex-direction: column; gap: 6px; padding: 22px 24px; background: color-mix(in srgb, var(--color-band-deep) 88%, transparent); }
+.krm-impact__counters strong { color: var(--color-accent); font-family: var(--font-heading); font-size: clamp(34px, 3.4vw, 46px); font-weight: 700; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.krm-impact__counters span { color: var(--color-white); font-size: 15px; font-weight: 600; line-height: 1.35; }
+.krm-impact .krm-where__inner { position: relative; z-index: 2; padding-top: clamp(56px, 6vw, 80px); }
+
+/* 8. Stories from the Field: photo cards; a swipeable row on phones. */
+.krm-stories__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; }
+.krm-story { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; background: var(--color-surface); box-shadow: 0 8px 24px rgba(var(--shadow-rgb), calc(.08 * var(--shadow-k))); transition: transform .25s, box-shadow .25s; }
+.krm-story:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(var(--shadow-rgb), calc(.13 * var(--shadow-k))); }
+.krm-story__media { aspect-ratio: 16 / 10; overflow: hidden; background: var(--color-placeholder); }
+.krm-story__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.krm-story__body { display: flex; flex: 1 1 auto; flex-direction: column; gap: 14px; margin: 0; padding: 24px 24px 8px; }
+.krm-story__mark { fill: var(--color-orange); }
+.krm-story blockquote { display: -webkit-box; margin: 0; overflow: hidden; color: var(--color-text); font-size: 16px; line-height: 1.6; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
+.krm-story figcaption { display: flex; gap: 12px; align-items: center; margin-top: auto; }
+.krm-story figcaption span { display: flex; flex-direction: column; line-height: 1.3; }
+.krm-story figcaption small { color: var(--color-text-muted); font-size: 14px; }
+.krm-story__link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin: 4px 24px 18px; color: var(--color-secondary-text); font-weight: var(--font-weight-bold); text-decoration: none; }
+.krm-story__link::after { content: ""; position: absolute; inset: 0; } /* The whole card opens the story. */
+.krm-story__link:focus-visible { outline: none; }
+.krm-story:has(.krm-story__link:focus-visible) { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+.krm-story:hover .krm-story__link svg { transform: translateX(4px); }
+.krm-story__link svg { transition: transform .2s; }
+
+/* 9. Our Journey: a line across with a dot per milestone (computers); down the page with the line on the left (below 1024px). */
+.krm-journey__list { position: relative; display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
+.krm-journey__list::before { content: ""; position: absolute; left: 0; right: 0; top: 47px; height: 2px; background: linear-gradient(90deg, color-mix(in srgb, var(--color-secondary) 25%, transparent), var(--color-secondary)); }
+.krm-journey__item { position: relative; min-width: 0; }
+.krm-journey__year { display: block; color: var(--color-heading); font-family: var(--font-heading); font-size: 30px; font-weight: 700; line-height: 1.2; }
+.krm-journey__dot { display: block; width: 16px; height: 16px; margin: 4px 0 18px; border: 3px solid var(--color-secondary); border-radius: 50%; background: var(--color-bg); box-sizing: border-box; }
+.krm-journey__item.is-now .krm-journey__dot { background: var(--color-secondary); box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-secondary) 22%, transparent); }
+.krm-journey__item h3 { margin: 0 0 6px; color: var(--color-heading); font-size: 18px; font-weight: 700; line-height: 1.3; }
+.krm-journey__item p { margin: 0; color: var(--color-text-muted); font-size: 14.5px; line-height: 1.55; }
+
+/* 12. Final call to action: full-width navy band over a photo (photo band "cta"), heading and three buttons. */
+.krm-final { position: relative; background-color: var(--color-band); color: var(--color-white); text-align: center; }
+.krm-final__inner { max-width: 1000px; margin: 0 auto; padding: clamp(80px, 9vw, 128px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
+.krm-final__title { margin: 0; color: var(--color-white); font-size: clamp(36px, 5vw, 62px); font-weight: 700; line-height: 1.1; letter-spacing: -.01em; }
+.krm-final__text { max-width: 640px; margin: 20px auto 0; color: var(--color-text-on-dark); font-size: var(--font-size-lead, 18px); line-height: 1.7; }
+.krm-final__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 36px; }
+.krm-final__btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 170px; min-height: 54px; padding: 0 28px; border: 2px solid rgba(255, 255, 255, .85); border-radius: 4px; color: var(--color-white); font-size: 17px; font-weight: 700; text-decoration: none; box-sizing: border-box; transition: background .2s, color .2s, border-color .2s; }
+.krm-final__btn:hover, .krm-final__btn:focus-visible { border-color: var(--color-white); background: var(--color-white); color: var(--color-primary); }
+.krm-final__btn.is-red { border-color: var(--color-secondary); background: var(--color-secondary); }
+.krm-final__btn.is-red:hover, .krm-final__btn.is-red:focus-visible { border-color: var(--color-red-hover); background: var(--color-red-hover); color: var(--color-white); }
+.krm-final__btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+
+/* 11. Latest News: "Read More" at the foot of each card. */
+.krm-news__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.krm-news__grid > a { min-width: 0; }
+@media (max-width: 639px) { .krm-news__grid { grid-template-columns: minmax(0, 1fr); } }
+.krm-news__more { display: inline-flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 4px; color: var(--color-secondary-text); font-size: 14px; font-weight: var(--font-weight-bold); }
+
+@media (prefers-reduced-motion: reduce) {
+  .krm-tile__link svg, .krm-story, .krm-story__link svg, .krm-hero-btn, .krm-final__btn, .krm-tile__btn { transition: none; }
+}
+@media (max-width: 1024px) {
+  .krm-tiles--3 { grid-template-columns: 1fr 1fr; }
+  .krm-tiles--3 .krm-tile:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .krm-needs__grid, .krm-impact__top { grid-template-columns: minmax(0, 1fr); }
+  .krm-needs__photo { aspect-ratio: 16 / 10; }
+  .krm-impact__counters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .krm-journey__list { grid-template-columns: minmax(0, 1fr); gap: 0; padding-left: 34px; }
+  .krm-journey__list::before { left: 7px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto; background: linear-gradient(color-mix(in srgb, var(--color-secondary) 25%, transparent), var(--color-secondary)); }
+  .krm-journey__item { padding: 0 0 26px; }
+  .krm-journey__item:last-child { padding-bottom: 0; }
+  .krm-journey__dot { position: absolute; left: -34px; top: 8px; margin: 0; }
+  .krm-journey__year { font-size: 24px; }
+}
+@media (max-width: 900px) {
+  /* Stories: a swipeable slider (two cards and a peek on tablets, one and a peek on phones). */
+  .krm-stories__list { display: flex; gap: 16px; margin: 0 calc(-1 * clamp(16px, 3vw, 32px)); padding: 4px clamp(16px, 3vw, 32px) 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 clamp(16px, 3vw, 32px); -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .krm-stories__list > li { flex: 0 0 min(44%, 380px); scroll-snap-align: start; }
+  .krm-story:hover { transform: none; }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  /* Two columns: a lone last card sits in the middle at the same width, not stretched or left alone. */
+  .krm-featured { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .krm-featured > li:last-child:nth-child(odd), .krm-news__grid > :last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 13px); }
+  .krm-news__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .krm-about__vm { grid-template-columns: minmax(0, 1fr); }
+  .krm-tiles--3 { grid-template-columns: minmax(0, 1fr); }
+  .krm-needs__list { grid-template-columns: minmax(0, 1fr); }
+  .krm-stories__list > li { flex-basis: 84%; }
+}
+@media (max-width: 560px) {
+  .krm-impact__counters li { padding: 18px 16px; }
+  .krm-impact__achieve { padding: 20px; }
+  .krm-hero-btn { flex: 1 1 100%; }
+  .krm-final__actions { flex-direction: column; align-items: stretch; }
+  .krm-final__btn { width: 100%; }
 }

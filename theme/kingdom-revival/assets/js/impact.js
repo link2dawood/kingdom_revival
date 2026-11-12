@@ -54,7 +54,7 @@
     panel.querySelector("[data-impact-group]").textContent=m.group;panel.querySelector("[data-impact-name]").textContent=m.name;
     var metrics=panel.querySelector("[data-impact-metrics]");metrics.hidden=!m.keyMetrics.length&&!data.showPending;metrics.innerHTML=m.keyMetrics.length?m.keyMetrics.map(function(x){return '<div><strong>'+esc(num(x.value))+'</strong><span>'+esc(x.label)+'</span></div>';}).join(''):(data.showPending?'<p class="impact-pending">Awaiting verified figure</p>':'');
     panel.querySelector("[data-impact-locations]").textContent=m.locations.length?m.locations.join(", "):(data.showPending?"To be supplied":"");panel.querySelector(".impact-locations").hidden=!m.locations.length&&!data.showPending;
-    panel.querySelector("[data-impact-support]").href=(window.KRM_CONFIG&&KRM_CONFIG.donateUrl?KRM_CONFIG.donateUrl:"/donate/")+"?ministry="+encodeURIComponent(m.slug)+"#give";
+    panel.querySelector("[data-impact-support]").href=(window.KRM_CONFIG&&KRM_CONFIG.donateUrl?KRM_CONFIG.donateUrl:"/donate")+"?ministry="+encodeURIComponent(m.slug)+"#give";
     bars(panel.querySelector("[data-impact-ministry-chart]"),m.yearlyValues,m.name+" yearly impact",true);if(focus)panel.focus();
   }
   tabs.forEach(function(t,i){t.addEventListener("click",function(){select(i,false);});t.addEventListener("keydown",function(e){var n=e.key==="ArrowDown"||e.key==="ArrowRight"?i+1:e.key==="ArrowUp"||e.key==="ArrowLeft"?i-1:null;if(n===null)return;e.preventDefault();n=(n+tabs.length)%tabs.length;tabs[n].focus();select(n,false);});});select(0,false);

@@ -160,7 +160,7 @@ function krm_redirect_target( $target ) {
 		}
 	}
 	if ( '/' === substr( $target, 0, 1 ) ) {
-		return home_url( $target );
+		return krm_link_slash( home_url( $target ) ); // One hop: straight to the address without the trailing slash.
 	}
 	return krm_resolve_url( $target );
 }

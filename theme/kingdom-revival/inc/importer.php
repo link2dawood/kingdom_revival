@@ -67,7 +67,7 @@ function krm_setup_page() {
 		'pages'      => array( true, __( 'Create the sitemap’s pages if they do not exist: About Us, Our Impact (with Testimonials and Photo & Video Gallery), News & Updates, Partner With Us (with Prayer Request), Contact and Donate.', 'kingdom-revival' ) ),
 		'menus'      => array( true, __( 'Create the main and footer menus and assign them to this theme’s empty menu locations.', 'kingdom-revival' ) ),
 		'reading'    => array( ! $reading_ok, $reading_ok ? __( 'Reading settings: a static front page and a posts page are already set. Tick to point the posts page at “News & Updates” anyway.', 'kingdom-revival' ) : __( 'Reading settings: show a static front page and use “News & Updates” as the posts page (required for the design).', 'kingdom-revival' ) ),
-		'permalinks' => array( $plain, $plain ? __( 'Permalinks are “Plain”: switch to /news/post-name/ links (stories under News & Updates; recommended for SEO).', 'kingdom-revival' ) : sprintf( /* translators: %s: structure */ __( 'Permalinks already use “%s”. Tick only if you want /post-name/ instead.', 'kingdom-revival' ), get_option( 'permalink_structure' ) ) ),
+		'permalinks' => array( $plain, $plain ? __( 'Permalinks are “Plain”: switch to /news/post-name links (stories under News & Updates; recommended for SEO).', 'kingdom-revival' ) : sprintf( /* translators: %s: structure */ __( 'Permalinks already use “%s”. Tick only if you want /post-name/ instead.', 'kingdom-revival' ), get_option( 'permalink_structure' ) ) ),
 	);
 	?>
 	<div class="wrap">
@@ -456,6 +456,9 @@ function krm_import_content( $opts ) {
 	$found    = krm_ensure_pages( (bool) $opts['pages'] );
 	$page_ids = $found['ids'];
 	$log      = array_merge( $log, $found['log'] );
+	if ( $opts['pages'] ) {
+		$log = array_merge( $log, krm_ensure_policy_pages() ); // Footer policy pages (inc/data/policies.php, theme 1.23.0).
+	}
 
 	// Reading settings.
 	if ( $opts['reading'] ) {
@@ -489,8 +492,8 @@ function krm_import_content( $opts ) {
 	// Permalinks.
 	if ( $opts['permalinks'] ) {
 		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( '/news/%postname%/' );
-		$log[] = 'Permalinks set to /news/post-name/ (stories live under News & Updates).';
+		$wp_rewrite->set_permalink_structure( krm_permalink_structure() );
+		$log[] = 'Permalinks set to /news/post-name (stories live under News & Updates; no "/" at the end of addresses).';
 	}
 
 	flush_rewrite_rules( false );

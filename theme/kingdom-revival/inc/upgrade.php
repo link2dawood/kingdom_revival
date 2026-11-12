@@ -215,7 +215,7 @@ function krm_menu_definitions( $ministry_ids, $page_ids ) {
 				$page_item( 'partner-with-us', 'Partner With Us' ),
 				$page_item( 'contact', 'Contact' ),
 				// The red button at the end of the navbar (Phase 22; class menu-donate, theme-global.css).
-				$page_item( 'donate', 'Donate', 'menu-donate' ),
+				$page_item( 'donate', 'Donate Now', 'menu-donate' ), // "Donate Now" since 1.23.0.
 			),
 		),
 		'footer_quick'      => array(
@@ -1873,4 +1873,211 @@ add_action(
 		}
 	},
 	34
+);
+
+/**
+ * Theme 1.22.7: addresses without a trailing slash (/about, not /about/). A site on the theme's structure
+ * "/news/%postname%/" moves to "/news/%postname%" once; WordPress then links every page that way and redirects the old
+ * "/about/" addresses (301). A structure chosen by hand (anything else) is left alone. See inc/permalinks.php.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_permalink_version' ) >= 1 ) {
+			return;
+		}
+		update_option( 'krm_permalink_version', 1 );
+		if ( in_array( get_option( 'permalink_structure' ), array( '/news/%postname%/', '/%postname%/' ), true ) ) {
+			global $wp_rewrite;
+			$wp_rewrite->set_permalink_structure( krm_permalink_structure() );
+			add_action(
+				'shutdown',
+				function () {
+					update_option( 'krm_flush_rewrite', 1 ); // Rules are rebuilt on the next request.
+				}
+			);
+			if ( function_exists( 'krm_purge_page_caches' ) ) {
+				krm_purge_page_caches(); // Cached pages still hold the old "/about/" links.
+			}
+		}
+	},
+	35
+);
+
+/**
+ * Create the footer's policy pages that are missing (inc/data/policies.php): Privacy Policy, Terms & Conditions,
+ * Donation & Refund Policy, Financial Accountability. A page that exists at the address is kept as it is, with one
+ * exception: WordPress's own "Privacy Policy" draft (made at install, still holding its "Suggested text:" template) gets
+ * the theme's text and is published. Contact placeholders and links inside the text are filled in now.
+ *
+ * @return string[] Log lines.
+ */
+function krm_ensure_policy_pages() {
+	$log  = array();
+	$fill = function ( $html ) {
+		$html = strtr(
+			$html,
+			array(
+				'{email}'   => esc_html( krm_opt( 'email' ) ),
+				'{phone}'   => esc_html( krm_opt( 'phone' ) ),
+				'{address}' => esc_html( krm_opt( 'address' ) ),
+			)
+		);
+		return preg_replace_callback(
+			'#href="(/[a-z0-9/-]*)"#',
+			function ( $m ) {
+				return 'href="' . esc_url( krm_link_slash( home_url( $m[1] ) ) ) . '"';
+			},
+			$html
+		);
+	};
+	foreach ( include KRM_DIR . '/inc/data/policies.php' as $slug => $policy ) {
+		$page = null;
+		if ( 'privacy-policy' === $slug && get_option( 'wp_page_for_privacy_policy' ) ) {
+			$page = get_post( (int) get_option( 'wp_page_for_privacy_policy' ) );
+			$page = ( $page && 'page' === $page->post_type && 'trash' !== $page->post_status ) ? $page : null;
+		}
+		if ( ! $page ) {
+			$page = krm_get_by_path( $slug );
+		}
+		if ( $page ) {
+			$wp_template = 'privacy-policy' === $slug && 'draft' === $page->post_status && false !== strpos( $page->post_content, 'Suggested text:' );
+			if ( $wp_template ) {
+				wp_update_post(
+					array(
+						'ID'           => $page->ID,
+						'post_title'   => $policy[0],
+						'post_content' => $fill( $policy[2] ),
+						'post_status'  => 'publish',
+					)
+				);
+				update_option( 'wp_page_for_privacy_policy', $page->ID );
+				$log[] = sprintf( 'Published page: %s (WordPress’s draft, with the theme’s text)', $policy[0] );
+			}
+			continue;
+		}
+		$id = wp_insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => $policy[0],
+				'post_name'    => $slug,
+				'post_content' => $fill( $policy[2] ),
+			),
+			true
+		);
+		if ( ! is_wp_error( $id ) ) {
+			if ( 'privacy-policy' === $slug ) {
+				update_option( 'wp_page_for_privacy_policy', $id );
+			}
+			$log[] = sprintf( 'Created page: %s', $policy[0] );
+		}
+	}
+	return $log;
+}
+
+/**
+ * Theme 1.23.0 (option krm_home_layout_version 1): the new home page.
+ * - The footer's policy pages are created on sites that were set up before (krm_ensure_policy_pages()).
+ * - Saved home page content still holding an earlier default for a field whose default changed is cleared, so the new
+ *   default shows ("About Us" → "Who We Are", "Since 2018" → "Founded in 2018", the hero buttons, the news heading, the
+ *   map's places list without Lahore and Karachi…); anything typed by hand is kept.
+ * - The red navbar button "Donate" reads "Donate Now" (menu items titled exactly "Donate" with the menu-donate class).
+ * - Cached pages are cleared (krm_purge_page_caches() runs once per version anyway).
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_home_layout_version' ) >= 1 ) {
+			return;
+		}
+		update_option( 'krm_home_layout_version', 1 );
+		if ( get_option( 'krm_setup_done' ) || krm_get_by_path( 'about' ) ) {
+			krm_ensure_policy_pages();
+		}
+		$front = (int) get_option( 'page_on_front' );
+		$saved = $front ? get_post_meta( $front, '_krm_content_home', true ) : null;
+		if ( is_array( $saved ) ) {
+			$old = array(
+				'hero.button1_label' => 'Explore What We Do',
+				'hero.button1_url'   => '#ministries',
+				'hero.button2_label' => 'Watch Our Story',
+				'hero.button2_url'   => '#field-stories',
+				'about.eyebrow'      => 'About Us',
+				'about.lead'         => 'Kingdom Revival Ministries exists to glorify God by making disciples of Jesus Christ — proclaiming the Gospel among unreached communities, planting churches, equipping leaders, and serving vulnerable children and brick kiln families across Pakistan.',
+				'about.badge_title'  => 'Since 2018',
+				'about.badge_text'   => 'Serving in Faisalabad & beyond',
+				'about.badge_title_2' => 'Founded in 2018', // 1.23.0's badge, before the "Founded in 2018" tag took over.
+				'where.region'       => 'Punjab, Pakistan',
+				'news.eyebrow'       => 'From the field',
+				'news.heading'       => 'Latest news & blogs',
+				'news.all_label'     => 'View all posts →',
+				'news.more_label'    => 'Read more →',
+			);
+			$changed = false;
+			foreach ( $old as $path => $value ) {
+				list( $section, $field ) = explode( '.', preg_replace( '/_2$/', '', $path ) );
+				if ( isset( $saved[ $section ][ $field ] ) && is_string( $saved[ $section ][ $field ] ) && trim( $saved[ $section ][ $field ] ) === $value ) {
+					unset( $saved[ $section ][ $field ] );
+					$changed = true;
+				}
+			}
+			// The map's places: a saved list that is still the earlier default four towns gets the new default (with
+			// Lahore and Karachi); a list edited by hand is kept as it is.
+			if ( isset( $saved['where']['places'] ) && is_array( $saved['where']['places'] ) ) {
+				$names = array_map(
+					function ( $p ) {
+						return is_array( $p ) ? strtolower( trim( (string) ( $p['name'] ?? '' ) ) ) : '';
+					},
+					$saved['where']['places']
+				);
+				if ( array( 'faisalabad', 'jhang', 'toba tek singh', 'chiniot' ) === $names ) {
+					unset( $saved['where']['places'] );
+					$changed = true;
+				}
+			}
+			// Stories saved before 1.23.0 have no photo or link: they get the default story's photo when the name matches.
+			if ( isset( $saved['stories']['items'] ) && is_array( $saved['stories']['items'] ) ) {
+				$defaults = array();
+				foreach ( krm_content_schema( 'home' )['stories']['fields']['items']['default'] as $d ) {
+					$defaults[ $d['name'] ] = $d;
+				}
+				foreach ( $saved['stories']['items'] as $i => $story ) {
+					$name = is_array( $story ) ? trim( (string) ( $story['name'] ?? '' ) ) : '';
+					if ( isset( $defaults[ $name ] ) && ! array_key_exists( 'image', $story ) ) {
+						$saved['stories']['items'][ $i ]['image'] = $defaults[ $name ]['image'];
+						$saved['stories']['items'][ $i ]['alt']   = $defaults[ $name ]['alt'];
+						$changed                                  = true;
+					}
+				}
+			}
+			if ( $changed ) {
+				update_post_meta( $front, '_krm_content_home', $saved );
+			}
+		}
+		// The navbar button: its menu item has the menu-donate class and either no title of its own (it then shows the
+		// Donate page's title) or "Donate". A title typed by hand is kept.
+		$items = get_posts(
+			array(
+				'post_type'      => 'nav_menu_item',
+				'post_status'    => 'any',
+				'posts_per_page' => 200,
+				'meta_key'       => '_menu_item_classes', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_compare'   => 'LIKE',
+				'meta_value'     => 'menu-donate', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			)
+		);
+		foreach ( $items as $item ) {
+			$title = trim( wp_specialchars_decode( $item->post_title, ENT_QUOTES ) );
+			if ( in_array( 'menu-donate', (array) get_post_meta( $item->ID, '_menu_item_classes', true ), true ) && in_array( $title, array( '', 'Donate' ), true ) ) {
+				wp_update_post(
+					array(
+						'ID'         => $item->ID,
+						'post_title' => 'Donate Now',
+					)
+				);
+			}
+		}
+	},
+	36
 );

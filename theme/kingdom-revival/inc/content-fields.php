@@ -396,7 +396,7 @@ function krm_fill( $text ) {
 function krm_resolve_url( $url ) {
 	$url = trim( (string) $url );
 	if ( ! preg_match( '/^\{([a-z]+)\}(.*)$/', $url, $m ) ) {
-		return $url;
+		return krm_link_slash( $url ); // "/about/" typed in Page content → "/about" (theme 1.22.7).
 	}
 	switch ( $m[1] ) {
 		case 'home':
@@ -409,7 +409,7 @@ function krm_resolve_url( $url ) {
 			// "{ministries}church-planting/#churches": a ministry's own address (/what-we-do/{group}/{slug}/), so links
 			// written for the earlier one-level addresses keep going straight there.
 			if ( preg_match( '#^([a-z0-9-]+)/?(.*)$#', $m[2], $mm ) && krm_get_by_path( $mm[1], 'ministry' ) ) {
-				return krm_ministry_url( $mm[1] ) . ltrim( $mm[2], '/' );
+				return krm_link_slash( krm_url_join( krm_ministry_url( $mm[1] ), $mm[2] ) );
 			}
 			$base = krm_ministries_url();
 			break;
@@ -428,7 +428,29 @@ function krm_resolve_url( $url ) {
 		default:
 			$base = in_array( $m[1], krm_design_pages(), true ) ? krm_page_url( $m[1] ) : '';
 	}
-	return $base . $m[2];
+	if ( in_array( $m[1], array( 'email', 'phone', 'whatsapp', 'paypal' ), true ) ) {
+		return $base . $m[2];
+	}
+	return krm_link_slash( krm_url_join( $base, $m[2] ) ); // Theme 1.22.7: follows the permalink structure (no "/" at the end).
+}
+
+/**
+ * Join a page URL and the rest of a link with exactly one "/" between them: "/what-we-do" + "clean-water" and
+ * "/what-we-do/" + "clean-water" both give "/what-we-do/clean-water"; "?x=1" and "#part" are added as they are.
+ *
+ * @param string $base Page URL.
+ * @param string $rest The rest ("", "#anchor", "?query", "path/…").
+ */
+function krm_url_join( $base, $rest ) {
+	$rest = (string) $rest;
+	if ( '' === $rest || '' === $base || in_array( $rest[0], array( '?', '#' ), true ) ) {
+		return $base . $rest;
+	}
+	// "path#x" after a URL holding its own query or anchor cannot be joined: keep the text as it was written.
+	if ( false !== strpbrk( $base, '?#' ) ) {
+		return $base . $rest;
+	}
+	return untrailingslashit( $base ) . '/' . ltrim( $rest, '/' );
 }
 
 /**

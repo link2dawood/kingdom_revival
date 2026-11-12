@@ -537,6 +537,18 @@
 .site-footer a:hover { color: var(--color-white); text-decoration: underline; }
 .site-footer address { display: grid; gap: 12px; font-style: normal; line-height: 1.6; }
 .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; padding: 22px 0; border-top: 1px solid rgba(255,255,255,.1); font-size: 13px; }
+/* Social icons under the tagline and the policy links in the bottom row (theme 1.23.0). */
+.footer-social { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
+.footer-social a { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; color: var(--color-white); transition: background .2s, border-color .2s; }
+.footer-social a:hover, .footer-social a:focus-visible { border-color: var(--color-secondary); background: var(--color-secondary); text-decoration: none; }
+.footer-social svg { width: 18px; height: 18px; }
+.footer-policies ul { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; list-style: none; }
+.footer-policies a { display: inline-flex; align-items: center; min-height: 24px; }
+@media (max-width: 560px) {
+  .footer-bottom { flex-direction: column; }
+  .footer-policies a { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .footer-social a { transition: none; } }
 @media (max-width: 960px) {
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
@@ -1304,16 +1316,76 @@ body:has(#main > #top) .site-header { margin-bottom: calc(-1 * (var(--header-h) 
 .krm-where__town--e .krm-where__label { left: calc(var(--l) + 1px); top: 0; transform: translateY(-50%); }
 .krm-where__town--w .krm-where__leader { transform: rotate(180deg); }
 .krm-where__town--w .krm-where__label { right: calc(var(--l) + 1px); top: 0; transform: translateY(-50%); }
+/* Diagonal labels (theme 1.23.0: Faisalabad points south-east so its label clears Lahore). */
+.krm-where__town--se .krm-where__leader { transform: rotate(45deg); }
+.krm-where__town--se .krm-where__label { left: calc(var(--l) * .71); top: calc(var(--l) * .71); transform: translateY(-15%); }
+.krm-where__town--ne .krm-where__leader { transform: rotate(-45deg); }
+.krm-where__town--ne .krm-where__label { left: calc(var(--l) * .71); bottom: calc(var(--l) * .71); transform: translateY(15%); }
+/* Cities (Lahore, Karachi): ministry sites around the city — the town dot and pulse, smaller — over a shaded area styled
+   like Punjab. Offsets are map units (1000 across = 100cqw), so they keep their place at every width. */
+.krm-where__map { container-type: inline-size; }
+.krm-where__site { position: absolute; left: calc(var(--dx) * .1cqw); top: calc(var(--dy) * .1cqw); width: 0; height: 0; }
+.krm-where__site .krm-where__dot { left: -4px; top: -4px; width: 8px; height: 8px; box-shadow: 0 0 0 1.5px var(--color-band-deep); }
+.krm-where__site:nth-child(2) .krm-where__dot::after { animation-delay: .9s; }
+.krm-where__site:nth-child(3) .krm-where__dot::after { animation-delay: 1.8s; }
+.krm-where__map .krm-where__area { fill: var(--color-accent); fill-opacity: .3; stroke: var(--color-accent); stroke-opacity: .85; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.krm-where__dots .krm-where__areas { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--color-accent) 60%, transparent)); }
+.krm-where__legend .krm-where__la { width: 14px; height: 10px; border: 1.5px solid var(--color-accent); border-radius: 50%; background: color-mix(in srgb, var(--color-accent) 35%, transparent); box-sizing: border-box; }
+/* Tooltip with the town's name and note: on hover, and on tap (effects.js adds .is-open). The map is decorative for
+   screen readers (the same places and notes are listed beside it). */
+.krm-where__town::before { content: ""; position: absolute; z-index: 3; left: -18px; top: -18px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; }
+.krm-where__town--city::before { left: -26px; top: -26px; width: 52px; height: 52px; }
+.krm-where__tip { position: absolute; z-index: 6; left: 0; bottom: 16px; width: max-content; max-width: min(240px, 60vw); padding: 7px 11px; border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent); border-radius: 8px; background: var(--color-band-deep); color: var(--color-text-on-dark); font: 600 13px/1.35 var(--font-body); box-shadow: 0 10px 26px rgba(0, 0, 0, .4); opacity: 0; visibility: hidden; pointer-events: none; transform: translate(-50%, 4px); transition: opacity .18s, transform .18s, visibility .18s; }
+.krm-where__tip strong { color: var(--color-white); }
+.krm-where__town--tip-r .krm-where__tip { left: auto; right: -14px; transform: translateY(4px); }
+.krm-where__town--tip-l .krm-where__tip { left: -14px; transform: translateY(4px); }
+.krm-where__town--city .krm-where__tip { bottom: 22px; }
+.krm-where__town:hover, .krm-where__town.is-open { z-index: 5; }
+.krm-where__town:hover .krm-where__tip, .krm-where__town.is-open .krm-where__tip { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.krm-where__town--tip-r:hover .krm-where__tip, .krm-where__town--tip-r.is-open .krm-where__tip, .krm-where__town--tip-l:hover .krm-where__tip, .krm-where__town--tip-l.is-open .krm-where__tip { transform: none; }
 @media (max-width: 600px) {
   .krm-where__map { --l: 20px; }
   .krm-where__label { padding: 2px 6px; font-size: 12px; }
   .krm-where__town--e .krm-where__leader { width: 12px; }
   .krm-where__town--e .krm-where__label { left: 13px; }
+  /* Legend in the empty top-left corner (Afghanistan side): at the foot it would cover Karachi's label (theme 1.23.0). */
+  .krm-where__legend { top: 0; bottom: auto; left: 16px; right: auto; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; }
 }
 @media (max-width: 420px) {
   .krm-where__label small { display: none; } /* Room for "Faisalabad" beside the cluster; its white mark still shows HQ. */
 }
+/* ---------- "Where we serve" (template-parts/home/where.php; home Our Impact and the Our Impact page): text and places beside the map ----------
+   Dark in both themes: a darkened photo (photo band "where") under the map, so the accent and the white text read on it.
+   The map (assets/images/pakistan-map.svg) is inline; towns are HTML marks at % of the map with leader lines. */
+.krm-where { position: relative; overflow: hidden; color: var(--color-white); background-color: var(--color-band-deep); }
+.krm-where[data-photo-band] { --band-overlay: linear-gradient(100deg, color-mix(in srgb, var(--color-band-deep) 95%, transparent) 0%, color-mix(in srgb, var(--color-band-deep) 90%, transparent) 50%, color-mix(in srgb, var(--color-band-deep) 82%, transparent) 100%); }
+.krm-where__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: center; }
+.krm-where__text { position: relative; z-index: 2; min-width: 0; }
+.krm-where__eyebrow { margin: 0 0 12px; color: var(--color-accent); font-size: 13px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+.krm-where__title { margin: 0; color: var(--color-white); font-size: clamp(32px, 3.8vw, 46px); font-weight: 800; line-height: 1.12; }
+.krm-where__lead { max-width: 34em; margin: 16px 0 0; color: var(--color-text-on-dark); font-size: 17px; line-height: 1.65; }
+.krm-where__stat { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 26px 0 0; padding: 12px 20px 12px 18px; border-left: 3px solid var(--color-accent); border-radius: 0 10px 10px 0; background: color-mix(in srgb, var(--color-band) 70%, transparent); }
+.krm-where__stat strong { color: var(--color-accent); font-family: var(--font-heading); font-size: 42px; font-weight: 700; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.krm-where__stat span { color: var(--color-white); font-weight: 600; }
+.krm-where__region { margin: 30px 0 2px; color: var(--color-text-on-dark-3); font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.krm-where__places { max-width: 30em; margin: 0; padding: 0; list-style: none; }
+.krm-where__places li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 16px; padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent); }
+.krm-where__place { display: flex; gap: 10px; align-items: center; color: var(--color-white); font-weight: 700; }
+.krm-where__bullet { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); }
+.krm-where__count { color: var(--color-text-on-dark-3); }
+
+@media (min-width: 960px) {
+  .krm-where__inner { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 0; }
+  .krm-where__map { margin: -40px -2% -40px 24px; --l: 40px; } /* Beside the text, never under it. */
+}
+@media (max-width: 600px) {
+  .krm-where__map { margin: 0 calc(-1 * clamp(16px, 3vw, 32px)); }
+}
+
+.krm-where__title--sub { font-size: clamp(28px, 3vw, 38px); }
+
 @media (prefers-reduced-motion: reduce) {
   .krm-where__dot::after { animation: none; opacity: .5; transform: scale(1.8); }
+  .krm-where__tip { transition: none; }
   .krm-where__dots.is-armed g > *, .krm-where__dots.is-in g > * { opacity: 1; animation: none; }
 }

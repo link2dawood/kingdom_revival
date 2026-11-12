@@ -46,7 +46,7 @@ function krm_menu_tree( $location ) {
 				return '' !== $c && ! preg_match( '/^(menu-item|current|page[_-]item)/', $c );
 			}
 		);
-		$url                = krm_menu_url( $item->url );
+		$url                = krm_link_slash( krm_menu_url( $item->url ) ); // No trailing slash (theme 1.22.7).
 		$nodes[ $item->ID ] = array(
 			'title'    => $item->title,
 			'url'      => $url,
@@ -150,7 +150,7 @@ function krm_default_primary_tree() {
 		krm_node( __( 'News & Updates', 'kingdom-revival' ), krm_blog_url(), array(), '', is_home() || is_singular( 'post' ) ),
 		krm_node( __( 'Partner With Us', 'kingdom-revival' ), krm_page_url( 'partner' ), array(), '', in_array( krm_design_template(), array( 'partner', 'prayer' ), true ) ),
 		krm_node( __( 'Contact', 'kingdom-revival' ), krm_page_url( 'contact' ), array(), '', 'contact' === krm_design_template() ),
-		krm_node( __( 'Donate', 'kingdom-revival' ), krm_donate_url(), array( 'menu-donate' ), '', 'donate' === krm_design_template() ),
+		krm_node( __( 'Donate Now', 'kingdom-revival' ), krm_donate_url(), array( 'menu-donate' ), '', 'donate' === krm_design_template() ),
 	);
 }
 

@@ -34,8 +34,13 @@ if ( krm_c( 'hero.video' ) ) :
 <h1 class="hero-title" style="margin: 0; font-family: var(--font-heading); font-weight: 700; font-size: clamp(38px, 5vw, 60px); line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; text-shadow: 0 2px 12px rgba(0,0,0,.55)"><?php krm_h( 'hero.title' ); ?></h1>
 <p style="margin: 22px 0 0; max-width: 540px; font-size: 18px; line-height: 1.65; color: var(--color-white)"><?php krm_t( 'hero.lead' ); ?></p>
 <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; margin-top: 34px; text-shadow: none">
-<a class="k-g" href="<?php krm_u( 'hero.button1_url' ); ?>" style="text-decoration: none; background: var(--color-button-navy); color: var(--color-white); padding: 16px 28px; border-radius: 4px; font-weight: 700; font-size: 16px; min-height: 48px; box-sizing: border-box; display: inline-flex; gap: 8px; align-items: center; border: 1px solid var(--color-band-3); box-shadow: 0 10px 28px rgba(0,0,0,0.35)"><?php krm_t( 'hero.button1_label' ); ?></a>
-<a href="<?php krm_u( 'hero.button2_url' ); ?>" style="text-decoration: none; color: var(--color-white); font-weight: 600; display: inline-flex; gap: 12px; align-items: center; min-height: 44px; text-shadow: 0 1px 10px rgba(0,0,0,0.5)"><span style="width: 46px; height: 46px; border-radius: 50%; background: var(--color-surface); box-shadow: 0 0 0 6px rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill: var(--color-heading)"><path d="M7 4l13 8-13 8z"></path></svg></span><?php krm_t( 'hero.button2_label' ); ?></a>
+<?php // Theme 1.23.0: "Donate Now" (red) and "Partner With Us" (white outline). An empty button text hides that button. ?>
+<?php if ( '' !== trim( (string) krm_c( 'hero.button1_label' ) ) ) : ?>
+<a class="krm-hero-btn" href="<?php krm_u( 'hero.button1_url' ); ?>"><?php krm_t( 'hero.button1_label' ); ?></a>
+<?php endif; ?>
+<?php if ( '' !== trim( (string) krm_c( 'hero.button2_label' ) ) ) : ?>
+<a class="krm-hero-btn krm-hero-btn--outline" href="<?php krm_u( 'hero.button2_url' ); ?>"><?php krm_t( 'hero.button2_label' ); ?></a>
+<?php endif; ?>
 </div>
 </div>
 

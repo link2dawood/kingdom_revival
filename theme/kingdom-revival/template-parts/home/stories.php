@@ -1,6 +1,9 @@
 <?php
 /**
- * Home: "Lives changed — Stories from the field" quotes. Visitors see only stories with real words (none: no section).
+ * Home: 8. Stories from the Field — testimonies with a photo, the person's words, name and place, and a "Read Full Story"
+ * link (theme 1.23.0). A row of cards on computers, a swipeable slider on phones (CSS scroll snap, no script).
+ * Visitors see only stories with real words (none: no section). The link defaults to the person's testimony on the
+ * Testimonials page (#testimony-{name}), else that page. Styles: .krm-stories in assets/css/front.css.
  *
  * @package Kingdom_Revival
  */
@@ -25,24 +28,44 @@ $krm_none = ! array_filter(
 		return ! krm_is_placeholder( $s['quote'] );
 	}
 );
+$krm_more = trim( (string) krm_c( 'stories.more_label' ) );
 ?>
-<!-- Stories -->
-<section id="stories" style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
-<div style="text-align: center; max-width: 680px; margin: 0 auto 44px">
+<!-- Stories from the field -->
+<section id="stories" class="krm-sec krm-sec--soft krm-stories" aria-labelledby="krm-stories-title">
+<div class="krm-sec__inner">
+<div class="krm-sec__head krm-sec__head--center" data-reveal>
 <?php krm_admin_only_note( $krm_none ); ?>
-<p style="margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary-text)"><?php krm_t( 'stories.eyebrow' ); ?></p>
-<h2 style="margin: 0; font-size: clamp(32px, 3.8vw, 46px); font-weight: 800; line-height: 1.12; color: var(--color-heading)"><?php krm_h( 'stories.heading' ); ?></h2>
+<p class="krm-sec__eyebrow"><?php krm_t( 'stories.eyebrow' ); ?></p>
+<h2 id="krm-stories-title" class="krm-sec__title"><?php krm_h( 'stories.heading' ); ?></h2>
 </div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 22px">
+<ul class="krm-stories__list" data-reveal-stagger>
 <?php foreach ( $krm_items as $krm_story ) : ?>
-<figure style="margin: 0; border: 1px solid var(--color-border); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 18px">
-<svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true" style="fill: var(--color-orange)"><path d="M7 7h4v4c0 3-1.5 5-4 6l-.7-1.2C8 15 8.6 13.8 8.7 12H7zM14 7h4v4c0 3-1.5 5-4 6l-.7-1.2C15 15 15.6 13.8 15.7 12H14z"></path></svg>
-<blockquote style="margin: 0; font-size: 17px; line-height: 1.6; color: var(--color-text)"><?php echo krm_text( $krm_story['quote'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></blockquote>
-<figcaption style="margin-top: auto; display: flex; gap: 12px; align-items: center">
-	<?php krm_avatar( $krm_story['name'], $krm_story['photo'] ); ?>
-<span style="display: flex; flex-direction: column; line-height: 1.3"><strong><?php echo krm_text( $krm_story['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong><span style="font-size: 14px; color: var(--color-text-muted)"><?php echo krm_text( $krm_story['place'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></span>
+	<?php
+	$krm_img  = trim( (string) ( $krm_story['image'] ?? '' ) );
+	$krm_name = wp_strip_all_tags( krm_fill( $krm_story['name'] ) );
+	$krm_url  = trim( (string) ( $krm_story['url'] ?? '' ) );
+	$krm_url  = '' !== $krm_url ? krm_resolve_url( $krm_url ) : krm_page_url( 'testimonies' ) . ( '' !== $krm_name ? '#testimony-' . sanitize_title( $krm_name ) : '' );
+	?>
+<li class="krm-story">
+	<?php if ( '' !== $krm_img ) : ?>
+<div class="krm-story__media"><img <?php krm_img_src( $krm_img, '(max-width: 760px) 84vw, 400px' ); ?> alt="<?php echo krm_alt( $krm_img, $krm_story['alt'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async"></div>
+	<?php endif; ?>
+<figure class="krm-story__body">
+<svg class="krm-story__mark" width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4c0 3-1.5 5-4 6l-.7-1.2C8 15 8.6 13.8 8.7 12H7zM14 7h4v4c0 3-1.5 5-4 6l-.7-1.2C15 15 15.6 13.8 15.7 12H14z"></path></svg>
+<blockquote><?php echo krm_text( $krm_story['quote'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></blockquote>
+<figcaption>
+	<?php krm_avatar( $krm_story['name'], $krm_story['photo'] ?? '' ); ?>
+<span><strong><?php echo krm_text( $krm_story['name'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong><small><?php echo krm_text( $krm_story['place'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></small></span>
 </figcaption>
 </figure>
+	<?php if ( '' !== $krm_more && '' !== $krm_url ) : ?>
+<a class="krm-story__link" href="<?php echo esc_url( $krm_url ); ?>"><?php echo krm_text( $krm_more ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><span class="visually-hidden">: <?php echo esc_html( $krm_name ); ?></span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+	<?php endif; ?>
+</li>
 <?php endforeach; ?>
+</ul>
+<?php if ( '' !== trim( (string) krm_c( 'stories.all_label' ) ) ) : ?>
+<p class="krm-sec__more"><a href="<?php krm_u( 'stories.all_url' ); ?>"><?php krm_t( 'stories.all_label' ); ?></a></p>
+<?php endif; ?>
 </div>
 </section>

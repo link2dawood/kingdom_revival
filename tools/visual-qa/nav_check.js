@@ -29,7 +29,7 @@ const OUT = process.argv[2] || path.join(__dirname, 'out', 'nav.json');
 const SHOTS = path.join(path.dirname(OUT), path.basename(OUT, '.json')); // out/nav.json → out/nav/
 const BUST = 'krmnav=' + Date.now(); // A query string no page cache has seen: the page is built fresh.
 
-const TOP = ['Home', 'About Us', 'What We Do', 'Our Impact', 'News & Updates', 'Partner With Us', 'Contact', 'Donate'];
+const TOP = ['Home', 'About Us', 'What We Do', 'Our Impact', 'News & Updates', 'Partner With Us', 'Contact', 'Donate Now'];
 const WWD = 'what-we-do';
 const GROUPS = [
   ['Gospel & Spiritual Ministries', `/${WWD}/gospel-spiritual-ministries/`, [
@@ -45,14 +45,16 @@ const GROUPS = [
     ['Disaster Relief & Recovery Ministry', 'disaster-relief'],
   ]],
 ];
-const IMPACT = [['Our Impact', '/our-impact/'], ['Testimonials', '/our-impact/testimonies/'], ['Photo & Video Gallery', '/our-impact/gallery/']];
+const IMPACT = [['Our Impact', '/our-impact'], ['Testimonials', '/our-impact/testimonies'], ['Photo & Video Gallery', '/our-impact/gallery']];
 const QUICK = ['Home', 'About Us', 'What We Do', 'Our Impact', 'News & Updates', 'Partner With Us', 'Contact', 'Donate'];
 const SOON = ['persecuted-christians', 'food-relief', 'disaster-relief'];
 const SOON_LINE = 'Details about this ministry are coming soon.';
 
 const results = { site: B, checked: new Date().toISOString(), structure: {}, footer: [], links: [], behaviour: {}, soon: {}, shots: [], failures: [] };
 const fail = (area, msg) => { results.failures.push(area + ': ' + msg); console.error('FAIL', area, msg); };
-const pathOf = (u) => { try { const x = new URL(u, B); return x.origin === new URL(B).origin ? x.pathname : u; } catch (e) { return u; } };
+// Addresses are compared without a trailing slash (theme 1.22.7 links /about, not /about/).
+const np = (p) => (typeof p === 'string' && p.length > 1 ? p.replace(/\/+$/, '') : p);
+const pathOf = (u) => { try { const x = new URL(u, B); return x.origin === new URL(B).origin ? np(x.pathname) : u; } catch (e) { return u; } };
 const withBust = (u) => u + (u.includes('?') ? '&' : '?') + BUST;
 // One GET, redirects not followed: { status, location, body }. (Node's http, not fetch: undici trips over the PHP
 // development server's responses.)
@@ -133,16 +135,16 @@ async function shot(p, name) {
     GROUPS.forEach(([name, url, items], gi) => {
       const g = wwd.children[gi];
       if (!g || clean(g.title) !== name) return fail('structure', `What We Do column ${gi + 1} is "${g && g.title}", expected "${name}"`);
-      if (pathOf(g.href) !== url) fail('structure', `${name} heading links to ${pathOf(g.href)}, expected ${url}`);
+      if (pathOf(g.href) !== np(url)) fail('structure', `${name} heading links to ${pathOf(g.href)}, expected ${np(url)}`);
       const got = g.children.map((c) => clean(c.title));
       const want = items.map((i) => i[0]);
       if (JSON.stringify(got) !== JSON.stringify(want)) fail('structure', `${name} lists [${got.join(', ')}]`);
       g.children.forEach((c, i) => {
-        if (items[i] && pathOf(c.href) !== `${url}${items[i][1]}/`) fail('structure', `${c.title} links to ${pathOf(c.href)}, expected ${url}${items[i][1]}/`);
+        if (items[i] && pathOf(c.href) !== np(`${url}${items[i][1]}`)) fail('structure', `${c.title} links to ${pathOf(c.href)}, expected ${np(`${url}${items[i][1]}`)}`);
       });
     });
     const all = wwd.children[GROUPS.length];
-    if (!all || clean(all.title) !== 'View all of What We Do' || pathOf(all.href) !== `/${WWD}/` || wwd.children.length !== GROUPS.length + 1) {
+    if (!all || clean(all.title) !== 'View all of What We Do' || pathOf(all.href) !== `/${WWD}` || wwd.children.length !== GROUPS.length + 1) {
       fail('structure', 'What We Do panel does not end with "View all of What We Do →" → /what-we-do/');
     }
   } else fail('structure', 'no What We Do item');
@@ -299,7 +301,7 @@ async function shot(p, name) {
   // copy was built with another theme version is reported, as is a page whose navbar differs from the home page's.
   results.sameHeader = {};
   results.cache = {};
-  const PAGES = ['/', '/about/', '/what-we-do/', '/our-impact/', '/our-impact/testimonies/', '/news/', '/contact/', '/donate/'];
+  const PAGES = ['/', '/about', '/what-we-do', '/our-impact', '/our-impact/testimonies', '/news', '/contact', '/donate'];
   const ver = (html) => ((html.match(/assets\/js\/site\.js\?ver=([0-9.]+)/) || [])[1] || '');
   const hctx = await context(b, 'light', 1440);
   const hp = await hctx.newPage();
@@ -345,7 +347,7 @@ async function shot(p, name) {
         donate: Array.from(hero ? hero.querySelectorAll('a') : []).filter((a) => a.textContent.trim() === 'Donate').map((a) => a.href),
         contact: Array.from(hero ? hero.querySelectorAll('a') : []).some((a) => a.textContent.trim() === 'Contact us'),
         others: main.querySelectorAll('.ministry-others .cause-card').length,
-        extra: Array.from(main.querySelectorAll('section')).map((x) => x.id || x.className).filter((x) => !/ministry-hero|ministry-others/.test(x)),
+        extra: Array.from(main.querySelectorAll('section')).map((x) => x.id || x.className).filter((x) => !/ministry-hero|ministry-others|ministry-photos/.test(x)), // Photos show on coming-soon pages since theme 1.22.4.
         brackets: /\[[^\]]*\]/.test(main.innerText),
       };
     }, SOON_LINE);

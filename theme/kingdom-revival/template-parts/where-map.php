@@ -9,9 +9,14 @@
  * cluster, so they never overlap, even at 360px. Styles: .krm-where__map… in assets/css/theme-global.css; the dots pop
  * in on scroll (assets/js/effects.js).
  *
+ * Lahore and Karachi (theme 1.23.0) are cities with a few ministry sites: three small markers around the city (same dot and
+ * pulse as the towns) and a soft shaded area (Lahore district, clipped to Punjab; Karachi metro), styled like Punjab.
+ * Every town shows its name and note in a tooltip when pointed at or tapped (effects.js toggles .is-open on tap).
+ *
  * Args:
- * - places: list of array( 'name' => plain text, 'villages' => int, 'kilns' => int ). A place gets a marker only when
- *   it is one of the towns below (their % positions come from the build script); "(HQ)" in a name is ignored.
+ * - places: list of array( 'name' => plain text, 'villages' => int, 'kilns' => int, 'note' => optional text for the
+ *   tooltip, default "40 villages · 8 kilns" from the numbers ). A place gets a marker only when it is one of the towns
+ *   below (their % positions come from tools/map/build_pakistan_map.py); "(HQ)" in a name is ignored.
  * - label:  accessible name for the map (role="img"); empty = hidden from screen readers (the places are listed as text).
  *
  * @package Kingdom_Revival
@@ -19,18 +24,35 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Towns: [ % from the left, % from the top, label direction (n/e/s/w), headquarters, label ].
+// Towns: [ % from the left, % from the top, label direction (n/e/s/w/ne/se), headquarters, label ].
+// Faisalabad's label points south-east (theme 1.23.0) so that it clears Lahore, 7% to its east.
 $krm_towns  = array(
-	'faisalabad'     => array( 72.10, 41.93, 'e', true, 'Faisalabad' ),
+	'faisalabad'     => array( 72.10, 41.93, 'se', true, 'Faisalabad' ),
 	'jhang'          => array( 67.34, 43.28, 'w', false, 'Jhang' ),
 	'chiniot'        => array( 71.19, 39.92, 'n', false, 'Chiniot' ),
 	'toba tek singh' => array( 68.30, 45.49, 's', false, 'Toba Tek Singh' ),
+	'lahore'         => array( 79.23, 41.41, 'e', false, 'Lahore' ),   // 31.5204 N, 74.3587 E.
+	'karachi'        => array( 36.36, 90.73, 'e', false, 'Karachi' ),  // 24.8607 N, 67.0011 E.
+);
+// Cities: the shaded area (map units, viewBox 1000 × 911: centre x, centre y, radius x, radius y, clipped to Punjab) and
+// the ministry sites around the city (offsets in map units; 1 unit ≈ 1.65 km). Lahore district ≈ 31.25–31.70 N,
+// 74.0–74.6 E; Karachi metro ≈ 24.75–25.15 N, 66.85–67.45 E (shifted inland from the coast).
+$krm_cities = array(
+	'lahore'  => array( array( 788.9, 380.6, 18, 16, true ), array( array( -11, -7 ), array( 6, -10 ), array( -2, 11 ) ) ),
+	'karachi' => array( array( 370.5, 818.5, 22, 17, false ), array( array( -8, -9 ), array( 11, -6 ), array( 13, 7 ) ) ),
 );
 $krm_places = array();
 foreach ( (array) ( $args['places'] ?? array() ) as $krm_place ) {
 	$krm_key = strtolower( trim( preg_replace( '/\(\s*hq\s*\)/i', '', (string) $krm_place['name'] ) ) );
 	if ( isset( $krm_towns[ $krm_key ] ) ) {
-		$krm_places[ $krm_key ] = array( (int) ( $krm_place['villages'] ?? 0 ), (int) ( $krm_place['kilns'] ?? 0 ), trim( preg_replace( '/\(\s*hq\s*\)/i', '', (string) $krm_place['name'] ) ) );
+		$krm_v    = (int) ( $krm_place['villages'] ?? 0 );
+		$krm_k    = (int) ( $krm_place['kilns'] ?? 0 );
+		$krm_note = trim( (string) ( $krm_place['note'] ?? '' ) );
+		if ( '' === $krm_note ) {
+			/* translators: %d: number of villages / brick kilns. */
+			$krm_note = implode( ' · ', array_filter( array( $krm_v ? sprintf( _n( '%d village', '%d villages', $krm_v, 'kingdom-revival' ), $krm_v ) : '', $krm_k ? sprintf( _n( '%d kiln', '%d kilns', $krm_k, 'kingdom-revival' ), $krm_k ) : '' ) ) );
+		}
+		$krm_places[ $krm_key ] = array( $krm_v, $krm_k, trim( preg_replace( '/\(\s*hq\s*\)/i', '', (string) $krm_place['name'] ) ), $krm_note );
 	}
 }
 $krm_label = (string) ( $args['label'] ?? '' );
@@ -68,18 +90,40 @@ foreach ( $krm_places as $krm_key => $krm_p ) {
 			: '<rect class="krm-where__k" x="' . ( $krm_x - 4.5 ) . '" y="' . ( $krm_y - 4.5 ) . '" width="9" height="9"' . $krm_d . '/>';
 	}
 }
-if ( $krm_dots ) {
+// Shaded areas of the cities in the list (Lahore's kept inside Punjab, like the dots).
+$krm_areas = '';
+foreach ( $krm_cities as $krm_key => $krm_city ) {
+	if ( isset( $krm_places[ $krm_key ] ) ) {
+		list( $krm_ax, $krm_ay, $krm_rx, $krm_ry, $krm_in ) = $krm_city[0];
+		$krm_areas .= '<ellipse class="krm-where__area" cx="' . $krm_ax . '" cy="' . $krm_ay . '" rx="' . $krm_rx . '" ry="' . $krm_ry . '"' . ( $krm_in ? ' clip-path="url(#krm-where-clip)"' : '' ) . '/>';
+	}
+}
+if ( $krm_dots || $krm_areas ) {
 	// Kept inside Punjab: clipped to the highlighted province's outline from the map.
 	$krm_clip = preg_match( '/data-province="Punjab" d="([^"]+)"/', $krm_svg, $krm_m ) ? $krm_m[1] : '';
-	$krm_dots = $krm_clip ? '<clipPath id="krm-where-clip"><path d="' . esc_attr( $krm_clip ) . '"/></clipPath><g clip-path="url(#krm-where-clip)">' . $krm_dots . '</g>' : '<g>' . $krm_dots . '</g>';
-	echo '<svg class="krm-where__dots" viewBox="0 0 1000 911" focusable="false" aria-hidden="true">' . $krm_dots . '</svg>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- numbers only.
+	$krm_defs = $krm_clip ? '<clipPath id="krm-where-clip"><path d="' . esc_attr( $krm_clip ) . '"/></clipPath>' : '';
+	if ( ! $krm_clip ) {
+		$krm_areas = str_replace( ' clip-path="url(#krm-where-clip)"', '', $krm_areas );
+	}
+	$krm_dots = $krm_dots ? ( $krm_clip ? '<g clip-path="url(#krm-where-clip)">' . $krm_dots . '</g>' : '<g>' . $krm_dots . '</g>' ) : '';
+	echo '<svg class="krm-where__dots" viewBox="0 0 1000 911" focusable="false" aria-hidden="true">' . $krm_defs . ( $krm_areas ? '<g class="krm-where__areas">' . $krm_areas . '</g>' : '' ) . $krm_dots . '</svg>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- numbers only.
 }
 foreach ( $krm_places as $krm_key => $krm_p ) :
 	list( $krm_x, $krm_y, $krm_dir, $krm_hq ) = $krm_towns[ $krm_key ];
+	$krm_class = 'krm-where__town krm-where__town--' . $krm_dir . ( $krm_hq ? ' krm-where__town--hq' : '' ) . ( isset( $krm_cities[ $krm_key ] ) ? ' krm-where__town--city' : '' );
+	$krm_class .= $krm_x > 62 ? ' krm-where__town--tip-r' : ( $krm_x < 38 ? ' krm-where__town--tip-l' : '' ); // Tooltips stay inside the map.
 	?>
-<span class="krm-where__town krm-where__town--<?php echo esc_attr( $krm_dir . ( $krm_hq ? ' krm-where__town--hq' : '' ) ); ?>" style="left: <?php echo esc_attr( $krm_x ); ?>%; top: <?php echo esc_attr( $krm_y ); ?>%" aria-hidden="true"><span class="krm-where__dot"></span><span class="krm-where__leader"></span><span class="krm-where__label"><?php echo esc_html( $krm_p[2] ); ?><?php if ( $krm_hq ) : ?> <small>HQ</small><?php endif; ?></span></span>
+<span class="<?php echo esc_attr( $krm_class ); ?>" style="left: <?php echo esc_attr( $krm_x ); ?>%; top: <?php echo esc_attr( $krm_y ); ?>%" aria-hidden="true">
+	<?php if ( isset( $krm_cities[ $krm_key ] ) ) : ?>
+		<?php foreach ( $krm_cities[ $krm_key ][1] as $krm_s ) : ?>
+<span class="krm-where__site" style="--dx: <?php echo (int) $krm_s[0]; ?>; --dy: <?php echo (int) $krm_s[1]; ?>"><span class="krm-where__dot"></span></span>
+		<?php endforeach; ?>
+	<?php endif; ?>
+<span class="krm-where__dot"></span><span class="krm-where__leader"></span><span class="krm-where__label"><?php echo esc_html( $krm_p[2] ); ?><?php if ( $krm_hq ) : ?> <small>HQ</small><?php endif; ?></span>
+<span class="krm-where__tip"><strong><?php echo esc_html( $krm_p[2] ); ?></strong><?php if ( '' !== $krm_p[3] ) : ?> – <?php echo esc_html( $krm_p[3] ); ?><?php endif; ?></span>
+</span>
 <?php endforeach; ?>
-<?php if ( $krm_dots ) : ?>
-<p class="krm-where__legend" aria-hidden="true"><span><i class="krm-where__lv"></i><?php esc_html_e( 'Village', 'kingdom-revival' ); ?></span><span><i class="krm-where__lk"></i><?php esc_html_e( 'Brick kiln', 'kingdom-revival' ); ?></span></p>
+<?php if ( $krm_dots || $krm_areas ) : ?>
+<p class="krm-where__legend" aria-hidden="true"><?php if ( $krm_dots ) : ?><span><i class="krm-where__lv"></i><?php esc_html_e( 'Village', 'kingdom-revival' ); ?></span><span><i class="krm-where__lk"></i><?php esc_html_e( 'Brick kiln', 'kingdom-revival' ); ?></span><?php endif; ?><?php if ( $krm_areas ) : ?><span><i class="krm-where__la"></i><?php esc_html_e( 'Ministry area', 'kingdom-revival' ); ?></span><?php endif; ?></p>
 <?php endif; ?>
 </div>

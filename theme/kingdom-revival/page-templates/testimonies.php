@@ -79,7 +79,7 @@ uasort(
 				$krm_role = (string) get_post_meta( $krm_p->ID, '_krm_role', true );
 				$krm_img  = get_post_thumbnail_id( $krm_p );
 				?>
-			<li data-group="<?php echo esc_attr( $krm_m ? $krm_m['slug'] : '' ); ?>">
+			<li id="testimony-<?php echo esc_attr( sanitize_title( get_the_title( $krm_p ) ) ); ?>" data-group="<?php echo esc_attr( $krm_m ? $krm_m['slug'] : '' ); ?>"><?php // Anchor for the home page's "Read Full Story" links (theme 1.23.0). ?>
 				<figure class="testimony">
 				<?php if ( $krm_m ) : ?>
 				<a class="tag" href="<?php echo esc_url( $krm_m['url'] ); ?>" style="text-decoration: none"><?php echo esc_html( $krm_m['title'] ); ?></a>

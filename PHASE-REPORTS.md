@@ -56,6 +56,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: New fonts, John 3:16 in the top bar, see-through home header, heading highlights (theme 1.19.0)](#kingdom-revival-ministries-new-fonts-john-316-in-the-top-bar-see-through-home-header-heading-highlights-theme-1190)
 - [Kingdom Revival Ministries: New home About section (theme 1.19.3)](#kingdom-revival-ministries-new-home-about-section-theme-1193)
 - [Kingdom Revival Ministries: Pastor photo, block heading highlights, uncropped galleries and face-aware crops (theme 1.21.4–1.22.0)](#kingdom-revival-ministries-pastor-photo-block-heading-highlights-uncropped-galleries-and-face-aware-crops-theme-1214-1220)
+- [Kingdom Revival Ministries: New home page layout, plural statistic labels, Lahore and Karachi on the map (theme 1.23.0)](#kingdom-revival-ministries-new-home-page-layout-plural-statistic-labels-lahore-and-karachi-on-the-map-theme-1230)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4251,3 +4252,73 @@ photo is centred on its faces, so the pastor's face is no longer cut off.
   No full `final_pass.js` run (it timed out).
 
 **Decisions for you:** highlight colour (one token); whether to re-run build_focal.py on the live site's uploads after new photos.
+
+## Kingdom Revival Ministries: New home page layout, plural statistic labels, Lahore and Karachi on the map (theme 1.23.0)
+
+**Result:** the home page follows the client's 13-section order (header, hero, Who We Are, What We Do, Why Pakistan Needs
+Hope, Our Impact with the Pakistan map, Featured Projects, Stories from the Field, Our Journey, Partner With Us, Latest News &
+Updates, "Together, We Can Bring Hope", footer); every statistic label is plural when its number is more than 1; Lahore and
+Karachi are on the ministry map. Design style, colours, fonts and photos are the existing ones. Built on top of another
+session's uncommitted 1.22.7 (no trailing slashes), kept as found.
+
+- Order and parts: `front-page.php`; new parts `template-parts/home/` `wwd.php`, `needs.php`, `impact.php` (counters,
+  achievements, then `where.php`, now the map block inside it), `featured.php`, `journey.php`, `partner.php`, `final-cta.php`;
+  reworked `hero.php` (Donate Now red + Partner With Us outline), `about.php` (Founded in 2018 tag and badge, Our Vision / Our
+  Mission boxes; the verse and four focus cards left), `stories.php` (photo, quote, name, "Read Full Story"; slider below
+  900px), `news.php` (excerpt, date, "Read More"). Header: the red nav button reads "Donate Now"; it was already sticky with a
+  hamburger menu.
+- Removed from the home page (template parts kept; `freedom`, `cta`, `gift`, `prayer` are still used on other pages, so their
+  schema sections stay, labelled as such): gift calculator, ministry explorer, mission slider, clean water, giving cards, current
+  projects, freedom section, flagship cards, ministry in action, Pray/Give/Go, prayer form, founder.
+- Schema `inc/content/home.php`: sections numbered in page order; new `wwd`, `needs`, `impact`, `featured`, `journey`,
+  `partner`, `final`; new keys in `about`, `stories`, `where`; dropped `calc`, `explorer`, `mission`, `water`, `projects`,
+  `causes`, `flagship`, `field`, `involved`, `founder`, `beliefs` (saved values stay in the database, unused).
+- Plurals: `krm_plural_label()` (inc/template-functions.php) in `krm_stats()` (hero bar, About) and the Impact counters. It
+  pluralises the counted noun only — the last word, or the one before a past participle / "incl." — so "Church planted
+  included house churches" → "Churches planted…", "Bible distributed" → "Bibles distributed", "Urdu Bible" → "Urdu Bibles",
+  while "Medical camp patients" and "Brick kiln families" stay. Default labels fixed too ("Urdu Bibles distributed"). Footer has
+  no statistics. 19 test labels checked.
+- Map (`template-parts/where-map.php`, shared with Our Impact): Lahore (79.23 %, 41.41 %) and Karachi (36.36 %, 90.73 %), from
+  the build script's projection fitted on the four known towns (residual < 0.01 %). Each city: the town marker plus three
+  smaller pulsing site markers (offsets in map units via `cqw`, so they stay in place at every width) and a soft shaded ellipse
+  in the Punjab highlight style (Lahore district ≈ 36 × 32 km, clipped to Punjab; Karachi metro, shifted inland). Tooltips on
+  every town (hover; tap toggles `.is-open`, effects.js): "Lahore – Church & Outreach Work", "Karachi – Humanitarian
+  Outreach". Faisalabad's label now points south-east (it covered Lahore). Legend gains "Ministry area"; on phones it sits
+  top-left (at the foot it covered Karachi's label). Places list and its heading ("Punjab & Sindh, Pakistan") include both.
+- Footer: social icons, and Privacy Policy, Terms & Conditions, Donation/Refund Policy, Financial Accountability links
+  (`krm_policy_links()`, only published pages). Pages from `inc/data/policies.php` via Setup and `krm_ensure_policy_pages()`.
+- Upgrade step `krm_home_layout_version` 1 (inc/upgrade.php): creates missing policy pages (WordPress's untouched
+  "Privacy Policy" draft gets the text and is published); clears saved home fields still holding an old default (hero buttons,
+  "About Us", "Since 2018", news heading…, and the four-town places list); adds photos to saved default stories; renames the
+  menu-donate item "Donate"/untitled → "Donate Now". Re-running it locally created no duplicates.
+- Testimonials page: each card has `id="testimony-{name}"` for "Read Full Story".
+- Verified on the local site (1440 / 1024 / 768 / 390 / 360): sections in order, no horizontal overflow, no JS errors; all 49
+  internal links on the home page return 200 and every #anchor exists on its page; axe-core 0 violations on home at 1440 and
+  390 in light and dark; map labels checked for overlaps at 1440 / 768 / 600 / 390 / 360 (0), tooltips open on hover and tap;
+  15 other pages (Our Impact, About, What We Do, a group, Slavery & Freedom, Testimonials, Prayer, Donate, Partner, the four
+  policy pages, News, Contact) 200 with no overflow or errors at 1440 and 390. Zip rebuilt (317 files).
+- Not covered: pixel diffs (the page is redesigned on purpose); `final_pass.js` whole-site crawl; the live site (upload, then
+  purge SpeedyCache — `krm_purge_page_caches()` runs once per version).
+
+**Dummy content to replace before launch:** Impact counters (Families freed 35, Pastors trained 60, Lives impacted 3,200 are
+new; the rest match Settings / Our Impact), Key achievements, Our Journey milestones (condensed from the About timeline),
+the Why Pakistan Needs Hope texts, the three project and four partner texts, "Church & Outreach Work" / "Humanitarian
+Outreach" for Lahore and Karachi, and the four policy pages (plain-language starting points, not legal advice).
+
+**Decisions for you:** (1) Lahore and Karachi are on the home map only — Our Impact's map reads its own district table
+(impact.json); adding them there needs villages / kilns / churches figures. (2) The hero keeps its donation card and the
+six-number bar under it (the brief's hero list doesn't name them; the brief's plural fix refers to the bar). (3) "Founded in
+2018" shows twice in Who We Are (tag under the heading and badge on the photos) — either can be emptied.
+
+**Follow-up (theme 1.23.1), the user's answers:**
+- Our Impact shows the home page's map block: same text, places list (Lahore and Karachi included), map, tooltips and legend,
+  over the same darkened photo (`page-templates/impact.php` → `template-parts/home/where.php` with `screen => home`,
+  `heading => h2`). One source to edit: Pages → Home → "6. Our Impact: the map". The district table (impact.json
+  "districts") is no longer shown. The block's styles moved from front.css to theme-global.css.
+- "Founded in 2018" once: the tag under the Who We Are heading; the photo badge is now "Faisalabad · Ministry headquarters,
+  Pakistan" (a saved 1.23.0 badge "Founded in 2018" is cleared by the update step).
+- Hero donation card and impact numbers bar: kept as they are.
+- Verified: Our Impact 200 at 1440 / 768 / 390, no overflow or JS errors, map identical to home; home unchanged (order, no
+  overflow, no errors); axe on Our Impact: no findings in the map section (two older ones elsewhere on the page: the
+  impact explorer's `<article role="tabpanel">` and the floating WhatsApp button outside a landmark). Zip rebuilt.
+
