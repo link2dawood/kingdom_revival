@@ -34,9 +34,12 @@ if ( krm_c( 'hero.video' ) ) :
 <h1 class="hero-title" style="margin: 0; font-family: var(--font-heading); font-weight: 700; font-size: clamp(38px, 5vw, 60px); line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; text-shadow: 0 2px 12px rgba(0,0,0,.55)"><?php krm_h( 'hero.title' ); ?></h1>
 <p style="margin: 22px 0 0; max-width: 540px; font-size: 18px; line-height: 1.65; color: var(--color-white)"><?php krm_t( 'hero.lead' ); ?></p>
 <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; margin-top: 34px; text-shadow: none">
-<?php // Theme 1.23.0: "Donate Now" (red) and "Partner With Us" (white outline). An empty button text hides that button. ?>
+<?php // Theme 1.23.0: "Donate Now" (red) and "Partner With Us" (white outline); 1.25.0 added "Explore Our Mission" (blue) between them. An empty button text hides that button. ?>
 <?php if ( '' !== trim( (string) krm_c( 'hero.button1_label' ) ) ) : ?>
 <a class="krm-hero-btn" href="<?php krm_u( 'hero.button1_url' ); ?>"><?php krm_t( 'hero.button1_label' ); ?></a>
+<?php endif; ?>
+<?php if ( '' !== trim( (string) krm_c( 'hero.button3_label' ) ) ) : ?>
+<a class="krm-hero-btn krm-hero-btn--blue" href="<?php krm_u( 'hero.button3_url' ); ?>"><?php krm_t( 'hero.button3_label' ); ?><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
 <?php endif; ?>
 <?php if ( '' !== trim( (string) krm_c( 'hero.button2_label' ) ) ) : ?>
 <a class="krm-hero-btn krm-hero-btn--outline" href="<?php krm_u( 'hero.button2_url' ); ?>"><?php krm_t( 'hero.button2_label' ); ?></a>

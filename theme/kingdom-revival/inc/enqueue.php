@@ -110,6 +110,11 @@ add_action(
 		// Theme toggle, scroll progress bar, header state, scroll reveal and photo bands (Phase 20), on every page.
 		wp_enqueue_script( 'krm-effects', krm_asset( 'js/effects.js' ), array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 
+		// Home 9. Brick Kiln Family Freedom: before/after slider, hint nudge and family dots (1.25.0).
+		if ( 'front' === $view ) {
+			wp_enqueue_script( 'krm-kiln-freedom', krm_asset( 'js/kiln-freedom.js' ), array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		}
+
 		// Filters, tabs, click-to-play videos and the prayer / partner sign-up forms, on every page.
 		wp_enqueue_script( 'krm-components', krm_asset( 'js/components.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
 

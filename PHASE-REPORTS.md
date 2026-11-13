@@ -62,6 +62,10 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Kiln debt line in "Your gift at work" (theme 1.23.4)](#kingdom-revival-ministries-kiln-debt-line-in-your-gift-at-work-theme-1234)
 - [Kingdom Revival Ministries: Our Ministries heading, orphan home project, highlighted project titles, animated journey (theme 1.23.5)](#kingdom-revival-ministries-our-ministries-heading-orphan-home-project-highlighted-project-titles-animated-journey-theme-1235)
 - [Kingdom Revival Ministries: Scripture rotator replaces the hero statistics bar (theme 1.24.0)](#kingdom-revival-ministries-scripture-rotator-replaces-the-hero-statistics-bar-theme-1240)
+- [Kingdom Revival Ministries: Urdu Bibles photo wall and steps on the home page (theme 1.25.0)](#kingdom-revival-ministries-urdu-bibles-photo-wall-and-steps-on-the-home-page-theme-1250)
+- [Kingdom Revival Ministries: Brick Kiln Family Freedom before/after section on the home page (theme 1.25.0)](#kingdom-revival-ministries-brick-kiln-family-freedom-beforeafter-section-on-the-home-page-theme-1250)
+- [Kingdom Revival Ministries: "Explore Our Mission" hero button (theme 1.25.0)](#kingdom-revival-ministries-explore-our-mission-hero-button-theme-1250)
+- [Kingdom Revival Ministries: Who We Are, Matthew 28:19 instead of the Vision and Mission cards (theme 1.25.0)](#kingdom-revival-ministries-who-we-are-matthew-2819-instead-of-the-vision-and-mission-cards-theme-1250)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4459,3 +4463,164 @@ Our Impact counters are edited in Pages → Home, and the About page was not usi
 keep the settings or remove them in a later version. With reduced motion the strip stays on the first verse until the
 visitor clicks a dot (rather than switching verses instantly every 6 s), following the WCAG advice not to move content
 automatically.
+
+## Kingdom Revival Ministries: Urdu Bibles photo wall and steps on the home page (theme 1.25.0)
+
+**Result:** a new home section, **"10. God’s Word in their hands"**, sits between Stories from the Field and Our Journey
+(the later sections are renumbered 11–17 in Page content and `front-page.php`). It uses only KRM’s own photos, which the
+Setup importer already brings in, and the brief’s own wording.
+
+- New `template-parts/home/word.php` and Page content section `word` in `inc/content/home.php`: italic line, heading
+  (`<br>` per line, `<em>` = gold italic line), text, background photo, outline word, 6 pinned photos (image, alt, place
+  caption), 3 step cards (label, title, text, optional item photo) and the button (text + link; an empty link means the
+  Urdu Bibles project page, `/projects/urdu-bibles/`).
+- **Number:** “[X]” is **650**, the figure the site already shows (“Urdu Bibles distributed” in home 7. Our Impact and the
+  Bible Distribution ministry stats). The italic line is “650 Urdu Bibles placed so far”. It is a separate field, so the two
+  must be changed together; the section’s help text says so.
+- Design (`assets/css/front.css`, `.krm-word`; tokens `--color-word-*` in `theme-global.css`): the band is warm near-black
+  `#16110D` in both themes. Behind it is the brick-kiln group photo of men holding up Bibles, under an 85% overlay and a 6px
+  blur. It reuses the lazy photo band (`krm_photo_band_attrs()`, variant `word`) on an inner layer, so only the photo is
+  blurred and it never uses the fixed parallax. Heading text is Cormorant Garamond and body text is Figtree. The italic line
+  is soft green, the last heading line gold italic, the text light warm grey. Prints have an off-white border, a 30px foot
+  and a gold pin. Each tilts its own way (±1–1.6°) and lifts 8px with a deeper shadow on hover. The place caption shows on
+  hover/focus and always on touch screens. Photos are zoomed 1.35× around the faces (focal data), because the originals are
+  very tall. Step cards are 62% see-through dark with a thin border and gold labels. The button is solid orange
+  `#C2410C`/white (5.2:1). “THE WORD” is drawn as 1.5px gold outline text at 10% opacity behind the bottom.
+- Layout: the heading has two columns from 960px up and stacks below that. The photos run 6 per row on desktop, 3 below
+  1024px and 2 below 600px. The cards run 3 across from 900px up and stack below; the button is full width below 600px.
+- Animation: the heading block and the text fade up. The prints drop in from 40px above, tilted, one after another (scroll
+  reveal stagger, 80ms apart). The cards fade up in turn. With `prefers-reduced-motion` nothing animates and hover does not
+  move the prints.
+- `effects.js`: headings with `data-no-hl` are now skipped by the automatic heading highlighter. Without this, the gold
+  `<em>` line was turned into the red highlight block. Only this heading uses it.
+- Verified on the local WP (screenshots at 1440 / 768 / 390 and 1440 dark): it sits between `#stories` and `#journey`, with
+  no horizontal overflow. The heading is exactly three lines at 1440 and 768; at 390 the first line wraps naturally. All 6
+  photos load (responsive sizes). axe (WCAG 2.1 A/AA) on the section: 0 violations in light and dark, with and without
+  reduced motion. Nothing is left hidden after the reveal, no `.hl` is added, and hovering a print gives translateY(-8px)
+  rotate(-1°) and shows its caption. The site-wide `final_pass.js` was not run.
+
+**Dummy content to confirm or replace before launch** (no brackets, per the content rule):
+- The three step-card texts are the brief’s “e.g.” wording.
+- The photo captions “Brick kiln · Faisalabad” (4 kiln photos) and “Village visit · Jhang” (2 home-visit photos) are
+  guesses from the project page (“around Faisalabad and Jhang”). The real place of each photo is not known.
+- The brief asks for faded photos of the Gospel of John, the Urdu Bible and the audio Bible. KRM has no product photos of
+  these, so the cards show drawn outlines (a book, and headphones on the third card). Upload a photo in each card’s
+  “Faded photo of the item” field to replace them.
+
+**Not covered:** the place names and step wording need KRM’s confirmation. Pixel comparisons against `html/` no longer apply
+to the home page.
+
+## Kingdom Revival Ministries: Brick Kiln Family Freedom before/after section on the home page (theme 1.25.0)
+
+**Result:** a new home section, **"9. Brick Kiln Family Freedom"**, sits between Featured Projects and Stories from the
+Field. It has a before/after slider of one family and six numbered steps, and it uses only KRM's own photos and the
+brief's wording. The later sections move up by one in Page content, `front-page.php` and `readme.md`: Stories is now 10,
+the Urdu Bibles band (from the section above, built in parallel in the same 1.25.0) 11, and so on to 17. Final call to
+action, then 18. Footer.
+
+- New `template-parts/home/kiln-freedom.php` and Page content section `kiln` in `inc/content/home.php`: italic line,
+  heading line 1 and line 2 (italic green), text, faint background photo, the three slider labels, a **Families** list
+  (before and after photo with alt text, title and line), **Steps** (title, text), and the button (text and link).
+- **Number:** the brief's "[X]" is the Our Impact counter **Families freed (35)**. The title "One of {freed} families set
+  free" reads that counter when the page renders, so the two numbers always match. If the counter is removed, the title
+  falls back to "One family set free".
+- **Photos:** `freedom-before-1.jpg` and `freedom-after-1.jpg` (the client's photos from 1.15.1). This is the only pair
+  that clearly shows the same mother and children. `freedom-after-3`/`-4` show one family, but no "before" photo of them
+  exists, and `before-2`/`-3` have no matching "after". So only one family is set up. The dots under the slider (the
+  brief's optional extra) appear by themselves once a second family is added. The faint background is
+  `bricks-kiln-slaves-children-2-1-crop.jpg` (kiln chimney) at 6% opacity, 40% greyscale and slightly blurred.
+- **Design** (`.krm-kf` in `assets/css/front.css`; tokens `--color-kiln-*` in `theme-global.css`, with dark values in both
+  dark blocks): cream band `#FAF7F1`. Headings are Cormorant Garamond and text is Figtree. The italic line and the step
+  numbers are deep green `#1D5C4A` (7.3:1), the small italic line orange-red `#B8410E`, and the body text warm grey
+  `#5F5850` (6.4:1). The slider line and handle are gold `#F4B740`, with a ⇄ icon in the handle. The labels sit on dark
+  boxes, and "After · Free" on red. The button is solid orange `#C2410C` with white text (5.2:1, the same as the Urdu
+  Bibles button). Brand orange `#E18426` with white text is only 2.9:1, so it was not used. In dark mode the band is warm
+  near-black with a light green accent.
+- **Slider** (`assets/js/kiln-freedom.js`, enqueued on the home page only): Pointer Events with pointer capture handle
+  mouse, pen and touch. Users can press anywhere on the photo and drag. `touch-action: pan-y` means a vertical swipe still
+  scrolls the page. The handle is `role="slider"`, controlled with ←/→/↑/↓ (5%, Shift 20%), Home, End and PageUp/Down, and
+  `aria-valuetext` says "N% before photo". The hint runs once, after the slider is half on screen: 50% → 22% → 50% over
+  1.8 s. It stops as soon as the visitor touches the slider and never runs with reduced motion. Without JavaScript the
+  slider shows a 50/50 split.
+- **Animation:** the heading block and the text fade up (scroll reveal). The steps use the reveal stagger (80 ms apart).
+  In each row the number scales in first and the words fade in 180 ms later. Reduced motion turns all of this off.
+- **Mobile:** below 960px the slider sits above the steps. Below 600px the photo is taller (4:3.4), the labels and handle
+  are smaller, the step numbers are 24px in a 50px column, each step's text goes on its own line under the title (no
+  dash), and the button is full width.
+
+**Verified** on the local WP with playwright, at 1440 / 768 / 390, in light and dark:
+- The section sits between `#projects` and `#stories`, with no horizontal overflow and no JS errors.
+- Hint: the handle reached a minimum of 22 and ended at 50 at all three widths. With reduced motion it stayed at 50.
+- Mouse drag at desktop from the centre to 20% → value 20. Touch drag (CDP touch events) at tablet and mobile → 85.
+- Keyboard Home → 0, with clip-path `inset(0 100% 0 0)`.
+- A vertical touch swipe on the slider scrolled the page (65px, against 225px on the step list in the same test) and left
+  the split unchanged.
+- After scrolling through, no rows are left hidden by the reveal, and the heading is not highlighted (`data-no-hl`).
+- axe on `#kiln-freedom`: 0 violations in light and dark.
+- The site-wide `final_pass.js` was not run.
+
+**Dummy content to confirm or replace before launch** (no brackets, per the content rule): the six step descriptions are
+the brief's "e.g." wording, adjusted to facts already on the site (the Flagship freedom steps: debt settled with the kiln
+owner, a safe home away from the kiln, food support, tools or training, school). The same applies to the family's line
+under the slider. The 35 comes from the Our Impact counters, which are themselves dummy figures. Whether the family in the
+photos is the one described is for KRM to confirm.
+
+**Not covered:** pixel comparisons against `html/` no longer apply to the home page. `kingdom-revival.zip` was rebuilt and
+includes both 1.25.0 sections (Urdu Bibles and this one). Nothing is committed.
+
+## Kingdom Revival Ministries: "Explore Our Mission" hero button (theme 1.25.0)
+
+**Result:** the home hero has a third button, **Explore Our Mission**, between Donate Now (red, unchanged) and Partner
+With Us (outline, unchanged).
+
+- Page content → "1–2. Hero and donation card" has new fields: "Middle button text (blue)" and "Middle button link".
+  Leaving the text empty hides the button. The link defaults to `{about}#mission-vision`, the Vision & Mission part of
+  About Us. The brief preferred that page because it exists; `{home}#about` would go to Who We Are on the home page
+  instead.
+- Style: `.krm-hero-btn--blue` in `front.css` shares everything with the other two buttons: 52px height, 30px padding,
+  4px radius, Figtree 16px/700 and the same gaps. It is `--color-hero-blue` `#1F5FBF` (white text 6.1:1), and on hover
+  and focus it turns `--color-hero-blue-hover` `#2A6FD6` (4.9:1). Both tokens are in `theme-global.css` and are the same in
+  both themes, because the hero is always dark. A → arrow follows the text and moves 3px on hover.
+- Hover: the existing buttons only change colour (0.2 s) and have no lift, so the new button matches that rather than
+  adding a lift.
+- Keyboard focus shows the hero buttons' orange 3px outline. With reduced motion there is no transition.
+- Layout: all three buttons fit in one row at 1440, 1024 and 768. Between 561 and 760px they wrap as Donate + Explore,
+  then Partner, and each row is filled edge to edge (new rule). Below 560px they stack at full width, in the same order,
+  16px apart (existing rule).
+
+**Verified** on the local WP with playwright at 1440 / 1024 / 768 / 600 / 390:
+- Positions and sizes were measured at each width and match the layout above.
+- All three buttons have identical height, padding, radius and font.
+- There is no horizontal overflow, and focus-visible gives a 3px outline.
+
+## Kingdom Revival Ministries: Who We Are, Matthew 28:19 instead of the Vision and Mission cards (theme 1.25.0)
+
+**Result:** home "3. Who We Are" no longer has the Our Vision / Our Mission cards. A Matthew 28:19 (KJV) verse card now
+sits between the text and the Our Story / Meet Pastor Adil Arif row. Everything else is unchanged: label, heading,
+Founded in 2018, text, button, founder link and collage.
+
+- Removed: the `vision_title`, `vision_text`, `mission_title` and `mission_text` fields, which were used only here; the
+  template loop; and all `.krm-about__vm*` CSS, including the dark-mode and 600px rules. Values already saved for those
+  keys are ignored. The About Us page has its own Vision & Mission section, which is unchanged, and the hero's "Explore Our
+  Mission" button links to it.
+- Added the fields `verse_text` ("Go ye therefore, and teach all nations, baptizing them in the name of the Father, and of
+  the Son, and of the Holy Ghost.") and `verse_cite` ("Matthew 28:19"). An empty verse hides the card.
+- Style: `.krm-about__scripture` in `front.css`, a new class, because `.krm-about__verse` is still used by the
+  clean-water part.
+  - The verse is Cormorant Garamond italic 600, `--color-heading` (navy in light mode), 22px at 1440, 19px at 768 and 18px
+    at 390, line height 1.55.
+  - The reference reads "— MATTHEW 28:19" in 12.5px capitals with .18em spacing, in `--color-secondary-text` (red).
+  - The card is a soft peach: 9% orange mixed into the surface colour, close to the Founded badge. It has rounded right
+    corners and a large faded red “ behind the top-left.
+  - The 4px red bar is exactly as tall as the verse plus the reference, measured as 0px difference at the top and bottom
+    at all three widths.
+  - It sits 30px below the text and 30px above the buttons (28px above on phones).
+- Animation: when the text column is revealed on scroll, the card fades and rises 16px, starting 150ms later, and the bar
+  grows from top to bottom (scaleY). Both finish within the reveal's 700ms. Reduced motion turns this off.
+- Balance: the two columns were already vertically centred (`align-items: center`). At 1440 the centres of the text column
+  and the collage are now both at the same y (467). Our Story and the founder link stay in one row on computers and
+  tablets. On phones the button is full width above the founder link, as before.
+
+**Verified** on the local WP at 1440 / 768 / 390 and 1440 dark: no Vision/Mission markup, no overflow, no JS errors. The
+animation was sampled mid-run (opacity .76, bar scaleY .29) and settles at full height. The collage shows after
+scrolling. axe on `#about`: 0 violations.

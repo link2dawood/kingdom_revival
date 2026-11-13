@@ -86,6 +86,28 @@
   --color-warn-soft: #FFF7EC;
   --color-warn-text: #6B4A16;
   --color-gold: #F2D27A;
+  --color-word-bg: #16110D;                      /* Urdu Bibles band (home 10): warm near-black, the same in both themes */
+  --color-word-rgb: 22, 17, 13;                  /* its photo overlay, as r, g, b */
+  --color-word-text: #CFC8BE;                    /* light warm grey body text on it */
+  --color-word-script: #A8DCC0;                  /* soft green italic line */
+  --color-word-label: #F4B740;                   /* gold step labels */
+  --color-word-paper: #F2EEE5;                   /* pinned print border */
+  --color-word-pin: #E3A72F;
+  --color-word-btn: #C2410C;                     /* solid orange button (white text 5.2:1) */
+  --color-word-btn-hover: #9A3412;
+  --color-hero-blue: #1F5FBF;                    /* home hero "Explore Our Mission" button (white text 6.1:1), both themes */
+  --color-hero-blue-hover: #2A6FD6;              /* its hover (white text 4.9:1) */
+  --color-kiln-bg: #FAF7F1;                      /* Brick Kiln Family Freedom band (home 9): warm cream */
+  --color-kiln-heading: #1F1B17;                 /* serif heading and step titles */
+  --color-kiln-text: #5F5850;                    /* warm grey body text (6.4:1 on the cream) */
+  --color-kiln-green: #1D5C4A;                   /* italic heading line and step numbers (7.3:1) */
+  --color-kiln-script: #B8410E;                  /* small italic orange-red line (5.2:1) */
+  --color-kiln-line: #E4DED3;                    /* rules between the steps */
+  --color-kiln-gold: #F4B740;                    /* slider line and handle */
+  --color-kiln-label: rgba(20, 16, 12, .9);      /* dark label boxes on the photos */
+  --color-kiln-btn: #C2410C;                     /* solid orange button (white text 5.2:1) */
+  --color-kiln-btn-hover: #9A3412;
+  --kiln-photo-opacity: .06;
   --color-whatsapp: #0F8A4A;
   --color-admin-bg: #FFF8E6;
   --color-admin-text: #5A4A1A;
@@ -235,6 +257,13 @@
     --color-admin-text: #F5D08A;
     --color-logo-badge: #FFFFFF;
     --logo-badge-pad: 5px;
+    --color-kiln-bg: #16120E;
+    --color-kiln-heading: #F3EEE6;
+    --color-kiln-text: #BDB4A8;
+    --color-kiln-green: #8ED1B4;
+    --color-kiln-script: #F5A04A;
+    --color-kiln-line: #3A322A;
+    --kiln-photo-opacity: .06;
     --color-chart-1: #8EA2F0;
     --color-chart-2: #F5A04A;
     --color-chart-3: #FF6B6E;
@@ -297,6 +326,13 @@
   --color-admin-text: #F5D08A;
   --color-logo-badge: #FFFFFF;
   --logo-badge-pad: 5px;
+  --color-kiln-bg: #16120E;
+  --color-kiln-heading: #F3EEE6;
+  --color-kiln-text: #BDB4A8;
+  --color-kiln-green: #8ED1B4;
+  --color-kiln-script: #F5A04A;
+  --color-kiln-line: #3A322A;
+  --kiln-photo-opacity: .06;
   --color-chart-1: #8EA2F0;
   --color-chart-2: #F5A04A;
   --color-chart-3: #FF6B6E;

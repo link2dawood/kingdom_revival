@@ -1,7 +1,7 @@
 <?php
 /**
- * Home: 3. Who We Are — "Reaching the unreached. Serving the forgotten." Text, "Founded in 2018", the Vision and Mission
- * boxes, Our Story button and the founder link on the left; a three-photo collage with the "Founded in 2018" badge on the
+ * Home: 3. Who We Are — "Reaching the unreached. Serving the forgotten." Text, "Founded in 2018", a Bible verse
+ * (Matthew 28:19; 1.25.0 replaced the Vision and Mission boxes), Our Story button and the founder link on the left; a three-photo collage with the "Founded in 2018" badge on the
  * right (theme 1.23.0: the verse and the four focus cards left; What We Do follows this section).
  * Text and photos: Pages → Home → Page content → 3. Who We Are. Styles: .krm-about in assets/css/front.css.
  *
@@ -20,12 +20,7 @@ $krm_photos = array_values(
 );
 $krm_photos = array_slice( $krm_photos, 0, 3 );
 $krm_t2     = trim( (string) krm_c( 'about.title2' ) );
-$krm_vm     = array(); // Vision, then Mission: [ heading, text ]; a box with no text is left out.
-foreach ( array( 'vision', 'mission' ) as $krm_k ) {
-	if ( '' !== trim( (string) krm_c( "about.{$krm_k}_text" ) ) ) {
-		$krm_vm[ $krm_k ] = array( krm_c( "about.{$krm_k}_title" ), krm_c( "about.{$krm_k}_text" ) );
-	}
-}
+$krm_verse  = trim( (string) krm_c( 'about.verse_text' ) );
 $krm_btn    = trim( (string) krm_c( 'about.button_label' ) );
 $krm_fname  = trim( (string) krm_c( 'about.founder_name' ) );
 $krm_fphoto = trim( (string) krm_c( 'about.founder_photo' ) );
@@ -43,16 +38,13 @@ $krm_badge  = trim( (string) krm_c( 'about.badge_title' ) );
 <p class="krm-about__founded"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg><?php krm_t( 'about.founded' ); ?></p>
 <?php endif; ?>
 <p class="krm-about__lead"><?php krm_t( 'about.lead' ); ?></p>
-<?php if ( $krm_vm ) : ?>
-<div class="krm-about__vm">
-<?php foreach ( $krm_vm as $krm_k => $krm_box ) : ?>
-<div class="krm-about__vm-box krm-about__vm-box--<?php echo esc_attr( $krm_k ); ?>">
-<span class="krm-about__vm-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><?php echo 'vision' === $krm_k ? '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle>' : '<circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed icons. ?></svg></span>
-<h3><?php echo krm_text( $krm_box[0] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
-<p><?php echo krm_text( $krm_box[1] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-</div>
-<?php endforeach; ?>
-</div>
+<?php if ( '' !== $krm_verse ) : ?>
+<figure class="krm-about__scripture">
+<blockquote><p><?php krm_t( 'about.verse_text' ); ?></p></blockquote>
+<?php if ( '' !== trim( (string) krm_c( 'about.verse_cite' ) ) ) : ?>
+<figcaption><span aria-hidden="true">— </span><cite><?php krm_t( 'about.verse_cite' ); ?></cite></figcaption>
+<?php endif; ?>
+</figure>
 <?php endif; ?>
 <?php if ( '' !== $krm_btn || '' !== $krm_fname ) : ?>
 <div class="krm-about__actions">

@@ -167,7 +167,9 @@
     return false;
   }
   // Main headings (26px and up, outside forms and popups), plus smaller titles marked data-krm-hl in the templates.
+  // data-no-hl: a heading styled its own way (the Urdu Bibles band's gold italic line), never highlighted.
   var heads = all("#main h1, #main h2, [data-krm-hl]").filter(function (h) {
+    if (h.hasAttribute("data-no-hl")) return false;
     return h.hasAttribute("data-krm-hl") || (!h.closest("form, [role='dialog'], .give-card, [data-krm-give-card]") && parseFloat(win.getComputedStyle(h).fontSize) >= 26);
   });
   heads.forEach(function (h) {
