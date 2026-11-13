@@ -28,7 +28,7 @@ if ( krm_c( 'hero.video' ) ) :
 <?php endif; ?>
 <div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,16,48,0.86) 0%, rgba(8,16,48,0.74) 48%, rgba(8,16,48,0.6) 100%)"></div>
 
-<div style="position: relative; max-width: 1240px; margin: 0 auto; padding: calc(clamp(56px, 7vw, 100px) + var(--hero-offset, 0px)) clamp(16px, 3vw, 32px) clamp(110px, 10vw, 150px); display: flex; flex-wrap: wrap; gap: 40px 56px; align-items: center">
+<div style="position: relative; max-width: 1240px; margin: 0 auto; padding: calc(clamp(56px, 7vw, 100px) + var(--hero-offset, 0px)) clamp(16px, 3vw, 32px) clamp(64px, 7vw, 100px); display: flex; flex-wrap: wrap; gap: 40px 56px; align-items: center">
 <div style="flex: 999 1 520px; min-width: 0; color: var(--color-white); text-shadow: 0 2px 18px rgba(0,0,0,0.45)">
 <p style="margin: 0 0 26px; font-weight: 600; font-size: clamp(1.25rem, 1rem + 1.2vw, 1.75rem); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent)"><?php krm_t( 'hero.eyebrow' ); ?></p>
 <h1 class="hero-title" style="margin: 0; font-family: var(--font-heading); font-weight: 700; font-size: clamp(38px, 5vw, 60px); line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; text-shadow: 0 2px 12px rgba(0,0,0,.55)"><?php krm_h( 'hero.title' ); ?></h1>

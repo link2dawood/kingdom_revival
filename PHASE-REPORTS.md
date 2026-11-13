@@ -61,6 +61,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: What We Do group introductions and larger ministry cards (theme 1.23.3)](#kingdom-revival-ministries-what-we-do-group-introductions-and-larger-ministry-cards-theme-1233)
 - [Kingdom Revival Ministries: Kiln debt line in "Your gift at work" (theme 1.23.4)](#kingdom-revival-ministries-kiln-debt-line-in-your-gift-at-work-theme-1234)
 - [Kingdom Revival Ministries: Our Ministries heading, orphan home project, highlighted project titles, animated journey (theme 1.23.5)](#kingdom-revival-ministries-our-ministries-heading-orphan-home-project-highlighted-project-titles-animated-journey-theme-1235)
+- [Kingdom Revival Ministries: Scripture rotator replaces the hero statistics bar (theme 1.24.0)](#kingdom-revival-ministries-scripture-rotator-replaces-the-hero-statistics-bar-theme-1240)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4414,3 +4415,47 @@ made by a parallel Claude session and committed from this one after checking the
 
 **Dummy content to replace before launch:** the 2020 milestone text and the children's home project text.
 
+## Kingdom Revival Ministries: Scripture rotator replaces the hero statistics bar (theme 1.24.0)
+
+**Result:** the white statistics/counters bar that overlapped the bottom of the home hero is gone. Directly under the hero is
+now a full-width navy "Scripture rotator": one KJV verse at a time, each with a ministry tag, changing every 6 seconds. The
+hero's headline, introduction, photo/video, buttons and donation card are unchanged. The home "Our Impact" counters are
+unchanged.
+
+- New `template-parts/home/scripture.php` and Page content section **"2. Scripture rotator (under the hero)"** in
+  `inc/content/home.php`: a list of verses with ministry tag, tag icon (`cross`, `megaphone`, `chain`, `drop`, `heart`,
+  `hands`), verse and reference. Defaults: Romans 10:15 (Gospel & Evangelism, cross), Isaiah 58:6 (Brick Kiln Family
+  Freedom, broken chain), John 4:14 (Clean Water, water drop), James 1:27 (Orphans & Widows, heart), Matthew 25:40
+  (Humanitarian Outreach, helping hands). Verse text as the user supplied it (KJV excerpts).
+- Design (`assets/css/front.css`, `.krm-verses`): `--color-band` navy with a 3px gold-to-orange line on top. The verse is in
+  the heading serif (Cormorant Garamond 600 italic, 24–36px), white. The reference is in small gold capitals with a short
+  rule, and a large faded-gold “ sits beside the verse. The tag is an orange-outlined pill with an orange icon. The active
+  dot stretches into a pill that fills in gold over the 6 s. All slides share one grid cell, so the strip is always as tall
+  as the longest verse. Measured on every verse: 322px at 1440, 278px at 768, 292px at 390, with no change between verses.
+  Below 640px the tag sits above the verse, everything is centred, the verse is 21–25px and the quote mark sits faintly
+  behind it.
+- Behaviour (`assets/js/front.js`): every 6 s the old verse fades and rises out while the new one fades and rises in
+  (0.8 s, eased). Dots, a swipe and ←/→ change the verse. Mouse hover and keyboard focus pause it while they last; a tap on
+  the strip or the pause/play button pauses it until played again. It also waits while off screen. With
+  `prefers-reduced-motion` nothing changes by itself, there are no transitions, and the pause button is hidden. ARIA
+  carousel pattern: changes are announced only when the visitor makes them.
+- Removed: `template-parts/home/stats.php` (the bar) and `krm_visible_stats()`, whose only caller was that bar. The hero's
+  bottom padding, which had made room for the overlapping bar, went from 110–150px to 64–100px, close to the top padding,
+  so the hero stays balanced.
+- Fixed while testing: the dots first used `data-krm-verse`, which `effects.js` already uses for the top-bar John 3:16
+  box. They now use `data-krm-verse-dot`.
+- Verified on the local WP at 1440 / 768 / 390 in light and dark mode (screenshots): no horizontal overflow, same height on
+  all 5 verses. Auto-rotates after 6 s, hover holds it, leaving resumes it, the pause button holds it (label becomes "Play
+  the verses"), a swipe moves on, a tap pauses, and reduced motion keeps verse 1 with the pause button hidden. axe
+  (WCAG 2.1 A/AA) on the strip: 0 violations in light and dark at 1440 and 360. Dot targets are 24×32px on desktop and
+  28×44px at 1024px and below; the pause button is 32px / 44px. The site-wide `final_pass.js` crawl was not run to the
+  end (it timed out at 10 minutes).
+- Not covered: a site where the home Page content was saved before still gets the five default verses, because the
+  section is new and unsaved sections fall back to their defaults. Pixel comparisons against `html/` no longer apply to the
+  home page.
+
+**Decisions for you:** Kingdom Revival → Settings → "Impact numbers (home & about pages)" no longer feeds any page. The home
+Our Impact counters are edited in Pages → Home, and the About page was not using these numbers before this change. You can
+keep the settings or remove them in a later version. With reduced motion the strip stays on the first verse until the
+visitor clicks a dot (rather than switching verses instantly every 6 s), following the WCAG advice not to move content
+automatically.

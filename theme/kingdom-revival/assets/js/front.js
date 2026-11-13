@@ -379,3 +379,79 @@
     go(0);
   });
 })();
+
+/* ---------- Scripture rotator (template-parts/home/scripture.php, theme 1.24.0) ----------
+   A new verse every 6 s, fading in and rising slightly while the old one fades up and out. Dots, swipe and ←/→ change
+   it. Hovering or keyboard focus pauses it while there; a tap on the strip, or the pause button, pauses it until
+   played again. Off screen it waits. With reduced motion nothing moves by itself and the change is instant (CSS). */
+(function () {
+  document.querySelectorAll("[data-krm-verses]").forEach(function (root) {
+    var slides = root.querySelectorAll(".krm-verses__slide");
+    var dots = root.querySelectorAll("[data-krm-verse-dot]");
+    var btn = root.querySelector("[data-krm-verses-pause]");
+    var track = root.querySelector(".krm-verses__track");
+    if (slides.length < 2) return;
+    var MS = 6000;
+    var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var at = 0, timer = null, hover = false, held = false, seen = true;
+    root.style.setProperty("--krm-verse-ms", MS + "ms");
+    root.classList.toggle("is-still", still);
+    if (btn && still) btn.hidden = true;
+
+    function go(n) {
+      var prev = at;
+      at = (n + slides.length) % slides.length;
+      slides.forEach(function (s, i) {
+        s.classList.toggle("is-active", i === at);
+        s.classList.toggle("is-out", i === prev && prev !== at);
+        if (i === at) s.removeAttribute("aria-hidden"); else s.setAttribute("aria-hidden", "true");
+      });
+      dots.forEach(function (d, i) {
+        d.classList.remove("is-filling");
+        if (i === at) d.setAttribute("aria-current", "true"); else d.removeAttribute("aria-current");
+      });
+      if (dots[at]) { void dots[at].offsetWidth; dots[at].classList.add("is-filling"); } // restart the fill
+      schedule();
+    }
+    function schedule() {
+      clearTimeout(timer);
+      var paused = hover || held || !seen || still;
+      root.classList.toggle("is-paused", paused);
+      track.setAttribute("aria-live", hover || held || still ? "polite" : "off"); // announce only changes the visitor makes
+      if (!paused) timer = setTimeout(function () { go(at + 1); }, MS);
+    }
+    function hold(on) {
+      held = on;
+      if (btn) {
+        btn.classList.toggle("is-paused", on);
+        btn.setAttribute("aria-label", btn.getAttribute(on ? "data-label-play" : "data-label-pause"));
+      }
+      if (on) schedule(); else go(at);
+    }
+    dots.forEach(function (d) {
+      d.addEventListener("click", function () { go(parseInt(d.getAttribute("data-krm-verse-dot"), 10)); });
+    });
+    if (btn) btn.addEventListener("click", function () { hold(!held); });
+    root.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") { hover = true; schedule(); } });
+    root.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse" && hover) { hover = false; if (!held) go(at); } });
+    root.addEventListener("focusin", function (e) { if (e.target.matches(":focus-visible")) { hover = true; schedule(); } }); // keyboard focus only
+    root.addEventListener("focusout", function (e) { if (!root.contains(e.relatedTarget)) { hover = false; schedule(); } });
+    root.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { e.preventDefault(); go(at - 1); }
+      if (e.key === "ArrowRight") { e.preventDefault(); go(at + 1); }
+    });
+    var x0 = null, y0 = 0;
+    root.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    root.addEventListener("touchend", function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      x0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? at + 1 : at - 1);
+      else if (Math.abs(dx) < 10 && Math.abs(dy) < 10 && !e.target.closest("button") && !still) hold(!held); // a tap pauses / plays
+    });
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (en) { var was = seen; seen = en[0].isIntersecting; if (seen && !was) go(at); else schedule(); }, { threshold: 0.3 }).observe(root);
+    }
+    go(0);
+  });
+})();

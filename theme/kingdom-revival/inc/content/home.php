@@ -3,7 +3,7 @@
  * Home page content (front-page.php and template-parts/home/*), numbered in the page's order (theme 1.23.0, 1.23.2: header,
  * hero, Who We Are, Taking the Gospel to the villages, What We Do, Why Pakistan Needs Hope, Our Impact + map, Featured Projects,
  * Stories, Our Journey, Our Ministries explorer, Partner With Us, Your gift at work, Latest News, final call to action, footer). The last sections are home content shown on other pages.
- * The hero's impact numbers bar comes from Kingdom Revival → Settings.
+ * Under the hero, the Scripture rotator (theme 1.24.0) replaced the impact numbers bar.
  *
  * @package Kingdom_Revival
  */
@@ -19,8 +19,8 @@ $krm_hl     = __( 'Wrap highlighted words in <span class="hl">…</span>.', 'kin
 
 return array(
 	'hero'     => array(
-		'label'  => __( '1–2. Hero, donation card and impact numbers bar', 'kingdom-revival' ),
-		'help'   => __( 'The impact numbers bar under the hero shows Kingdom Revival → Settings → Impact numbers (labels are put in the plural automatically when the number is more than 1).', 'kingdom-revival' ),
+		'label'  => __( '1–2. Hero and donation card', 'kingdom-revival' ),
+		'help'   => __( 'The verses under the hero are the next section, “2. Scripture rotator”.', 'kingdom-revival' ),
 		'fields' => array(
 			'image'          => krm_f( 'image', __( 'Background image (also shown before the video plays)', 'kingdom-revival' ), $krm_poster ),
 			'video'          => krm_f( 'url', __( 'Background video (MP4 link)', 'kingdom-revival' ), $krm_hero_v, __( 'Upload the video in Media → Add New and paste its link here. Leave empty to show only the image. It plays on screens 768px and wider only (not with data saver or reduced motion); phones always see the background image. Keep it short (about 15 s), without sound, under 4 MB.', 'kingdom-revival' ) ),
@@ -39,6 +39,54 @@ return array(
 			'card_note'      => krm_f( 'textarea', __( 'Donation card: small print', 'kingdom-revival' ), 'Every gift helps children learn, grow in faith and build a brighter future.' ),
 			'amounts'        => krm_f( 'text', __( 'Amounts (US dollars)', 'kingdom-revival' ), '25, 50, 100, 250', __( 'Used by the donation card and the floating “Donate” panel. Numbers separated by commas; “Other” is always added.', 'kingdom-revival' ) ),
 			'default_amount' => krm_f( 'text', __( 'Amount selected at first', 'kingdom-revival' ), '50' ),
+		),
+	),
+	'scripture' => array(
+		'label'  => __( '2. Scripture rotator (under the hero)', 'kingdom-revival' ),
+		'help'   => __( 'One verse at a time on a navy strip under the hero, changing every 6 seconds (visitors can click the dots or swipe; hovering or tapping pauses it). Icon: one of cross, megaphone, chain (broken chain), drop (water), heart, hands (helping hands); any other word shows no icon. Delete every verse to hide the strip.', 'kingdom-revival' ),
+		'fields' => array(
+			'verses' => krm_list_f(
+				__( 'Verses', 'kingdom-revival' ),
+				__( 'Verse', 'kingdom-revival' ),
+				array(
+					'tag'       => krm_f( 'text', __( 'Ministry tag', 'kingdom-revival' ) ),
+					'icon'      => krm_f( 'text', __( 'Tag icon (cross, megaphone, chain, drop, heart or hands)', 'kingdom-revival' ) ),
+					'verse'     => krm_f( 'textarea', __( 'Verse (without quotation marks)', 'kingdom-revival' ) ),
+					'reference' => krm_f( 'text', __( 'Reference, e.g. Matthew 25:40 (shown in capitals)', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'tag'       => 'Gospel & Evangelism',
+						'icon'      => 'cross',
+						'verse'     => 'How beautiful are the feet of them that preach the gospel of peace, and bring glad tidings of good things!',
+						'reference' => 'Romans 10:15',
+					),
+					array(
+						'tag'       => 'Brick Kiln Family Freedom',
+						'icon'      => 'chain',
+						'verse'     => 'To loose the bands of wickedness, to undo the heavy burdens, and to let the oppressed go free.',
+						'reference' => 'Isaiah 58:6',
+					),
+					array(
+						'tag'       => 'Clean Water',
+						'icon'      => 'drop',
+						'verse'     => 'But whosoever drinketh of the water that I shall give him shall never thirst.',
+						'reference' => 'John 4:14',
+					),
+					array(
+						'tag'       => 'Orphans & Widows',
+						'icon'      => 'heart',
+						'verse'     => 'Pure religion and undefiled before God and the Father is this, To visit the fatherless and widows in their affliction.',
+						'reference' => 'James 1:27',
+					),
+					array(
+						'tag'       => 'Humanitarian Outreach',
+						'icon'      => 'hands',
+						'verse'     => 'Inasmuch as ye have done it unto one of the least of these my brethren, ye have done it unto me.',
+						'reference' => 'Matthew 25:40',
+					),
+				)
+			),
 		),
 	),
 	'about'    => array(

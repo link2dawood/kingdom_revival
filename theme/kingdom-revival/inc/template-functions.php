@@ -190,25 +190,6 @@ function krm_plural_label( $label, $value ) {
 }
 
 /**
- * The impact stats as krm_stats() returns them, without those whose number is not set yet for visitors
- * (keys kept, as some templates pick stats by position).
- *
- * @param string $context As krm_stats().
- */
-function krm_visible_stats( $context = '' ) {
-	$stats = krm_stats( $context );
-	if ( krm_show_placeholders() ) {
-		return $stats;
-	}
-	return array_filter(
-		$stats,
-		function ( $s ) {
-			return ! krm_is_placeholder( $s['value'] );
-		}
-	);
-}
-
-/**
  * URL of a file in the theme's assets/ folder (a child theme's copy wins).
  *
  * @param string $path Path inside assets/.

@@ -23,8 +23,8 @@ get_header();
 <?php
 // Theme 1.23.0: the client's section order (1. header and 16. footer are header.php / footer.php); 1.23.2 restored
 // the mission slider (4), the ministry explorer (11) and the gift calculator (13).
-get_template_part( 'template-parts/home/hero' );            // 2. Hero, donation card and the impact numbers bar.
-get_template_part( 'template-parts/home/stats' );
+get_template_part( 'template-parts/home/hero' );            // 2. Hero and donation card.
+get_template_part( 'template-parts/home/scripture' );       // 2. Scripture rotator under the hero (1.24.0; replaced the impact numbers bar).
 get_template_part( 'template-parts/home/about' );           // 3. Who We Are.
 get_template_part( 'template-parts/home/mission' );         // 4. Taking the Gospel to the villages of Pakistan (photo slider).
 get_template_part( 'template-parts/home/wwd' );             // 5. What We Do.
