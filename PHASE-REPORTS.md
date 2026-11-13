@@ -66,6 +66,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Brick Kiln Family Freedom before/after section on the home page (theme 1.25.0)](#kingdom-revival-ministries-brick-kiln-family-freedom-beforeafter-section-on-the-home-page-theme-1250)
 - [Kingdom Revival Ministries: "Explore Our Mission" hero button (theme 1.25.0)](#kingdom-revival-ministries-explore-our-mission-hero-button-theme-1250)
 - [Kingdom Revival Ministries: Who We Are, Matthew 28:19 instead of the Vision and Mission cards (theme 1.25.0)](#kingdom-revival-ministries-who-we-are-matthew-2819-instead-of-the-vision-and-mission-cards-theme-1250)
+- [Kingdom Revival Ministries: Scripture strip under the hero becomes a slim marquee (theme 1.25.3)](#kingdom-revival-ministries-scripture-strip-under-the-hero-becomes-a-slim-marquee-theme-1253)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4624,3 +4625,26 @@ Founded in 2018, text, button, founder link and collage.
 **Verified** on the local WP at 1440 / 768 / 390 and 1440 dark: no Vision/Mission markup, no overflow, no JS errors. The
 animation was sampled mid-run (opacity .76, bar scaleY .29) and settles at full height. The collage shows after
 scrolling. axe on `#about`: 0 violations.
+
+## Kingdom Revival Ministries: Scripture strip under the hero becomes a slim marquee (theme 1.25.3)
+
+**Result:** the Scripture strip under the home hero is no longer a tall rotator that showed one verse at a time
+(about 300px at 1440). It is now a one-line marquee: all five verses scroll continuously from right to left, and the
+strip is **60px** tall at 1440, 57px at 768 and 51px at 390.
+
+- `template-parts/home/scripture.php`: each verse is a list item with the ministry tag pill and icon, the italic verse
+  (`<q>`, gold quote marks), the gold reference (`<cite>`) and an orange diamond separator. The list is printed twice,
+  and the second copy is `aria-hidden`, so moving the track left by exactly 50% loops with no seam. The dots and the
+  big “ mark are gone. A round pause/play button sits on the right.
+- `front.css`: the old rotator rules are replaced by `.krm-verses__viewport/__track/__list/__item/__sep`. The edges fade
+  through a mask, and the verse text is 24px at 1440 and 18px on phones. Hovering or the pause button stops the
+  movement (`animation-play-state`).
+- `front.js`: the old rotator script is replaced. It sets the duration from the list width so the reading speed stays
+  at about 45px/s (128s at 1440), recalculates after fonts load and on resize, wires the pause button and stops the
+  animation while the strip is off screen.
+- Reduced motion: nothing moves, the copy and the button are hidden, and the row can be scrolled sideways by hand.
+- The Page content label is now "2. Scripture marquee (under the hero)". The fields are unchanged, so saved verses carry
+  over. `readme.md` has been updated.
+
+**Verified** on the local WP: the track moves 44px in 1s, moves 0px after the pause button is pressed, there is no page
+overflow at 1440 or 390, there are no JS errors, and axe on `.krm-verses` reports 0 violations.

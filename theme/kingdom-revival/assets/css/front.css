@@ -478,65 +478,50 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
   .krm-final__btn { width: 100%; }
 }
 
-/* ---------- Scripture rotator under the hero (template-parts/home/scripture.php, theme 1.24.0) ----------
-   Navy strip with a gold-to-orange line on top. Every slide sits in the same grid cell, so the strip is as tall as the
-   longest verse and the page never jumps when the verse changes. The active dot is a pill that fills over the 6 s. */
+/* ---------- Scripture marquee under the hero (template-parts/home/scripture.php; rotator 1.24.0, marquee 1.25.3) ----------
+   A slim navy strip with a gold-to-orange line on top. The track holds the verse list twice and moves left by exactly one
+   copy (-50%), so the loop has no seam; front.js sets the duration from the width for an even reading speed. */
 .krm-verses { position: relative; overflow: hidden; background: var(--color-band); color: var(--color-white); }
-.krm-verses::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: linear-gradient(90deg, var(--color-gold), var(--color-accent) 55%, var(--color-gold)); }
-.krm-verses__inner { position: relative; max-width: 1240px; margin: 0 auto; padding: clamp(36px, 4.5vw, 56px) clamp(16px, 3vw, 32px) clamp(28px, 3.5vw, 40px); display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(16px, 2.5vw, 36px); }
-.krm-verses__mark { grid-row: 1 / span 2; font-family: var(--font-heading); font-weight: 600; font-size: clamp(110px, 11vw, 168px); line-height: .78; color: var(--color-gold); opacity: .22; user-select: none; pointer-events: none; }
-.krm-verses__track { display: grid; max-width: 980px; }
-.krm-verses__slide { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .7s ease, transform .8s cubic-bezier(.22, .61, .36, 1), visibility 0s linear .8s; }
-.krm-verses__slide.is-out { transform: translateY(-10px); }
-.krm-verses__slide.is-active { opacity: 1; visibility: visible; transform: none; transition: opacity .8s ease .2s, transform .9s cubic-bezier(.22, .61, .36, 1) .2s, visibility 0s; }
-.krm-verses__tag { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 10px; border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--color-accent) 12%, transparent); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-on-dark-2); }
+.krm-verses::before { content: ""; position: absolute; z-index: 1; inset: 0 0 auto; height: 3px; background: linear-gradient(90deg, var(--color-gold), var(--color-accent) 55%, var(--color-gold)); }
+.krm-verses__viewport { overflow: hidden; padding: 17px 0 14px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.krm-verses__track { display: flex; width: max-content; animation: krm-verses-scroll var(--krm-verses-s, 120s) linear infinite; }
+.krm-verses:hover .krm-verses__track, .krm-verses.is-paused .krm-verses__track { animation-play-state: paused; }
+@keyframes krm-verses-scroll { to { transform: translate3d(-50%, 0, 0); } }
+.krm-verses__list { display: flex; flex: 0 0 auto; align-items: center; margin: 0; padding: 0; list-style: none; }
+.krm-verses__item { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; white-space: nowrap; }
+.krm-verses__tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 8px; border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--color-accent) 12%, transparent); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-on-dark-2); }
 .krm-verses__tag svg { flex: 0 0 auto; color: var(--color-accent); }
-.krm-verses__text { margin: 16px 0 0; padding: 0; border: 0; }
-.krm-verses__text p { margin: 0; font-family: var(--font-heading); font-style: italic; font-weight: 600; font-size: clamp(24px, 1rem + 1.4vw, 36px); line-height: 1.28; color: var(--color-white); text-wrap: pretty; }
-.krm-verses__ref { display: flex; align-items: center; gap: 12px; margin-top: 16px; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--color-gold); }
-.krm-verses__ref::before { content: ""; width: 28px; height: 1px; background: currentColor; opacity: .7; }
-.krm-verses__nav { grid-column: 2; display: flex; align-items: center; gap: 10px; margin-top: 18px; }
-.krm-verses__dots { display: flex; align-items: center; }
-.krm-verses__dot { display: inline-flex; align-items: center; justify-content: center; height: 32px; min-width: 24px; padding: 0 6px; border: 0; background: none; cursor: pointer; }
-.krm-verses__dot span { position: relative; display: block; width: 8px; height: 8px; border-radius: 999px; overflow: hidden; background: color-mix(in srgb, var(--color-white) 30%, transparent); transition: width .4s ease, background .3s; }
-.krm-verses__dot:hover span { background: color-mix(in srgb, var(--color-white) 55%, transparent); }
-.krm-verses__dot[aria-current="true"] span { width: 40px; }
-.krm-verses__dot span::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 0; background: var(--color-gold); }
-.krm-verses__dot.is-filling span::after { animation: krm-verse-fill var(--krm-verse-ms, 6000ms) linear forwards; }
-.krm-verses.is-paused .krm-verses__dot.is-filling span::after { animation-play-state: paused; }
-.krm-verses.is-still .krm-verses__dot[aria-current="true"] span::after { width: 100%; }
-@keyframes krm-verse-fill { to { width: 100%; } }
-.krm-verses__dot:focus-visible, .krm-verses__pause:focus-visible { outline: var(--focus-ring); outline-offset: 2px; border-radius: 6px; }
-.krm-verses__pause { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 1px solid color-mix(in srgb, var(--color-white) 30%, transparent); border-radius: 50%; background: none; color: var(--color-white); cursor: pointer; transition: background .2s; }
-.krm-verses__pause:hover { background: color-mix(in srgb, var(--color-white) 12%, transparent); }
-.krm-verses__pause[hidden] { display: none; }
+.krm-verses__text { font-family: var(--font-heading); font-style: italic; font-weight: 600; font-size: clamp(19px, .9rem + .55vw, 24px); line-height: 1.3; color: var(--color-white); quotes: "\201C" "\201D"; }
+.krm-verses__text::before, .krm-verses__text::after { color: var(--color-gold); }
+.krm-verses__ref { font-size: 12px; font-style: normal; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--color-gold); }
+.krm-verses__sep { width: 7px; height: 7px; margin: 0 26px 0 12px; transform: rotate(45deg); background: var(--color-accent); opacity: .7; }
+.krm-verses__pause { position: absolute; z-index: 2; top: 50%; right: clamp(8px, 1.5vw, 20px); display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin-top: 1px; padding: 0; transform: translateY(-50%); border: 1px solid color-mix(in srgb, var(--color-white) 30%, transparent); border-radius: 50%; background: var(--color-band); color: var(--color-white); cursor: pointer; opacity: .75; transition: opacity .2s, background .2s; }
+.krm-verses__pause:hover, .krm-verses__pause.is-paused { opacity: 1; }
+.krm-verses__pause:hover { background: color-mix(in srgb, var(--color-white) 12%, var(--color-band)); }
+.krm-verses__pause:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
 .krm-verses__pause svg { fill: currentColor; }
 .krm-verses__i-play, .krm-verses__pause.is-paused .krm-verses__i-pause { display: none; }
 .krm-verses__pause.is-paused .krm-verses__i-play { display: block; }
-@media (max-width: 1024px) {
-  .krm-verses__dot { height: 44px; min-width: 28px; }
-  .krm-verses__pause { width: 44px; height: 44px; }
-}
 @media (max-width: 640px) {
-  .krm-verses__inner { grid-template-columns: minmax(0, 1fr); text-align: center; padding-top: 40px; }
-  .krm-verses__mark { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 132px; opacity: .14; }
-  .krm-verses__track { position: relative; justify-self: center; }
-  .krm-verses__slide { display: flex; flex-direction: column; align-items: center; }
-  .krm-verses__text p { font-size: clamp(21px, 5.6vw, 25px); }
-  .krm-verses__ref { justify-content: center; }
-  .krm-verses__ref::before { display: none; }
-  .krm-verses__nav { grid-column: 1; justify-content: center; margin-top: 12px; }
+  .krm-verses__viewport { padding: 14px 0 11px; }
+  .krm-verses__text { font-size: 18px; }
+  .krm-verses__item { gap: 10px; }
+  .krm-verses__sep { margin: 0 20px 0 10px; }
 }
+/* Reduced motion: no movement; the row scrolls sideways by hand and shows each verse once. */
 @media (prefers-reduced-motion: reduce) {
-  .krm-verses__slide, .krm-verses__slide.is-active, .krm-verses__dot span { transition: none; transform: none; }
+  .krm-verses__viewport { overflow-x: auto; scrollbar-width: none; }
+  .krm-verses__viewport::-webkit-scrollbar { display: none; }
+  .krm-verses__track { animation: none; padding: 0 clamp(16px, 3vw, 32px); }
+  .krm-verses__list[aria-hidden="true"], .krm-verses__pause { display: none; }
 }
 
-/* ---------- 10. God's Word in their hands: Urdu Bibles photo wall and steps (theme 1.25.0) ----------
-   A warm near-black band, dark in both themes: a blurred Bible-distribution photo under an 85% overlay (photo band
+/* ---------- 7. God's Word in their hands: Urdu Bibles photo wall and steps (theme 1.25.0) ----------
+   A navy band (site colours since 1.25.2): a blurred Bible-distribution photo under an 85% overlay (photo band
    on .krm-word__bg, lazy-loaded by effects.js), faint gold outline words behind the cards. */
 .krm-word { position: relative; overflow: hidden; isolation: isolate; background: var(--color-word-bg); color: var(--color-word-text); font-family: var(--font-body); }
 .krm-word__bg { position: absolute; inset: -32px; z-index: -2; background: var(--color-word-bg); }
-.krm-home .krm-word .krm-word__bg[data-photo-band] { --band-overlay: linear-gradient(rgba(var(--color-word-rgb), .85), rgba(var(--color-word-rgb), .85)); background-color: var(--color-word-bg); background-attachment: scroll !important; filter: blur(6px); }
+.krm-home .krm-word .krm-word__bg[data-photo-band] { --band-overlay: linear-gradient(color-mix(in srgb, var(--color-word-bg) 85%, transparent), color-mix(in srgb, var(--color-word-bg) 85%, transparent)); background-color: var(--color-word-bg); background-attachment: scroll !important; filter: blur(6px); }
 .krm-word__ghost { position: absolute; z-index: -1; left: 50%; bottom: 0; transform: translate(-50%, 24%); font-family: var(--font-heading); font-size: clamp(84px, 15vw, 236px); font-weight: 600; line-height: 1; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; color: transparent; -webkit-text-stroke: 1.5px var(--color-gold); opacity: .1; pointer-events: none; user-select: none; }
 .krm-word__inner { max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px); box-sizing: border-box; }
 .krm-word__head { display: grid; gap: 20px 64px; margin: 0 0 clamp(40px, 5vw, 64px); }
@@ -560,7 +545,7 @@ a{color:var(--color-text)}a:hover{color:var(--color-heading)}
 .js .krm-word__wall > .reveal-pending { transform: translate3d(0, -40px, 0) rotate(var(--tilt, 1deg)) scale(1.04); }
 /* Step cards: see-through dark, thin border, the item faded in the bottom-right corner. */
 .krm-word__steps { display: grid; gap: clamp(16px, 2vw, 28px); margin: 0; padding: 0; list-style: none; }
-.krm-word__step { position: relative; overflow: hidden; min-height: 210px; padding: 30px 26px 32px; border: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent); border-radius: 4px; background: rgba(var(--color-word-rgb), .62); box-sizing: border-box; }
+.krm-word__step { position: relative; overflow: hidden; min-height: 210px; padding: 30px 26px 32px; border: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent); border-radius: 4px; background: color-mix(in srgb, var(--color-word-bg) 62%, transparent); box-sizing: border-box; }
 .krm-word__step > :not(.krm-word__item) { position: relative; z-index: 1; }
 .krm-word__label { margin: 0 0 14px; font-size: 12px; font-weight: var(--font-weight-bold); letter-spacing: .2em; line-height: 1.4; text-transform: uppercase; color: var(--color-word-label); }
 .krm-word__step h3 { margin: 0 0 12px; font-family: var(--font-heading); font-size: 25px; font-weight: 700; line-height: 1.2; color: var(--color-white); }
@@ -594,7 +579,7 @@ img.krm-word__item { max-height: 70%; object-fit: contain; object-position: righ
 }
 
 /* ---------- 9. Brick Kiln Family Freedom (theme 1.25.0, template-parts/home/kiln-freedom.php) ----------
-   Cream band with a faint kiln photo (.krm-kf__bg at --kiln-photo-opacity); before/after slider: the "after" photo
+   Soft grey-blue band (navy in the dark theme) with a faint kiln photo (.krm-kf__bg at --kiln-photo-opacity); before/after slider: the "after" photo
    fills the frame and the "before" layer is clipped to the left of --kf-pos (set by assets/js/kiln-freedom.js). */
 .krm-kf { position: relative; overflow: hidden; isolation: isolate; background: var(--color-kiln-bg); color: var(--color-kiln-text); font-family: var(--font-body); }
 .krm-kf__bg { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; opacity: var(--kiln-photo-opacity); filter: grayscale(.4) blur(2px); transform: scale(1.02); pointer-events: none; user-select: none; }

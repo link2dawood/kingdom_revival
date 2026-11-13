@@ -1,6 +1,6 @@
 <?php
 /**
- * Home: 9. Brick Kiln Family Freedom (theme 1.25.0) — cream band with a faint kiln photo; heading and text; a
+ * Home: 10. Brick Kiln Family Freedom (theme 1.25.0) — soft grey-blue band (site colours since 1.25.2) with a faint kiln photo; heading and text; a
  * before/after photo slider of one family (drag with mouse or touch, arrow keys on the handle; dots switch families
  * when there are two or more) and the six numbered steps with a button to the project page.
  * Styles: .krm-kf in assets/css/front.css. Script: assets/js/kiln-freedom.js (slider, hint nudge, family dots).

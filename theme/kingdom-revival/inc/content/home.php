@@ -20,7 +20,7 @@ $krm_hl     = __( 'Wrap highlighted words in <span class="hl">…</span>.', 'kin
 return array(
 	'hero'     => array(
 		'label'  => __( '1–2. Hero and donation card', 'kingdom-revival' ),
-		'help'   => __( 'The verses under the hero are the next section, “2. Scripture rotator”.', 'kingdom-revival' ),
+		'help'   => __( 'The verses under the hero are the next section, “2. Scripture marquee”.', 'kingdom-revival' ),
 		'fields' => array(
 			'image'          => krm_f( 'image', __( 'Background image (also shown before the video plays)', 'kingdom-revival' ), $krm_poster ),
 			'video'          => krm_f( 'url', __( 'Background video (MP4 link)', 'kingdom-revival' ), $krm_hero_v, __( 'Upload the video in Media → Add New and paste its link here. Leave empty to show only the image. It plays on screens 768px and wider only (not with data saver or reduced motion); phones always see the background image. Keep it short (about 15 s), without sound, under 4 MB.', 'kingdom-revival' ) ),
@@ -44,7 +44,7 @@ return array(
 		),
 	),
 	'scripture' => array(
-		'label'  => __( '2. Scripture rotator (under the hero)', 'kingdom-revival' ),
+		'label'  => __( '2. Scripture marquee (under the hero)', 'kingdom-revival' ),
 		'help'   => __( 'One verse at a time on a navy strip under the hero, changing every 6 seconds (visitors can click the dots or swipe; hovering or tapping pauses it). Icon: one of cross, megaphone, chain (broken chain), drop (water), heart, hands (helping hands); any other word shows no icon. Delete every verse to hide the strip.', 'kingdom-revival' ),
 		'fields' => array(
 			'verses' => krm_list_f(

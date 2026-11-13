@@ -1,7 +1,7 @@
 <?php
 /**
  * Home: 7. God's Word in their hands — the Urdu Bibles band (theme 1.25.0), between Why Pakistan Needs Hope and Our
- * Impact (moved there in 1.25.1). A warm dark band over a blurred Bible-distribution photo: italic line with the number placed so far,
+ * Impact (moved there in 1.25.1). A navy band over a blurred Bible-distribution photo: italic line with the number placed so far,
  * three-line heading (last line gold italics), a short text beside it; six photos pinned like prints (they drop in
  * one by one, lift and tilt on hover, show the place); three step cards (Gospel of John → Urdu Bible / Audio Bible)
  * with a faded item in the corner; a "Read the full story" button; the faint outline words "The Word" behind them.
