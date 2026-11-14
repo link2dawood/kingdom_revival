@@ -69,6 +69,16 @@ def main():
             ratios[os.path.relpath(path, os.path.join(theme, 'assets')).replace(os.sep, '/')] = ratio
         if point:
             focal.setdefault(key_of(path), point)
+    # Hand-checked corrections (theme 1.27.0): "key x y" lines in overrides.txt beside this script, for photos where the
+    # detector misses the faces or picks background faces. They win over detection.
+    over = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'overrides.txt')
+    if os.path.exists(over):
+        for line in open(over, encoding='utf-8'):
+            parts = line.split('#')[0].split()
+            if len(parts) == 3:
+                focal[parts[0]] = (int(parts[1]), int(parts[2]))
+            elif len(parts) == 2 and parts[1] == '-':  # "key -": no focus point (the template positions it by hand)
+                focal.pop(parts[0], None)
     out = os.path.join(theme, 'inc', 'data', 'focal.php')
     with open(out, 'w', encoding='utf-8') as f:
         f.write("<?php\n/**\n * Built by tools/focal/build_focal.py (do not edit by hand): 'focal' = where the faces are in a photo, as\n"

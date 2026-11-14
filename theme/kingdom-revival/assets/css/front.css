@@ -603,19 +603,19 @@ img.krm-word__item { max-height: 70%; object-fit: contain; object-position: righ
 .krm-baptism__btn:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
 .krm-baptism__btn svg { transition: transform .2s; }
 .krm-baptism__btn:hover svg { transform: translateX(3px); }
-/* Phones and small tablets: the photo on top, a light tint, fading into the navy where the text starts. */
+/* The photo fills the whole section (1.26.1) under a navy tint, darker behind the text. */
+.krm-baptism__media { position: absolute; inset: 0; }
+/* Phones and small tablets: an even tint, a little darker towards the foot where the text runs on. */
 @media (max-width: 899px) {
-  .krm-baptism__media { height: clamp(260px, 62vw, 440px); }
-  .krm-baptism__media::after { background: linear-gradient(180deg, color-mix(in srgb, var(--color-word-bg) 20%, transparent) 0%, color-mix(in srgb, var(--color-word-bg) 25%, transparent) 55%, var(--color-word-bg) 100%); }
-  .krm-baptism__img { object-position: 42% 35%; }
-  .krm-baptism__inner { margin-top: -48px; }
+  .krm-baptism__media::after { background: linear-gradient(180deg, color-mix(in srgb, var(--color-word-bg) 62%, transparent) 0%, color-mix(in srgb, var(--color-word-bg) 78%, transparent) 45%, color-mix(in srgb, var(--color-word-bg) 88%, transparent) 100%); }
+  .krm-baptism__img { object-position: 62% 35%; }
+  .krm-baptism__inner { padding-top: clamp(64px, 9vw, 96px); }
 }
-/* Computers: the photo on the right, the text vertically centred on the left. */
+/* Computers: the text vertically centred on the left, over the darker side of the tint. */
 @media (min-width: 900px) {
   .krm-baptism { display: flex; align-items: center; min-height: clamp(600px, 45vw, 650px); }
-  .krm-baptism__media { position: absolute; inset: 0 0 0 max(36%, calc(50% - 160px)); } /* follows the centred text column on wide screens */
-  .krm-baptism__media::after { background: linear-gradient(90deg, var(--color-word-bg) 0%, color-mix(in srgb, var(--color-word-bg) 80%, transparent) 14%, color-mix(in srgb, var(--color-word-bg) 50%, transparent) 42%, color-mix(in srgb, var(--color-word-bg) 35%, transparent) 100%); }
-  .krm-baptism__img { object-position: 0% 40%; }
+  .krm-baptism__media::after { background: linear-gradient(90deg, color-mix(in srgb, var(--color-word-bg) 92%, transparent) 0%, color-mix(in srgb, var(--color-word-bg) 82%, transparent) 30%, color-mix(in srgb, var(--color-word-bg) 50%, transparent) 58%, color-mix(in srgb, var(--color-word-bg) 35%, transparent) 100%); }
+  .krm-baptism__img { width: 125%; object-position: 0% 40%; } /* a little wider than the band, so the people sit on the right, clear of the text */
   .krm-baptism__inner { flex: 1; padding: clamp(56px, 5vw, 72px) clamp(16px, 3vw, 32px); }
 }
 @media (max-width: 599px) {

@@ -296,6 +296,42 @@ function krm_img_src( $ref, $sizes = '(max-width: 820px) 100vw, 50vw', $card = f
 }
 
 /**
+ * Theme 1.27.0: photos inside post content (stories / news) get their focus point too, so a photo the stylesheet crops
+ * (object-fit: cover) keeps the faces in view; effects.js turns data-focal into object-position.
+ */
+add_filter(
+	'wp_content_img_tag',
+	function ( $img, $context, $attachment_id ) {
+		if ( false !== strpos( $img, 'data-focal=' ) || ! preg_match( '/\ssrc="([^"]+)"/', $img, $m ) ) {
+			return $img;
+		}
+		$focal = krm_focal( $attachment_id ? $attachment_id : html_entity_decode( $m[1] ) );
+		return '' === $focal ? $img : str_replace( '<img ', '<img data-focal="' . esc_attr( $focal ) . '" ', $img );
+	},
+	10,
+	3
+);
+
+/**
+ * Theme 1.27.0: the same for images printed by WordPress itself (get_the_post_thumbnail(), wp_get_attachment_image()),
+ * e.g. the home page's news cards, which otherwise crop at the centre and can cut faces off.
+ */
+add_filter(
+	'wp_get_attachment_image_attributes',
+	function ( $attr, $attachment ) {
+		if ( ! isset( $attr['data-focal'] ) && $attachment instanceof WP_Post ) {
+			$focal = krm_focal( $attachment->ID );
+			if ( '' !== $focal ) {
+				$attr['data-focal'] = $focal;
+			}
+		}
+		return $attr;
+	},
+	10,
+	2
+);
+
+/**
  * Data built by tools/focal/build_focal.py (inc/data/focal.php): face positions and the theme photos' shapes.
  */
 function krm_focal_data() {

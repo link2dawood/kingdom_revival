@@ -1,0 +1,20 @@
+# Hand-checked focus points, applied by build_focal.py after face detection: "key x y" (percent, for object-position /
+# background-position) or "key -" (no focus point). Keys as krm_focal_key(): file name, lower case, no size/-scaled/-eNNN.
+# Set by eye at desktop 1440, tablet 768 and mobile 390 (tools/visual-qa/image_audit.js --shots).
+
+# Home "New life in Christ" banner: front.css positions it per breakpoint (people clear of the text).
+baptism-new-life -
+baptism-new-life-1000 -
+# Hand-set in theme 1.26.0 (pinned Urdu Bible photos); the uploads copies are named -scaled-1, so detection misses them.
+urdu-bible-distribution-17 55 23
+urdu-bible-distribution-18 52 22
+# Evangelism hero: detection centres on the front row, which cuts the preacher's head off in the wide hero.
+evangelism-outreach-01 50 40
+# Brick Kiln Family Care / Donate hero (tall photo in a wide hero, which shows ~26% of its height): the worker's head
+# (20-34%, looking down, missed by detection) and the boy's face (33-42%) both fit at 26%.
+bricks-kiln-slaves-children-40 47 26
+bricks-kiln-slaves-children-40-scaled-1 47 26
+# Prayer over a woman in a wheelchair: faces at 5-17% (pastor) and 41-49% (woman) of the height, too far apart for any
+# card or hero. Centred on the woman, with the pastor's hand on her head in view.
+deliverance-and-healing-ministry-10 35 35
+medical-health-3 35 35

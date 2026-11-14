@@ -15,7 +15,7 @@ return array(
 	'hero'    => array(
 		'label'  => __( 'Hero', 'kingdom-revival' ),
 		'fields' => array(
-			'image'         => krm_f( 'image', __( 'Background image', 'kingdom-revival' ), $krm_up . '2026/08/Bricks-kiln-slaves-children-40-scaled.jpg' ),
+			'image'         => krm_f( 'image', __( 'Background image', 'kingdom-revival' ), 'krm-theme:images/content/slavery-freedom-01.webp' ), // 1.27.0: a wide photo; the tall kiln photo lost a face in the hero.
 			'eyebrow'       => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Donate' ),
 			'title'         => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Your gift brings <em>hope</em> to Pakistan’s forgotten' ),
 			'lead'          => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'Every gift helps us preach the Gospel, care for orphans and widows, educate brick kiln children and put Bibles in waiting hands.' ),

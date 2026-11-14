@@ -67,55 +67,55 @@ return array(
 			'sections' => array(),
 			'photos' => array(
 				array(
-					'krm-theme:images/content/outreach-ministry-1.jpg',
-					'A pastor speaking to families at a brick kiln, with bags of food and supplies laid out in front',
+					'krm-theme:images/content/evangelism-outreach-01.webp',
+					'A pastor preaching to a large crowd of brick kiln families seated on mats, the kiln chimney behind them',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-2.jpg',
-					'Rows of food and supply bags laid out for families at a brick kiln',
+					'krm-theme:images/content/evangelism-outreach-02.webp',
+					'A pastor greeting families and children seated for an open-air gathering at a brick kiln',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-3.jpg',
-					'A pastor with families at a brick kiln holding their food and supply bags',
+					'krm-theme:images/content/evangelism-outreach-03.webp',
+					'A pastor sharing the Gospel with women and children seated on mats at a brick kiln',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-4.jpg',
-					'Families at a brick kiln sitting with the food and supplies they received',
+					'krm-theme:images/content/evangelism-outreach-04.webp',
+					'A pastor reading from the Bible to families seated outdoors beside a brick kiln',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-5.jpg',
-					'A woman sitting with bags of food and supplies at a brick kiln',
+					'krm-theme:images/content/evangelism-outreach-05.webp',
+					'A pastor with a microphone speaking to families and children at an open-air gathering in a village field',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-6.jpg',
-					'A pastor handing food bags to a family with a young girl',
+					'krm-theme:images/content/evangelism-outreach-06.webp',
+					'Families seated on mats listening to a pastor beside a red cross at an open-air gathering',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-7.jpg',
-					'A pastor with a family holding their food and supply bags',
+					'krm-theme:images/content/evangelism-outreach-07.webp',
+					'A pastor beside a red cross speaking to children and families seated on mats in a field',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-8.jpg',
-					'A pastor with children holding bags of food and supplies',
+					'krm-theme:images/content/evangelism-outreach-08.webp',
+					'A crowd seated on mats listening to a preacher at a brick kiln, the chimney on the horizon',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-9.jpg',
-					'A pastor with an elderly man and a woman receiving food bags',
+					'krm-theme:images/content/evangelism-outreach-09.webp',
+					'A pastor praying with families standing together at a brick kiln at sunset',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-10.jpg',
-					'A pastor with a family and their children holding food bags',
+					'krm-theme:images/content/evangelism-outreach-10.webp',
+					'A preacher standing beside a red cross before families seated near a brick kiln',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-11.jpg',
-					'Women sitting with the food and supply bags they received',
+					'krm-theme:images/content/evangelism-outreach-11.webp',
+					'A pastor raising his hands in worship with families and children seated on mats in the fields',
 				),
 				array(
-					'krm-theme:images/content/outreach-ministry-12.jpg',
-					'A woman at a brick kiln with her bags of food and supplies',
+					'krm-theme:images/content/evangelism-outreach-12.webp',
+					'Women and families seated on mats beside a canal for an evening open-air gathering',
 				),
 			),
-			'explorer_image' => 'krm-theme:images/content/outreach-ministry-1.jpg',
+			'explorer_image' => 'krm-theme:images/content/evangelism-outreach-01.webp',
 			'raised' => '2400',
 			'goal' => '8000',
 			'gifts' => array(
@@ -185,7 +185,7 @@ return array(
 					'A large gathering at a brick kiln listening to a pastor',
 				),
 			),
-			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-10-scaled.jpg',
+			'explorer_image' => 'krm-theme:images/content/church-planting-1.jpg',
 			'raised' => '3500',
 			'goal' => '12000',
 			'gifts' => array(
@@ -226,27 +226,27 @@ return array(
 			'photos' => array(
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-17-scaled.jpg',
-					'Urdu Bible distribution',
+					'An elderly man in a white cap receiving his Urdu Bible from a pastor at his door',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg',
-					'Urdu Bible distribution',
+					'A young man in a red shirt receiving his new Urdu Bible',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-16-e1784536121378.jpg',
-					'Urdu Bible distribution',
+					'A woman in green holding her new Urdu Bible at a brick kiln',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-15-e1784536109482.jpg',
-					'Urdu Bible distribution',
+					'A woman receiving an Urdu Bible from a pastor at a brick kiln',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-14-e1784536098255.jpg',
-					'Urdu Bible distribution',
+					'A woman in yellow receiving her Urdu Bible',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-13-e1784536079985.jpg',
-					'Urdu Bible distribution',
+					'A mother holding a new Urdu Bible, her small daughter beside her',
 				),
 				array(
 					'krm-theme:images/content/urdu-bible-distribution-12.jpg',
@@ -254,23 +254,23 @@ return array(
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-11-e1784536054126.jpg',
-					'Urdu Bible distribution',
+					'A woman in pink receiving her Urdu Bible from a pastor',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-10-e1787225652778.jpg',
-					'Urdu Bible distribution',
+					'A kiln worker receiving an Urdu Bible beside a table of Bibles',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-9-e1784536026463.jpg',
-					'Urdu Bible distribution',
+					'A pastor handing an Urdu Bible to an elderly man beside a table of Bibles',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-8-e1784536009842.jpg',
-					'Urdu Bible distribution',
+					'An elderly kiln worker receiving his Urdu Bible',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-7-e1784535997635.jpg',
-					'Urdu Bible distribution',
+					'A young girl at a brick kiln holding her new Urdu Bible',
 				),
 			),
 			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg',
@@ -308,35 +308,43 @@ return array(
 			'photos' => array(
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-11-scaled.jpg',
-					'Leadership and discipleship gathering',
+					'A trainer teaching a hall full of church leaders',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-10-scaled.jpg',
-					'Leadership and discipleship gathering',
+					'Church leaders and members filling a hall for a training day',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-9-scaled.jpg',
-					'Leadership and discipleship gathering',
+					'A trainer speaking with leaders standing at the front of the hall',
+				),
+				array(
+					'krm-theme:images/content/leadership-training-01.webp',
+					'Leaders sitting on the floor working through a Bible lesson together on a large sheet of paper',
+				),
+				array(
+					'krm-theme:images/content/leadership-training-02.webp',
+					'Local church leaders seated around a table for a training meeting in a brick courtyard',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-8.jpg',
-					'Leadership and discipleship gathering',
+					'Leaders listening to a training session in a crowded hall',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-7-1.jpg',
-					'Leadership and discipleship gathering',
+					'A trainer with a microphone leading a session',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-6-1-scaled.jpg',
-					'Leadership and discipleship gathering',
+					'A trainer teaching leaders seated on the floor of the hall',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-5-1-scaled.jpg',
-					'Leadership and discipleship gathering',
+					'Leaders seated in rows for a training session',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-4-1-scaled.jpg',
-					'Leadership and discipleship gathering',
+					'Plates of rice prepared for those attending the training day',
 				),
 			),
 			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-11-scaled.jpg',
@@ -378,47 +386,47 @@ return array(
 			'photos' => array(
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-29.jpg',
-					'Baptism in a local community',
+					'A newly baptised woman wearing a garland of roses',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-31.jpg',
-					'Baptism in a local community',
+					'A pastor baptising a young man, beside a portrait of him after his baptism',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-30.jpg',
-					'Baptism in a local community',
+					'A pastor baptising a man, beside a portrait of him wearing his garland afterwards',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-28.jpg',
-					'Baptism in a local community',
+					'A newly baptised young woman in a white shawl with a garland of roses',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-27.jpg',
-					'Baptism in a local community',
+					'A newly baptised woman raising her hands in praise',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-26.jpg',
-					'Baptism in a local community',
+					'A newly baptised man in white raising his hands in praise',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-25.jpg',
-					'Baptism in a local community',
+					'A newly baptised man wearing a garland of roses',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-24.jpg',
-					'Baptism in a local community',
+					'An older woman wearing her garland of roses after her baptism',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-23.jpg',
-					'Baptism in a local community',
+					'A newly baptised young man in a white shawl and garland',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-22.jpg',
-					'Baptism in a local community',
+					'The baptism tank strewn with rose petals',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-21-e1784293966685.jpg',
-					'Baptism in a local community',
+					'A pastor and a newly baptised man raising their hands in the baptism water',
 				),
 			),
 			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-29.jpg',
@@ -455,47 +463,59 @@ return array(
 			'sections' => array(),
 			'photos' => array(
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-10.jpg',
-					'Deliverance and healing ministry',
+					'krm-theme:images/content/prayer-deliverance-01.webp',
+					'A woman praying with raised hands among brick kiln families at a prayer gathering',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-9.jpg',
-					'Deliverance and healing ministry',
+					'krm-theme:images/content/prayer-deliverance-02.webp',
+					'An elderly woman with closed eyes and raised hands in prayer',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-8-scaled.jpg',
-					'Deliverance and healing ministry',
+					'krm-theme:images/content/prayer-deliverance-03.webp',
+					'An elderly man with a white beard raising his hands in prayer',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-7-scaled.jpg',
-					'Deliverance and healing ministry',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-6-scaled-e1787828407656.jpg',
-					'Deliverance and healing ministry',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-5-scaled-e1787828305580.jpg',
-					'Deliverance and healing ministry',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-4-scaled-e1787828361817.jpg',
-					'Deliverance and healing ministry',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-3-scaled-e1787828373981.jpg',
-					'Deliverance and healing ministry',
+					'krm-theme:images/content/prayer-deliverance-04.webp',
+					'A young man with closed eyes praying with open hands',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-2-scaled-e1787828386736.jpg',
-					'Deliverance and healing ministry',
+					'A pastor praying for a sick man lying on a bed at home',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-1-scaled-e1787828396674.jpg',
-					'Deliverance and healing ministry',
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-4-scaled-e1787828361817.jpg',
+					'A pastor laying a hand on a young man and praying for his healing',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-05.webp',
+					'An elderly man raising his hands in prayer at an open-air gathering near a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-06.webp',
+					'A pastor with a microphone praying with folded hands during a church service',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-7-scaled.jpg',
+					'A pastor praying over an elderly woman at a church gathering',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-8-scaled.jpg',
+					'A pastor praying beside a sick person resting on a cot outdoors',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-3-scaled-e1787828373981.jpg',
+					'A pastor standing in prayer beside a sick man lying on a bed',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-5-scaled-e1787828305580.jpg',
+					'A pastor praying for a young man outside his home',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-07.webp',
+					'A pastor standing with an elderly man at an open-air gathering',
 				),
 			),
-			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-10.jpg',
+			'explorer_image' => 'krm-theme:images/content/prayer-deliverance-01.webp',
 			'raised' => '700',
 			'goal' => '2500',
 			'gifts' => array(
@@ -563,55 +583,35 @@ return array(
 			'sections' => array(),
 			'photos' => array(
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/slavery-freedom-01.webp',
+					'A brick kiln family with a ministry worker, sitting behind rows of freshly moulded bricks',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/slavery-freedom-02.webp',
+					'A mother and her children with a ministry worker beside the bricks they made at the kiln',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/slavery-freedom-03.webp',
+					'A mother and her daughter standing with a ministry worker against a brick kiln wall',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-37-scaled-e1787822770768.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/slavery-freedom-04.webp',
+					'A brick kiln family with folded hands in prayer beside a ministry worker',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-36-scaled-e1787822780752.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/slavery-freedom-05.webp',
+					'A woman sitting on a stack of unfired bricks at the kiln where her family works',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-35-scaled-e1787822792740.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/slavery-freedom-06.webp',
+					'A young mother holding her baby at a brick kiln',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-34-scaled-e1787822803466.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-33-scaled-e1787822814979.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-32-scaled.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-30-scaled-e1787822825532.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-29-scaled-e1787822836311.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/slavery-freedom-07.webp',
+					'A young girl at a brick kiln looking into the camera',
 				),
 			),
-			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg',
+			'explorer_image' => 'krm-theme:images/content/slavery-freedom-01.webp',
 			'raised' => '4200',
 			'goal' => '15000',
 			'stats' => array(
@@ -652,52 +652,52 @@ return array(
 			'sections' => array(),
 			'photos' => array(
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg',
+					'Brick kiln children seated before piles of warm clothes ready to be handed out',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg',
+					'A ministry worker with a boy wearing his new winter jacket at a brick kiln',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'Children seated around a long mat for a shared meal in a brick kiln courtyard',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-37-scaled-e1787822770768.jpg',
-					'Children and families in a brick kiln community',
+					'Small children drinking juice with their plates of rice',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-36-scaled-e1787822780752.jpg',
-					'Children and families in a brick kiln community',
+					'Young children eating rice together on a mat',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-35-scaled-e1787822792740.jpg',
-					'Children and families in a brick kiln community',
+					'A girl in a purple dress sitting with her plate of rice',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-34-scaled-e1787822803466.jpg',
-					'Children and families in a brick kiln community',
+					'A ministry worker serving rice to children at a brick kiln',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-33-scaled-e1787822814979.jpg',
-					'Children and families in a brick kiln community',
+					'A ministry worker feeding a small child',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-32-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'Children raising their hands at a meal in a brick kiln courtyard',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'Children with raised hands seated for a meal and prayer',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-30-scaled-e1787822825532.jpg',
-					'Children and families in a brick kiln community',
+					'A girl in a headscarf holding her plate of rice',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-29-scaled-e1787822836311.jpg',
-					'Children and families in a brick kiln community',
+					'A smiling girl sitting with her plate of rice and a juice box',
 				),
 			),
 			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg',
@@ -749,99 +749,59 @@ return array(
 			'photos' => array(
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg',
-					'Children receiving care at an orphanage',
+					'A large group of children cheering with their arms raised',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-19.jpg',
-					'Children receiving care at an orphanage',
+					'Children gathered with a ministry worker in a courtyard',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-18.jpg',
-					'Children receiving care at an orphanage',
+					'A small girl folding her hands in prayer',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-17-scaled-e1787819100112.jpg',
-					'Children receiving care at an orphanage',
+					'Children seated in long rows on a rooftop for a shared meal',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-16-scaled-e1787819076312.jpg',
-					'Children receiving care at an orphanage',
+					'Children sharing a meal on mats laid out on a rooftop',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-15-scaled-e1787819059654.jpg',
-					'Children receiving care at an orphanage',
+					'Boys enjoying a meal and a juice box',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-14-scaled-e1787819044976.jpg',
-					'Children receiving care at an orphanage',
+					'Children eating together along a decorated mat',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-13-scaled-e1787819027587.jpg',
-					'Children receiving care at an orphanage',
+					'Two girls with their meals and gift boxes',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-12-scaled-e1787819009333.jpg',
-					'Children receiving care at an orphanage',
+					'A girl sitting with her plate of food among other children',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-11-scaled-e1787818995644.jpg',
-					'Children receiving care at an orphanage',
+					'A ministry worker serving food from a large pot',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-10-scaled-e1787818978151.jpg',
-					'Children receiving care at an orphanage',
+					'Children seated in a long row for a meal and gifts',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-9-scaled-e1787818960294.jpg',
-					'Children receiving care at an orphanage',
+					'A ministry worker with a boy holding his wrapped gift',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/children-orphan-care-01.webp',
+					'Children holding a "We are praying for you" sign beside stacks of wrapped gifts',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-37-scaled-e1787822770768.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-36-scaled-e1787822780752.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-35-scaled-e1787822792740.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-34-scaled-e1787822803466.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-33-scaled-e1787822814979.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-32-scaled.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-30-scaled-e1787822825532.jpg',
-					'Children and families in a brick kiln community',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-29-scaled-e1787822836311.jpg',
-					'Children and families in a brick kiln community',
+					'krm-theme:images/content/children-orphan-care-02.webp',
+					'A girl in a party hat holding a Happy Birthday balloon at a children\'s celebration',
 				),
 			),
 			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg',
@@ -1033,8 +993,8 @@ return array(
 					'A pastor visiting an elderly believer at his village home and giving him an Urdu Bible',
 				),
 				array(
-					'krm-theme:images/content/persecuted-christians-2.jpg',
-					'A pastor standing with an elderly believer outside his home',
+					'krm-theme:images/content/persecuted-christians-04.webp',
+					'A pastor giving an Urdu Bible to a believer outside his village home',
 				),
 				array(
 					'krm-theme:images/content/persecuted-christians-3.jpg',
@@ -1074,23 +1034,23 @@ return array(
 			'photos' => array(
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-5-scaled.jpg',
-					'Widows ministry',
+					'A pastor giving a gift to a widow in a red shawl',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-4-scaled.jpg',
-					'Widows ministry',
+					'A widow receiving a gift from a pastor in a brick courtyard',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-3-scaled.jpg',
-					'Widows ministry',
+					'A pastor speaking to widows seated together in a courtyard',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-2-scaled.jpg',
-					'Widows ministry',
+					'Widows seated on mats listening to a pastor',
 				),
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-1-scaled.jpg',
-					'Widows ministry',
+					'A pastor with a widow and her children outside their home',
 				),
 				array(
 					'krm-theme:images/content/widows-ministry-6.jpg',
@@ -1152,7 +1112,7 @@ return array(
 					'A pastor praying for an elderly woman who cannot walk',
 				),
 			),
-			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/elementor/thumbs/General-pictures-14-scaled-e1787296605557-rs80at0e3asoxo6sbplvoojsdrcp1u64t5zrilqm40.jpg',
+			'explorer_image' => 'krm-theme:images/content/medical-health-1.jpg',
 			'raised' => '2900',
 			'goal' => '9500',
 			'stats' => array(
@@ -1206,12 +1166,12 @@ return array(
 					'A mother and her children with their food parcel at the kiln',
 				),
 				array(
-					'krm-theme:images/content/food-relief-4.jpg',
-					'A little girl with her plate of rice and a juice box',
+					'krm-theme:images/content/food-relief-07.webp',
+					'Brick kiln families at sunset holding "Faith in action" food box signs',
 				),
 				array(
-					'krm-theme:images/content/food-relief-5.jpg',
-					'Children sharing a meal on mats laid out on a rooftop',
+					'krm-theme:images/content/food-relief-08.webp',
+					'A ministry worker handing a sack of flour and a food box to a family at a brick kiln',
 				),
 				array(
 					'krm-theme:images/content/food-relief-6.jpg',
@@ -1252,8 +1212,8 @@ return array(
 			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
 			'photos' => array(
 				array(
-					'krm-theme:images/content/disaster-relief-5.jpg',
-					'A ministry worker with a family receiving a relief sack outside their mud-brick home',
+					'krm-theme:images/content/disaster-relief-4.jpg',
+					'A crowd of brick kiln children in warm clothes, waving, in front of the kiln chimney',
 				),
 				array(
 					'krm-theme:images/content/disaster-relief-1.jpg',
@@ -1268,11 +1228,15 @@ return array(
 					'Children at a brick kiln wearing new winter jackets and hats',
 				),
 				array(
-					'krm-theme:images/content/disaster-relief-4.jpg',
-					'A crowd of brick kiln children in warm clothes, waving, in front of the kiln chimney',
+					'krm-theme:images/content/disaster-relief-06.webp',
+					'A ministry worker with a girl holding her new pack of warm clothes',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-07.webp',
+					'Children seated in a courtyard beside warm hats, jackets and blankets ready to be given out',
 				),
 			),
-			'explorer_image' => 'krm-theme:images/content/disaster-relief-5.jpg',
+			'explorer_image' => 'krm-theme:images/content/disaster-relief-4.jpg',
 			'raised' => '1100',
 			'goal' => '8000',
 			'gifts' => array(

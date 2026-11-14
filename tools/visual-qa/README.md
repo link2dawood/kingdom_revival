@@ -19,6 +19,11 @@ bytes; videos are blocked and hidden, and the newsletter popup is pre-dismissed 
 Results print as JSON lines (`diffPct` = % of pixels that differ); screenshots and `-diff.png` images go to
 `out/`. `python3 bands.py out/pages <page> <desktop|tablet|mobile>` lists where two screenshots differ.
 
+`node image_audit.js [--shots] [--only=<path part>]` lists every photo on every page at desktop, tablet and mobile
+(`<img>` and CSS backgrounds: file, alt, rendered box, object-fit / object-position or background-size / -position)
+in `out/images/audit.json`; `--shots` also saves a screenshot of each photo's box. Use it to check that cropped
+photos keep the faces in view (theme 1.27.0).
+
 `python3 seo_check.py [site URL]` checks every page for exactly one title, description, canonical, Open Graph
 and Twitter card tag set (run it with no SEO plugin, then with each plugin active).
 

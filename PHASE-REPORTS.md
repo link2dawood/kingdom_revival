@@ -68,6 +68,8 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Who We Are, Matthew 28:19 instead of the Vision and Mission cards (theme 1.25.0)](#kingdom-revival-ministries-who-we-are-matthew-2819-instead-of-the-vision-and-mission-cards-theme-1250)
 - [Kingdom Revival Ministries: Scripture strip under the hero becomes a slim marquee (theme 1.25.3)](#kingdom-revival-ministries-scripture-strip-under-the-hero-becomes-a-slim-marquee-theme-1253)
 - [Kingdom Revival Ministries: Pinned Urdu Bible photos show faces; baptism verse banner (theme 1.25.4 / 1.26.0)](#kingdom-revival-ministries-pinned-urdu-bible-photos-show-faces-baptism-verse-banner-theme-1254--1260)
+- [Kingdom Revival Ministries: "How this ministry serves" redesigned on every ministry page (theme 1.26.0)](#kingdom-revival-ministries-how-this-ministry-serves-redesigned-on-every-ministry-page-theme-1260)
+- [Kingdom Revival Ministries: Ministry photos matched to their ministry, and face-aware crops everywhere (theme 1.27.0)](#kingdom-revival-ministries-ministry-photos-matched-to-their-ministry-and-face-aware-crops-everywhere-theme-1270)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4689,3 +4691,109 @@ and `contrastDark`.
 1.26.0 (Pray / Give / Go restored as 16b), so both changes ship in one release.
 
 **Decisions for you:** the number of believers baptised since 2018 (the stat line stays hidden until it is filled in).
+
+## Kingdom Revival Ministries: "How this ministry serves" redesigned on every ministry page (theme 1.26.0)
+
+**Result:** the intro section of every What We Do ministry page has been redesigned in the style of the home Who We Are
+section. It replaces the two small overlapping photos, the round heart badge and the plain check list.
+
+- `template-parts/ministry/intro.php`:
+  - Header row: "What we do" in small red capitals, a larger serif heading, and the ministry's Focus text beside it as
+    the lead with a red bar.
+  - Collage: a three-photo collage with one tall photo and two stacked, with caption pills taken from the photo
+    descriptions. A repeated description is shown only once. The orange rotated tag (ministry name and group) sits at
+    the bottom-right, where it does not cover faces.
+  - Points: shown as numbered cards (01, 02 …) with a check. They lift and show a red top line on hover, and they
+    stagger in on scroll.
+  - Photos used: the 2nd–4th (the 1st is the hero), or the first three when a ministry has fewer than four.
+  - Unchanged: the ids `ministry-points` and `ministry-focus`, `data-zoom` (lightbox) and the extra-section panels.
+- `assets/css/pages/ministry.css`: the `.ministry-pair*` / `.ministry-intro-text` / `.ministry-focus` rules are replaced
+  by `.ministry-serves__*`, built only from colour tokens. On phones the tag is smaller, only the tall photo keeps its
+  caption, and the points become compact rows (number, text, check).
+- The tall photo's `sizes` value is about twice its box width because it is cropped from a wide photo. With the
+  smaller value it was blurry on phones.
+
+**Verified** with screenshots of Church Planting and Bible Distribution at 1440, 1024 and 390.
+
+**Not covered:** in the short top-right tile, a tall portrait photo can still lose the top of a head. The face points
+are applied, but such photos can't fit whole in that frame shape.
+
+## Kingdom Revival Ministries: Ministry photos matched to their ministry, and face-aware crops everywhere (theme 1.27.0)
+
+**Result:** every What We Do ministry now shows photos of its own work. No photo is shared between two ministry
+galleries any more. Every cropped photo on the site (cards, heroes, photo backgrounds, story photos and post thumbnails)
+is positioned on the faces. Checked on all 35 pages at 1440, 768 and 390. Text, layout and design are unchanged.
+
+**Source review.** All 430 photos in the client's data folder ("Kingdom Revival ministries-Data ", 13 subfolders plus
+171 unsorted photos in its root) were viewed and sorted by subject. The site's photos were matched back to their source
+files by perceptual hash. That showed which photos were already in use and exposed hidden duplicates: Medical & Health
+photos 1–4 are Deliverance 1/6/9/10, Food Relief 4/5 are Brick Kiln 29 and Orphanage 16, Disaster Relief 5 is Widows 1,
+Persecuted Christians 2 is Urdu Bible 17, and the Church Planting photos come from "General pictures".
+
+**Changes** (`inc/data/ministries.php`; the new files are WebP in `assets/images/content/`: hero photos ≤1920px,
+others ≤1400px, 59–337 KB):
+
+| Page / section | Before | After | Fixed |
+|---|---|---|---|
+| Evangelism & Outreach (gallery, hero, card, home explorer) | outreach-ministry-1…12 (all food-bag distributions) | evangelism-outreach-01…12: open-air preaching at kilns and villages (General pictures + root photos) | wrong image |
+| Church Planting card / home explorer | Leadership-and-Discipleship-10 | church-planting-1 | wrong image |
+| Leadership Training gallery | 8 hall photos | + leadership-training-01 (small-group Bible study), -02 (leaders' meeting) | more fitting photos added |
+| Prayer & Deliverance (gallery, hero, card) | Deliverance 1–10; card = wheelchair photo with the pastor's face cut off | prayer-deliverance-01…07 (people praying with raised hands, a pastor praying) + Deliverance 2/3/4/5/7/8 | duplicate with Medical, face crop |
+| Slavery & Freedom (gallery, hero, card) | the same 12 photos as Brick Kiln Family Care | slavery-freedom-01…07: kiln families among fresh bricks, a mother and baby, a girl at the kiln | duplicate (the Freedom section already shows the 7 before/after photos) |
+| Brick Kiln Family Care hero | Bricks-kiln-40 (tall photo: worker's or boy's face cut in the wide hero) | Bricks-kiln-39 (wide) first; 40 moved second | face crop |
+| Children & Orphan Care gallery | 12 orphanage photos + the 12 brick kiln photos | 12 orphanage + children-orphan-care-01 (gifts, "We are praying for you"), -02 (birthday) | duplicate |
+| Medical & Health card / home explorer | General-pictures-14 (a kiln crowd) | medical-health-1 | wrong image |
+| Food Relief gallery | food-relief-4, -5 (duplicates) | food-relief-07 ("Faith in action" food boxes), -08 (flour and food box handed to a family) | duplicate |
+| Disaster Relief (gallery, hero, card) | disaster-relief-5 first (the Widows photo) | disaster-relief-4 first; + -06 (girl with warm clothes), -07 (winter clothes ready to give) | duplicate |
+| Persecuted Christians gallery | persecuted-christians-2 (= Urdu Bible 17, also the Contact hero) | persecuted-christians-04 | duplicate |
+| Donate hero (`inc/content/donate.php`) | Bricks-kiln-40 (tall; a face was always cut) | slavery-freedom-01 (wide family photo) | face crop |
+| Captions (alt text) | generic: "Urdu Bible distribution", "Baptism in a local community", "Leadership and discipleship gathering", "Deliverance and healing ministry", "Widows ministry", "Children receiving care at an orphanage", "Children and families in a brick kiln community" | one description per photo (e.g. "A pastor giving a gift to a widow in a red shawl") on the Bible, Baptism, Leadership, Prayer, Widows, Orphan care and Brick Kiln galleries | meaningful alt text |
+
+**Existing sites:** `inc/upgrade.php` adds a one-time step (option `krm_photos_version` 1). It applies each change only
+while the ministry's gallery / card photo, or the Donate hero, still equals the pre-1.27.0 default. The old defaults are
+kept as photo keys in `inc/data/photo-defaults-1.26.php`; imported "-scaled-1" copies count as the same photo. A
+gallery edited by hand is kept, and only its captions that still hold the old wording are updated. Page caches are
+purged afterwards.
+
+**Face-aware crops:**
+- The focus points (`inc/data/focal.php`) existed only for `<img>` tags printed by `krm_img_src()`. They now also reach:
+  - every photo background, through `krm_bg_small()`, which prints `background-position` (all page heroes, ministry,
+    group and story heroes, the give band);
+  - photos inside post content (`wp_content_img_tag`);
+  - images printed by WordPress itself (`wp_get_attachment_image_attributes`). These include the home "Latest News"
+    cards, which had cut off the baptism and Urdu Bible faces, and the ministry story cards.
+- `tools/focal/build_focal.py` was re-run over the theme and the local uploads (193 photos with faces, 351 scanned). It
+  now reads `tools/focal/overrides.txt`, a list of hand-checked corrections, where `key -` removes a point:
+  - the Evangelism hero;
+  - the Brick Kiln worker and boy photo (the detector missed the worker, who is looking down);
+  - the wheelchair prayer photo;
+  - the Urdu Bible 17/18 points that 1.26.0 had added by hand;
+  - "no point" for the home baptism banner, whose crop front.css sets per breakpoint.
+
+**Verified:**
+- New `tools/visual-qa/image_audit.js` audited 35 pages × 3 widths before and after, recording each photo's file, alt,
+  box and crop. Each cropped photo's visible window was then redrawn from its source file and checked by eye at all
+  three widths.
+- Upgrade: run on the local site from the 1.26 data. All 14 changed ministries got the new galleries, card photos and
+  captions; the Medical card upgraded from its saved "-crop" copy.
+- `final_pass.js`: 46 URLs, 0 axe violations at 1440 and 360, 0 overflow, 0 JS errors, 0 contrast failures in light and
+  dark.
+- 0 `<img>` without an alt attribute.
+
+**Not covered:**
+- The upgrade was tested only on the local copy, not on the live site.
+- The ministry intro collage and the "In pictures" row both show the 4th gallery photo. That comes from the template (a
+  parallel session's 1.26.0 redesign), not from the photo choice.
+- In the wheelchair prayer photo (Prayer for the sick story and the Prayer Request hero), the pastor's and the woman's
+  faces are too far apart for any card or hero. The crop keeps the woman, with the pastor's hand on her head; the
+  pastor's face shows only in the full photo.
+- Story text images in the post content keep their saved alt text (it is content, not theme data).
+- Photos added later get no focus point until `build_focal.py` is run again.
+
+**No suitable photos in the client's folder (ask the client):**
+- Medical & Health: the "Free medical camp…" folder is empty, and the page uses home visits and prayer for the sick.
+- Youth Ministry / Women Empowerment (hidden draft): no folder. The root photos of women's meetings in the church hall
+  could serve if it is enabled.
+- Disaster Relief: no flood or disaster photos, only the winter-clothes distributions.
+- Persecuted Christian Support: only 4 photos of one visit.
+- Clean Water: well covered, but there are no "before" photos of the old water sources.

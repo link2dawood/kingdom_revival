@@ -2153,3 +2153,81 @@ add_action(
 	},
 	38
 );
+
+/**
+ * Theme 1.27.0: ministry photos matched to their ministry (see PHASE-REPORTS "Ministry photos"). Per ministry, a gallery
+ * still equal to its pre-1.27.0 default (inc/data/photo-defaults-1.26.php, compared by photo key so imported copies
+ * and design URLs count alike) becomes the current default gallery with its captions; a card / explorer photo still
+ * equal to its old default becomes the new one. A gallery edited by hand is kept, but captions still holding the old
+ * default wording get the new, descriptive ones.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_photos_version' ) >= 1 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_photos_version', 1 );
+		$old  = include KRM_DIR . '/inc/data/photo-defaults-1.26.php';
+		$data = krm_ministry_data();
+		$key  = function ( $ref ) {
+			// Imported copies of a "-scaled" upload are named "…-scaled-1": the same photo.
+			return preg_replace( '/-scaled-\d+$/', '', krm_focal_key( is_numeric( $ref ) ? krm_ref_file( $ref ) : (string) $ref ) );
+		};
+		$ref  = function ( $url ) {
+			$id = krm_media_id( $url );
+			return $id ? $id : $url;
+		};
+		$changed = false;
+		foreach ( (array) $old as $slug => $before ) {
+			$post = krm_get_by_path( $slug, 'ministry' );
+			if ( ! $post || empty( $data['items'][ $slug ] ) ) {
+				continue;
+			}
+			$m       = $data['items'][ $slug ];
+			$gallery = array_values( array_filter( (array) get_post_meta( $post->ID, '_krm_gallery', true ) ) );
+			$alts    = (array) get_post_meta( $post->ID, '_krm_photo_alts', true );
+			$new     = array();
+			foreach ( $m['photos'] as $photo ) {
+				$new[ $key( $photo[0] ) ] = $photo;
+			}
+			if ( array_map( $key, $gallery ) === $before['gallery'] && array_keys( $new ) !== $before['gallery'] ) {
+				$gallery = array();
+				$alts    = array();
+				foreach ( $new as $photo ) {
+					$r                   = $ref( $photo[0] );
+					$gallery[]           = $r;
+					$alts[ (string) $r ] = $photo[1];
+				}
+				update_post_meta( $post->ID, '_krm_gallery', $gallery );
+				$changed = true;
+			} else {
+				foreach ( $gallery as $r ) {
+					$k = $key( $r );
+					if ( isset( $new[ $k ], $before['alts'][ $k ] ) && ( $alts[ (string) $r ] ?? '' ) === $before['alts'][ $k ] ) {
+						$alts[ (string) $r ] = $new[ $k ][1];
+					}
+				}
+			}
+			update_post_meta( $post->ID, '_krm_photo_alts', $alts );
+			$explorer = (string) get_post_meta( $post->ID, '_krm_explorer_image', true );
+			if ( $m['explorer_image'] && ( '' === $explorer || in_array( $key( $explorer ), (array) $before['explorer'], true ) ) && ! in_array( $key( $m['explorer_image'] ), (array) $before['explorer'], true ) ) {
+				update_post_meta( $post->ID, '_krm_explorer_image', $ref( $m['explorer_image'] ) );
+				$changed = true;
+			}
+		}
+		// The Donate page hero: the tall kiln photo lost a face in the wide hero; a saved page still holding it gets the new default.
+		foreach ( get_posts( array( 'post_type' => 'page', 'post_status' => 'any', 'posts_per_page' => -1, 'fields' => 'ids', 'meta_key' => '_krm_content_donate' ) ) as $id ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+			$saved = get_post_meta( $id, '_krm_content_donate', true );
+			if ( is_array( $saved ) && ! empty( $saved['hero']['image'] ) && 'bricks-kiln-slaves-children-40' === $key( $saved['hero']['image'] ) ) {
+				$saved['hero']['image'] = 'krm-theme:images/content/slavery-freedom-01.webp';
+				update_post_meta( $id, '_krm_content_donate', $saved );
+				$changed = true;
+			}
+		}
+		if ( $changed && function_exists( 'krm_purge_page_caches' ) ) {
+			krm_purge_page_caches();
+		}
+	},
+	39
+);

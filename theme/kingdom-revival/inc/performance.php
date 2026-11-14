@@ -62,6 +62,11 @@ function krm_bg_desktop_media() {
  * @param int|string $ref Attachment ID or design URL.
  */
 function krm_bg_small( $ref ) {
+	$focal = krm_focal( $ref );
+	if ( '' !== $focal ) {
+		// Theme 1.27.0: where the faces are (inc/data/focal.php), so a cover-cropped hero keeps them in view at every width.
+		echo '; background-position: ' . esc_attr( $focal );
+	}
 	$tablet  = krm_bg_small_url( $ref );
 	$phone   = krm_bg_small_url( $ref, 'medium_large' );
 	$desktop = krm_bg_desktop_url( $ref );

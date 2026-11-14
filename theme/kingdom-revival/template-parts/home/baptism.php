@@ -1,10 +1,10 @@
 <?php
 /**
  * Home: 7b. New life in Christ — the baptism verse banner (theme 1.26.0), straight after the Urdu Bibles band so the
- * two read as one story: from receiving God's Word to baptism. A full-width KRM baptism photo on the right (it slides
- * a little slower than the page: parallax, none with reduced motion), a dark navy fade on the left holding a gold
+ * two read as one story: from receiving God's Word to baptism. KRM's baptism photo fills the whole section (1.26.1; it slides
+ * a little slower than the page: parallax, none with reduced motion) under a navy tint, darkest on the left behind the gold
  * label, the verse in large serif italics (each line fades up in turn), the reference, a short paragraph, an
- * optional number line and an outlined button. On phones and small tablets the photo sits above the text.
+ * optional number line and an outlined button. On phones and small tablets the tint is even, slightly darker at the foot.
  * Text: Pages → Home → Page content → 7b. Styles: .krm-baptism in assets/css/front.css; line timing via
  * data-reveal-delay (assets/js/effects.js).
  *
@@ -45,12 +45,12 @@ $krm_next  = function ( $step = 120 ) use ( &$krm_delay ) {
 	if ( $krm_def === $krm_photo ) {
 		// The theme's own copy: a 1000px version for phones and small tablets.
 		printf(
-			'src="%1$s" srcset="%2$s 1000w, %1$s 2000w" sizes="(max-width: 900px) 100vw, 72vw"',
+			'src="%1$s" srcset="%2$s 1000w, %1$s 2000w" sizes="100vw"',
 			esc_url( krm_media( $krm_def ) ),
 			esc_url( krm_media( 'krm-theme:images/content/baptism-new-life-1000.jpg' ) )
 		);
 	} else {
-		krm_img_src( $krm_photo, '(max-width: 900px) 100vw, 72vw' );
+		krm_img_src( $krm_photo, '100vw' );
 	}
 	?>
 	alt="<?php echo krm_alt( $krm_photo, krm_c( 'baptism.photo_alt' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" width="2000" height="1125" loading="lazy" decoding="async">
