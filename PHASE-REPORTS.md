@@ -73,6 +73,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Photos from the root of the data folder fill the thin galleries (theme 1.28.0)](#kingdom-revival-ministries-photos-from-the-root-of-the-data-folder-fill-the-thin-galleries-theme-1280)
 - [Kingdom Revival Ministries: Disaster Relief & Recovery Ministry taken off the website (theme 1.28.2)](#kingdom-revival-ministries-disaster-relief--recovery-ministry-taken-off-the-website-theme-1282)
 - [Kingdom Revival Ministries: Brick kiln, slavery and food photos each on their own page (theme 1.28.3)](#kingdom-revival-ministries-brick-kiln-slavery-and-food-photos-each-on-their-own-page-theme-1283)
+- [Kingdom Revival Ministries: Bible Distribution shows people holding their new Urdu Bibles (theme 1.28.4)](#kingdom-revival-ministries-bible-distribution-shows-people-holding-their-new-urdu-bibles-theme-1284)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4920,3 +4921,67 @@ overflow, 0 JS errors, 0 contrast failures light / dark, 0 duplicate titles.
 - The Slavery page's Before / After band background is the home page's "Freedom stories" photo (a meal photo, Bricks-32,
   faint under the navy overlay). It is a home page setting (Home → Freedom stories → Background photo), left unchanged.
 - Food Relief now has 19 photos, so the page shows the "see all photos" link to the Gallery.
+
+## Kingdom Revival Ministries: Bible Distribution shows people holding their new Urdu Bibles (theme 1.28.4)
+
+**Result:** the Bible Distribution page now leads with 12 new photos of people holding their Urdu Bibles, from the
+client's "Urdu Bibles Distribution ministry" folder. The hero is unchanged. No text, layout or design changed.
+
+The user asked for the folder's photos of people holding Bibles on that page. The folder has 28 photos (and one video).
+All of them show Bibles being given or held. dHash against the theme and the Media Library showed 16 already on the site:
+12 are this page's earlier photos (the old site's Urdu-Bible-Distribution-7…18), 3 are on Persecuted Christian Support
+(unnamed*.jpg) and 1 is on the hidden Women ministry (IMG-20260709-WA0002). Of the 12 new ones, 20250301_175906 was left
+out as a near-duplicate of 175904.
+
+| Theme file | Source | Photo |
+|---|---|---|
+| bible-distribution-01 | 1783588870297.png | kiln workers holding their Bibles up high (collage, large) |
+| bible-distribution-02 | 20250301_175934 | girls raising their Bibles (collage) |
+| bible-distribution-03 | IMG_2812.HEIC | two women receiving a Bible (collage + "In pictures") |
+| bible-distribution-04 | IMG_2807.HEIC | two women receiving a Bible ("In pictures") |
+| bible-distribution-05 | 20250301_175942 | children holding up their Bibles ("In pictures") |
+| bible-distribution-06…08 | IMG_2813, IMG_2810, 20250301_180656 | a kiln worker, a grandmother with her daughter and baby, a woman in purple |
+| bible-distribution-09…12 | 20250301_175904, 180258, 180428, IMG_2811 | Gallery page only (the ministry page shows nine) |
+
+Gallery order: Urdu Bible Distribution 17 (hero, the Contact page's photo since 1.26.0), the 12 new photos, then
+the 11 earlier ones. That makes 24 in all; the page shows the first nine plus the "see all" link it already had.
+WebP, quality 76, ≤1400 px, 58–150 KB (1.3 MB in all). Source files untouched. Each photo has its own alt text in the data file.
+
+**Upgrade:** inc/upgrade.php, krm_photos_version 4. A Bible Distribution gallery still holding exactly the earlier default
+(the current default without the new photos) gets the new default. Alt text already saved is kept. A gallery
+changed by hand is left alone. Tested on the local site: 12 → 24 photos, in the order above.
+
+**Crops:** focal.php rebuilt (380 photos, 221 with faces; only the 12 new entries were added, nothing else changed). Screenshots at
+1440 and 390 of the hero, collage, "In pictures" and gallery: faces in view. 0 broken images, 0 JS errors and no
+horizontal overflow at 1440 / 768 / 390.
+
+**Not covered:** the explorer / card photo stays Urdu Bible Distribution 18. The folder's video (20250301_175806.mp4,
+22 MB) was not added.
+
+
+## Kingdom Revival Ministries: Food Relief and Persecuted Christian Support photos from their own folders (theme 1.28.5)
+
+**Result:** Food Relief gets 13 new photos from the client's "Food Relief" folder and Persecuted Christian Support 7
+from "Christian persecution", placed right after each page's hero photo so they are among the nine shown on the page.
+No text or layout changed.
+
+| Ministry | Added (theme file ← source) |
+|---|---|
+| Food Relief (32 photos now) | food-relief-12…24 ← IMG_3391, IMG_3366, IMG_2543 and the 20250830 / 20251006 / 20260225 photos: food boxes and flour handed to kiln families, the boxes stacked by the red cross, families cheering, a child fed rice. food-relief-18 (bags laid out) is last because the hero shows the same scene. |
+| Persecuted Christian Support (12 photos now) | persecuted-christians-07…13 ← relief bags given at a burned home (IMG_20230830_174552), flour handed out (WA0212), the pastor in the burned church (WA0033), furniture burning in the street (WA0020), the street of burned homes and church (received_7099…), a smashed window (WA0110), families sleeping out in the open (WA0019) |
+
+WebP quality 78, ≤ 1400 px (the persecution originals are 720–1600 px, not upscaled), 29–223 KB. Skipped as already on
+the site (dHash): 20251006_144227 (= evangelism-outreach-01), 20260225_154739 (= Bricks-kiln-slaves-children-36).
+Focus points for the 20 photos added to inc/data/focal.php (detection; two have no faces).
+
+**Left out of the persecution folder on purpose (decision for the client):**
+- 12 press / news photos (AA1fn*.jpeg = MSN-hosted agency pictures, 1692335035528 / 1692421596307 downloaded in
+  August 2023): KRM most likely has no right to publish them.
+- 5 photos of children or a man lying hurt or lifeless (IMG_20240311_153312, received_1909…, 2272…, 3362…, 3849…):
+  too graphic for a public page, and they show minors.
+- FB_IMG_1685…/1688…/1690… (June–July 2023, children at the kilns, several unclothed, a prayer meeting) and
+  FB_IMG_1697745934824 (a "Free food project before / after" graphic): not about persecution.
+
+**Upgrade:** inc/upgrade.php, krm_photos_version 5: a Food Relief / Persecuted gallery still holding exactly the
+earlier default photos gets the new default; one changed by hand is kept. Tested on the local site (4 → 5, both
+galleries updated, 32 and 12 photos). Screenshots at 1440 and 390: all photos load, faces in view.

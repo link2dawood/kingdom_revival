@@ -229,6 +229,54 @@ return array(
 					'An elderly man in a white cap receiving his Urdu Bible from a pastor at his door',
 				),
 				array(
+					'krm-theme:images/content/bible-distribution-01.webp',
+					'Kiln workers at a brick kiln holding their new Urdu Bibles up high',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-02.webp',
+					'Girls at a brick kiln raising their new Urdu Bibles',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-03.webp',
+					'Two women at a brick kiln receiving an Urdu Bible from a pastor',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-04.webp',
+					'A pastor giving an Urdu Bible to two women at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-05.webp',
+					'Children at a brick kiln holding up their Urdu Bibles',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-06.webp',
+					'A kiln worker holding his new Urdu Bible beside a pastor',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-07.webp',
+					'A grandmother receiving an Urdu Bible, her daughter holding a baby beside her',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-08.webp',
+					'A woman in purple receiving her Urdu Bible beside a table of Bibles',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-09.webp',
+					'Children at a brick kiln holding up their Urdu Bibles around a pastor',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-10.webp',
+					'A pastor giving an Urdu Bible to a young girl at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-11.webp',
+					'A girl holding her new Urdu Bible beside a pastor',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-12.webp',
+					'An elderly woman smiling beside a pastor holding her Urdu Bible',
+				),
+				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg',
 					'A young man in a red shirt receiving his new Urdu Bible',
 				),
@@ -1019,6 +1067,34 @@ return array(
 					'A pastor visiting an elderly believer at his village home and giving him an Urdu Bible',
 				),
 				array(
+					'krm-theme:images/content/persecuted-christians-07.webp',
+					'Ministry workers giving relief supplies to a family outside their burned home',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-08.webp',
+					'A pastor standing in a church blackened by fire',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-09.webp',
+					'Furniture from Christian homes burning in the street',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-10.webp',
+					'A street of burned homes and a church, its wreckage piled outside',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-11.webp',
+					'A ministry worker handing a sack of flour to a man whose home was attacked',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-12.webp',
+					'The smashed window of a Christian home',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-13.webp',
+					'Families sleeping out in the open after fleeing their homes',
+				),
+				array(
 					'krm-theme:images/content/persecuted-christians-04.webp',
 					'A pastor giving an Urdu Bible to a believer outside his village home',
 				),
@@ -1192,6 +1268,54 @@ return array(
 					'Rows of food parcels — sacks of flour and bags of groceries — ready for brick kiln families',
 				),
 				array(
+					'krm-theme:images/content/food-relief-13.webp',
+					'An elderly couple at a brick kiln receiving a food box and a sack of flour from a pastor',
+				),
+				array(
+					'krm-theme:images/content/food-relief-14.webp',
+					'Food boxes stacked beside a red cross, with brick kiln families gathered behind them',
+				),
+				array(
+					'krm-theme:images/content/food-relief-15.webp',
+					'A pastor standing behind rows of "Free Food Distribution" boxes and flour sacks at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-12.webp',
+					'Brick kiln families raising their hands beside their food boxes and bags of flour',
+				),
+				array(
+					'krm-theme:images/content/food-relief-17.webp',
+					'A family with their food box and flour sack, a pastor giving a thumbs up beside them',
+				),
+				array(
+					'krm-theme:images/content/food-relief-16.webp',
+					'Families seated on the ground at a brick kiln, each with a food box ready to take home',
+				),
+				array(
+					'krm-theme:images/content/food-relief-19.webp',
+					'A ministry worker feeding a small child a plate of rice at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-20.webp',
+					'A father, mother and children holding their food box and flour sack beside a pastor',
+				),
+				array(
+					'krm-theme:images/content/food-relief-21.webp',
+					'A family at a brick kiln with the food box and flour they received',
+				),
+				array(
+					'krm-theme:images/content/food-relief-22.webp',
+					'Kiln families with their food boxes and flour, the kiln chimney behind them',
+				),
+				array(
+					'krm-theme:images/content/food-relief-23.webp',
+					'A mother and her children receiving a food box from a pastor in front of the kiln chimney',
+				),
+				array(
+					'krm-theme:images/content/food-relief-24.webp',
+					'A pastor speaking to a large gathering of brick kiln families before food is given out',
+				),
+				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg',
 					'Children seated around a long mat for a shared meal in a brick kiln courtyard',
 				),
@@ -1262,6 +1386,10 @@ return array(
 				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-29-scaled-e1787822836311.jpg',
 					'A smiling girl sitting with her plate of rice and a juice box',
+				),
+				array(
+					'krm-theme:images/content/food-relief-18.webp',
+					'A pastor speaking to kiln families seated behind rows of food bags',
 				),
 			),
 			'explorer_image' => 'krm-theme:images/content/food-relief-1.jpg',

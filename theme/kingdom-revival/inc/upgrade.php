@@ -2356,6 +2356,112 @@ add_action(
 );
 
 /**
+ * Theme 1.28.4 (krm_photos_version 4): Bible Distribution gets the client's photos of people holding their new Urdu
+ * Bibles ("Urdu Bibles Distribution ministry" folder), right after the hero, ahead of the twelve earlier photos. A
+ * gallery still holding exactly the earlier default photos (the current default without the new ones) gets the
+ * current default; one changed by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_photos_version' ) >= 4 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_photos_version', 4 );
+		$data = krm_ministry_data();
+		$post = krm_get_by_path( 'bible-distribution', 'ministry' );
+		if ( ! $post || empty( $data['items']['bible-distribution']['photos'] ) ) {
+			return;
+		}
+		$photos = $data['items']['bible-distribution']['photos'];
+		$key    = function ( $ref ) {
+			return preg_replace( '/-scaled-\d+$/', '', krm_focal_key( is_numeric( $ref ) ? krm_ref_file( $ref ) : (string) $ref ) );
+		};
+		$old    = array();
+		foreach ( $photos as $photo ) {
+			if ( false === strpos( $photo[0], 'images/content/bible-distribution-' ) ) {
+				$old[] = $key( $photo[0] );
+			}
+		}
+		$gallery = array_values( array_filter( (array) get_post_meta( $post->ID, '_krm_gallery', true ) ) );
+		if ( array_map( $key, $gallery ) !== $old ) {
+			return;
+		}
+		$alts    = (array) get_post_meta( $post->ID, '_krm_photo_alts', true );
+		$gallery = array();
+		foreach ( $photos as $photo ) {
+			$id                  = krm_media_id( $photo[0] );
+			$r                   = $id ? $id : $photo[0];
+			$gallery[]           = $r;
+			$alts[ (string) $r ] = isset( $alts[ (string) $r ] ) && '' !== $alts[ (string) $r ] ? $alts[ (string) $r ] : $photo[1];
+		}
+		update_post_meta( $post->ID, '_krm_gallery', $gallery );
+		update_post_meta( $post->ID, '_krm_photo_alts', $alts );
+		if ( function_exists( 'krm_purge_page_caches' ) ) {
+			krm_purge_page_caches();
+		}
+	},
+	42
+);
+
+/**
+ * Theme 1.28.5 (krm_photos_version 5): Food Relief gets the client's "Food Relief" folder (13 photos) and Persecuted
+ * Christian Support photos from the "Christian persecution" folder (7: relief given at burned homes, the burned church
+ * and street), right after each hero photo. A gallery still holding exactly the earlier default photos (the current
+ * default without the new ones) gets the current default; one changed by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_photos_version' ) >= 5 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_photos_version', 5 );
+		$data    = krm_ministry_data();
+		$new     = array(
+			'food-relief'           => '/images\/content\/food-relief-(1[2-9]|2[0-4])\.webp$/',
+			'persecuted-christians' => '/images\/content\/persecuted-christians-(0[7-9]|1[0-3])\.webp$/',
+		);
+		$key     = function ( $ref ) {
+			return preg_replace( '/-scaled-\d+$/', '', krm_focal_key( is_numeric( $ref ) ? krm_ref_file( $ref ) : (string) $ref ) );
+		};
+		$changed = false;
+		foreach ( $new as $slug => $pattern ) {
+			$post = krm_get_by_path( $slug, 'ministry' );
+			if ( ! $post || empty( $data['items'][ $slug ]['photos'] ) ) {
+				continue;
+			}
+			$photos = $data['items'][ $slug ]['photos'];
+			$old    = array();
+			foreach ( $photos as $photo ) {
+				if ( ! preg_match( $pattern, $photo[0] ) ) {
+					$old[] = $key( $photo[0] );
+				}
+			}
+			$gallery = array_values( array_filter( (array) get_post_meta( $post->ID, '_krm_gallery', true ) ) );
+			if ( array_map( $key, $gallery ) !== $old ) {
+				continue;
+			}
+			$alts    = (array) get_post_meta( $post->ID, '_krm_photo_alts', true );
+			$gallery = array();
+			foreach ( $photos as $photo ) {
+				$id                  = krm_media_id( $photo[0] );
+				$r                   = $id ? $id : $photo[0];
+				$gallery[]           = $r;
+				$alts[ (string) $r ] = isset( $alts[ (string) $r ] ) && '' !== $alts[ (string) $r ] ? $alts[ (string) $r ] : $photo[1];
+			}
+			update_post_meta( $post->ID, '_krm_gallery', $gallery );
+			update_post_meta( $post->ID, '_krm_photo_alts', $alts );
+			$changed = true;
+		}
+		if ( $changed && function_exists( 'krm_purge_page_caches' ) ) {
+			krm_purge_page_caches();
+		}
+	},
+	43
+);
+
+/**
  * Theme 1.28.2 (krm_ministry_hide_version 1): Disaster Relief & Recovery Ministry is taken off the website at the
  * client's request. Its post becomes a draft, so it drops out of the What We Do dropdown and footer menus, the What We
  * Do page, the home page, the gallery, search and the sitemap; its old address redirects to its group page. The draft
