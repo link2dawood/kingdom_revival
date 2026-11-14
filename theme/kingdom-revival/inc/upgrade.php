@@ -2081,3 +2081,75 @@ add_action(
 	},
 	36
 );
+
+/**
+ * Theme 1.26.0: the Bible Distribution ministry page's hero (its first gallery photo) becomes the Contact page's hero
+ * photo (Urdu Bible Distribution 17): that photo moves to the front of the gallery, only while the gallery still
+ * starts with the earlier default (Urdu Bible Distribution 18). A hero photo chosen by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_bible_hero_version' ) >= 1 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_bible_hero_version', 1 );
+		$post = krm_get_by_path( 'bible-distribution', 'ministry' );
+		if ( ! $post ) {
+			return;
+		}
+		$up      = 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/';
+		$is      = function ( $ref, $url ) {
+			return (string) $ref === $url || ( krm_media_id( $url ) && (string) krm_media_id( $url ) === (string) $ref );
+		};
+		$gallery = array_values( array_filter( (array) get_post_meta( $post->ID, '_krm_gallery', true ) ) );
+		if ( ! $gallery || ! $is( $gallery[0], $up . 'Urdu-Bible-Distribution-18-scaled.jpg' ) ) {
+			return;
+		}
+		foreach ( $gallery as $i => $ref ) {
+			if ( $is( $ref, $up . 'Urdu-Bible-Distribution-17-scaled.jpg' ) ) {
+				unset( $gallery[ $i ] );
+				array_unshift( $gallery, $ref );
+				update_post_meta( $post->ID, '_krm_gallery', array_values( $gallery ) );
+				if ( function_exists( 'krm_purge_page_caches' ) ) {
+					krm_purge_page_caches();
+				}
+				return;
+			}
+		}
+	},
+	37
+);
+
+/**
+ * Theme 1.26.0: the About page's new "What drives us" section is headed "What we are here to do", so the Vision &
+ * Mission heading that said the same becomes "Why we exist" in a saved About page still holding the old default.
+ * A heading typed by hand is kept.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_about_mission_heading_version' ) >= 1 ) {
+			return;
+		}
+		update_option( 'krm_about_mission_heading_version', 1 );
+		$pages = get_posts(
+			array(
+				'post_type'      => 'page',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_wp_page_template', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'     => 'page-templates/about.php', // phpcs:ignore WordPress.DB.SlowDBQuery
+			)
+		);
+		foreach ( $pages as $id ) {
+			$saved = get_post_meta( $id, '_krm_content_about', true );
+			if ( is_array( $saved ) && isset( $saved['mission']['heading'] ) && 'What we are here to do' === trim( wp_strip_all_tags( (string) $saved['mission']['heading'] ) ) ) {
+				$saved['mission']['heading'] = 'Why we exist';
+				update_post_meta( $id, '_krm_content_about', $saved );
+			}
+		}
+	},
+	38
+);

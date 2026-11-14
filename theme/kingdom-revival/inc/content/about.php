@@ -1,8 +1,8 @@
 <?php
 /**
  * About Us page content (page-templates/about.php), in the order of the client's sitemap: Who we are (with the
- * ministry history), Our story, Our journey (timeline), The journey continues, Founder testimony, Vision & Mission, What we believe (Statement of Faith), What we are
- * here to do (ministries and impact numbers), Meet the team, Shepherding the Flock, Join the mission.
+ * ministry history), Our story, Our journey (timeline), The journey continues, Vision & Mission, What drives us (What we are
+ * here to do, 1.26.0), What we believe (Statement of Faith), Founder testimony, (unused: ministries and impact numbers), Meet the team, Shepherding the Flock, Join the mission.
  * Defaults are the approved design's wording; [bracketed] text waits for the client's approved wording (the ministry
  * history must not be copied from hmpak.org or gsministries.org without the client's approval).
  *
@@ -105,13 +105,41 @@ return array(
 		'label'  => __( 'Vision & Mission', 'kingdom-revival' ),
 		'fields' => array(
 			'eyebrow'         => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Vision & Mission' ),
-			'heading'         => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'What we are here to do' ),
+			'heading'         => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Why we exist' ),
 			'mission_eyebrow' => krm_f( 'text', __( 'Mission: small heading', 'kingdom-revival' ), 'Our mission' ),
 			'mission_heading' => krm_f( 'html', __( 'Mission: heading', 'kingdom-revival' ), 'Make disciples. Serve the vulnerable.' ),
 			'mission_text'    => krm_f( 'textarea', __( 'Mission: text', 'kingdom-revival' ), 'To glorify God by proclaiming the Gospel, planting churches, equipping leaders and showing Christ’s love through practical care.' ),
 			'vision_eyebrow'  => krm_f( 'text', __( 'Vision: small heading', 'kingdom-revival' ), 'Our vision' ),
 			'vision_heading'  => krm_f( 'html', __( 'Vision: heading', 'kingdom-revival' ), 'Revival that reaches every village' ),
 			'vision_text'     => krm_f( 'textarea', __( 'Vision: text', 'kingdom-revival' ), 'Communities across Pakistan transformed by the Gospel — with thriving local churches, freed families and children who grow up knowing Jesus.' ),
+		),
+	),
+	'drives'  => array(
+		'label'  => __( 'What drives us (What we are here to do)', 'kingdom-revival' ),
+		'help'   => __( 'Shown after Vision & Mission: one row per action, a one-word heading and a short line. Delete every row to hide the section.', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow' => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'What drives us' ),
+			'heading' => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'What we are here to do' ),
+			'lead'    => krm_f( 'textarea', __( 'Introduction', 'kingdom-revival' ), 'Not just plans on paper. Each of these is work KRM is doing on the ground in Pakistan today.' ),
+			'items'   => krm_list_f(
+				__( 'Rows', 'kingdom-revival' ),
+				__( 'Row', 'kingdom-revival' ),
+				array(
+					'title' => krm_f( 'text', __( 'Heading (one word works best)', 'kingdom-revival' ) ),
+					'text'  => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ) ),
+				),
+				array(
+					array( 'title' => 'Preach', 'text' => 'Sharing the Gospel of Jesus Christ in villages where His name has rarely been heard.' ),
+					array( 'title' => 'Reach', 'text' => 'Going to unreached communities across Punjab and Sindh, even the most remote ones.' ),
+					array( 'title' => 'Rescue', 'text' => 'Setting brick kiln families free from bonded labour and debt.' ),
+					array( 'title' => 'Provide', 'text' => 'Bringing clean, safe drinking water through hand pumps and filters.' ),
+					array( 'title' => 'Feed', 'text' => 'Supporting hungry families, widows and households with no income.' ),
+					array( 'title' => 'Show', 'text' => 'Sharing the life of Jesus through film screenings in villages.' ),
+					array( 'title' => 'Empower', 'text' => 'Helping women and young people learn a skill and earn their own living.' ),
+					array( 'title' => 'Distribute', 'text' => 'Placing Urdu Bibles and Christian literature, printed and audio, in the hands of new believers and children.' ),
+					array( 'title' => 'Heal', 'text' => 'Holding medical camps and providing health care where there is no clinic.' ),
+				)
+			),
 		),
 	),
 	'founder' => array(

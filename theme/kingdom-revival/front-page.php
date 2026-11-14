@@ -5,7 +5,7 @@
  *
  * The donation amount picker and the floating donation panel are driven by assets/js/front.js. Sections that left the
  * home page in 1.23.0 (clean water, giving cards, current projects, freedom, flagship cards, ministry in action,
- * Pray/Give/Go, prayer request, founder) keep their template parts: freedom, cta,
+ * prayer request, founder) keep their template parts: freedom, cta,
  * gift and prayer are still used on other pages.
  *
  * The header and footer are the global ones (header.php, footer.php). The wrapper below carries the base type and
@@ -30,6 +30,7 @@ get_template_part( 'template-parts/home/mission' );         // 4. Taking the Gos
 get_template_part( 'template-parts/home/wwd' );             // 5. What We Do.
 get_template_part( 'template-parts/home/needs' );           // 6. Why Pakistan Needs Hope.
 get_template_part( 'template-parts/home/word' );            // 7. God's Word in their hands (Urdu Bibles photo wall, 1.25.0; after Why Pakistan Needs Hope since 1.25.1).
+get_template_part( 'template-parts/home/baptism' );         // 7b. New life in Christ: baptism verse banner (1.26.0), the second half of the Urdu Bibles story.
 get_template_part( 'template-parts/home/impact' );          // 8. Our Impact, with the Pakistan ministry map.
 get_template_part( 'template-parts/home/featured' );        // 9. Featured Projects.
 get_template_part( 'template-parts/home/kiln-freedom' );    // 10. Brick Kiln Family Freedom (before/after slider and steps, 1.25.0).
@@ -39,6 +40,7 @@ get_template_part( 'template-parts/home/explorer', null, array( 'ministries' => 
 get_template_part( 'template-parts/home/partner' );         // 14. Partner With Us.
 get_template_part( 'template-parts/home/gift-calculator' ); // 15. Your gift at work (donation slider).
 get_template_part( 'template-parts/home/news' );            // 16. Latest News & Updates.
+get_template_part( 'template-parts/home/get-involved' );    // 16b. Pray / Give / Go (restored in 1.26.0, last section before the final call to action).
 get_template_part( 'template-parts/home/final-cta' );       // 17. Final call to action.
 get_template_part( 'template-parts/home/whatsapp' );
 get_template_part( 'template-parts/home/floating-donate' );

@@ -315,6 +315,21 @@ return array(
 			'btn_url'    => krm_f( 'url', __( 'Button link (empty = the Urdu Bibles project page)', 'kingdom-revival' ), '' ),
 		),
 	),
+	'baptism'  => array(
+		'label'  => __( '7b. New life in Christ (baptism verse banner)', 'kingdom-revival' ),
+		'help'   => __( 'A full-width photo band straight after 7, continuing its story: from receiving God’s Word to baptism. The photo shows on the right, the text sits on the left over a dark fade.', 'kingdom-revival' ),
+		'fields' => array(
+			'photo'     => krm_f( 'image', __( 'Background photo (wide photos work best; the people should be in the middle or on the right)', 'kingdom-revival' ), 'krm-theme:images/content/baptism-new-life.jpg' ),
+			'photo_alt' => krm_f( 'text', __( 'Photo description (alt text)', 'kingdom-revival' ), 'A woman stands in the water at a brick kiln on the day of her baptism, holding hands with the two men who baptised her' ),
+			'label'     => krm_f( 'text', __( 'Small gold label (the section heading)', 'kingdom-revival' ), 'New life in Christ' ),
+			'verse'     => krm_f( 'textarea', __( 'Verse (one line per row; the lines fade in one after another)', 'kingdom-revival' ), "Therefore if any man be in Christ,\nhe is a new creature:\nold things are passed away;\nbehold, all things are become new." ),
+			'reference' => krm_f( 'text', __( 'Verse reference', 'kingdom-revival' ), '2 Corinthians 5:17' ),
+			'text'      => krm_f( 'textarea', __( 'Short paragraph', 'kingdom-revival' ), 'For many families we serve, the journey begins with an Urdu Bible placed in their hands. It continues the day they step into the water and publicly declare their faith in Jesus. Every baptism is a celebration for the whole community.' ),
+			'stat'      => krm_f( 'text', __( 'Small number line under the paragraph, e.g. “120 believers baptised since 2018” (empty = none; only use a verified number)', 'kingdom-revival' ), '' ),
+			'btn_label' => krm_f( 'text', __( 'Button text (empty = no button)', 'kingdom-revival' ), 'See stories from the field' ),
+			'btn_url'   => krm_f( 'url', __( 'Button link', 'kingdom-revival' ), '#stories' ),
+		),
+	),
 	'impact'   => array(
 		'label'  => __( '8. Our Impact', 'kingdom-revival' ),
 		'help'   => __( 'Counters (they count up when scrolled into view), key achievements, then the map below (“Where we serve”). A label is put in the plural automatically when its number is more than 1.', 'kingdom-revival' ),
@@ -648,6 +663,44 @@ return array(
 			'all_label'  => krm_f( 'text', __( 'All posts link text', 'kingdom-revival' ), 'View all news →' ),
 			'all_url'    => krm_f( 'url', __( 'All posts link', 'kingdom-revival' ), '{blog}' ),
 			'more_label' => krm_f( 'text', __( 'Card link text', 'kingdom-revival' ), 'Read More' ),
+		),
+	),
+	'involved' => array(
+		'label'  => __( '16b. Pray / Give / Go (Three Ways to Stand With Us)', 'kingdom-revival' ),
+		'fields' => array(
+			'eyebrow' => krm_f( 'text', __( 'Small heading', 'kingdom-revival' ), 'Make a Difference' ),
+			'heading' => krm_f( 'html', __( 'Heading', 'kingdom-revival' ), 'Three Ways to Stand With Us' ),
+			'items'   => krm_list_f(
+				__( 'Ways', 'kingdom-revival' ),
+				__( 'Way', 'kingdom-revival' ),
+				array(
+					'title'  => krm_f( 'text', __( 'Title', 'kingdom-revival' ) ),
+					'text'   => krm_f( 'textarea', __( 'Text', 'kingdom-revival' ) ),
+					'button' => krm_f( 'text', __( 'Button text (empty = no button)', 'kingdom-revival' ) ),
+					'url'    => krm_f( 'url', __( 'Button link', 'kingdom-revival' ) ),
+				),
+				array(
+					array(
+						'title'  => 'Pray',
+						'text'   => 'Intercede for the ministry, the families we serve, and the power of the Gospel.',
+						'button' => 'Become a Prayer Partner',
+						'url'    => '{partner}#prayer-partners',
+					),
+					array(
+						'title'  => 'Give',
+						'text'   => 'Provide Bibles, education, orphan care and emergency aid for families in crisis.',
+						'button' => 'Give Now',
+						'url'    => '{donate}#give',
+					),
+					array(
+						'title'  => 'Go',
+						'text'   => 'Support outreach, church planting and humanitarian work on the ground.',
+						'button' => 'Plan a Visit',
+						'url'    => '{contact}?subject=Plan%20a%20Visit#contact-form',
+					),
+				),
+				__( 'The second card is the dark one, with a red button; the others have outline buttons. Icons follow the order: church, heart, globe. A Contact link may add ?subject=… to choose the form\'s topic. Delete every card to hide the section.', 'kingdom-revival' )
+			),
 		),
 	),
 	'final'    => array(

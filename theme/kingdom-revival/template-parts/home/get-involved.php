@@ -10,6 +10,10 @@
 defined( 'ABSPATH' ) || exit;
 
 $krm_screen = isset( $args['screen'] ) ? (string) $args['screen'] : ''; // 'home' when shown on another page.
+$krm_items  = (array) krm_c( 'involved.items', $krm_screen );
+if ( ! $krm_items ) {
+	return;
+}
 ?>
 <!-- Pray Give Go -->
 <section style="max-width: 1240px; margin: 0 auto; padding: clamp(72px, 8vw, 110px) clamp(16px, 3vw, 32px)">
@@ -27,7 +31,7 @@ $krm_cards = array(
 );
 // Buttons (theme 1.20.2): a list saved before then has no button keys, so it takes the default button of its position.
 $krm_default_items = krm_content_schema( 'home' )['involved']['fields']['items']['default'];
-foreach ( (array) krm_c( 'involved.items', $krm_screen ) as $krm_i => $krm_item ) :
+foreach ( $krm_items as $krm_i => $krm_item ) :
 	$krm_n = $krm_i % 3;
 	if ( ! array_key_exists( 'button', $krm_item ) && isset( $krm_default_items[ $krm_i ] ) ) {
 		$krm_item['button'] = $krm_default_items[ $krm_i ]['button'];
@@ -35,7 +39,7 @@ foreach ( (array) krm_c( 'involved.items', $krm_screen ) as $krm_i => $krm_item 
 	}
 	$krm_label = trim( (string) krm_public( isset( $krm_item['button'] ) ? $krm_item['button'] : '' ) );
 	?>
-<div style="<?php echo esc_attr( $krm_cards['style'][ $krm_n ] ); ?>">
+<div class="k-card" style="<?php echo esc_attr( $krm_cards['style'][ $krm_n ] ); ?>">
 	<?php echo $krm_cards['icon'][ $krm_n ]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed design markup. ?>
 <h3 style="margin: 16px 0 8px; font-size: 22px; font-weight: 800"><?php echo krm_text( $krm_item['title'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
 <p style="margin: 0; font-size: 15px; color: <?php echo esc_attr( $krm_cards['color'][ $krm_n ] ); ?>"><?php echo krm_text( $krm_item['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>

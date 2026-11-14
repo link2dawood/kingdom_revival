@@ -67,6 +67,7 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: "Explore Our Mission" hero button (theme 1.25.0)](#kingdom-revival-ministries-explore-our-mission-hero-button-theme-1250)
 - [Kingdom Revival Ministries: Who We Are, Matthew 28:19 instead of the Vision and Mission cards (theme 1.25.0)](#kingdom-revival-ministries-who-we-are-matthew-2819-instead-of-the-vision-and-mission-cards-theme-1250)
 - [Kingdom Revival Ministries: Scripture strip under the hero becomes a slim marquee (theme 1.25.3)](#kingdom-revival-ministries-scripture-strip-under-the-hero-becomes-a-slim-marquee-theme-1253)
+- [Kingdom Revival Ministries: Pinned Urdu Bible photos show faces; baptism verse banner (theme 1.25.4 / 1.26.0)](#kingdom-revival-ministries-pinned-urdu-bible-photos-show-faces-baptism-verse-banner-theme-1254--1260)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4648,3 +4649,43 @@ strip is **60px** tall at 1440, 57px at 768 and 51px at 390.
 
 **Verified** on the local WP: the track moves 44px in 1s, moves 0px after the pause button is pressed, there is no page
 overflow at 1440 or 390, there are no JS errors, and axe on `.krm-verses` reports 0 violations.
+
+## Kingdom Revival Ministries: Pinned Urdu Bible photos show faces; baptism verse banner (theme 1.25.4 / 1.26.0)
+
+**Result:** every face in the six pinned Urdu Bible photos is now in view. A new full-width band, **7b. New life in
+Christ**, follows the Urdu Bibles band. It uses KRM's own baptism photo and 2 Corinthians 5:17 (KJV), and the two bands
+read as one story: from receiving God's Word to baptism.
+
+**Pinned photos (1.25.4).** The photos were zoomed 1.35× around a face point, which cut off the heads. Photos 17 and 18
+also had no face point under the key their URLs produce (`…-17-scaled` → `urdu-bible-distribution-17`), so they zoomed
+on the centre. The zoom is gone: `front.css` now uses `object-position: 50% 20%`, `word.php` uses the face point as
+`object-position`, and `inc/data/focal.php` has the two missing keys.
+
+**Baptism banner (1.26.0).**
+- `template-parts/home/baptism.php`, called from `front-page.php` right after `word`. Page content section `baptism`
+  (`inc/content/home.php`) has these fields: photo, alt, label, verse (one line per row), reference, paragraph, stat line
+  (empty by default: no verified number yet), and button text and link (default `#stories`).
+- The photo is `20250525_175818.jpg` from the client's data folder (Ministries data/Baptisms): a woman in the water at
+  a brick kiln holding hands with the two men who baptised her. It ships in the theme as
+  `assets/images/content/baptism-new-life.jpg` (2000px, 318 KB) plus a `-1000` version (107 KB) for phones and small
+  tablets. The photo in the request's screenshot was not among KRM's files and had another site's text on it, so it was
+  not used.
+- Computers: the band is 600–650px tall (650 at 1920, 648 at 1440, 600 at 1024). The photo fills the right part
+  (`max(36%, 50% − 160px)`, so it follows the centred text column on wide screens), under a fade from 80% navy at its
+  left edge to 35% at the right. Below 900px the photo sits above the text and fades into the navy, and the band grows
+  with its content.
+- Animation: each verse line fades up 180 ms after the one before it, then the reference, paragraph and button
+  follow 120 ms apart. This uses a new `data-reveal-delay` attribute in `effects.js` scroll reveal. A new generic
+  `[data-parallax]` in `effects.js` moves the photo by up to 8% of the band height. With reduced motion nothing moves.
+- The "650 Urdu Bibles placed so far" line above the Bible heading was already correct, so it needed no change.
+
+**Verified** on the local WP with screenshots at 1920, 1440, 1280, 1024, 768 and 390, in light and dark. The faces stay
+clear of the text on computers and are above the text on tablet and phone. The reveal order was measured (the label
+at 0.64 opacity while the lines are still at 0), and the parallax moves from −11.6px to +21.8px. There are no JS errors.
+`final_pass.js` on the home page reports 0 overflow at 360/768/1024/1440, 0 axe violations, and empty `contrastLight`
+and `contrastDark`.
+
+**Not covered:** the parallax was not checked on real phones. Another session working in the same tree is also on
+1.26.0 (Pray / Give / Go restored as 16b), so both changes ship in one release.
+
+**Decisions for you:** the number of believers baptised since 2018 (the stat line stays hidden until it is filled in).

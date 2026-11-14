@@ -59,11 +59,11 @@ $krm_text   = trim( (string) krm_c( 'word.text' ) );
 	<?php foreach ( $krm_photos as $krm_i => $krm_photo ) : ?>
 		<?php
 		$krm_cap   = trim( (string) ( $krm_photo['caption'] ?? '' ) );
-		$krm_focus = krm_focal( $krm_photo['image'] ); // Zoom in around the faces (the photos are tall, the people small).
+		$krm_focus = krm_focal( $krm_photo['image'] ); // Crop anchored on the faces (no zoom, so heads are never cut).
 		?>
 <li class="krm-word__print" style="--tilt: <?php echo esc_attr( array( '-1.5deg', '1.2deg', '-1deg', '1.6deg', '-1.3deg', '1deg' )[ $krm_i % 6 ] ); ?>">
 <figure>
-<span class="krm-word__photo"><img<?php echo '' !== $krm_focus ? ' style="transform-origin: ' . esc_attr( $krm_focus ) . '"' : ''; ?> <?php krm_img_src( $krm_photo['image'], '(max-width: 599px) 62vw, (max-width: 1023px) 42vw, 280px' ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['alt'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async"></span>
+<span class="krm-word__photo"><img<?php echo '' !== $krm_focus ? ' style="object-position: ' . esc_attr( $krm_focus ) . '"' : ''; ?> <?php krm_img_src( $krm_photo['image'], '(max-width: 599px) 62vw, (max-width: 1023px) 42vw, 280px' ); ?> alt="<?php echo krm_alt( $krm_photo['image'], $krm_photo['alt'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" loading="lazy" decoding="async"></span>
 		<?php if ( '' !== $krm_cap ) : ?>
 <figcaption><?php echo krm_text( $krm_cap ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></figcaption>
 		<?php endif; ?>

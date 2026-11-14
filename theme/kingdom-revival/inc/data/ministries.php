@@ -225,11 +225,11 @@ return array(
 			'sections' => array(),
 			'photos' => array(
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg',
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-17-scaled.jpg',
 					'Urdu Bible distribution',
 				),
 				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-17-scaled.jpg',
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg',
 					'Urdu Bible distribution',
 				),
 				array(

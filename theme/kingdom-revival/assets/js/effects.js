@@ -9,7 +9,8 @@
      headings, intro text and card grids get them automatically. Nothing on the first screen is hidden, nothing is
      hidden without JavaScript, and with reduced motion nothing moves.
    - Photo bands: [data-photo-band] get their background photo (data-band-photo, data-band-photo-s on phones) when
-     they come near the screen. */
+     they come near the screen.
+   - Parallax: [data-parallax] photos drift a little slower than the page (not with reduced motion). */
 (function () {
   "use strict";
   var doc = document;
@@ -117,6 +118,28 @@
     bands.forEach(loadBand);
   }
 
+  /* ---------- Parallax: [data-parallax] photos move a little slower than the page (none with reduced motion) ----------
+     The photo is taller than its box (CSS) and shifted by up to 8% of the box height, once per frame while on screen. */
+  var plx = all("[data-parallax]");
+  if (plx.length && !reduce) {
+    var plxQueued = false;
+    var plxDraw = function () {
+      plxQueued = false;
+      var h = win.innerHeight;
+      plx.forEach(function (img) {
+        var box = img.parentElement.getBoundingClientRect();
+        if (box.bottom < -100 || box.top > h + 100) return;
+        var p = (box.top + box.height / 2 - h / 2) / (h / 2 + box.height / 2); // -1 … 1 across the screen
+        p = Math.max(-1, Math.min(1, p));
+        img.style.transform = "translate3d(0," + (-p * box.height * 0.08).toFixed(1) + "px,0)";
+      });
+    };
+    var plxQueue = function () { if (!plxQueued) { plxQueued = true; win.requestAnimationFrame(plxDraw); } };
+    win.addEventListener("scroll", plxQueue, { passive: true });
+    win.addEventListener("resize", plxQueue);
+    plxDraw();
+  }
+
   /* ---------- Top bar verse: the full verse on hover (CSS), keyboard focus or a tap ---------- */
   all("[data-krm-verse]").forEach(function (box) {
     var btn = box.querySelector("button");
@@ -137,7 +160,7 @@
   var HL = ["Jesus Christ", "Vulnerable", "Brick Kiln Children", "Know Christ", "Our prayer", "Your gift", "your generosity",
     "your giving", "Gospel hope", "Pakistan’s Forgotten", "Pakistan's Forgotten", "Bring Hope", "be free", "Punjab",
     "in action", "the field", "Stand With Us", "pray with you", "faith", "on the ground", "news", "God’s Word", "New Life",
-    "Brick Kiln", "a person", "twelve expressions", "Growth", "a new beginning", "Still Ahead", "a Calling", "here to do",
+    "Brick Kiln", "a person", "twelve expressions", "Growth", "a new beginning", "Still Ahead", "a Calling", "here to do", "we exist",
     "staff", "integrity", "the mission", "help", "God", "a project", "partner", "Partnership", "projects", "Testimonials",
     "Gallery", "We Do", "ministry groups", "Ministries", "this work", "serves", "Outreach", "Church", "Bible", "Discipleship",
     "Deliverance", "Freedom", "Orphan Care", "Clean Water", "Christian", "Widows", "Health", "Food", "Recovery", "Equipping",
@@ -311,6 +334,8 @@
     var at = pending.indexOf(el);
     if (at > -1) pending.splice(at, 1);
     if (!el.classList.contains("reveal-pending")) return;
+    // data-reveal-delay="ms": a fixed delay, so parts of one block appear in order (baptism banner verse lines).
+    delay = Math.max(delay || 0, parseInt(el.getAttribute("data-reveal-delay"), 10) || 0);
     if (delay) el.style.setProperty("--reveal-delay", delay + "ms");
     el.classList.add("reveal-in");
     el.classList.remove("reveal-pending");
