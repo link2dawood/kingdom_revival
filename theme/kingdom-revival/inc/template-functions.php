@@ -281,7 +281,7 @@ function krm_img_src( $ref, $sizes = '(max-width: 820px) 100vw, 50vw', $card = f
 	echo 'src="' . esc_url( (string) $src ) . '"';
 	if ( '' !== $focal ) {
 		// Where the faces are: effects.js makes it the photo's object-position, so a cropped photo keeps them in view.
-		echo ' data-focal="' . esc_attr( $focal ) . '"';
+		echo ' data-focal="' . esc_attr( $focal ) . '"' . ( krm_focal_fixed( $ref ) ? ' data-focal-fixed' : '' );
 	}
 	if ( $id ) {
 		// The 4:3 card crops are cut from the middle of the photo, which can lose the faces: full sizes then.
@@ -305,8 +305,9 @@ add_filter(
 		if ( false !== strpos( $img, 'data-focal=' ) || ! preg_match( '/\ssrc="([^"]+)"/', $img, $m ) ) {
 			return $img;
 		}
-		$focal = krm_focal( $attachment_id ? $attachment_id : html_entity_decode( $m[1] ) );
-		return '' === $focal ? $img : str_replace( '<img ', '<img data-focal="' . esc_attr( $focal ) . '" ', $img );
+		$ref   = $attachment_id ? $attachment_id : html_entity_decode( $m[1] );
+		$focal = krm_focal( $ref );
+		return '' === $focal ? $img : str_replace( '<img ', '<img data-focal="' . esc_attr( $focal ) . '"' . ( krm_focal_fixed( $ref ) ? ' data-focal-fixed' : '' ) . ' ', $img );
 	},
 	10,
 	3
@@ -323,6 +324,9 @@ add_filter(
 			$focal = krm_focal( $attachment->ID );
 			if ( '' !== $focal ) {
 				$attr['data-focal'] = $focal;
+				if ( krm_focal_fixed( $attachment->ID ) ) {
+					$attr['data-focal-fixed'] = '1';
+				}
 			}
 		}
 		return $attr;
@@ -339,7 +343,7 @@ function krm_focal_data() {
 	if ( null === $data ) {
 		$file = KRM_DIR . '/inc/data/focal.php';
 		$data = is_readable( $file ) ? include $file : array();
-		$data = is_array( $data ) ? $data + array( 'focal' => array(), 'ratio' => array() ) : array( 'focal' => array(), 'ratio' => array() );
+		$data = is_array( $data ) ? $data + array( 'focal' => array(), 'fixed' => array(), 'ratio' => array() ) : array( 'focal' => array(), 'fixed' => array(), 'ratio' => array() );
 	}
 	return $data;
 }
@@ -390,6 +394,19 @@ function krm_focal( $ref ) {
 }
 
 /**
+ * Whether a photo's focus point was set by hand (tools/focal/overrides.txt): then it is the exact object-position.
+ * A detected point is where the faces' centre is, and effects.js moves the crop so the faces sit in the upper part of
+ * the box with room for the heads (data-focal-fixed tells it which is which).
+ *
+ * @param int|string $ref Attachment ID or design URL.
+ */
+function krm_focal_fixed( $ref ) {
+	$file = krm_ref_file( $ref );
+	$data = krm_focal_data();
+	return '' !== $file && ! empty( $data['fixed'][ krm_focal_key( $file ) ] );
+}
+
+/**
  * Shape of a photo (width / height), or 0 when unknown: attachment metadata, else the theme copy's measured shape.
  *
  * @param int|string $ref Attachment ID or design URL.
@@ -431,6 +448,17 @@ function krm_ref_url( $ref, $size = 'full' ) {
 }
 
 /**
+ * A photo description without the upload's copy number: "leadership and discipleship (8)." → "leadership and
+ * discipleship" (alt texts made from file names like "Leadership-and-Discipleship-8.jpg" carry it).
+ *
+ * @param string $text Alt text or caption.
+ */
+function krm_clean_caption( $text ) {
+	$clean = trim( (string) preg_replace( '/\s*\(\s*\d+\s*\)\s*\.?\s*$/', '', (string) $text ) );
+	return '' !== $clean ? $clean : trim( (string) $text );
+}
+
+/**
  * Alt text of an image reference.
  *
  * @param int|string $ref      Reference.
@@ -439,13 +467,13 @@ function krm_ref_url( $ref, $size = 'full' ) {
 function krm_ref_alt( $ref, $fallback = '' ) {
 	if ( is_numeric( $ref ) ) {
 		$alt = get_post_meta( (int) $ref, '_wp_attachment_image_alt', true );
-		return '' !== $alt ? $alt : $fallback;
+		return '' !== $alt ? krm_clean_caption( $alt ) : $fallback;
 	}
 	$id = krm_media_id( $ref );
 	if ( $id ) {
 		$alt = get_post_meta( $id, '_wp_attachment_image_alt', true );
 		if ( '' !== $alt ) {
-			return $alt;
+			return krm_clean_caption( $alt );
 		}
 	}
 	// Not imported yet: the design's own alt text for this file.

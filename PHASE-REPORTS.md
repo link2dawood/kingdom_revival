@@ -70,6 +70,9 @@ All phase reports in one file, in phase order. Each phase keeps its original tex
 - [Kingdom Revival Ministries: Pinned Urdu Bible photos show faces; baptism verse banner (theme 1.25.4 / 1.26.0)](#kingdom-revival-ministries-pinned-urdu-bible-photos-show-faces-baptism-verse-banner-theme-1254--1260)
 - [Kingdom Revival Ministries: "How this ministry serves" redesigned on every ministry page (theme 1.26.0)](#kingdom-revival-ministries-how-this-ministry-serves-redesigned-on-every-ministry-page-theme-1260)
 - [Kingdom Revival Ministries: Ministry photos matched to their ministry, and face-aware crops everywhere (theme 1.27.0)](#kingdom-revival-ministries-ministry-photos-matched-to-their-ministry-and-face-aware-crops-everywhere-theme-1270)
+- [Kingdom Revival Ministries: Photos from the root of the data folder fill the thin galleries (theme 1.28.0)](#kingdom-revival-ministries-photos-from-the-root-of-the-data-folder-fill-the-thin-galleries-theme-1280)
+- [Kingdom Revival Ministries: Disaster Relief & Recovery Ministry taken off the website (theme 1.28.2)](#kingdom-revival-ministries-disaster-relief--recovery-ministry-taken-off-the-website-theme-1282)
+- [Kingdom Revival Ministries: Brick kiln, slavery and food photos each on their own page (theme 1.28.3)](#kingdom-revival-ministries-brick-kiln-slavery-and-food-photos-each-on-their-own-page-theme-1283)
 - [New phone / WhatsApp number and social links (theme 1.18.1)](#kingdom-revival-ministries-new-phone--whatsapp-number-and-social-links-theme-1181)
 - [Navbar button "Donate" instead of "Donate / Give" (theme 1.18.2)](#kingdom-revival-ministries-navbar-button-donate-instead-of-donate--give-theme-1182)
 
@@ -4797,3 +4800,123 @@ purged afterwards.
 - Disaster Relief: no flood or disaster photos, only the winter-clothes distributions.
 - Persecuted Christian Support: only 4 photos of one visit.
 - Clean Water: well covered, but there are no "before" photos of the old water sources.
+
+## Kingdom Revival Ministries: Photos from the root of the data folder fill the thin galleries (theme 1.28.0)
+
+**Result:** 15 photos from the loose files at the root of "Kingdom Revival ministries-Data " (not in any ministry
+subfolder) were added to Food Relief, Disaster Relief, Persecuted Christian Support, Clean Water and the hidden Youth /
+Women ministry. No text, layout or design changed. Medical & Health still has no medical-camp photo: the root folder has none.
+
+The client pointed out that the photos for the "no suitable image" list are in the root of the data folder. All 171
+root photos (plus 2 videos) were reviewed on contact sheets and matched by dHash against the theme's images: 26 were
+already on the site (the winter-clothes photos on Disaster Relief, the prayer photos, the preaching photos, etc.).
+
+| Ministry | Added (source → theme file) | Shown |
+|---|---|---|
+| Food Relief | IMG_6426 → food-relief-09 (food package handed to a mother), IMG_9069 → food-relief-10 (mother feeding her baby), IMG_8949 → food-relief-11 (food bags laid out, families cheering) | gallery 7–9 |
+| Disaster Relief & Recovery | IMG_8375 → disaster-relief-08 (relief sacks and boxes), IMG_6381 → disaster-relief-09 (prayer before packages are given), IMG_8428 → disaster-relief-10 (families with packages and the banner) | gallery 7–9 |
+| Persecuted Christian Support | IMG_8996 → persecuted-christians-05, IMG_9002 → persecuted-christians-06 (pastoral visits to a family, Bibles given) | gallery 4–5 |
+| Clean Water Projects | IMG_7591 → clean-water-project-28 (new pump on its base), IMG_7682 → clean-water-project-29 (girl at a new pump) | Gallery page (photos 28–29; the ministry page shows nine) |
+| Youth / Women (hidden) | IMG_1841, 1758, 1772, 1742, 1765 → women-ministry-01…05 (women's meetings in the church hall); card photo women-ministry-01 | when the ministry is shown |
+
+WebP, quality 76, ≤1400 px (women-ministry-01, a possible hero, 1920 px), 84–324 KB. Source files untouched. A fourth
+Disaster Relief photo was tried and dropped: a tenth photo would have added the "see all photos" link to that page.
+IMG_7913 was skipped as a near-duplicate of food-relief-07.
+
+**Upgrade:** inc/upgrade.php, krm_photos_version 2. A gallery still holding exactly the 1.27.0 photos gets the new
+defaults (alts are added only where empty); an empty card photo gets the default. Tested on the local site: all five
+updated (Clean Water 29, Food 9, Disaster 9, Persecuted 5, Youth / Women 5 on the draft).
+
+**Crops:** focal.php rebuilt (366 photos, 207 with faces). Overrides for nine of the new photos (wide groups centred
+on the group instead of one face at the edge; portraits lifted to the faces). image_audit.js screenshots of every
+new photo at 1440 / 768 / 390: faces in view in all of them. final_pass.js: 46 pages, 0 overflow, 0 JS errors,
+0 contrast failures light / dark, 0 duplicate titles or descriptions.
+
+**Still no suitable photo in the folder (ask the client):**
+- Medical & Health: no medical camp, check-up or medicine photo anywhere (subfolder empty, root has none).
+- Disaster Relief: no flood or damaged-home photo; the page shows relief packages and winter clothes.
+- Persecuted Christian Support: nothing specific to persecution (legal help, relocation); pastoral visits only.
+- Clean Water: no "before" photo of the old water sources.
+- Youth: no youth-group photo (the women's photos are in; the root has children's Bible clubs, which belong to Children's ministry).
+
+## Kingdom Revival Ministries: Faces kept in short crops, no "(8)" numbers in photo captions (theme 1.28.1)
+
+**Result:** on ministry pages, wide or short crops of tall photos (the stacked collage tiles in "How this ministry
+serves", the "In pictures" photos) no longer cut people's heads off. Captions and alt texts no longer end in the
+upload's copy number ("leadership and discipleship (8)." → "leadership and discipleship").
+
+**Why heads were cut:** the detected focus point (the faces' centre, inc/data/focal.php) was used directly as
+`object-position`. That puts the faces at the same fraction of the box as of the photo, so in a short crop of a tall
+photo a face at 22% of the photo sat 22% from the box top and the head above it was cropped (Bible Distribution:
+photos 15 and 16 in the collage, 15 as the "In pictures" lead).
+
+**What changed:**
+- assets/js/effects.js: once the photo and its box have sizes, the crop is moved so the faces sit at 40% of the box
+  height (room for the heads, hands and Bible below) and centred across; redone when the box resizes
+  (ResizeObserver). Only for `object-fit: cover` images; others keep the plain value.
+- Hand-set points (tools/focal/overrides.txt) were tuned as exact object-positions, so they stay exact:
+  build_focal.py writes them to a new `fixed` list in focal.php, `krm_focal_fixed()` adds `data-focal-fixed`
+  and effects.js uses those values as they are (the Brick Kiln collage photo looked worse without this).
+- New override `urdu-bible-distribution-13 50 20` (detection centred between the adults and the small girl far below,
+  which cut the pastor's face).
+- `krm_clean_caption()` (inc/template-functions.php) drops a trailing "(n)" / "(n)." from Media Library alt texts;
+  used by `krm_photo_caption()` (ministry "In pictures" captions and gallery alts) and `krm_ref_alt()`. The alt texts
+  themselves are not changed. On the live site it affected Bible Distribution, Leadership Training, Prayer &
+  Deliverance, Baptisms & Discipleship, Brick Kiln Family Care, Children & Orphan Care and Widows Support.
+
+**Verified:** screenshots of the Bible Distribution collage and "In pictures" at 1440 and 390 (all faces in view),
+Prayer & Deliverance and Brick Kiln Family Care (unchanged), home page collage. final_pass.js: 46 pages, 0 overflow,
+0 JS errors, 0 contrast failures light / dark, 0 duplicate titles or descriptions.
+
+**Not covered:** background-image crops (`krm_bg_small()`, hero photos) still use the focus point directly; none was
+reported wrong. Captions made from file names stay lower case ("urdu bible distribution"); better descriptions can be
+typed into each photo's Alternative Text in the Media Library.
+
+## Kingdom Revival Ministries: Disaster Relief & Recovery Ministry taken off the website (theme 1.28.2)
+
+**Result:** Disaster Relief & Recovery Ministry no longer appears anywhere on the website, at the client's request.
+It is gone from the What We Do dropdown, the footer, the What We Do page and its group page, the home page, the
+Gallery, search and the XML sitemap.
+
+- `inc/data/ministries.php`: its status is now `hidden`, the same as Youth Ministry / Women Empowerment. Setup creates
+  it as a draft, and the menu definitions and the data-file fallback lists leave it out.
+- `inc/upgrade.php` (option `krm_ministry_hide_version` 1): on existing sites, the published post becomes a draft
+  marked `_krm_theme_hidden`, and the page caches are purged. Menus already skip links to unpublished ministries
+  (`inc/nav.php`), so the dropdown item disappears without rebuilding the menus. Its old address
+  `/what-we-do/disaster-relief/` redirects (302) to the Compassion & Humanitarian group page.
+- `inc/importer.php`: the Setup description now names both ministries that are created as drafts.
+
+**Verified** on the local site: after updating, the post is a draft. A crawl of every published page, ministry,
+story and ministry group page finds no "disaster" text, and the dropdown still lists the other ministries.
+
+**Not covered:** the post, its photos and its text are kept, not deleted. To show it again, set `'status' => 'live'`
+in the data file and bump the version, or publish it in Ministries.
+
+## Kingdom Revival Ministries: Brick kiln, slavery and food photos each on their own page (theme 1.28.3)
+
+**Result:** Brick Kiln Family Care now shows brick kiln families with their bricks, its meal photos are on Food Relief,
+and Slavery & Freedom shows its own Before / After freedom photos. No text, layout or design changed.
+
+The client's feedback: the Brick Kiln page showed food photos (10 of its 12 were children's meals from the "Bricks kiln
+slaves children" folder), Food Relief did not have them, and the brick kiln family photos had been put on Slavery.
+
+| Page | Before | After |
+|---|---|---|
+| Brick Kiln Family Care | 10 meal photos + 2 winter-clothes photos; card Bricks-39 | slavery-freedom-01…07 (families beside fresh bricks, kiln walls), brick-kiln-family-01 (children at the kiln chimney, folder photo 20251221_155817), brick-kiln-family-02 (root IMG_9567, mother and children beside moulded bricks), then Bricks-39 / 40 (winter clothes); hero slavery-freedom-01, card slavery-freedom-02 |
+| Food Relief | 9 photos (food parcels) | 19: the 9 plus the 10 kiln meal photos, alternating in the first nine; card unchanged |
+| Slavery & Freedom | the brick kiln family photos | its own folder ("Freedom from slavery missions"): freedom-after-2 ("I am free now", hero and card), freedom-before-1…3, freedom-after-1, 3, 4 |
+
+**Upgrade:** inc/upgrade.php, krm_photos_version 3 (a site that already ran step 2 still gets it). A gallery equal to the
+1.27.0 default (or, for Food Relief, the 1.28.0 one) gets the new default; a card photo still Bricks-39 / slavery-freedom-01
+gets the new card. Tested on the local site from both the 1.27.0 and the 1.28.0 state: all three match the defaults.
+
+**Verified:** image_audit.js screenshots of the hero, collage and impact photos on both pages at 1440 / 768 / 390 (faces
+in view); both new photos dHash-checked against the theme and the Media Library (not used before). final_pass.js: 0
+overflow, 0 JS errors, 0 contrast failures light / dark, 0 duplicate titles.
+
+**Not covered / limits:**
+- The Slavery folder has only 7 photos and the page's Before / After section already shows all 7, so each appears 2–3
+  times on the page (collage, impact row, gallery, Before / After). More freedom-mission photos from the client would fix it.
+- The Slavery page's Before / After band background is the home page's "Freedom stories" photo (a meal photo, Bricks-32,
+  faint under the navy overlay). It is a home page setting (Home → Freedom stories → Background photo), left unchanged.
+- Food Relief now has 19 photos, so the page shows the "see all photos" link to the Gallery.

@@ -57,7 +57,7 @@ def focus(det, path):
 def main():
     theme, uploads, model = sys.argv[1:4]
     det = cv2.FaceDetectorYN.create(model, '', (320, 320), 0.75, 0.3, 5000)
-    focal, ratios = {}, {}
+    focal, ratios, fixed = {}, {}, set()
     files = []
     for root, _, names in os.walk(os.path.join(theme, 'assets', 'images')):
         files += [(os.path.join(root, n), True) for n in names if n.lower().endswith(EXT)]
@@ -77,15 +77,20 @@ def main():
             parts = line.split('#')[0].split()
             if len(parts) == 3:
                 focal[parts[0]] = (int(parts[1]), int(parts[2]))
+                fixed.add(parts[0])
             elif len(parts) == 2 and parts[1] == '-':  # "key -": no focus point (the template positions it by hand)
                 focal.pop(parts[0], None)
     out = os.path.join(theme, 'inc', 'data', 'focal.php')
     with open(out, 'w', encoding='utf-8') as f:
         f.write("<?php\n/**\n * Built by tools/focal/build_focal.py (do not edit by hand): 'focal' = where the faces are in a photo, as\n"
-                " * \"x% y%\" for object-position, by photo key (krm_focal_key()); 'ratio' = width / height of the theme's own photos.\n"
+                " * \"x% y%\", by photo key (krm_focal_key()); 'fixed' = keys set by hand in overrides.txt, whose value is the exact\n"
+                " * object-position (detected points are the faces' centre, framed by effects.js); 'ratio' = width / height of the theme's own photos.\n"
                 " *\n * @package Kingdom_Revival\n */\n\ndefined( 'ABSPATH' ) || exit;\n\nreturn array(\n\t'focal' => array(\n")
         for k in sorted(focal):
             f.write("\t\t'%s' => '%d%% %d%%',\n" % (k.replace("'", "\\'"), focal[k][0], focal[k][1]))
+        f.write("\t),\n\t'fixed' => array(\n")
+        for k in sorted(fixed & set(focal)):
+            f.write("\t\t'%s' => true,\n" % k.replace("'", "\\'"))
         f.write("\t),\n\t'ratio' => array(\n")
         for k in sorted(ratios):
             f.write("\t\t'%s' => %s,\n" % (k.replace("'", "\\'"), ratios[k]))

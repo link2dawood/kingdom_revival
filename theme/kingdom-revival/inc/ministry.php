@@ -740,5 +740,5 @@ function krm_story_opening( $post, $words = 90 ) {
 function krm_photo_caption( $ref, $fallback ) {
 	$id  = is_numeric( $ref ) ? (int) $ref : krm_media_id( (string) $ref );
 	$alt = $id ? trim( (string) get_post_meta( $id, '_wp_attachment_image_alt', true ) ) : '';
-	return '' !== $alt ? $alt : (string) $fallback;
+	return krm_clean_caption( '' !== $alt ? $alt : (string) $fallback );
 }

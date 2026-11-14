@@ -18,3 +18,15 @@ bricks-kiln-slaves-children-40-scaled-1 47 26
 # card or hero. Centred on the woman, with the pastor's hand on her head in view.
 deliverance-and-healing-ministry-10 35 35
 medical-health-3 35 35
+# Theme 1.28.0: wide group photos centred on the group, not one face at the edge; portraits lifted to the faces.
+disaster-relief-08 50 32
+disaster-relief-09 55 50
+disaster-relief-10 50 55
+food-relief-09 55 36
+food-relief-10 64 28
+food-relief-11 50 40
+persecuted-christians-05 50 28
+persecuted-christians-06 50 30
+women-ministry-04 45 45
+# Mother, pastor and the small girl far below: detection centres between them, which cut the pastor's face in wide crops.
+urdu-bible-distribution-13 50 20

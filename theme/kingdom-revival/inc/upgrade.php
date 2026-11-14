@@ -2231,3 +2231,156 @@ add_action(
 	},
 	39
 );
+
+/**
+ * Theme 1.28.0 (krm_photos_version 2): photos from the root of the client's data folder join five galleries (Clean Water,
+ * Food Relief, Disaster Relief, Persecuted Christian Support, Youth / Women). A gallery still holding exactly the 1.27.0
+ * default photos gets the current defaults; one changed by hand is kept. An empty card photo gets the default.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_photos_version' ) >= 2 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_photos_version', 2 );
+		$before = array(
+			'clean-water'           => array( 'clean-water-project-06', 'clean-water-project-02', 'clean-water-project-04', 'clean-water-project-18', 'clean-water-project-24', 'clean-water-project-15', 'clean-water-project-20', 'clean-water-project-09', 'clean-water-project-14', 'clean-water-project-01', 'clean-water-project-03', 'clean-water-project-05', 'clean-water-project-07', 'clean-water-project-08', 'clean-water-project-10', 'clean-water-project-11', 'clean-water-project-12', 'clean-water-project-13', 'clean-water-project-16', 'clean-water-project-17', 'clean-water-project-19', 'clean-water-project-21', 'clean-water-project-22', 'clean-water-project-23', 'clean-water-project-25', 'clean-water-project-26', 'clean-water-project-27' ),
+			'food-relief'           => array( 'food-relief-1', 'food-relief-2', 'food-relief-3', 'food-relief-07', 'food-relief-08', 'food-relief-6' ),
+			'disaster-relief'       => array( 'disaster-relief-4', 'disaster-relief-1', 'disaster-relief-2', 'disaster-relief-3', 'disaster-relief-06', 'disaster-relief-07' ),
+			'persecuted-christians' => array( 'persecuted-christians-1', 'persecuted-christians-04', 'persecuted-christians-3' ),
+			'youth-or-women'        => array(),
+		);
+		$data = krm_ministry_data();
+		$key  = function ( $ref ) {
+			return preg_replace( '/-scaled-\d+$/', '', krm_focal_key( is_numeric( $ref ) ? krm_ref_file( $ref ) : (string) $ref ) );
+		};
+		$changed = false;
+		foreach ( $before as $slug => $keys ) {
+			$post = krm_get_by_path( $slug, 'ministry' );
+			if ( ! $post || empty( $data['items'][ $slug ]['photos'] ) ) {
+				continue;
+			}
+			$m       = $data['items'][ $slug ];
+			$gallery = array_values( array_filter( (array) get_post_meta( $post->ID, '_krm_gallery', true ) ) );
+			if ( array_map( $key, $gallery ) === $keys ) {
+				$alts    = (array) get_post_meta( $post->ID, '_krm_photo_alts', true );
+				$gallery = array();
+				foreach ( $m['photos'] as $photo ) {
+					$id        = krm_media_id( $photo[0] );
+					$r         = $id ? $id : $photo[0];
+					$gallery[] = $r;
+					if ( empty( $alts[ (string) $r ] ) ) {
+						$alts[ (string) $r ] = $photo[1];
+					}
+				}
+				update_post_meta( $post->ID, '_krm_gallery', $gallery );
+				update_post_meta( $post->ID, '_krm_photo_alts', $alts );
+				$changed = true;
+			}
+			if ( $m['explorer_image'] && '' === (string) get_post_meta( $post->ID, '_krm_explorer_image', true ) ) {
+				$id = krm_media_id( $m['explorer_image'] );
+				update_post_meta( $post->ID, '_krm_explorer_image', $id ? $id : $m['explorer_image'] );
+				$changed = true;
+			}
+		}
+		if ( $changed && function_exists( 'krm_purge_page_caches' ) ) {
+			krm_purge_page_caches();
+		}
+	},
+	40
+);
+
+/**
+ * Theme 1.28.3 (krm_photos_version 3): Brick Kiln Family Care shows the brick kiln family photos (its meal photos move to
+ * Food Relief) and Slavery & Freedom its own Before / After photos (the client's "Freedom from slavery missions" folder).
+ * A gallery still holding one of the earlier default sets gets the current defaults; one changed by hand is kept. A card
+ * photo that is empty or still the earlier default gets the current default.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_photos_version' ) >= 3 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_photos_version', 3 );
+		$bk     = array( 'bricks-kiln-slaves-children-39', 'bricks-kiln-slaves-children-40', 'bricks-kiln-slaves-children-38', 'bricks-kiln-slaves-children-37', 'bricks-kiln-slaves-children-36', 'bricks-kiln-slaves-children-35', 'bricks-kiln-slaves-children-34', 'bricks-kiln-slaves-children-33', 'bricks-kiln-slaves-children-32', 'bricks-kiln-slaves-children-31', 'bricks-kiln-slaves-children-30', 'bricks-kiln-slaves-children-29' );
+		$before = array( // Earlier default galleries (1.27.0, 1.28.0), as photo keys.
+			'brick-kiln-family-care' => array( $bk ),
+			'slavery-freedom'        => array( array( 'slavery-freedom-01', 'slavery-freedom-02', 'slavery-freedom-03', 'slavery-freedom-04', 'slavery-freedom-05', 'slavery-freedom-06', 'slavery-freedom-07' ) ),
+			'food-relief'            => array( array( 'food-relief-1', 'food-relief-2', 'food-relief-3', 'food-relief-07', 'food-relief-08', 'food-relief-6' ), array( 'food-relief-1', 'food-relief-2', 'food-relief-3', 'food-relief-07', 'food-relief-08', 'food-relief-6', 'food-relief-09', 'food-relief-10', 'food-relief-11' ) ),
+		);
+		$cards  = array(
+			'brick-kiln-family-care' => 'bricks-kiln-slaves-children-39',
+			'slavery-freedom'        => 'slavery-freedom-01',
+		);
+		$data   = krm_ministry_data();
+		$key    = function ( $ref ) {
+			return preg_replace( '/-scaled-\d+$/', '', krm_focal_key( is_numeric( $ref ) ? krm_ref_file( $ref ) : (string) $ref ) );
+		};
+		$ref    = function ( $url ) {
+			$id = krm_media_id( $url );
+			return $id ? $id : $url;
+		};
+		$changed = false;
+		foreach ( $before as $slug => $sets ) {
+			$post = krm_get_by_path( $slug, 'ministry' );
+			if ( ! $post || empty( $data['items'][ $slug ]['photos'] ) ) {
+				continue;
+			}
+			$m       = $data['items'][ $slug ];
+			$gallery = array_values( array_filter( (array) get_post_meta( $post->ID, '_krm_gallery', true ) ) );
+			if ( in_array( array_map( $key, $gallery ), $sets, true ) ) {
+				$alts    = (array) get_post_meta( $post->ID, '_krm_photo_alts', true );
+				$gallery = array();
+				foreach ( $m['photos'] as $photo ) {
+					$r                   = $ref( $photo[0] );
+					$gallery[]           = $r;
+					$alts[ (string) $r ] = $photo[1];
+				}
+				update_post_meta( $post->ID, '_krm_gallery', $gallery );
+				update_post_meta( $post->ID, '_krm_photo_alts', $alts );
+				$changed = true;
+			}
+			$card = (string) get_post_meta( $post->ID, '_krm_explorer_image', true );
+			if ( $m['explorer_image'] && ( '' === $card || ( isset( $cards[ $slug ] ) && $key( $card ) === $cards[ $slug ] ) ) ) {
+				update_post_meta( $post->ID, '_krm_explorer_image', $ref( $m['explorer_image'] ) );
+				$changed = true;
+			}
+		}
+		if ( $changed && function_exists( 'krm_purge_page_caches' ) ) {
+			krm_purge_page_caches();
+		}
+	},
+	41
+);
+
+/**
+ * Theme 1.28.2 (krm_ministry_hide_version 1): Disaster Relief & Recovery Ministry is taken off the website at the
+ * client's request. Its post becomes a draft, so it drops out of the What We Do dropdown and footer menus, the What We
+ * Do page, the home page, the gallery, search and the sitemap; its old address redirects to its group page. The draft
+ * is marked theme-hidden: setting its status back to 'live' in inc/data/ministries.php (and a version bump) restores it.
+ */
+add_action(
+	'init',
+	function () {
+		if ( (int) get_option( 'krm_ministry_hide_version' ) >= 1 || ! post_type_exists( 'ministry' ) ) {
+			return;
+		}
+		update_option( 'krm_ministry_hide_version', 1 );
+		$post = krm_get_by_path( 'disaster-relief', 'ministry' );
+		if ( $post && 'publish' === $post->post_status ) {
+			wp_update_post(
+				array(
+					'ID'          => $post->ID,
+					'post_status' => 'draft',
+				)
+			);
+			update_post_meta( $post->ID, '_krm_theme_hidden', 1 );
+			if ( function_exists( 'krm_purge_page_caches' ) ) {
+				krm_purge_page_caches();
+			}
+		}
+	},
+	41
+);

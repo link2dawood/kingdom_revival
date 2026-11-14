@@ -152,7 +152,32 @@
 
   /* ---------- Photo focus: a cropped photo (object-fit: cover) keeps its faces in view ---------- */
   // data-focal ("x% y%") comes from krm_img_src() (inc/data/focal.php, built by tools/focal/build_focal.py).
-  all("img[data-focal]").forEach(function (img) { img.style.objectPosition = img.getAttribute("data-focal"); });
+  // The focus point is where the faces' centre is. Used directly as object-position it lands at the same fraction of
+  // the box as of the photo, so in a short crop of a tall photo (a wide card, a stacked collage tile) a face at 22%
+  // sits 22% from the box top and the head is cut off. Once the photo's and the box's sizes are known, the crop is
+  // moved so the faces sit at 40% of the box height (headroom above, the hands/Bible below) and centred across.
+  // data-focal-fixed = set by hand (tools/focal/overrides.txt): already the exact object-position.
+  function focalPlace(img) {
+    var f = (img.getAttribute("data-focal") || "").match(/([\d.]+)%\s+([\d.]+)%/);
+    if (!f) return;
+    var nw = img.naturalWidth, nh = img.naturalHeight, bw = img.clientWidth, bh = img.clientHeight;
+    if (img.hasAttribute("data-focal-fixed") || !nw || !nh || !bw || !bh || getComputedStyle(img).objectFit !== "cover") { img.style.objectPosition = f[1] + "% " + f[2] + "%"; return; }
+    var s = Math.max(bw / nw, bh / nh), w = nw * s, h = nh * s;
+    function axis(pct, size, box, at) {
+      var spare = size - box;
+      if (spare < 1) return 50;
+      return Math.max(0, Math.min(100, (pct / 100 * size - at * box) / spare * 100));
+    }
+    img.style.objectPosition = axis(+f[1], w, bw, 0.5).toFixed(1) + "% " + axis(+f[2], h, bh, 0.4).toFixed(1) + "%";
+  }
+  var focalImgs = all("img[data-focal]");
+  var focalRO = "ResizeObserver" in window ? new ResizeObserver(function (list) { list.forEach(function (e) { focalPlace(e.target); }); }) : null;
+  focalImgs.forEach(function (img) {
+    focalPlace(img);
+    img.addEventListener("load", function () { focalPlace(img); });
+    if (focalRO) focalRO.observe(img);
+  });
+  if (!focalRO) window.addEventListener("resize", function () { focalImgs.forEach(focalPlace); });
 
   /* ---------- Heading highlights (.hl): 1–2 key words of each main heading on a solid colour block ---------- */
   // Words already marked in the content (<em>, or a span in the accent colour) are used as they are; otherwise the

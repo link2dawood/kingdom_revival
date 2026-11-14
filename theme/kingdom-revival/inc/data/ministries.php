@@ -550,8 +550,30 @@ return array(
 				'Fellowship and prayer groups',
 			),
 			'sections' => array(),
-			'photos' => array(),
-			'explorer_image' => '',
+			// Theme 1.28.0: the women's meeting photos from the root of the client's data folder (no youth photos yet).
+			'photos' => array(
+				array(
+					'krm-theme:images/content/women-ministry-01.webp',
+					'Women of the church standing together in the church hall, holding their Bibles',
+				),
+				array(
+					'krm-theme:images/content/women-ministry-02.webp',
+					'A pastor speaking to a hall full of women at a women\'s meeting',
+				),
+				array(
+					'krm-theme:images/content/women-ministry-03.webp',
+					'A pastor preaching to women seated on the floor of the church hall',
+				),
+				array(
+					'krm-theme:images/content/women-ministry-04.webp',
+					'Women gathered on the floor of the church hall for a women\'s meeting',
+				),
+				array(
+					'krm-theme:images/content/women-ministry-05.webp',
+					'A pastor speaking at the front of the church hall to the women\'s meeting',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/women-ministry-01.webp',
 			'raised' => '600',
 			'goal' => '4000',
 			'gifts' => array(
@@ -583,35 +605,35 @@ return array(
 			'sections' => array(),
 			'photos' => array(
 				array(
-					'krm-theme:images/content/slavery-freedom-01.webp',
-					'A brick kiln family with a ministry worker, sitting behind rows of freshly moulded bricks',
+					'krm-theme:images/content/freedom-after-2.jpg',
+					'A freed family at the brick kiln holding an "I am free now" sign with a ministry worker',
 				),
 				array(
-					'krm-theme:images/content/slavery-freedom-02.webp',
-					'A mother and her children with a ministry worker beside the bricks they made at the kiln',
+					'krm-theme:images/content/freedom-before-1.jpg',
+					'Before: a mother and her children with a ministry worker outside their brick home at the kiln',
 				),
 				array(
-					'krm-theme:images/content/slavery-freedom-03.webp',
-					'A mother and her daughter standing with a ministry worker against a brick kiln wall',
+					'krm-theme:images/content/freedom-before-2.jpg',
+					'Before: a mother and her children with a ministry worker beside stacked bricks at a kiln',
 				),
 				array(
-					'krm-theme:images/content/slavery-freedom-04.webp',
-					'A brick kiln family with folded hands in prayer beside a ministry worker',
+					'krm-theme:images/content/freedom-after-1.jpg',
+					'After: a freed family with a ministry worker in their new home, giving a thumbs-up',
 				),
 				array(
-					'krm-theme:images/content/slavery-freedom-05.webp',
-					'A woman sitting on a stack of unfired bricks at the kiln where her family works',
+					'krm-theme:images/content/freedom-before-3.jpg',
+					'Before: a family of brick kiln workers and their children on the dusty ground at a kiln',
 				),
 				array(
-					'krm-theme:images/content/slavery-freedom-06.webp',
-					'A young mother holding her baby at a brick kiln',
+					'krm-theme:images/content/freedom-after-3.jpg',
+					'After: a freed mother at her new sewing machine with her children and a ministry worker',
 				),
 				array(
-					'krm-theme:images/content/slavery-freedom-07.webp',
-					'A young girl at a brick kiln looking into the camera',
+					'krm-theme:images/content/freedom-after-4.jpg',
+					'After: a freed family with a ministry worker outside their new home',
 				),
 			),
-			'explorer_image' => 'krm-theme:images/content/slavery-freedom-01.webp',
+			'explorer_image' => 'krm-theme:images/content/freedom-after-2.jpg',
 			'raised' => '4200',
 			'goal' => '15000',
 			'stats' => array(
@@ -652,6 +674,42 @@ return array(
 			'sections' => array(),
 			'photos' => array(
 				array(
+					'krm-theme:images/content/slavery-freedom-01.webp',
+					'A brick kiln family with a ministry worker, sitting behind rows of freshly moulded bricks',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-02.webp',
+					'A mother and her children with a ministry worker beside the bricks they made at the kiln',
+				),
+				array(
+					'krm-theme:images/content/brick-kiln-family-01.webp',
+					'Brick kiln children waving with a ministry worker in front of the kiln and its chimney',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-03.webp',
+					'A mother and her daughter standing with a ministry worker against a brick kiln wall',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-04.webp',
+					'A brick kiln family with folded hands in prayer beside a ministry worker',
+				),
+				array(
+					'krm-theme:images/content/brick-kiln-family-02.webp',
+					'A ministry worker with a brick kiln mother and her children beside rows of freshly moulded bricks',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-05.webp',
+					'A woman sitting on a stack of unfired bricks at the kiln where her family works',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-06.webp',
+					'A young mother holding her baby at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-07.webp',
+					'A young girl at a brick kiln looking into the camera',
+				),
+				array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg',
 					'Brick kiln children seated before piles of warm clothes ready to be handed out',
 				),
@@ -659,48 +717,8 @@ return array(
 					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg',
 					'A ministry worker with a boy wearing his new winter jacket at a brick kiln',
 				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg',
-					'Children seated around a long mat for a shared meal in a brick kiln courtyard',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-37-scaled-e1787822770768.jpg',
-					'Small children drinking juice with their plates of rice',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-36-scaled-e1787822780752.jpg',
-					'Young children eating rice together on a mat',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-35-scaled-e1787822792740.jpg',
-					'A girl in a purple dress sitting with her plate of rice',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-34-scaled-e1787822803466.jpg',
-					'A ministry worker serving rice to children at a brick kiln',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-33-scaled-e1787822814979.jpg',
-					'A ministry worker feeding a small child',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-32-scaled.jpg',
-					'Children raising their hands at a meal in a brick kiln courtyard',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg',
-					'Children with raised hands seated for a meal and prayer',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-30-scaled-e1787822825532.jpg',
-					'A girl in a headscarf holding her plate of rice',
-				),
-				array(
-					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-29-scaled-e1787822836311.jpg',
-					'A smiling girl sitting with her plate of rice and a juice box',
-				),
 			),
-			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg',
+			'explorer_image' => 'krm-theme:images/content/slavery-freedom-02.webp',
 			'raised' => '2100',
 			'goal' => '7000',
 			'stats' => array(
@@ -947,6 +965,14 @@ return array(
 					'krm-theme:images/content/clean-water-project-27.jpg',
 					'A child cheering beside a new hand pump and the Clean Water banner',
 				),
+				array(
+					'krm-theme:images/content/clean-water-project-28.webp',
+					'A newly installed hand pump on its brick and concrete base, beside the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-29.webp',
+					'A girl standing beside a new hand pump and the Clean Water banner at a brick kiln',
+				),
 			),
 			'explorer_image' => 'krm-theme:images/content/clean-water-project-06.jpg',
 			'raised' => '2600',
@@ -999,6 +1025,14 @@ return array(
 				array(
 					'krm-theme:images/content/persecuted-christians-3.jpg',
 					'A pastor meeting an elderly believer in his village and giving him a Bible',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-05.webp',
+					'A pastor visiting a believing family in their village and giving the mother a Bible',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-06.webp',
+					'A pastor standing with a family he visited, the children and mother holding their Bibles',
 				),
 			),
 			'explorer_image' => 'krm-theme:images/content/persecuted-christians-1.jpg',
@@ -1158,6 +1192,38 @@ return array(
 					'Rows of food parcels — sacks of flour and bags of groceries — ready for brick kiln families',
 				),
 				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg',
+					'Children seated around a long mat for a shared meal in a brick kiln courtyard',
+				),
+				array(
+					'krm-theme:images/content/food-relief-09.webp',
+					'A pastor handing a food package to a mother and her children at a brick kiln',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-34-scaled-e1787822803466.jpg',
+					'A ministry worker serving rice to children at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-10.webp',
+					'A mother at a brick kiln feeding her baby from the meal she received',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-33-scaled-e1787822814979.jpg',
+					'A ministry worker feeding a small child',
+				),
+				array(
+					'krm-theme:images/content/food-relief-11.webp',
+					'Families at a brick kiln raising their hands behind rows of food bags and boxes ready to be given out',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-32-scaled.jpg',
+					'Children raising their hands at a meal in a brick kiln courtyard',
+				),
+				array(
+					'krm-theme:images/content/food-relief-08.webp',
+					'A ministry worker handing a sack of flour and a food box to a family at a brick kiln',
+				),
+				array(
 					'krm-theme:images/content/food-relief-2.jpg',
 					'A pastor serving a hot meal to children sitting together at a brick kiln',
 				),
@@ -1170,12 +1236,32 @@ return array(
 					'Brick kiln families at sunset holding "Faith in action" food box signs',
 				),
 				array(
-					'krm-theme:images/content/food-relief-08.webp',
-					'A ministry worker handing a sack of flour and a food box to a family at a brick kiln',
-				),
-				array(
 					'krm-theme:images/content/food-relief-6.jpg',
 					'A ministry worker handing out bread to children at a brick kiln',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-37-scaled-e1787822770768.jpg',
+					'Small children drinking juice with their plates of rice',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-36-scaled-e1787822780752.jpg',
+					'Young children eating rice together on a mat',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-35-scaled-e1787822792740.jpg',
+					'A girl in a purple dress sitting with her plate of rice',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg',
+					'Children with raised hands seated for a meal and prayer',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-30-scaled-e1787822825532.jpg',
+					'A girl in a headscarf holding her plate of rice',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-29-scaled-e1787822836311.jpg',
+					'A smiling girl sitting with her plate of rice and a juice box',
 				),
 			),
 			'explorer_image' => 'krm-theme:images/content/food-relief-1.jpg',
@@ -1196,7 +1282,9 @@ return array(
 		),
 		'disaster-relief' => array(
 			'title' => 'Disaster Relief & Recovery Ministry',
-			'status' => 'live', // Listed since Phase 22 (client's request); its page says "coming soon" until the client sends text.
+			// Theme 1.28.2: hidden at the client's request (not part of the website): a draft, left out of the menus, What We
+			// Do, the home page, the gallery, search and the sitemap. To show it again: 'live' here plus a version bump.
+			'status' => 'hidden',
 			'coming_soon' => true,
 			'group' => 'compassion-humanitarian',
 			'tag' => 'RELIEF',
@@ -1234,6 +1322,18 @@ return array(
 				array(
 					'krm-theme:images/content/disaster-relief-07.webp',
 					'Children seated in a courtyard beside warm hats, jackets and blankets ready to be given out',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-08.webp',
+					'Families at a brick kiln raising their hands behind rows of relief sacks and boxes of supplies',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-09.webp',
+					'A pastor praying with brick kiln families before relief food packages are given out',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-10.webp',
+					'Brick kiln families holding their relief packages beside the Kingdom Revival Ministries banner',
 				),
 			),
 			'explorer_image' => 'krm-theme:images/content/disaster-relief-4.jpg',
