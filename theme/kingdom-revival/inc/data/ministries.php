@@ -1,0 +1,1791 @@
+<?php
+/**
+ * The ministries ("What We Do"), their two groups, photo galleries and card data — the client's sitemap (KRM PAK.pdf).
+ *
+ * The one source of ministry content. Setup creates the ministry posts from it, krm_ministries() falls back to it for
+ * any field a ministry post has not set, and krm_upgrade_to_sitemap() (inc/upgrade.php) moves older sites to it.
+ *
+ * Per ministry: title, status (live | hidden: a hidden ministry is created as a draft and shown nowhere until it is
+ * published; switching it to live publishes the draft on the next theme version, krm_sync_ministry_status()),
+ * coming_soon (optional, Phase 22: its page shows only the hero with "Details about this ministry are coming soon.",
+ * Donate and Contact us, and the group's other ministries; untick "Details coming soon" in the editor once the
+ * client's text is in), group, tag (label on the card photo), excerpt (short description), summary (card text; empty = the
+ * excerpt), focus, points ("How this ministry serves"), sections (extra panels: heading, text, points), photos
+ * ([ URL, alt text ]), explorer_image, raised / goal (whole dollars, '' = not set), stats ([ value, label ]),
+ * was (the slugs this ministry had before theme 1.10.0, redirected here), order (position on the site — menus, group
+ * pages, cards, Donate — in the client's sitemap order; seeds the post's menu_order), home_order; optional: camps
+ * ([ date, location, people served ] rows for the camps / projects timeline, hidden when empty), churches ([ name,
+ * place, planted ] rows, hidden when empty), gifts ([ amount, title, text ] "How your gift helps" cards), layout
+ * ('freedom': the home page's freedom steps and before/after slider) and drafts (fields holding
+ * proposed wording marked "DRAFT — CLIENT TO APPROVE", shown as a notice in the ministry editor).
+ *
+ * Groups (Phase 21): name, short (tab label), order, path (the group page's address, /what-we-do/{path}/; the
+ * group's ministries live under it, /what-we-do/{path}/{ministry}/), image (group card and page hero) and intro
+ * (the group's short introduction; a [bracketed] value is shown to administrators only, visitors see nothing).
+ * Both are edited in Kingdom Revival → Site text → What We Do groups.
+ *
+ * Text in [square brackets] is a placeholder waiting for the client's wording.
+ *
+ * @package Kingdom_Revival
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+return array(
+	'groups' => array(
+		'gospel-spiritual' => array(
+			'name' => 'Gospel & Spiritual Ministries',
+			'short' => 'Gospel & Spiritual',
+			'order' => 1,
+			'path'  => 'gospel-spiritual-ministries',
+			'image' => 'krm-theme:images/content/evangelism-outreach-05.webp',
+			'intro' => 'We take the Gospel to villages and brick kiln communities across Pakistan: we plant churches, place Urdu Bibles in the hands of new believers, train local leaders, walk with new believers through baptism and discipleship, and pray with those who carry heavy burdens.',
+		),
+		'compassion-humanitarian' => array(
+			'name' => 'Compassion & Humanitarian Ministries',
+			'short' => 'Compassion & Humanitarian',
+			'order' => 2,
+			'path'  => 'compassion-humanitarian-ministries',
+			'image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg',
+			'intro' => 'We show the love of Christ in practical ways: we stand with brick kiln families trapped in bonded labour, care for orphans and widows, install clean water hand pumps and hold medical camps where help rarely reaches.',
+		),
+	),
+	'items' => array(
+		'evangelism-outreach' => array(
+			'title' => 'Evangelism & Outreach',
+			'status' => 'live',
+			'group' => 'gospel-spiritual',
+			'tag' => 'EVANGELISM',
+			'excerpt' => 'We take the Gospel to villages and unreached communities across Pakistan. Through open-air gatherings and personal visits, we share the hope of Jesus with people who have rarely heard His name.',
+			'summary' => '',
+			'focus' => 'Taking the Gospel to villages and unreached communities across Pakistan.',
+			'points' => array(
+				'Village outreach',
+				'Serving unreached communities',
+				'Sharing the Gospel across Pakistan',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'krm-theme:images/content/evangelism-outreach-01.webp',
+					'A pastor preaching to a large crowd of brick kiln families seated on mats, the kiln chimney behind them',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-02.webp',
+					'A pastor greeting families and children seated for an open-air gathering at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-03.webp',
+					'A pastor sharing the Gospel with women and children seated on mats at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-04.webp',
+					'A pastor reading from the Bible to families seated outdoors beside a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-05.webp',
+					'A pastor with a microphone speaking to families and children at an open-air gathering in a village field',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-06.webp',
+					'Families seated on mats listening to a pastor beside a red cross at an open-air gathering',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-07.webp',
+					'A pastor beside a red cross speaking to children and families seated on mats in a field',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-08.webp',
+					'A crowd seated on mats listening to a preacher at a brick kiln, the chimney on the horizon',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-09.webp',
+					'A pastor praying with families standing together at a brick kiln at sunset',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-10.webp',
+					'A preacher standing beside a red cross before families seated near a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-11.webp',
+					'A pastor raising his hands in worship with families and children seated on mats in the fields',
+				),
+				array(
+					'krm-theme:images/content/evangelism-outreach-12.webp',
+					'Women and families seated on mats beside a canal for an evening open-air gathering',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/evangelism-outreach-01.webp',
+			'raised' => '2400',
+			'goal' => '8000',
+			'gifts' => array(
+				array( '$25', 'Jesus Film for tribal areas', 'Screening of the Jesus Film in remote tribal communities.' ),
+				array( '$60', 'A village outreach meeting', 'Sound, transport and materials for one evening meeting.' ),
+			),
+			'stats' => array(
+				array( '80', 'Communities reached' ),
+				array( '150', 'Outreach meetings a year' ),
+				array( '1200', 'People who heard the Gospel' ),
+			),
+			'was' => array(
+				'outreach-ministry',
+			),
+			'order' => 1,
+			'home_order' => 1,
+		),
+		'church-planting' => array(
+			'title' => 'Church Planting',
+			'status' => 'live',
+			'group' => 'gospel-spiritual',
+			'tag' => 'CHURCH',
+			'excerpt' => 'We plant churches and house churches where believers have no place to gather. Each new fellowship becomes a local witness for Christ and a family for its community.',
+			'summary' => '',
+			'focus' => 'Planting local congregations and house churches in the villages we reach.',
+			'points' => array(
+				'New congregations and house churches',
+				'Pastors trained and walked alongside',
+				'A church in every village we reach',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'krm-theme:images/content/church-planting-1.jpg',
+					'A pastor preaching to a large gathering seated on mats in a village field',
+				),
+				array(
+					'krm-theme:images/content/church-planting-2.jpg',
+					'Villagers seated on mats in an open field, listening to a preacher',
+				),
+				array(
+					'krm-theme:images/content/church-planting-3.jpg',
+					'An open-air gathering on mats beside the fields at sunset',
+				),
+				array(
+					'krm-theme:images/content/church-planting-4.jpg',
+					'Families seated together outdoors for an evening gathering',
+				),
+				array(
+					'krm-theme:images/content/church-planting-5.jpg',
+					'Children and families seated close together at an outdoor gathering',
+				),
+				array(
+					'krm-theme:images/content/church-planting-6.jpg',
+					'A preacher standing before families seated beside stacked bricks at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/church-planting-7.jpg',
+					'Families gathered on mats beside rows of bricks at a kiln',
+				),
+				array(
+					'krm-theme:images/content/church-planting-8.jpg',
+					'A pastor speaking to a large crowd seated at a brick kiln, the kiln chimney behind',
+				),
+				array(
+					'krm-theme:images/content/church-planting-9.jpg',
+					'A large gathering at a brick kiln listening to a pastor',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/church-planting-1.jpg',
+			'raised' => '3500',
+			'goal' => '12000',
+			'gifts' => array(
+				array( '$50', 'A month of house-church support', 'Bibles, hymn books and a meeting place for one month.' ),
+				array( '$150', 'Seat a new congregation', 'Mats, a sound system and Bibles for a new church.' ),
+			),
+			'stats' => array(
+				array( '200', 'Churches planted incl. house churches' ),
+				array( '45', 'Pastors leading new churches' ),
+				array( '30', 'Villages with a church' ),
+			),
+			// Churches and house churches planted: [ name, place, planted ]. Empty = the list is not shown at all.
+			'churches' => array(
+				array( 'Grace House Church', 'Faisalabad district', '2021' ),
+				array( 'New Life Fellowship', 'Jhang district', '2022' ),
+				array( 'Living Hope Church', 'Faisalabad district', '2024' ),
+			),
+			'was' => array(
+				'church-planting',
+			),
+			'order' => 2,
+			'home_order' => 2,
+		),
+		'bible-distribution' => array(
+			'title' => 'Bible Distribution',
+			'status' => 'live',
+			'group' => 'gospel-spiritual',
+			'tag' => 'SCRIPTURE',
+			'excerpt' => 'We place Urdu Bibles in the hands of families and new believers. God\'s Word gives them a foundation to grow in faith and share it with others.',
+			'summary' => '',
+			'focus' => 'Sharing Urdu Bibles with families and new believers.',
+			'points' => array(
+				'Urdu Bible distribution',
+				'Families',
+				'New believers',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-17-scaled.jpg',
+					'An elderly man in a white cap receiving his Urdu Bible from a pastor at his door',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-01.webp',
+					'Kiln workers at a brick kiln holding their new Urdu Bibles up high',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-02.webp',
+					'Girls at a brick kiln raising their new Urdu Bibles',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-03.webp',
+					'Two women at a brick kiln receiving an Urdu Bible from a pastor',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-04.webp',
+					'A pastor giving an Urdu Bible to two women at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-05.webp',
+					'Children at a brick kiln holding up their Urdu Bibles',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-06.webp',
+					'A kiln worker holding his new Urdu Bible beside a pastor',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-07.webp',
+					'A grandmother receiving an Urdu Bible, her daughter holding a baby beside her',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-08.webp',
+					'A woman in purple receiving her Urdu Bible beside a table of Bibles',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-09.webp',
+					'Children at a brick kiln holding up their Urdu Bibles around a pastor',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-10.webp',
+					'A pastor giving an Urdu Bible to a young girl at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-11.webp',
+					'A girl holding her new Urdu Bible beside a pastor',
+				),
+				array(
+					'krm-theme:images/content/bible-distribution-12.webp',
+					'An elderly woman smiling beside a pastor holding her Urdu Bible',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg',
+					'A young man in a red shirt receiving his new Urdu Bible',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-16-e1784536121378.jpg',
+					'A woman in green holding her new Urdu Bible at a brick kiln',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-15-e1784536109482.jpg',
+					'A woman receiving an Urdu Bible from a pastor at a brick kiln',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-14-e1784536098255.jpg',
+					'A woman in yellow receiving her Urdu Bible',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-13-e1784536079985.jpg',
+					'A mother holding a new Urdu Bible, her small daughter beside her',
+				),
+				array(
+					'krm-theme:images/content/urdu-bible-distribution-12.jpg',
+					'Urdu Bible distribution',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-11-e1784536054126.jpg',
+					'A woman in pink receiving her Urdu Bible from a pastor',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-10-e1787225652778.jpg',
+					'A kiln worker receiving an Urdu Bible beside a table of Bibles',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-9-e1784536026463.jpg',
+					'A pastor handing an Urdu Bible to an elderly man beside a table of Bibles',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-8-e1784536009842.jpg',
+					'An elderly kiln worker receiving his Urdu Bible',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-7-e1784535997635.jpg',
+					'A young girl at a brick kiln holding her new Urdu Bible',
+				),
+			),
+			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Urdu-Bible-Distribution-18-scaled.jpg',
+			'raised' => '1800',
+			'goal' => '6500',
+			'stats' => array(
+				array( '650', 'Bibles distributed' ),
+				array( '120', 'New believers given a Bible' ),
+				array( '35', 'Villages reached' ),
+			),
+			// How your gift helps: [ amount, what it gives, text ]. The home page's "Your gift at work" card for this ministry.
+			'gifts' => array(
+				array( '$10', 'One Urdu Bible', 'Scripture for a family or new believer.' ),
+			),
+			'was' => array(
+				'urdu-bibles',
+			),
+			'order' => 3,
+			'home_order' => 3,
+		),
+		'leadership-training' => array(
+			'title' => 'Leadership Training & Equipping',
+			'status' => 'live',
+			'group' => 'gospel-spiritual',
+			'tag' => 'LEADERSHIP',
+			'excerpt' => 'We train and encourage local pastors and leaders to serve their communities faithfully. Equipped with sound teaching, they can shepherd churches and raise up others.',
+			'summary' => '',
+			'focus' => 'Equipping pastors and leaders to serve local and house churches.',
+			'points' => array(
+				'Leadership development',
+				'Discipleship',
+				'Supporting local and house churches',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-11-scaled.jpg',
+					'A trainer teaching a hall full of church leaders',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-10-scaled.jpg',
+					'Church leaders and members filling a hall for a training day',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-9-scaled.jpg',
+					'A trainer speaking with leaders standing at the front of the hall',
+				),
+				array(
+					'krm-theme:images/content/leadership-training-01.webp',
+					'Leaders sitting on the floor working through a Bible lesson together on a large sheet of paper',
+				),
+				array(
+					'krm-theme:images/content/leadership-training-02.webp',
+					'Local church leaders seated around a table for a training meeting in a brick courtyard',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-8.jpg',
+					'Leaders listening to a training session in a crowded hall',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-7-1.jpg',
+					'A trainer with a microphone leading a session',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-6-1-scaled.jpg',
+					'A trainer teaching leaders seated on the floor of the hall',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-5-1-scaled.jpg',
+					'Leaders seated in rows for a training session',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-4-1-scaled.jpg',
+					'Plates of rice prepared for those attending the training day',
+				),
+			),
+			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-11-scaled.jpg',
+			'raised' => '1500',
+			'goal' => '5000',
+			'gifts' => array(
+				array( '$35', 'Train one leader for a day', 'Teaching, meals and notes for one pastor.' ),
+				array( '$120', 'A full training seminar', 'Venue and materials for a group of village pastors.' ),
+			),
+			'stats' => array(
+				array( '45', 'Pastors and leaders trained' ),
+				array( '12', 'Training seminars held' ),
+				array( '6', 'Districts represented' ),
+			),
+			'was' => array(
+				'leadership-and-discipleship',
+			),
+			'order' => 4,
+			'home_order' => 4,
+		),
+		'baptisms-discipleship' => array(
+			'title' => 'Baptisms & Discipleship',
+			'status' => 'live',
+			'group' => 'gospel-spiritual',
+			'tag' => 'BAPTISM',
+			// DRAFT — CLIENT TO APPROVE (excerpt): adds discipleship, from wording already on the site.
+			'excerpt' => 'We walk with new believers as they publicly follow Christ through baptism. Ongoing teaching and fellowship help them grow into mature, faithful disciples.',
+			'drafts' => array(
+				'excerpt',
+			),
+			'summary' => '',
+			'focus' => 'Celebrating new believers as they publicly follow Jesus Christ in baptism.',
+			'points' => array(
+				'New believers',
+				'Public profession of faith',
+				'Baptism',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-29.jpg',
+					'A newly baptised woman wearing a garland of roses',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-31.jpg',
+					'A pastor baptising a young man, beside a portrait of him after his baptism',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-30.jpg',
+					'A pastor baptising a man, beside a portrait of him wearing his garland afterwards',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-28.jpg',
+					'A newly baptised young woman in a white shawl with a garland of roses',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-27.jpg',
+					'A newly baptised woman raising her hands in praise',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-26.jpg',
+					'A newly baptised man in white raising his hands in praise',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-25.jpg',
+					'A newly baptised man wearing a garland of roses',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-24.jpg',
+					'An older woman wearing her garland of roses after her baptism',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-23.jpg',
+					'A newly baptised young man in a white shawl and garland',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-22.jpg',
+					'The baptism tank strewn with rose petals',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-21-e1784293966685.jpg',
+					'A pastor and a newly baptised man raising their hands in the baptism water',
+				),
+			),
+			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/07/Baptisms-29.jpg',
+			'raised' => '900',
+			'goal' => '3000',
+			'gifts' => array(
+				array( '$15', 'Discipleship booklet', 'Study material for a new believer.' ),
+				array( '$40', 'A baptism service', 'Arrangements for a village baptism day.' ),
+			),
+			'stats' => array(
+				array( '400', 'Baptisms' ),
+				array( '60', 'Discipleship groups' ),
+				array( '300', 'New believers discipled' ),
+			),
+			'was' => array(
+				'baptisms',
+			),
+			'order' => 5,
+			'home_order' => 5,
+		),
+		'prayer-deliverance' => array(
+			'title' => 'Prayer & Deliverance Ministry',
+			'status' => 'live',
+			'group' => 'gospel-spiritual',
+			'tag' => 'PRAYER',
+			'excerpt' => 'We pray with those carrying heavy burdens, fear and spiritual oppression. Standing on God\'s Word, we seek His healing, peace and freedom for every life.',
+			'summary' => '',
+			'focus' => 'Prayer and compassionate support for people seeking spiritual restoration, freedom and healing.',
+			'points' => array(
+				'Prayer for the sick',
+				'Prayer for the oppressed',
+				'Compassionate spiritual support',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'krm-theme:images/content/prayer-deliverance-01.webp',
+					'A woman praying with raised hands among brick kiln families at a prayer gathering',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-02.webp',
+					'An elderly woman with closed eyes and raised hands in prayer',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-03.webp',
+					'An elderly man with a white beard raising his hands in prayer',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-04.webp',
+					'A young man with closed eyes praying with open hands',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-2-scaled-e1787828386736.jpg',
+					'A pastor praying for a sick man lying on a bed at home',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-4-scaled-e1787828361817.jpg',
+					'A pastor laying a hand on a young man and praying for his healing',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-05.webp',
+					'An elderly man raising his hands in prayer at an open-air gathering near a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-06.webp',
+					'A pastor with a microphone praying with folded hands during a church service',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-7-scaled.jpg',
+					'A pastor praying over an elderly woman at a church gathering',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-8-scaled.jpg',
+					'A pastor praying beside a sick person resting on a cot outdoors',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-3-scaled-e1787828373981.jpg',
+					'A pastor standing in prayer beside a sick man lying on a bed',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Deliverance-and-Healing-ministry-5-scaled-e1787828305580.jpg',
+					'A pastor praying for a young man outside his home',
+				),
+				array(
+					'krm-theme:images/content/prayer-deliverance-07.webp',
+					'A pastor standing with an elderly man at an open-air gathering',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/prayer-deliverance-01.webp',
+			'raised' => '700',
+			'goal' => '2500',
+			'gifts' => array(
+				array( '$20', 'A village prayer meeting', 'Transport and refreshments for one gathering.' ),
+				array( '$75', 'A night of worship and prayer', 'Sound and lighting for an all-night prayer meeting.' ),
+			),
+			'stats' => array(
+				array( '100', 'Prayer meetings a year' ),
+				array( '25', 'Villages with weekly prayer' ),
+				array( '500', 'Prayer requests answered by our team' ),
+			),
+			'was' => array(
+				'deliverance-and-healing',
+			),
+			'order' => 6,
+			'home_order' => 6,
+		),
+		'youth-or-women' => array(
+			'title' => 'Youth Ministry / Women Empowerment',
+			// The client has not chosen yet. To show it: change 'hidden' to 'live' (then bump the theme version), or publish
+			// the ministry in Ministries. It opens as a "coming soon" page until its text is written.
+			'status' => 'hidden',
+			'coming_soon' => true,
+			'group' => 'gospel-spiritual',
+			'tag' => 'YOUTH / WOMEN',
+			'excerpt' => 'Bible studies, camps and mentoring for young people, and skills training and fellowship for women in the villages.',
+			'summary' => '',
+			'focus' => 'Raising up young people and women in faith, skills and leadership.',
+			'points' => array(
+				'Youth Bible studies, camps and mentoring',
+				'Sewing and skills classes for women',
+				'Fellowship and prayer groups',
+			),
+			'sections' => array(),
+			// Theme 1.28.0: the women's meeting photos from the root of the client's data folder (no youth photos yet).
+			'photos' => array(
+				array(
+					'krm-theme:images/content/women-ministry-01.webp',
+					'Women of the church standing together in the church hall, holding their Bibles',
+				),
+				array(
+					'krm-theme:images/content/women-ministry-02.webp',
+					'A pastor speaking to a hall full of women at a women\'s meeting',
+				),
+				array(
+					'krm-theme:images/content/women-ministry-03.webp',
+					'A pastor preaching to women seated on the floor of the church hall',
+				),
+				array(
+					'krm-theme:images/content/women-ministry-04.webp',
+					'Women gathered on the floor of the church hall for a women\'s meeting',
+				),
+				array(
+					'krm-theme:images/content/women-ministry-05.webp',
+					'A pastor speaking at the front of the church hall to the women\'s meeting',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/women-ministry-01.webp',
+			'raised' => '600',
+			'goal' => '4000',
+			'gifts' => array(
+				array( '$30', 'A sewing class place', 'One month of skills training for a woman.' ),
+				array( '$50', 'A youth camp place', 'Meals, Bible study and travel for one young person.' ),
+			),
+			'stats' => array(
+				array( '150', 'Young people reached' ),
+				array( '40', 'Women in skills classes' ),
+				array( '8', 'Youth camps held' ),
+			),
+			'was' => array(),
+			'order' => 7,
+			'home_order' => 7,
+		),
+		'slavery-freedom' => array(
+			'title' => 'Slavery & Freedom Ministry',
+			'status' => 'live',
+			'group' => 'compassion-humanitarian',
+			'tag' => 'FREEDOM',
+			'excerpt' => 'We stand with families trapped in bonded labour and crushing debt. Your support helps clear what they owe, so they can begin again in freedom and dignity.',
+			'summary' => 'Helping families held in debt bondage at brick kilns walk free.',
+			'focus' => 'Helping families held in debt bondage at brick kilns find a path to freedom.',
+			'points' => array(
+				'Support for families in debt bondage',
+				'Outreach in brick kiln communities',
+				'Help families walk free',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'krm-theme:images/content/freedom-after-2.jpg',
+					'A freed family at the brick kiln holding an "I am free now" sign with a ministry worker',
+				),
+				array(
+					'krm-theme:images/content/freedom-before-1.jpg',
+					'Before: a mother and her children with a ministry worker outside their brick home at the kiln',
+				),
+				array(
+					'krm-theme:images/content/freedom-before-2.jpg',
+					'Before: a mother and her children with a ministry worker beside stacked bricks at a kiln',
+				),
+				array(
+					'krm-theme:images/content/freedom-after-1.jpg',
+					'After: a freed family with a ministry worker in their new home, giving a thumbs-up',
+				),
+				array(
+					'krm-theme:images/content/freedom-before-3.jpg',
+					'Before: a family of brick kiln workers and their children on the dusty ground at a kiln',
+				),
+				array(
+					'krm-theme:images/content/freedom-after-3.jpg',
+					'After: a freed mother at her new sewing machine with her children and a ministry worker',
+				),
+				array(
+					'krm-theme:images/content/freedom-after-4.jpg',
+					'After: a freed family with a ministry worker outside their new home',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/freedom-after-2.jpg',
+			'raised' => '4200',
+			'goal' => '15000',
+			'stats' => array(
+				array( '35', 'Families freed from bonded labour' ),
+				array( '12', 'Brick kilns visited' ),
+				array( '150', 'People given a new start' ),
+			),
+			// How your gift helps: [ amount, what it gives, text ]. The home page's "Your gift at work" card for this ministry.
+			'gifts' => array(
+				array( 'Any amount', 'Frees a family', 'Every family’s debt is different — your gift goes toward clearing one and helping them start again.' ),
+			),
+			// The home page's five freedom steps and before/after slider (Pages → Home → Flagship) are shown on this page.
+			'layout' => 'freedom',
+			'was' => array(
+				'freedom-from-slavery',
+			),
+			'order' => 8,
+			'home_order' => 8,
+		),
+		'brick-kiln-family-care' => array(
+			'title' => 'Brick Kiln Family Care',
+			'status' => 'live',
+			'group' => 'compassion-humanitarian',
+			'tag' => 'FAMILY CARE',
+			// DRAFT — CLIENT TO APPROVE (excerpt, summary): widened to the whole family, from wording already on the site.
+			'excerpt' => 'We serve families who live and labour beside the brick kilns. Through the Gospel, practical care and regular visits, we remind them that they are seen and loved.',
+			'summary' => 'Schooling, Sunday school and care for children, and practical care for families who live and work beside the kilns.',
+			'drafts' => array(
+				'excerpt',
+				'summary',
+			),
+			'focus' => 'Education, care and the Gospel for children in brick kiln communities.',
+			'points' => array(
+				'Education for children',
+				'Practical care',
+				'Gospel outreach in brick kiln communities',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'krm-theme:images/content/slavery-freedom-01.webp',
+					'A brick kiln family with a ministry worker, sitting behind rows of freshly moulded bricks',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-02.webp',
+					'A mother and her children with a ministry worker beside the bricks they made at the kiln',
+				),
+				array(
+					'krm-theme:images/content/brick-kiln-family-01.webp',
+					'Brick kiln children waving with a ministry worker in front of the kiln and its chimney',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-03.webp',
+					'A mother and her daughter standing with a ministry worker against a brick kiln wall',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-04.webp',
+					'A brick kiln family with folded hands in prayer beside a ministry worker',
+				),
+				array(
+					'krm-theme:images/content/brick-kiln-family-02.webp',
+					'A ministry worker with a brick kiln mother and her children beside rows of freshly moulded bricks',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-05.webp',
+					'A woman sitting on a stack of unfired bricks at the kiln where her family works',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-06.webp',
+					'A young mother holding her baby at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/slavery-freedom-07.webp',
+					'A young girl at a brick kiln looking into the camera',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-39-scaled.jpg',
+					'Brick kiln children seated before piles of warm clothes ready to be handed out',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-40-scaled.jpg',
+					'A ministry worker with a boy wearing his new winter jacket at a brick kiln',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/slavery-freedom-02.webp',
+			'raised' => '2100',
+			'goal' => '7000',
+			'stats' => array(
+				array( '120', 'Kiln families supported' ),
+				array( '90', 'Children in school' ),
+				array( '12', 'Kilns served' ),
+			),
+			// How your gift helps: [ amount, what it gives, text ]. The home page's "Your gift at work" card for this ministry.
+			'gifts' => array(
+				array( '$40', 'A child’s schooling', 'Fees, books and uniform for a kiln child.' ),
+			),
+			'was' => array(
+				'brick-kiln-children',
+			),
+			'order' => 9,
+			'home_order' => 9,
+		),
+		'children-orphan-care' => array(
+			'title' => 'Children & Orphan Care',
+			'status' => 'live',
+			'group' => 'compassion-humanitarian',
+			'tag' => 'CHILDREN',
+			'excerpt' => 'We care for orphans and children growing up in hardship. Sunday school, education and loving support help them learn, grow in faith and build a brighter future.',
+			'summary' => 'Shelter, food and daily care for orphaned and underprivileged children.',
+			'focus' => 'Practical care and support for orphaned and underprivileged children.',
+			'points' => array(
+				'Shelter and daily care',
+				'Food and schooling',
+				'Support for orphaned and underprivileged children',
+			),
+			// DRAFT — CLIENT TO APPROVE (sections): the Sunday School text is the earlier Children Ministry wording.
+			'drafts' => array(
+				'sections',
+			),
+			'sections' => array(
+				array(
+					'heading' => 'Sunday School',
+					'text' => 'Sunday School and Bible teaching for children in village and brick kiln communities.',
+					'points' => array(
+						'Sunday School',
+						'Bible teaching for children',
+						'Care for children in villages and brick kiln communities',
+					),
+				),
+			),
+			'photos' => array(
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg',
+					'A large group of children cheering with their arms raised',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-19.jpg',
+					'Children gathered with a ministry worker in a courtyard',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-18.jpg',
+					'A small girl folding her hands in prayer',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-17-scaled-e1787819100112.jpg',
+					'Children seated in long rows on a rooftop for a shared meal',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-16-scaled-e1787819076312.jpg',
+					'Children sharing a meal on mats laid out on a rooftop',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-15-scaled-e1787819059654.jpg',
+					'Boys enjoying a meal and a juice box',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-14-scaled-e1787819044976.jpg',
+					'Children eating together along a decorated mat',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-13-scaled-e1787819027587.jpg',
+					'Two girls with their meals and gift boxes',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-12-scaled-e1787819009333.jpg',
+					'A girl sitting with her plate of food among other children',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-11-scaled-e1787818995644.jpg',
+					'A ministry worker serving food from a large pot',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-10-scaled-e1787818978151.jpg',
+					'Children seated in a long row for a meal and gifts',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-9-scaled-e1787818960294.jpg',
+					'A ministry worker with a boy holding his wrapped gift',
+				),
+				array(
+					'krm-theme:images/content/children-orphan-care-01.webp',
+					'Children holding a "We are praying for you" sign beside stacks of wrapped gifts',
+				),
+				array(
+					'krm-theme:images/content/children-orphan-care-02.webp',
+					'A girl in a party hat holding a Happy Birthday balloon at a children\'s celebration',
+				),
+			),
+			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-20.jpg',
+			'raised' => '3800',
+			'goal' => '10000',
+			'gifts' => array(
+				array( '$30', 'A month of meals', 'Daily meals for one child for a month.' ),
+				array( '$40', 'A child’s schooling', 'Fees, books and uniform for one child.' ),
+				array( '$100', 'A month of care', 'Shelter, food and care for one child for a month.' ),
+			),
+			'stats' => array(
+				array( '500', 'Children supported' ),
+				array( '40', 'Children in daily care' ),
+				array( '3', 'Care homes and centres' ),
+			),
+			'was' => array(
+				'orphan-and-children-care',
+				'children-ministry',
+			),
+			'order' => 10,
+			'home_order' => 10,
+		),
+		'clean-water' => array(
+			'title' => 'Clean Water Projects',
+			'status' => 'live',
+			'group' => 'compassion-humanitarian',
+			'tag' => 'WATER',
+			'excerpt' => 'We install hand pumps at brick kilns and in communities in need, so families can reach clean water close to home. Each pump serves daily needs and brings relief to the whole community.',
+			'summary' => '',
+			'focus' => 'Access to safe drinking water for village and brick kiln communities.',
+			'points' => array(
+				'Safe drinking water',
+				'Village communities',
+				'Brick kiln communities',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'krm-theme:images/content/clean-water-project-06.jpg',
+					'Families at a brick kiln raising their hands to celebrate a new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-02.jpg',
+					'A boy at a brick kiln washing under water from a new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-04.jpg',
+					'A man drawing water from a new hand pump beside the "Clean Water, Pure Hope" banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-18.jpg',
+					'A man pumping water into a bucket at a newly installed hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-24.jpg',
+					'Children and families celebrating around a new hand pump with the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-15.jpg',
+					'A woman washing a dish under a new hand pump beside the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-20.jpg',
+					'A team member standing beside a new hand pump and the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-09.jpg',
+					'A crowd of brick kiln families and children gathered at their new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-14.jpg',
+					'A woman filling a bucket with clean water at a hand pump in a village lane',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-01.jpg',
+					'A pastor working a new hand pump at a brick kiln while children watch',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-03.jpg',
+					'A smiling boy splashing clean water from a hand pump on his face',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-05.jpg',
+					'A woman pumping clean water at a brick kiln beside the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-07.jpg',
+					'Children beside a new hand pump and the Clean Water banner at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-08.jpg',
+					'A team member standing at a newly built hand pump at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-10.jpg',
+					'Men, women and children of a brick kiln community at the new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-11.jpg',
+					'Brick kiln families waving together beside their new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-12.jpg',
+					'Children and adults raising their hands in thanks at a new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-13.jpg',
+					'Children cheering with a team member next to the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-16.jpg',
+					'A woman drinking from a new hand pump in a narrow village lane',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-17.jpg',
+					'A new hand pump on a concrete base in a village lane, beside the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-19.jpg',
+					'A newly installed hand pump on a fresh concrete base in an open field',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-21.jpg',
+					'A team member waving beside a newly installed hand pump in a field',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-22.jpg',
+					'Families from a brick kiln sitting together on mats for the hand pump dedication',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-23.jpg',
+					'Women and children of a brick kiln community gathered for the new hand pump',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-25.jpg',
+					'A community and the team cheering at a new hand pump in a field',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-26.jpg',
+					'A boy raising his arms beside a new hand pump and the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-27.jpg',
+					'A child cheering beside a new hand pump and the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-28.webp',
+					'A newly installed hand pump on its brick and concrete base, beside the Clean Water banner',
+				),
+				array(
+					'krm-theme:images/content/clean-water-project-29.webp',
+					'A girl standing beside a new hand pump and the Clean Water banner at a brick kiln',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/clean-water-project-06.jpg',
+			'raised' => '2600',
+			'goal' => '9000',
+			'gifts' => array(
+				array( '$50', 'Repair a hand pump', 'Parts and labour to repair a village pump.' ),
+				array( '$400', 'A new hand pump', 'Clean water for a whole street of families.' ),
+			),
+			'stats' => array(
+				array( '18', 'Hand pumps and wells installed' ),
+				array( '2500', 'People with clean water' ),
+				array( '15', 'Villages served' ),
+			),
+			// Projects completed: [ date, location, people served ]. Empty = the timeline is not shown at all.
+			'camps' => array(
+				array( 'February 2026', 'Hand pump, village near Jhang', '120 families' ),
+				array( 'May 2026', 'Well, village near Faisalabad', '200 families' ),
+			),
+			'was' => array(
+				'clean-water-project',
+			),
+			'order' => 11,
+			'home_order' => 11,
+		),
+		'persecuted-christians' => array(
+			'title' => 'Persecuted Christian Support',
+			'status' => 'live',
+			'group' => 'compassion-humanitarian',
+			'tag' => 'PERSECUTED CHURCH',
+			'excerpt' => 'We stand with Christians in Pakistan who face violence, false accusations and loss because of their faith. We bring emergency help, prayer and support as families rebuild their lives.',
+			'summary' => 'Christians in Pakistan face violence, false accusations and discrimination simply for their faith. When tragedy strikes, we stand with families who have lost everything — bringing emergency aid, comfort and the hope of Christ as they rebuild.',
+			'focus' => 'When a church is attacked or a family is targeted for their faith, they can lose their home, their income and their sense of safety overnight. Our team visits affected families, brings food and emergency essentials, and walks with them in prayer through recovery.',
+			'points' => array(
+				'Emergency help after attacks',
+				'Food and essentials for affected families',
+				'Prayer and pastoral care through recovery',
+			),
+			// Show persecution reports instead of a testimonial in the story section.
+			'story_type' => 'persecution-reports',
+			'sections' => array(
+				array(
+					'heading' => 'Emergency support after attacks',
+					'text' => 'When families are forced from home or lose essential belongings, the ministry visits and helps meet urgent needs while they find a safe next step.',
+					'points' => array(
+						'Food and essential supplies for affected households',
+						'Visits and prayer for families facing fear and loss',
+						'Follow-up support as families begin to rebuild',
+					),
+				),
+			),
+			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
+			'photos' => array(
+				// Theme 1.30.0: hero image from client's Christian persecution data folder.
+				array(
+					'krm-theme:images/content/persecuted-christians-hero.webp',
+					'A mother carrying her baby walks with her children through the rubble of burned homes',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-1.jpg',
+					'A pastor visiting an elderly believer at his village home and giving him an Urdu Bible',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-07.webp',
+					'Ministry workers giving relief supplies to a family outside their burned home',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-08.webp',
+					'A pastor standing in a church blackened by fire',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-09.webp',
+					'Furniture from Christian homes burning in the street',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-10.webp',
+					'A street of burned homes and a church, its wreckage piled outside',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-11.webp',
+					'A ministry worker handing a sack of flour to a man whose home was attacked',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-12.webp',
+					'The smashed window of a Christian home',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-13.webp',
+					'Families sleeping out in the open after fleeing their homes',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-04.webp',
+					'A pastor giving an Urdu Bible to a believer outside his village home',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-3.jpg',
+					'A pastor meeting an elderly believer in his village and giving him a Bible',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-05.webp',
+					'A pastor visiting a believing family in their village and giving the mother a Bible',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-06.webp',
+					'A pastor standing with a family he visited, the children and mother holding their Bibles',
+				),
+				// Theme 1.29.0: added from client's data folder.
+				array(
+					'krm-theme:images/content/persecuted-christians-14.jpg',
+					'A church building blackened by fire, the painted cross on its facade still visible',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-15.jpg',
+					'A young child standing barefoot in a displaced community',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-16.jpg',
+					'Children from a Christian community that faced persecution',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-17.jpg',
+					'Children in a village whose families were displaced by violence',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-18.jpg',
+					'Children from families who fled their homes after attacks',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-19.jpg',
+					'A community gathering for children whose families faced persecution',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-20.jpg',
+					'Children and families bowing their heads in prayer together',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-21.jpg',
+					'A fellowship gathering for families who have experienced persecution',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-22.jpg',
+					'A pastor visiting believers who have faced hardship for their faith',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-23.jpg',
+					'Ministry workers bringing support to a persecuted community',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-24.jpg',
+					'A pastoral visit to families affected by violence against Christians',
+				),
+				// Theme 1.30.0: added from client's Christian persecution data folder.
+				array(
+					'krm-theme:images/content/persecuted-christians-25.webp',
+					'Two women grieving outside their burned and damaged homes',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-26.webp',
+					'A distressed mother holding her son in a neighbourhood displaced by violence',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-27.webp',
+					'A burned church building with the painted cross still visible on the facade',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-28.webp',
+					'Police clearing debris in a Christian neighbourhood after an attack',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-29.webp',
+					'Believers standing inside a church blackened by fire, rubble on the floor',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-30.webp',
+					'A ministry worker giving food supplies to a family in front of their damaged home',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-31.webp',
+					'A pastor standing in a burned church with messages of faith written on the walls',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-32.webp',
+					'A ministry worker giving a sack of flour to a family whose home was attacked',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-33.webp',
+					'A mother comforting her child in a community displaced by persecution',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-37.jpeg',
+					'The aftermath of violence against a Christian community',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-38.jpeg',
+					'Damaged homes in a neighbourhood attacked for being Christian',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-39.jpeg',
+					'A street of homes destroyed in an attack on Christians',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-40.jpeg',
+					'Ministry workers bringing relief supplies to affected families',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-41.jpeg',
+					'Families receiving emergency aid after losing their homes',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-42.jpeg',
+					'A pastoral visit to comfort families who faced persecution',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-43.jpeg',
+					'Ministry workers distributing relief to displaced Christian families',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-44.jpeg',
+					'A pastor praying with families who have suffered for their faith',
+				),
+				// Theme 1.31.0: added more images from client's Christian persecution data folder.
+				array(
+					'krm-theme:images/content/persecuted-christians-50.webp',
+					'Two women grieving outside their damaged home after an attack',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-51.webp',
+					'A mother carrying her baby walks with her children through the rubble of burned homes',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-52.webp',
+					'Police officers searching through the wreckage of destroyed homes in a Christian neighbourhood',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-53.webp',
+					'A mother weeping and embracing her child after their home was attacked',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-54.webp',
+					'A family stands amid the destruction of their burned home',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-55.webp',
+					'Burned and destroyed belongings outside Christian homes',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-56.webp',
+					'A Christian community surveys the damage to their neighbourhood',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-57.webp',
+					'Residents looking at the destruction of their homes',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-58.webp',
+					'Aftermath of violence against a Christian community',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-59.webp',
+					'Furniture from Christian homes burning in the street',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-60.webp',
+					'Children from families affected by persecution',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-61.webp',
+					'A damaged church building after the attack',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-62.webp',
+					'Ministry workers providing relief to affected families',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-63.webp',
+					'Children from families affected by persecution',
+				),
+				array(
+					'krm-theme:images/content/persecuted-christians-64.webp',
+					'Relief efforts for persecuted Christian families',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/persecuted-christians-hero.webp',
+			'raised' => '1200',
+			'goal' => '5000',
+			'gifts' => array(
+				array( '$40', 'Emergency food parcel', 'A month of food for a family under pressure.' ),
+				array( '$150', 'Legal help', 'Support towards a lawyer for a persecuted believer.' ),
+			),
+			'stats' => array(
+				array( '60', 'Families supported' ),
+				array( '15', 'Communities visited' ),
+				array( '120', 'Emergency packages delivered' ),
+			),
+			'stats_prayer' => 'Courage, protection and justice for the persecuted church in Pakistan.',
+			'was' => array(),
+			'order' => 12,
+			'home_order' => 12,
+		),
+		'widows-support' => array(
+			'title' => 'Widows Support',
+			'status' => 'live',
+			'group' => 'compassion-humanitarian',
+			'tag' => 'WIDOWS',
+			'excerpt' => 'We stand beside widows who often face loss and hardship alone. Through prayer, practical help and Christian fellowship, we help them find hope and belonging.',
+			'summary' => 'Support and fellowship for widows in the church and the village.',
+			'focus' => 'Support, fellowship and practical help for widows.',
+			'points' => array(
+				'Support for widows',
+				'Fellowship',
+				'Practical help in the church and village',
+			),
+			'sections' => array(),
+			'photos' => array(
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-5-scaled.jpg',
+					'A pastor giving a gift to a widow in a red shawl',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-4-scaled.jpg',
+					'A widow receiving a gift from a pastor in a brick courtyard',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-3-scaled.jpg',
+					'A pastor speaking to widows seated together in a courtyard',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-2-scaled.jpg',
+					'Widows seated on mats listening to a pastor',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-1-scaled.jpg',
+					'A pastor with a widow and her children outside their home',
+				),
+				array(
+					'krm-theme:images/content/widows-ministry-6.jpg',
+					'A pastor giving a gift to a widow outside her home',
+				),
+				array(
+					'krm-theme:images/content/widows-ministry-7.jpg',
+					'A pastor standing with a widow who holds a gift from the ministry',
+				),
+			),
+			'explorer_image' => 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Widows-ministry-5-scaled.jpg',
+			'raised' => '1600',
+			'goal' => '6000',
+			'gifts' => array(
+				array( '$25', 'A month of groceries', 'Food essentials for one widow.' ),
+				array( '$60', 'A sewing machine share', 'Towards a sewing machine so a widow can earn a living.' ),
+			),
+			'stats' => array(
+				array( '85', 'Widows supported' ),
+				array( '30', 'Widows in skills training' ),
+				array( '20', 'Villages reached' ),
+			),
+			'was' => array(
+				'widows-ministry',
+			),
+			'order' => 13,
+			'home_order' => 13,
+		),
+		'medical-health' => array(
+			'title' => 'Medical & Health Outreach',
+			'status' => 'hidden',
+			'group' => 'compassion-humanitarian',
+			'tag' => 'MEDICAL',
+			'excerpt' => 'We hold medical camps in brick kiln and village communities with limited access to care. Families receive check-ups and medicine, along with prayer and compassion.',
+			'summary' => '',
+			'focus' => 'Free medical support for brick kiln workers and village families.',
+			'points' => array(
+				'Free check-ups',
+				'Medicine',
+				'Support for brick kiln workers and village families',
+			),
+			'sections' => array(),
+			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
+			'photos' => array(
+				array(
+					'krm-theme:images/content/medical-health-1.jpg',
+					'A pastor visiting a sick woman at her home and praying with her',
+				),
+				array(
+					'krm-theme:images/content/medical-health-2.jpg',
+					'Praying beside a sick woman resting on her bed',
+				),
+				array(
+					'krm-theme:images/content/medical-health-3.jpg',
+					'An elderly woman in a wheelchair receiving prayer and care',
+				),
+				array(
+					'krm-theme:images/content/medical-health-4.jpg',
+					'A pastor praying for an elderly woman who cannot walk',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/medical-health-1.jpg',
+			'raised' => '2900',
+			'goal' => '9500',
+			'stats' => array(
+				array( '14', 'Medical camps held' ),
+				array( '3200', 'Patients treated' ),
+				array( '20', 'Villages reached' ),
+			),
+			// How your gift helps: [ amount, what it gives, text ]. The home page's "Your gift at work" card for this ministry.
+			'gifts' => array(
+				array( '$45', 'Medical camp for a family', 'Check-up and medicine at a kiln or village camp.' ),
+			),
+			// Medical camps: [ date, location, people served ]. Empty = the camps timeline is not shown at all.
+			'camps' => array(
+				array( 'March 2026', 'Village near Faisalabad', '350 people' ),
+				array( 'June 2026', 'Jhang district', '420 people' ),
+				array( 'September 2026', 'Brick kiln community, Faisalabad', '280 people' ),
+			),
+			'was' => array(
+				'free-medical-camps',
+			),
+			'order' => 14,
+			'home_order' => 14,
+		),
+		'food-relief' => array(
+			'title' => 'Food Relief',
+			'status' => 'live',
+			'group' => 'compassion-humanitarian',
+			'tag' => 'FOOD',
+			'excerpt' => 'We bring food to brick kiln families, widows and households in crisis, so that no family goes to bed hungry, and we share the hope of Christ as we serve.',
+			'summary' => 'When work stops or disaster strikes, the poorest families are the first to go hungry. We deliver food packages directly to brick kiln families, widows and households in crisis.',
+			'focus' => 'Many brick kiln and daily-wage families earn just enough to survive. When work stops, prices rise or disaster strikes, they are the first to go hungry. Our team delivers food packages directly to these families, sits with them, and prays with them.',
+			'points' => array(
+				'Food packages for families in need',
+				'Emergency food in times of crisis',
+				'Care for widows, children and the elderly',
+			),
+			// A ministry-authored field note is shown until a real family testimony is available.
+			'story_placeholder' => array(
+				'name' => 'Food Relief Team',
+				'text' => 'We deliver food packages directly to brick kiln families, widows and households in crisis. Our team visits, offers practical support and prayer, and stands with families when daily work or income is interrupted.',
+				'role' => 'Practical care for families in need',
+			),
+			'sections' => array(
+				array(
+					'heading' => 'Food packages for families',
+					'text' => 'Food is delivered directly to families who are struggling to meet their basic needs, including brick kiln workers, widows and households with children.',
+					'points' => array(
+						'Packages with essential household food supplies',
+						'Emergency help when daily work stops or a crisis strikes',
+						'Personal visits, prayer and follow-up care',
+					),
+				),
+			),
+			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
+			'photos' => array(
+				// Theme 1.30.0: hero image from client's Food Relief data folder.
+				array(
+					'krm-theme:images/content/food-relief-hero.webp',
+					'Brick kiln families seated with their food boxes and flour sacks at a food distribution',
+				),
+				array(
+					'krm-theme:images/content/food-relief-1.jpg',
+					'Rows of food parcels — sacks of flour and bags of groceries — ready for brick kiln families',
+				),
+				array(
+					'krm-theme:images/content/food-relief-13.webp',
+					'An elderly couple at a brick kiln receiving a food box and a sack of flour from a pastor',
+				),
+				array(
+					'krm-theme:images/content/food-relief-14.webp',
+					'Food boxes stacked beside a red cross, with brick kiln families gathered behind them',
+				),
+				array(
+					'krm-theme:images/content/food-relief-15.webp',
+					'A pastor standing behind rows of "Free Food Distribution" boxes and flour sacks at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-12.webp',
+					'Brick kiln families raising their hands beside their food boxes and bags of flour',
+				),
+				array(
+					'krm-theme:images/content/food-relief-17.webp',
+					'A family with their food box and flour sack, a pastor giving a thumbs up beside them',
+				),
+				array(
+					'krm-theme:images/content/food-relief-16.webp',
+					'Families seated on the ground at a brick kiln, each with a food box ready to take home',
+				),
+				array(
+					'krm-theme:images/content/food-relief-19.webp',
+					'A ministry worker feeding a small child a plate of rice at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-20.webp',
+					'A father, mother and children holding their food box and flour sack beside a pastor',
+				),
+				array(
+					'krm-theme:images/content/food-relief-21.webp',
+					'A family at a brick kiln with the food box and flour they received',
+				),
+				array(
+					'krm-theme:images/content/food-relief-22.webp',
+					'Kiln families with their food boxes and flour, the kiln chimney behind them',
+				),
+				array(
+					'krm-theme:images/content/food-relief-23.webp',
+					'A mother and her children receiving a food box from a pastor in front of the kiln chimney',
+				),
+				array(
+					'krm-theme:images/content/food-relief-24.webp',
+					'A pastor speaking to a large gathering of brick kiln families before food is given out',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-38-scaled.jpg',
+					'Children seated around a long mat for a shared meal in a brick kiln courtyard',
+				),
+				array(
+					'krm-theme:images/content/food-relief-09.webp',
+					'A pastor handing a food package to a mother and her children at a brick kiln',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-34-scaled-e1787822803466.jpg',
+					'A ministry worker serving rice to children at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-10.webp',
+					'A mother at a brick kiln feeding her baby from the meal she received',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-33-scaled-e1787822814979.jpg',
+					'A ministry worker feeding a small child',
+				),
+				array(
+					'krm-theme:images/content/food-relief-11.webp',
+					'Families at a brick kiln raising their hands behind rows of food bags and boxes ready to be given out',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-32-scaled.jpg',
+					'Children raising their hands at a meal in a brick kiln courtyard',
+				),
+				array(
+					'krm-theme:images/content/food-relief-08.webp',
+					'A ministry worker handing a sack of flour and a food box to a family at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-2.jpg',
+					'A pastor serving a hot meal to children sitting together at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-3.jpg',
+					'A mother and her children with their food parcel at the kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-07.webp',
+					'Brick kiln families at sunset holding "Faith in action" food box signs',
+				),
+				array(
+					'krm-theme:images/content/food-relief-6.jpg',
+					'A ministry worker handing out bread to children at a brick kiln',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-37-scaled-e1787822770768.jpg',
+					'Small children drinking juice with their plates of rice',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-36-scaled-e1787822780752.jpg',
+					'Young children eating rice together on a mat',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-35-scaled-e1787822792740.jpg',
+					'A girl in a purple dress sitting with her plate of rice',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-31-scaled.jpg',
+					'Children with raised hands seated for a meal and prayer',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-30-scaled-e1787822825532.jpg',
+					'A girl in a headscarf holding her plate of rice',
+				),
+				array(
+					'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Bricks-kiln-slaves-children-29-scaled-e1787822836311.jpg',
+					'A smiling girl sitting with her plate of rice and a juice box',
+				),
+				array(
+					'krm-theme:images/content/food-relief-18.webp',
+					'A pastor speaking to kiln families seated behind rows of food bags',
+				),
+				// Theme 1.29.0: added from client's Food Relief data folder.
+				array(
+					'krm-theme:images/content/food-relief-25.webp',
+					'A ministry worker with thumbs up standing behind rows of food distribution boxes and flour sacks at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-26.webp',
+					'An elderly man and young woman receiving a food box and flour sack from a ministry worker',
+				),
+				array(
+					'krm-theme:images/content/food-relief-27.webp',
+					'A family with a small child receiving their food box and flour sack at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-28.webp',
+					'A young family with two children receiving food supplies, the brick kiln chimney behind them',
+				),
+				array(
+					'krm-theme:images/content/food-relief-29.webp',
+					'A family with children receiving their food parcel at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-30.webp',
+					'A large gathering of brick kiln families listening to a pastor before food is given out',
+				),
+				array(
+					'krm-theme:images/content/food-relief-31.webp',
+					'A ministry worker hand-feeding rice to village children in a brick courtyard',
+				),
+				array(
+					'krm-theme:images/content/food-relief-32.webp',
+					'A family receiving a food box at a brick kiln distribution',
+				),
+				array(
+					'krm-theme:images/content/food-relief-33.webp',
+					'A family with a toddler receiving their food parcel from a ministry worker',
+				),
+				array(
+					'krm-theme:images/content/food-relief-34.webp',
+					'Brick kiln families seated outdoors waiting for food distribution',
+				),
+				array(
+					'krm-theme:images/content/food-relief-35.webp',
+					'Children eating plates of rice at a village meal provided by the ministry',
+				),
+				// Theme 1.31.0: added more images from client's Food Relief data folder.
+				array(
+					'krm-theme:images/content/food-relief-50.webp',
+					'Ministry worker standing beside rows of food boxes ready for distribution',
+				),
+				array(
+					'krm-theme:images/content/food-relief-51.webp',
+					'Brick kiln families seated with their food boxes and flour sacks at a food distribution',
+				),
+				array(
+					'krm-theme:images/content/food-relief-52.webp',
+					'Families receiving food boxes and flour at a brick kiln distribution',
+				),
+				array(
+					'krm-theme:images/content/food-relief-53.webp',
+					'A mother holding her baby while receiving food supplies',
+				),
+				array(
+					'krm-theme:images/content/food-relief-54.webp',
+					'Children with their family receiving food boxes',
+				),
+				array(
+					'krm-theme:images/content/food-relief-55.webp',
+					'A brick kiln family with their food box and flour sack, the kiln chimney behind them',
+				),
+				array(
+					'krm-theme:images/content/food-relief-56.webp',
+					'Families gathering to receive food distributions at the brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-57.webp',
+					'Ministry workers distributing food to families',
+				),
+				array(
+					'krm-theme:images/content/food-relief-58.webp',
+					'Food distribution boxes prepared for brick kiln families',
+				),
+				array(
+					'krm-theme:images/content/food-relief-59.webp',
+					'Families raising their hands in gratitude during food distribution',
+				),
+				array(
+					'krm-theme:images/content/food-relief-60.webp',
+					'A ministry worker feeding children at a brick kiln',
+				),
+				array(
+					'krm-theme:images/content/food-relief-61.webp',
+					'Children eating a meal provided by the ministry',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/food-relief-hero.webp',
+			'raised' => '1400',
+			'goal' => '6000',
+			'gifts' => array(
+				array( '$25', 'A family food parcel', 'Flour, rice, lentils and oil for a month.' ),
+				array( '$100', 'Four food parcels', 'Feed four families for a month.' ),
+			),
+			'stats' => array(
+				array( '300', 'Families fed' ),
+				array( '25', 'Villages reached' ),
+				array( '900', 'Food packages delivered' ),
+			),
+			'stats_prayer' => 'That no family we serve goes hungry, and that every meal opens a door for the Gospel.',
+			'was' => array(),
+			'order' => 15,
+			'home_order' => 15,
+		),
+		'disaster-relief' => array(
+			'title' => 'Disaster Relief & Recovery Ministry',
+			// Theme 1.28.2: hidden at the client's request (not part of the website): a draft, left out of the menus, What We
+			// Do, the home page, the gallery, search and the sitemap. To show it again: 'live' here plus a version bump.
+			'status' => 'hidden',
+			'coming_soon' => true,
+			'group' => 'compassion-humanitarian',
+			'tag' => 'RELIEF',
+			'excerpt' => 'Emergency help and rebuilding for families hit by floods and other disasters.',
+			'summary' => '',
+			'focus' => 'Bringing relief and hope when disaster strikes.',
+			'points' => array(
+				'Emergency food, water and shelter',
+				'Medical help after floods',
+				'Rebuilding homes and livelihoods',
+			),
+			'sections' => array(),
+			// Theme 1.22.4: from the client's data folder (no folder for this ministry: photos chosen to fit it).
+			'photos' => array(
+				array(
+					'krm-theme:images/content/disaster-relief-4.jpg',
+					'A crowd of brick kiln children in warm clothes, waving, in front of the kiln chimney',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-1.jpg',
+					'Warm clothes and blankets laid out, ready to give to brick kiln families',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-2.jpg',
+					'A pastor with children beside piles of donated clothes and blankets',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-3.jpg',
+					'Children at a brick kiln wearing new winter jackets and hats',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-06.webp',
+					'A ministry worker with a girl holding her new pack of warm clothes',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-07.webp',
+					'Children seated in a courtyard beside warm hats, jackets and blankets ready to be given out',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-08.webp',
+					'Families at a brick kiln raising their hands behind rows of relief sacks and boxes of supplies',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-09.webp',
+					'A pastor praying with brick kiln families before relief food packages are given out',
+				),
+				array(
+					'krm-theme:images/content/disaster-relief-10.webp',
+					'Brick kiln families holding their relief packages beside the Kingdom Revival Ministries banner',
+				),
+			),
+			'explorer_image' => 'krm-theme:images/content/disaster-relief-4.jpg',
+			'raised' => '1100',
+			'goal' => '8000',
+			'gifts' => array(
+				array( '$35', 'Emergency kit', 'Food, water and hygiene items for a family.' ),
+				array( '$120', 'Rebuild support', 'Towards repairing a flood-damaged home.' ),
+			),
+			'stats' => array(
+				array( '450', 'Families helped after floods' ),
+				array( '3', 'Relief operations' ),
+				array( '15', 'Villages reached' ),
+			),
+			'was' => array(),
+			'order' => 16,
+			'home_order' => 16,
+		),
+	),
+);

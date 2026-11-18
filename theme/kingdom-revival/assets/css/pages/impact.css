@@ -1,0 +1,67 @@
+.impact-page{color:var(--color-text)}
+
+.impact-counters{background:var(--color-orange);padding:52px 0 62px}.impact-counters h2{margin:6px 0 30px;color:var(--color-on-accent-navy);font-size:clamp(28px,4vw,44px)}.impact-counters .eyebrow{color:var(--color-on-accent-navy)}.impact-counters__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(12,28,79,.2)}.impact-counter{min-height:150px;padding:24px;background:var(--color-orange);display:flex;flex-direction:column;justify-content:flex-end}.impact-counter strong{font-size:clamp(34px,4vw,52px);line-height:1;color:var(--color-on-accent-navy)}.impact-counter>span{margin-top:10px;font-weight:700;color:var(--color-on-accent-navy)}
+.impact-section{padding:clamp(72px,9vw,116px) 0}.impact-section--soft{background:var(--color-bg-soft)}.impact-section--navy{background:var(--color-band);color:var(--color-white)}.impact-heading{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:42px}.impact-heading h2,.impact-financial h2{margin:8px 0 0;color:var(--color-heading);font-size:clamp(34px,4.5vw,54px);line-height:1.08}.impact-heading>p{max-width:440px;margin:0;color:var(--color-text-muted)}.impact-section--navy .impact-heading h2{color:var(--color-white)}.impact-section--navy .impact-heading>p{color:var(--color-text-on-dark-3)}
+.impact-explorer{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:28px}.impact-explorer__tabs{display:flex;flex-direction:column;gap:7px}.impact-explorer__tabs button{min-height:51px;padding:12px 16px;border:0;border-radius:8px;background:var(--color-surface);color:var(--color-heading);font:700 14px var(--font-body);text-align:left;cursor:pointer}.impact-explorer__tabs button span{display:inline-block;width:34px;color:var(--color-orange)}.impact-explorer__tabs button[aria-selected=true]{background:var(--color-band);color:var(--color-white)}.impact-explorer__panel{min-width:0;padding:clamp(28px,4vw,54px);border-radius:20px;background:var(--color-band);color:var(--color-white)}.impact-kicker{margin:0;color:var(--color-orange);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.impact-explorer__panel h3{margin:12px 0 26px;color:inherit;font-size:clamp(30px,4vw,47px);line-height:1.1}.impact-mini-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.impact-mini-metrics div{padding:16px;border-radius:8px;background:rgba(203,212,232,.12)}.impact-mini-metrics strong{display:block;color:var(--color-orange);font-size:26px}.impact-mini-metrics span{font-size:13px}.impact-pending,.impact-chart__empty{margin:0;padding:20px;border:1px dashed rgba(203,212,232,.55);border-radius:8px;color:var(--color-text-on-dark-3);text-align:center}.impact-locations{color:var(--color-text-on-dark-3)}.impact-pill{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:13px 24px;border-radius:999px;background:var(--color-orange);color:var(--color-on-accent-navy);font-weight:800;text-decoration:none}.impact-pill.is-disabled{opacity:.7;cursor:not-allowed}
+.impact-chart{min-height:260px;margin-top:24px}.impact-chart--large{min-height:410px}.impact-chart svg{display:block;width:100%;height:auto;overflow:visible}.impact-chart text{font:12px var(--font-body);fill:var(--color-chart-text)}.impact-explorer .impact-chart text,.impact-section--navy .impact-chart text{fill:var(--color-white)}.impact-chart rect,.impact-chart path{transition:opacity .2s}.impact-chart [data-tip]:hover{opacity:.78}.impact-chart table,.impact-table-wrap table{width:100%;border-collapse:collapse;margin-top:22px}.impact-chart caption,.impact-table-wrap caption{text-align:left;font-weight:800;margin-bottom:10px}.impact-chart th,.impact-chart td,.impact-table-wrap th,.impact-table-wrap td{padding:12px;border-bottom:1px solid var(--color-chart-grid);text-align:left;font-size:14px}.impact-chart__visual{position:relative}.impact-tooltip{position:absolute;z-index:2;pointer-events:none;padding:7px 10px;border-radius:5px;background:var(--color-band);color:var(--color-white);font-size:12px;box-shadow:0 8px 25px rgba(var(--shadow-rgb), calc(.18 * var(--shadow-k)))}
+.impact-map-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}.impact-map{position:relative;width:100%;max-width:640px;margin:auto}.impact-map__pin{position:absolute;display:flex;align-items:center;gap:7px;color:var(--color-white);font-size:13px;font-weight:800;white-space:nowrap}.impact-map__pin i{width:14px;height:14px;border:3px solid var(--color-surface);border-radius:50%;background:var(--color-secondary);box-shadow:0 0 0 6px rgba(212,7,11,.2)}.impact-table-wrap{overflow-x:auto}.impact-table-wrap table{color:var(--color-white)}.impact-table-wrap td,.impact-table-wrap th{border-color:rgba(203,212,232,.3)}
+.impact-freedom{display:grid;grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);gap:34px;align-items:start}.impact-compare>section{border-radius:20px;overflow:hidden}.impact-compare>section>div{padding:34px 24px!important}.impact-compare ol,.impact-compare>section>div>div:first-of-type{display:none!important}.impact-compare [data-krm-compare]{margin-top:0!important;height:390px!important}.impact-financial{display:grid;grid-template-columns:.8fr 1.2fr;gap:64px;align-items:center}.impact-financial p{color:var(--color-text-muted)}.impact-financial__row{margin:18px 0}.impact-financial__label{display:flex;justify-content:space-between;font-weight:800}.impact-financial__track{height:20px;margin-top:8px;border-radius:999px;background:var(--color-chart-4);overflow:hidden}.impact-financial__fill{height:100%;background:var(--color-chart-1)}.impact-financial__row:nth-child(2) .impact-financial__fill{background:var(--color-chart-2)}
+.impact-stories{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.impact-stories article{overflow:hidden;border-radius:14px;background:var(--color-surface);box-shadow:0 12px 35px rgba(var(--shadow-rgb), calc(.09 * var(--shadow-k)))}.impact-stories img{width:100%;height:230px;object-fit:cover}.impact-stories article div{padding:24px}.impact-stories h3{margin:0 0 10px;color:var(--color-heading);font-size:23px}.impact-stories p{margin:0;color:var(--color-text-muted)}.impact-report{text-align:center;margin-top:42px}.impact-cta{padding:54px 0;background:var(--color-secondary);color:var(--color-white)}.impact-cta .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px}.impact-cta h2{max-width:760px;margin:0;font-size:clamp(31px,4.5vw,52px);line-height:1.08}.impact-cta p{margin:12px 0 0}.impact-cta .impact-pill{background:var(--color-white);color:var(--color-on-accent-navy)}
+@media(max-width:900px){.impact-counters__grid{grid-template-columns:repeat(2,1fr)}.impact-explorer,.impact-freedom,.impact-financial{grid-template-columns:1fr}.impact-explorer__tabs{max-height:330px;overflow:auto}.impact-map-grid{grid-template-columns:1fr}.impact-stories{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.impact-counters__grid,.impact-stories{grid-template-columns:1fr}.impact-counter{min-height:115px}.impact-mini-metrics{grid-template-columns:1fr}.impact-explorer__panel{border-radius:12px}.impact-map__pin{white-space:normal;max-width:120px}.impact-compare [data-krm-compare]{height:300px!important}}
+@media(prefers-reduced-motion:reduce){.impact-chart rect,.impact-chart path{transition:none}}
+
+/* Final pass: headings on the navy hero and the red CTA are white (the global heading colour is navy). */
+.impact-cta h2 { color: var(--color-white); }
+/* While the families-freed chart is hidden (no data yet), the before/after slider takes the full width. */
+.impact-freedom > .impact-compare:only-child { grid-column: 1 / -1; }
+/* A hidden data section can leave two neighbours with the same background: they read as one band. */
+.page-hero + .impact-section--navy, .impact-section--soft + .impact-section--soft { padding-top: 0; }
+/* Final pass, contrast (WCAG AA): the hero eyebrow uses the accent on navy; explorer tab numbers use the red. */
+.impact-explorer__tabs button span { color: var(--color-secondary-text); }
+.impact-section--navy .eyebrow { color: var(--color-accent); }
+
+/* Phase 20: the numbers strip on its photo band (see-through navy overlay): white text, frosted counter cards. */
+.impact-counters[data-photo-band]{background-color:var(--color-band)!important;padding:clamp(64px,8vw,104px) 0;color:var(--color-white)}
+.impact-counters[data-photo-band] h2{color:var(--color-white)}
+.impact-counters[data-photo-band] .eyebrow{color:var(--color-accent)}
+.impact-counters[data-photo-band] .impact-counters__grid{gap:14px;background:none}
+.impact-counters[data-photo-band] .impact-counter{border-radius:14px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.impact-counters[data-photo-band] .impact-counter strong{color:var(--color-white)}
+.impact-counters[data-photo-band] .impact-counter>span{color:var(--color-text-on-dark)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.impact-counters[data-photo-band] .impact-counter{background:rgba(12,28,79,.92)}}
+/* 2026-11-05: with figures filled in, these parts show for visitors too. Tab numbers: orange on white is under 4.5:1,
+   so unselected tabs use the red text colour and the selected (navy) tab the light orange accent. The district
+   table may shrink with the grid on phones instead of widening the page. */
+.impact-explorer__tabs button span{color:var(--color-secondary-text)}
+.impact-explorer__tabs button[aria-selected=true] span{color:var(--color-accent)}
+.impact-map-grid>*{min-width:0}
+@media(max-width:600px){.impact-table-wrap th,.impact-table-wrap td,.impact-chart th,.impact-chart td{padding:10px 6px;font-size:13px}}
+
+/* Our Impact → its two subpages (Phase 21): Testimonies and Photo & Video Gallery link cards */
+.impact-links__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(18px, 2.5vw, 28px); margin: 0; padding: 0; list-style: none; }
+.impact-links__grid > li { display: flex; min-width: 0; }
+.impact-link-card { position: relative; display: flex; flex: 1; flex-direction: column; overflow: hidden; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-surface); transition: box-shadow .2s ease, transform .2s ease; }
+.impact-link-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.impact-link-card:focus-within { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+.impact-link-card__media { position: relative; aspect-ratio: 16 / 7; overflow: hidden; background: var(--color-band-3); }
+.impact-link-card__media img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.impact-link-card__body { display: flex; flex: 1; flex-direction: column; padding: clamp(20px, 2.6vw, 30px); }
+.impact-link-card h3 { margin: 0; color: var(--color-heading); font-size: clamp(22px, 2.2vw, 26px); font-weight: 800; }
+.impact-link-card h3 a { color: inherit; text-decoration: none; }
+.impact-link-card h3 a::after { position: absolute; inset: 0; z-index: 1; content: ""; }
+.impact-link-card h3 a:focus-visible { outline: none; }
+.impact-link-card__body > p { margin: 10px 0 0; color: var(--color-text-muted); line-height: 1.65; }
+.impact-link-card__quote { margin: 12px 0 0; padding-left: 14px; border-left: 3px solid var(--color-secondary); color: var(--color-text); font-style: italic; line-height: 1.6; }
+.impact-link-card__quote p { margin: 0; }
+.impact-link-card__quote footer { display: flex; gap: 12px; align-items: center; margin-top: 12px; }
+.impact-link-card__quote cite { display: block; color: var(--color-text-muted); font-size: 14px; font-style: normal; font-weight: 700; }
+.impact-link-card__more { margin-top: auto; padding-top: 16px; color: var(--color-secondary-text); font-weight: 700; }
+@media (max-width: 760px) { .impact-links__grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Map pins (theme 1.16.2, four districts): the dot sits exactly on the pin's left / top %, the name on a navy chip so
+   it reads on the light map; "label": "left" in impact.json puts the name to the left of the dot (Jhang, the westmost). */
+.impact-map__pin{gap:6px;padding:3px 9px 3px 3px;border-radius:999px;background:var(--color-band);font-size:12.5px;line-height:18px;white-space:nowrap;transform:translate(-10px,-12px);box-shadow:0 2px 8px rgba(var(--shadow-rgb),calc(.12 * var(--shadow-k)))}
+.impact-map__pin i{flex:none}
+.impact-map__pin.is-left{flex-direction:row-reverse;padding:3px 3px 3px 9px;transform:translate(calc(-100% + 10px),-12px)}
+@media(max-width:600px){.impact-map__pin{max-width:none;white-space:nowrap;font-size:12px}}

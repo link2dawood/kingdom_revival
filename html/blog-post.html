@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0C1C4F">
+  <title>Story | Kingdom Revival Ministries</title>
+  <meta name="description" content="Stories of hope from Kingdom Revival Ministries in Pakistan.">
+  <link rel="icon" type="image/png" href="assets/krm-logo.png">
+  <link rel="apple-touch-icon" href="assets/krm-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="assets/site.css">
+  <style>
+.post-card { display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius); background: var(--white); box-shadow: 0 10px 30px rgba(12,28,79,.08); text-decoration: none; transition: transform .25s ease, box-shadow .25s ease; }
+    .post-card:hover { transform: translateY(-6px); box-shadow: 0 22px 44px rgba(12,28,79,.16); }
+    .post-card-media { position: relative; overflow: hidden; aspect-ratio: 16 / 10; background: #E8ECF6; }
+    .post-card-media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .post-card:hover .post-card-media img { transform: scale(1.06); }
+    .tag { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 999px; background: var(--red); color: var(--white); font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .post-card-media .tag { position: absolute; top: 14px; left: 14px; }
+    .post-card-body { display: flex; flex: 1; flex-direction: column; padding: 22px 22px 24px; }
+    .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; color: var(--muted); font-size: 13px; font-weight: 600; }
+    .post-meta span { display: inline-flex; align-items: center; gap: 6px; }
+    .post-card h3 { margin: 12px 0 0; font-size: 20px; line-height: 1.3; letter-spacing: -.01em; }
+    .post-card p { margin: 10px 0 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+    .read-more { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 18px; color: var(--red); font-size: 14px; font-weight: 800; }
+    .post-card:hover .read-more svg { transform: translateX(4px); }
+    .read-more svg { transition: transform .2s ease; }
+    .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+    @media (max-width: 960px) { .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 620px) { .post-grid { grid-template-columns: 1fr; } }
+
+    .progress { position: fixed; top: 0; left: 0; z-index: 120; width: 100%; height: 4px; background: transparent; }
+    .progress span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--red), var(--orange)); }
+    .post-hero { position: relative; min-height: min(78vh, 640px); display: flex; align-items: flex-end; background: var(--navy-deep) center 25% / cover no-repeat; color: var(--white); }
+    .post-hero::before { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,16,48,.15) 0%, rgba(8,16,48,.55) 45%, rgba(8,16,48,.95) 100%); content: ""; }
+    .post-hero .wrap { position: relative; padding: 120px 0 clamp(40px, 6vw, 64px); }
+    .post-hero h1 { max-width: 900px; margin: 16px 0 0; color: var(--white); font-size: clamp(32px, 5vw, 56px); font-weight: 800; line-height: 1.12; letter-spacing: -.03em; }
+    .post-hero .post-meta { margin-top: 22px; color: #D6DDF0; font-size: 14px; }
+    .post-hero .post-meta a { color: var(--orange); font-weight: 700; text-decoration: none; }
+    .post-hero .post-meta a:hover { text-decoration: underline; }
+    .post-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: clamp(40px, 6vw, 72px); align-items: start; padding: clamp(48px, 6vw, 80px) 0; }
+    .article { max-width: 740px; font-size: 18px; line-height: 1.85; color: #2B3349; }
+    .article > p { margin: 0 0 24px; }
+    .article > p.lead { color: var(--navy); font-size: 21px; font-weight: 500; line-height: 1.7; }
+    .article > p.lead::first-letter { float: left; margin: 8px 12px 0 0; color: var(--red); font-size: 68px; font-weight: 800; line-height: .8; }
+    .article h2 { margin: 44px 0 16px; font-size: clamp(24px, 2.6vw, 30px); font-weight: 800; }
+    .article blockquote { position: relative; margin: 36px 0; padding: 28px 28px 28px 72px; border-radius: var(--radius); background: var(--soft); color: var(--navy); font-size: 21px; font-weight: 700; line-height: 1.55; }
+    .article blockquote::before { position: absolute; top: 10px; left: 22px; color: var(--red); content: "“"; font-family: Georgia, serif; font-size: 72px; line-height: 1; }
+    .article blockquote cite { display: block; margin-top: 10px; color: var(--red); font-size: 14px; font-style: normal; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .article figure { margin: 36px 0; }
+    .article figure img { display: block; width: 100%; max-height: 520px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
+    .article figcaption { display: flex; gap: 8px; align-items: center; margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .article ul.checks { display: grid; gap: 12px; margin: 0 0 28px; padding: 0; list-style: none; }
+    .article ul.checks li { display: flex; gap: 12px; align-items: flex-start; }
+    .article ul.checks svg { flex: none; margin-top: 6px; padding: 3px; border-radius: 50%; background: #FDE7E7; color: var(--red); }
+    .article .post-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 8px 0 32px; }
+    .article .post-gallery img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; transition: filter .2s ease; }
+    .article .post-gallery img:hover { filter: brightness(1.08); }
+    .zoom-tip { display: flex; align-items: center; gap: 8px; margin: -8px 0 32px; color: var(--muted); font-size: 14px; }
+    .inline-give { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: center; margin: 40px 0; padding: 28px; border-radius: var(--radius); background: linear-gradient(120deg, var(--navy), #1A2F78); color: #D6DDF0; }
+    .inline-give .icon { display: grid; width: 60px; height: 60px; place-items: center; border-radius: 50%; background: var(--red); color: var(--white); animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(212,7,11,.5); } 50% { box-shadow: 0 0 0 12px rgba(212,7,11,0); } }
+    .inline-give h3 { margin: 0; color: var(--white); font-size: 21px; }
+    .inline-give p { margin: 6px 0 0; font-size: 15px; line-height: 1.6; }
+    .inline-give .button { margin-top: 14px; }
+    .article-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
+    .share { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .share strong { margin-right: 4px; color: var(--navy); font-size: 14px; }
+    .share a, .share button { display: inline-grid; width: 42px; height: 42px; place-items: center; border: 2px solid #DDE3F0; border-radius: 50%; background: var(--white); color: var(--navy); cursor: pointer; text-decoration: none; transition: all .15s ease; }
+    .share a:hover, .share button:hover { border-color: var(--navy); background: var(--navy); color: var(--white); }
+    .copied { color: #1E5B3A; font-size: 13px; font-weight: 700; }
+    .author { display: flex; gap: 16px; align-items: center; margin-top: 32px; padding: 22px; border-radius: var(--radius); background: var(--soft); }
+    .author img { width: 60px; height: 60px; padding: 4px; border-radius: 50%; background: var(--white); }
+    .author strong { display: block; color: var(--navy); }
+    .author span { color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .sidebar { position: sticky; top: 108px; display: grid; gap: 20px; }
+    .sidebar .give-card { border-top: 5px solid var(--red); }
+    .ministry-card { display: flex; gap: 14px; align-items: center; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; transition: border-color .2s ease; }
+    .ministry-card:hover { border-color: var(--navy); }
+    .ministry-card img { width: 64px; height: 64px; flex: none; object-fit: cover; border-radius: 10px; }
+    .ministry-card small { display: block; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .ministry-card strong { display: block; margin-top: 2px; color: var(--navy); }
+    .ministry-card em { display: block; margin-top: 2px; color: var(--red); font-size: 13px; font-style: normal; font-weight: 700; }
+    .post-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 32px; }
+    .post-nav a { display: grid; gap: 4px; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; transition: border-color .2s ease; }
+    .post-nav a:hover { border-color: var(--navy); }
+    .post-nav a.next { text-align: right; }
+    .post-nav small { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .post-nav strong { color: var(--navy); font-size: 15px; line-height: 1.4; }
+    .related { padding: clamp(56px, 7vw, 88px) 0; background: var(--soft); }
+    .related-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 32px; }
+    .related-head h2 { margin: 0; font-size: clamp(28px, 3.4vw, 38px); font-weight: 800; }
+    .not-found { max-width: 640px; margin: 0 auto; padding: 96px 0; text-align: center; }
+    .not-found h1 { font-size: clamp(32px, 5vw, 44px); }
+    .not-found p { color: var(--muted); }
+    @media (max-width: 1040px) {
+      .post-layout { grid-template-columns: 1fr; }
+      .article { max-width: none; }
+      .sidebar { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sidebar .give-card { display: none; }
+    }
+    @media (max-width: 620px) {
+      .article { font-size: 17px; }
+      .article blockquote { padding: 56px 22px 22px; font-size: 19px; }
+      .sidebar, .post-nav, .inline-give { grid-template-columns: 1fr; }
+      .post-nav a.next { text-align: left; }
+      .article .post-gallery { grid-template-columns: 1fr 1fr; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="topbar-contacts">
+        <a href="tel:+923415418733"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg>+92-341-5418733</a>
+        <a class="topbar-email" href="mailto:Info@kingdomrevivalministries.com"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 6l-10 7L2 6"></path></svg>Info@kingdomrevivalministries.com</a>
+      </div>
+      <a class="donate-link" href="./donate.html">Donate Now</a>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./index.html">
+        <img src="assets/krm-logo.png" alt="Kingdom Revival Ministries logo" width="64" height="64">
+        <span class="brand-text"><strong>Kingdom Revival</strong><small>MINISTRIES</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-toggle-bars" aria-hidden="true"></span>Menu</button>
+        <ul class="menu" id="site-menu">
+          <li><a href="./index.html">Home</a></li>
+          <li class="has-sub" id="nav-ministries">
+            <button class="sub-toggle" type="button" aria-expanded="false">Ministries<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+            <ul class="submenu">
+              <li class="menu-all"><a href="./index.html#all-ministries">All ministries</a></li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Children &amp; Families<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=children-ministry" data-ministry="children-ministry">Children Ministry</a></li>
+                <li><a href="./all-ministries.html?ministry=orphan-and-children-care" data-ministry="orphan-and-children-care">Orphan &amp; Children Care</a></li>
+                <li><a href="./all-ministries.html?ministry=brick-kiln-children" data-ministry="brick-kiln-children">Brick Kiln Children</a></li>
+                <li><a href="./all-ministries.html?ministry=widows-ministry" data-ministry="widows-ministry">Widows Ministry</a></li>
+              </ul>
+            </li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Freedom &amp; Care<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=freedom-from-slavery" data-ministry="freedom-from-slavery">Freedom from Slavery</a></li>
+                <li><a href="./all-ministries.html?ministry=free-medical-camps" data-ministry="free-medical-camps">Free Medical Camps</a></li>
+                <li><a href="./all-ministries.html?ministry=clean-water-project" data-ministry="clean-water-project">Clean Water Project</a></li>
+              </ul>
+            </li>
+            <li class="has-sub">
+              <button class="sub-toggle" type="button" aria-expanded="false">Gospel &amp; Church<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <ul class="submenu">
+                <li><a href="./all-ministries.html?ministry=outreach-ministry" data-ministry="outreach-ministry">Outreach Ministry</a></li>
+                <li><a href="./all-ministries.html?ministry=urdu-bibles" data-ministry="urdu-bibles">Urdu Bibles</a></li>
+                <li><a href="./all-ministries.html?ministry=baptisms" data-ministry="baptisms">Baptisms</a></li>
+                <li><a href="./all-ministries.html?ministry=deliverance-and-healing" data-ministry="deliverance-and-healing">Deliverance &amp; Healing</a></li>
+                <li><a href="./all-ministries.html?ministry=leadership-and-discipleship" data-ministry="leadership-and-discipleship">Leadership &amp; Discipleship</a></li>
+              </ul>
+            </li>
+            </ul>
+          </li>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./blog.html" aria-current="page">News &amp; Blogs</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <main id="main">
+    <div id="post-page" hidden>
+      <section class="post-hero" id="post-hero">
+        <div class="wrap">
+          <ol class="breadcrumb"><li><a href="./index.html">Home</a></li><li><a href="./blog.html">News &amp; Blogs</a></li><li aria-current="page" id="crumb-title"></li></ol>
+          <span class="tag" id="post-tag"></span>
+          <h1 id="post-title"></h1>
+          <div class="post-meta" id="post-meta"></div>
+        </div>
+      </section>
+
+      <div class="wrap post-layout">
+        <article class="article" id="article">
+          <div id="article-body" data-gallery></div>
+          <div class="article-footer">
+            <div class="share">
+              <strong>Share this story</strong>
+              <a id="share-whatsapp" target="_blank" rel="noopener" aria-label="Share on WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"></path></svg></a>
+              <a id="share-facebook" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+              <a id="share-x" target="_blank" rel="noopener" aria-label="Share on X"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20"></path></svg></a>
+              <button type="button" id="share-copy" aria-label="Copy link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"></path></svg></button>
+              <span class="copied" id="copied" role="status" hidden>Link copied!</span>
+            </div>
+            <a class="button button-secondary" href="./blog.html">← All stories</a>
+          </div>
+          <div class="author">
+            <img src="assets/krm-logo.png" alt="" width="60" height="60">
+            <div><strong>Kingdom Revival Ministries Team</strong><span>Sharing stories from the villages, kilns and churches we serve in Pakistan.</span></div>
+          </div>
+          <nav class="post-nav" id="post-nav" aria-label="More stories"></nav>
+        </article>
+
+        <aside class="sidebar" aria-label="Support this ministry">
+          <form class="give-card" id="give-side" data-short="true"></form>
+          <a class="ministry-card" id="ministry-card">
+            <img id="ministry-card-img" src="" alt="">
+            <span><small>About this ministry</small><strong id="ministry-card-name"></strong><em>Learn more →</em></span>
+          </a>
+          <a class="ministry-card" href="./contact.html">
+            <img src="assets/krm-logo.png" alt="" style="object-fit: contain; background: var(--soft); padding: 6px">
+            <span><small>Pray with us</small><strong>Send a prayer request</strong><em>Contact us →</em></span>
+          </a>
+        </aside>
+      </div>
+
+      <div class="wrap" style="padding-bottom: clamp(56px, 7vw, 88px)">
+        <section class="give-band" id="give" style="background-image: url('https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Orphanages-care-19.jpg')" aria-labelledby="give-main-heading">
+          <div>
+            <p class="eyebrow">Be part of the story</p>
+            <h2 id="give-main-heading">Stand with this ministry</h2>
+            <p>Every gift — one-time or monthly — goes to the work you have just read about, bringing the hope of Jesus and practical care to families who need it most.</p>
+            <ul>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>Choose any amount, one-time or monthly</span></li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>Your gift goes to this ministry’s work in Pakistan</span></li>
+              <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>You will be part of the next story we share</span></li>
+            </ul>
+          </div>
+          <form class="give-card" id="give-main"></form>
+        </section>
+      </div>
+
+      <section class="related">
+        <div class="wrap">
+          <div class="related-head">
+            <div><p class="eyebrow">Keep reading</p><h2>More stories of hope</h2></div>
+            <a class="button button-secondary" href="./blog.html">View all stories</a>
+          </div>
+          <div class="post-grid" id="related-grid"></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="wrap not-found" id="not-found" hidden>
+      <p class="eyebrow">Story not found</p>
+      <h1>We couldn’t find that story</h1>
+      <p>It may have moved. Browse all of our latest stories from the field.</p>
+      <a class="button button-primary" href="./blog.html">See all stories</a>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <div class="footer-brand"><img src="assets/krm-logo.png" alt="" width="64" height="64">Kingdom Revival Ministries</div>
+        <p>Bringing the hope of Jesus Christ to the forgotten, the unreached, and the vulnerable across Pakistan.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./blog.html">News &amp; Blogs</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+          <li><a href="./partner.html">Become a Partner</a></li>
+          <li><a href="./donate.html">Donate</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ministries</h3>
+        <ul class="footer-links">
+            <li><a href="./all-ministries.html?ministry=children-ministry">Children Ministry</a></li>
+            <li><a href="./all-ministries.html?ministry=orphan-and-children-care">Orphan &amp; Children Care</a></li>
+            <li><a href="./all-ministries.html?ministry=freedom-from-slavery">Freedom from Slavery</a></li>
+            <li><a href="./all-ministries.html?ministry=urdu-bibles">Urdu Bibles</a></li>
+            <li><a href="./all-ministries.html?ministry=leadership-and-discipleship">Leadership &amp; Discipleship</a></li>
+          <li><a href="./index.html#all-ministries">All ministries →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <address>
+          <span>Chak No 220, RB Nasrat Colony, Street No. 3, Shadab Puli, Jhang Road, Faisalabad</span>
+          <a href="tel:+923415418733">+92-341-5418733</a>
+          <a href="mailto:Info@kingdomrevivalministries.com">Info@kingdomrevivalministries.com</a>
+        </address>
+      </div>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© 2026 Kingdom Revival Ministries</span>
+      <span>Faisalabad, Pakistan</span>
+    </div>
+  </footer>
+  <script src="assets/site.js"></script>
+  <script src="assets/blog-data.js"></script>
+  <script>
+    (function () {
+    var CLOCK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>';
+    var CAL = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>';
+    var ARROW = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>';
+    function formatDate(iso) {
+      return new Date(iso + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    }
+    function esc(text) {
+      return String(text).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; });
+    }
+    function postUrl(post) { return "./blog-post.html?post=" + encodeURIComponent(post.slug); }
+    function card(post) {
+      return '<a class="post-card" href="' + postUrl(post) + '">' +
+        '<div class="post-card-media"><img src="' + post.cover + '" alt="' + esc(post.coverAlt) + '" loading="lazy" decoding="async"><span class="tag">' + esc(post.category) + '</span></div>' +
+        '<div class="post-card-body"><div class="post-meta"><span>' + CAL + formatDate(post.date) + '</span><span>' + CLOCK + post.readTime + ' min read</span></div>' +
+        '<h3>' + esc(post.title) + '</h3><p>' + esc(post.excerpt) + '</p><span class="read-more">Read the story ' + ARROW + '</span></div></a>';
+    }
+      var CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>';
+      var HEART = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>';
+      var ZOOM = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"></path></svg>';
+      var posts = window.KRM_POSTS.slice().sort(function (a, b) { return b.date.localeCompare(a.date); });
+      var slug = new URLSearchParams(location.search).get("post");
+      var index = posts.findIndex(function (p) { return p.slug === slug; });
+      if (index === -1) { document.getElementById("not-found").hidden = false; return; }
+      var post = posts[index];
+      document.getElementById("post-page").hidden = false;
+      document.title = post.title + " | Kingdom Revival Ministries";
+      var desc = document.querySelector('meta[name="description"]');
+      if (desc) desc.content = post.excerpt;
+
+      var ministryUrl = "./all-ministries.html?ministry=" + post.ministry;
+      document.getElementById("post-hero").style.backgroundImage = "url('" + post.cover + "')";
+      document.getElementById("crumb-title").textContent = post.title;
+      document.getElementById("post-tag").textContent = post.category;
+      document.getElementById("post-title").textContent = post.title;
+      document.getElementById("post-meta").innerHTML =
+        '<span>' + CAL + formatDate(post.date) + '</span><span>' + CLOCK + post.readTime + ' min read</span>' +
+        '<span>Ministry: <a href="' + ministryUrl + '">' + esc(post.ministryName) + '</a></span>';
+
+      var firstParagraph = true;
+      document.getElementById("article-body").innerHTML = post.body.map(function (block) {
+        if (block.type === "p") {
+          var cls = firstParagraph ? ' class="lead"' : "";
+          firstParagraph = false;
+          return "<p" + cls + ">" + esc(block.text) + "</p>";
+        }
+        if (block.type === "h2") return "<h2>" + esc(block.text) + "</h2>";
+        if (block.type === "quote") return "<blockquote>" + esc(block.text) + "<cite>" + esc(block.cite) + "</cite></blockquote>";
+        if (block.type === "list") return '<ul class="checks">' + block.items.map(function (i) { return "<li>" + CHECK + "<span>" + esc(i) + "</span></li>"; }).join("") + "</ul>";
+        if (block.type === "img") return '<figure><img src="' + block.src + '" alt="' + esc(block.alt) + '" loading="lazy" decoding="async"><figcaption>' + ZOOM + esc(block.caption) + "</figcaption></figure>";
+        if (block.type === "gallery") return '<div class="post-gallery">' + block.images.map(function (img) {
+          return '<img src="' + img[0] + '" alt="' + esc(img[1]) + '" loading="lazy" decoding="async">';
+        }).join("") + '</div><p class="zoom-tip">' + ZOOM + "Tap a photo to open it full screen, zoom in and browse.</p>";
+        if (block.type === "give") return '<aside class="inline-give"><span class="icon">' + HEART + '</span><div><h3>Help write the next chapter</h3>' +
+          "<p>Stories like this happen because people like you give. Your gift to " + esc(post.ministryName) + " goes straight to the work you are reading about.</p>" +
+          '<a class="button button-primary" href="#give">Give to ' + esc(post.ministryName) + " " + ARROW + "</a></div></aside>";
+        return "";
+      }).join("");
+
+      ["give-side", "give-main"].forEach(function (id) {
+        var form = document.getElementById(id);
+        form.dataset.give = post.ministryName;
+        if (id === "give-side") form.dataset.heading = "Support " + post.ministryName;
+        if (id === "give-side") form.dataset.intro = "Your gift helps this story continue.";
+        KRM.initGive(form);
+      });
+      document.getElementById("give-main-heading").textContent = "Stand with " + post.ministryName;
+
+      document.getElementById("ministry-card").href = ministryUrl;
+      document.getElementById("ministry-card-img").src = post.cover;
+      document.getElementById("ministry-card-name").textContent = post.ministryName;
+
+      var url = location.href;
+      var text = encodeURIComponent(post.title);
+      document.getElementById("share-whatsapp").href = "https://wa.me/?text=" + text + "%20" + encodeURIComponent(url);
+      document.getElementById("share-facebook").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
+      document.getElementById("share-x").href = "https://twitter.com/intent/tweet?text=" + text + "&url=" + encodeURIComponent(url);
+      document.getElementById("share-copy").addEventListener("click", function () {
+        var done = function () {
+          var note = document.getElementById("copied");
+          note.hidden = false;
+          setTimeout(function () { note.hidden = true; }, 2000);
+        };
+        if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () {});
+      });
+
+      var newer = posts[index - 1], older = posts[index + 1];
+      document.getElementById("post-nav").innerHTML =
+        (older ? '<a href="' + postUrl(older) + '"><small>← Previous story</small><strong>' + esc(older.title) + "</strong></a>" : "<span></span>") +
+        (newer ? '<a class="next" href="' + postUrl(newer) + '"><small>Next story →</small><strong>' + esc(newer.title) + "</strong></a>" : "");
+
+      var related = posts.filter(function (p) { return p !== post && p.category === post.category; })
+        .concat(posts.filter(function (p) { return p !== post && p.category !== post.category; })).slice(0, 3);
+      document.getElementById("related-grid").innerHTML = related.map(card).join("");
+
+      KRM.refreshZoomables();
+
+      var bar = document.querySelector(".progress span");
+      var article = document.getElementById("article");
+      function progress() {
+        var rect = article.getBoundingClientRect();
+        var total = rect.height - window.innerHeight * 0.6;
+        var done = Math.min(1, Math.max(0, -rect.top / (total || 1)));
+        bar.style.width = (done * 100) + "%";
+      }
+      window.addEventListener("scroll", progress, { passive: true });
+      progress();
+    })();
+  </script>
+</body>
+</html>

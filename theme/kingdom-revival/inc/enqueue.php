@@ -1,0 +1,165 @@
+<?php
+/**
+ * Styles, scripts and the self-hosted font.
+ *
+ * Every page loads theme-global.css first (design tokens and shared components). The home page then loads its own
+ * front.css, as the design did; every other page loads site.css plus a small page stylesheet that holds that
+ * page's original inline styles.
+ *
+ * @package Kingdom_Revival
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Which page stylesheet/script belongs to the current view.
+ */
+function krm_view() {
+	if ( is_front_page() ) {
+		return 'front';
+	}
+	if ( krm_current_project_page() ) {
+		return 'project';
+	}
+	$design = krm_design_template();
+	if ( $design ) {
+		return $design;
+	}
+	if ( is_singular( 'ministry' ) || is_post_type_archive( 'ministry' ) || is_tax( 'ministry_group' ) ) {
+		return 'ministry';
+	}
+	if ( is_singular( array( 'post', 'sermon', 'event' ) ) ) {
+		return 'post';
+	}
+	if ( is_home() || is_archive() || is_search() ) {
+		return 'blog';
+	}
+	return 'page';
+}
+
+/*
+ * Fonts from Google Fonts in one request (display=swap): Cormorant Garamond for headings, Figtree for body text and
+ * Newsreader italic for the scripture verse (--font-heading / --font-body / --font-scripture in theme-global.css).
+ */
+function krm_fonts_url() {
+	return 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,600&family=Figtree:wght@300..700&family=Newsreader:ital,wght@1,300..600&display=swap';
+}
+add_action(
+	'wp_head',
+	function () {
+		echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+	},
+	2
+);
+
+add_action(
+	'wp_enqueue_scripts',
+	function () {
+		$view = krm_view();
+		$ver  = KRM_VERSION;
+
+		// Design tokens and shared components, loaded once and first on every page.
+		wp_register_style( 'krm-fonts', krm_fonts_url(), array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+		wp_register_style( 'krm-global', krm_asset( 'css/theme-global.css' ), array( 'krm-fonts' ), $ver );
+		if ( 'front' === $view ) {
+			wp_enqueue_style( 'krm-front', krm_asset( 'css/front.css' ), array( 'krm-global' ), $ver );
+		} else {
+			wp_enqueue_style( 'krm-site', krm_asset( 'css/site.css' ), array( 'krm-global' ), $ver );
+			if ( file_exists( KRM_DIR . '/assets/css/pages/' . $view . '.css' ) ) {
+				wp_enqueue_style( 'krm-' . $view, krm_asset( 'css/pages/' . $view . '.css' ), array( 'krm-site' ), $ver );
+			}
+			if ( 'page' === $view ) {
+				// Story cards for fallback listings.
+				wp_enqueue_style( 'krm-blog', krm_asset( 'css/pages/blog.css' ), array( 'krm-site' ), $ver );
+			}
+		}
+		wp_add_inline_style( 'front' === $view ? 'krm-front' : 'krm-site', krm_bg_small_css() );
+
+		// Sermons, events and testimonials (also used by the [krm_testimonials] shortcode).
+		wp_register_style( 'krm-extras', krm_asset( 'css/pages/extras.css' ), array( 'krm-site' ), $ver );
+		if ( is_singular( array( 'sermon', 'event' ) ) || is_post_type_archive( array( 'sermon', 'event', 'testimonial' ) ) || is_tax( 'sermon_series' ) ) {
+			wp_enqueue_style( 'krm-extras' );
+		}
+
+		wp_enqueue_script( 'krm-site', krm_asset( 'js/site.js' ), array(), $ver, array( 'in_footer' => true ) );
+		wp_localize_script(
+			'krm-site',
+			'KRM_CONFIG',
+			array(
+				'donateUrl'       => krm_donate_url(),
+				'isDonatePage'    => 'donate' === $view,
+				'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
+				'nonce'           => is_user_logged_in() ? wp_create_nonce( 'krm_form' ) : '',
+				'formToken'       => krm_form_token(),
+				'web3formsKey'    => krm_w3_key(),
+				'email'           => krm_opt( 'email' ),
+				'newsletterDelay' => (int) krm_opt( 'newsletter_delay' ) * 1000,
+				// No newsletter popup over the thank-you view right after a gift.
+				'noNewsletter'    => (bool) krm_gift_return(),
+				'newsletterImage' => krm_media( 'https://kingdomrevivalministries.com/wp-content/uploads/2026/08/Leadership-and-Discipleship-6-1-scaled.jpg', '1536x1536' ),
+			)
+		);
+
+		// The photo viewer, only where gallery photos or [data-zoom] images are printed: home, About, ministry pages,
+		// stories, sermons and events.
+		if ( in_array( $view, array( 'front', 'about', 'post', 'gallery', 'project' ), true ) || is_singular( 'ministry' ) ) {
+			wp_enqueue_script( 'krm-viewer', krm_asset( 'js/viewer.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
+		}
+
+		// Theme toggle, scroll progress bar, header state, scroll reveal and photo bands (Phase 20), on every page.
+		wp_enqueue_script( 'krm-effects', krm_asset( 'js/effects.js' ), array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+
+		// Home 9. Brick Kiln Family Freedom: before/after slider, hint nudge and family dots (1.25.0).
+		if ( 'front' === $view ) {
+			wp_enqueue_script( 'krm-kiln-freedom', krm_asset( 'js/kiln-freedom.js' ), array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		}
+
+		// Filters, tabs, click-to-play videos and the prayer / partner sign-up forms, on every page.
+		wp_enqueue_script( 'krm-components', krm_asset( 'js/components.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
+
+		// Phase 24 forms (Partner With Us, Prayer Request, Donate, home prayer form): registered here, queued by
+		// krm_form_hidden() only on pages that print one of these forms.
+		wp_register_script( 'krm-forms', krm_asset( 'js/forms.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		wp_localize_script(
+			'krm-forms',
+			'KRM_FORMS',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'minMs'   => KRM_FORM_MIN_SECONDS * 1000 + 250,
+				'timeout' => 20000,
+				'sending' => __( 'Sending…', 'kingdom-revival' ),
+				'check'   => __( 'Please check the highlighted fields.', 'kingdom-revival' ),
+				'msgs'    => array(
+					'required' => __( 'Please fill in this field.', 'kingdom-revival' ),
+					'contact'  => __( 'Please enter a valid email address or WhatsApp number.', 'kingdom-revival' ),
+					'amount'   => __( 'Please choose or enter an amount.', 'kingdom-revival' ),
+				),
+			)
+		);
+
+		$scripts = array( 'front', 'blog', 'post', 'contact', 'donate', 'impact', 'gallery' );
+		if ( in_array( $view, $scripts, true ) ) {
+			wp_enqueue_script( 'krm-' . $view, krm_asset( 'js/' . $view . '.js' ), array( 'krm-site' ), $ver, array( 'in_footer' => true ) );
+		}
+		if ( 'donate' === $view ) {
+			wp_localize_script(
+				'krm-donate',
+				'KRM_DONATE',
+				array(
+					'paypalMe'    => krm_opt( 'paypal_me' ),
+					'paypalEmail' => krm_opt( 'paypal_email' ),
+					'email'       => krm_opt( 'email' ),
+					'paypalHost'  => krm_paypal_host(),
+					'returnUrl'   => add_query_arg( 'thanks', '1', krm_donate_url() ),
+					'cancelUrl'   => krm_donate_url(),
+					'notifyUrl'   => krm_paypal_notify_url(),
+				)
+			);
+		}
+
+		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+			wp_enqueue_script( 'comment-reply' );
+		}
+	}
+);

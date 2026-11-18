@@ -1,0 +1,175 @@
+<?php
+/**
+ * Theme supports, menus and lightweight front-end cleanup.
+ *
+ * @package Kingdom_Revival
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+add_action(
+	'after_setup_theme',
+	function () {
+		load_theme_textdomain( 'kingdom-revival', KRM_DIR . '/languages' );
+		add_theme_support( 'title-tag' );
+		add_theme_support( 'post-thumbnails' );
+		add_theme_support( 'automatic-feed-links' );
+		add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script', 'navigation-widgets' ) );
+		add_theme_support( 'responsive-embeds' );
+		add_theme_support(
+			'custom-logo',
+			array(
+				'height'               => 128,
+				'width'                => 128,
+				'flex-height'          => true,
+				'flex-width'           => true,
+				'unlink-homepage-logo' => false,
+			)
+		);
+
+		register_nav_menus(
+			array(
+				'primary'           => __( 'Main navigation', 'kingdom-revival' ),
+				'footer_quick'      => __( 'Footer: Quick Links', 'kingdom-revival' ),
+				'footer_ministries' => __( 'Footer: Ministries', 'kingdom-revival' ),
+			)
+		);
+	}
+);
+
+$GLOBALS['content_width'] = 740;
+
+/* Emoji scripts are not used by the design. */
+remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+remove_action( 'wp_print_styles', 'print_emoji_styles' );
+
+/**
+ * Block styles: the design's templates render their own markup (stories are styled by post.css), so block and
+ * global (theme.json) CSS is only loaded on generic pages. This keeps WordPress defaults from altering the design.
+ *
+ * With separate block assets, classic themes get their global styles enqueued at wp_footer priority 1 (WordPress
+ * then moves them into <head>), so the styles are dequeued there as well as at wp_enqueue_scripts.
+ */
+function krm_dequeue_block_styles() {
+	if ( is_front_page() || is_page_template() || krm_is_design_page() || is_singular( 'ministry' ) || is_post_type_archive( 'ministry' ) || is_home() || is_archive() || is_search() || is_404() || is_singular( array( 'post', 'sermon', 'event' ) ) ) {
+		wp_dequeue_style( 'wp-block-library' );
+		wp_dequeue_style( 'wp-block-library-theme' );
+		wp_dequeue_style( 'global-styles' );
+		wp_dequeue_style( 'classic-theme-styles' );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'krm_dequeue_block_styles', 100 );
+add_action( 'wp_footer', 'krm_dequeue_block_styles', 2 );
+add_filter( 'should_load_separate_core_block_assets', '__return_true' );
+
+/**
+ * Is the current request one of the design's fixed pages (about, contact, donate, partner)?
+ */
+function krm_is_design_page() {
+	return '' !== krm_design_template();
+}
+
+/*
+ * The design pages live in page-templates/. A page with one of their slugs and no template chosen in
+ * Page Attributes still gets its design template, as page-{slug}.php would.
+ */
+add_filter(
+	'page_template_hierarchy',
+	function ( $templates ) {
+		$page = get_queried_object();
+		if ( ! $page instanceof WP_Post || get_page_template_slug( $page ) ) {
+			return $templates;
+		}
+		$slug = urldecode( $page->post_name );
+		if ( in_array( $slug, krm_design_pages(), true ) ) {
+			array_unshift( $templates, 'page-templates/' . $slug . '.php' );
+		}
+		return $templates;
+	}
+);
+
+/* After activation, point admins to the setup screen. */
+add_action(
+	'admin_notices',
+	function () {
+		if ( ! current_user_can( 'manage_options' ) || get_option( 'krm_setup_done' ) ) {
+			return;
+		}
+		if ( isset( $_GET['page'] ) && 'krm-setup' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+		printf(
+			'<div class="notice notice-info"><p><strong>%1$s</strong> %2$s <a href="%3$s">%4$s</a></p></div>',
+			esc_html__( 'Kingdom Revival Ministries theme:', 'kingdom-revival' ),
+			esc_html__( 'import the ministries, stories, pages, menus and images to finish setting up.', 'kingdom-revival' ),
+			esc_url( admin_url( 'admin.php?page=krm-setup' ) ),
+			esc_html__( 'Open the setup screen', 'kingdom-revival' )
+		);
+	}
+);
+
+/**
+ * One-time updates of saved content when the theme is updated.
+ *
+ * 1.8.0: links that pointed at the home page's ministry explorer as the "all ministries" page ({home}#all-ministries)
+ * now go to the All Ministries page ({ministries}). Only values still holding that old default are changed.
+ */
+function krm_upgrade_content() {
+	// Restore the Gallery beneath Our Impact on sites that received the temporary standalone-gallery change.
+	if ( '1' !== get_option( 'krm_gallery_under_impact', '' ) ) {
+		$design_pages = krm_design_template_pages();
+		if ( ! empty( $design_pages['gallery'] ) && ! empty( $design_pages['impact'] ) ) {
+			$gallery = $design_pages['gallery'];
+			$impact  = $design_pages['impact'];
+			if ( (int) $gallery->post_parent !== (int) $impact->ID ) {
+				wp_update_post(
+					array(
+						'ID'          => $gallery->ID,
+						'post_parent' => $impact->ID,
+					)
+				);
+			}
+			update_option( 'krm_gallery_under_impact', '1', false );
+		}
+	}
+
+	$done = (string) get_option( 'krm_content_version', '' );
+	if ( '' !== $done && version_compare( $done, '1.8.0', '>=' ) ) {
+		return;
+	}
+	$old     = array( '{home}#all-ministries', home_url( '/#all-ministries' ) );
+	$replace = function ( $values ) use ( &$replace, $old ) {
+		if ( is_array( $values ) ) {
+			return array_map( $replace, $values );
+		}
+		return in_array( $values, $old, true ) ? '{ministries}' : $values;
+	};
+
+	$site = get_option( 'krm_site_text' );
+	if ( is_array( $site ) ) {
+		update_option( 'krm_site_text', $replace( $site ), false );
+	}
+	foreach ( array( 'home', 'about', 'contact', 'donate', 'partner', 'blog' ) as $screen ) {
+		foreach ( get_posts(
+			array(
+				'post_type'      => 'any',
+				'post_status'    => 'any',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_key'       => '_krm_content_' . $screen, // phpcs:ignore WordPress.DB.SlowDBQuery -- runs once.
+			)
+		) as $post_id ) {
+			$values = get_post_meta( $post_id, '_krm_content_' . $screen, true );
+			if ( is_array( $values ) ) {
+				update_post_meta( $post_id, '_krm_content_' . $screen, $replace( $values ) );
+			}
+		}
+	}
+	$settings = get_option( 'krm_settings' );
+	if ( is_array( $settings ) && isset( $settings['redirects'] ) ) {
+		$settings['redirects'] = preg_replace( '#^(/services/\s+)\{home\}\#all-ministries\s*$#m', '$1{ministries}', (string) $settings['redirects'] );
+		update_option( 'krm_settings', $settings );
+	}
+	update_option( 'krm_content_version', KRM_VERSION );
+}
+add_action( 'init', 'krm_upgrade_content', 20 );
